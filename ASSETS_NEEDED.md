@@ -11,4 +11,8 @@ Every placeholder in the game waiting for a real asset. Remove a line once the a
 | The organ (perfumer's desk with tiered shelves of bottles) | 3D shop, behind the counter | Placeholder box. |
 | Shelves (×3), ideally with apothecary bottles | 3D shop | Placeholder boxes. |
 | Back-room door | 3D shop, left wall | Placeholder box. |
+| Display table | 3D shop, browsing area | Placeholder box. |
+| Consultation table (with seats) | 3D shop, where you give customers suggestions | Placeholder box. |
+| Bench | 3D shop, customer waiting area | Placeholder box. |
+| Furniture for the four upgrade spots | 3D shop | Empty floor patches until upgrades exist. |
 | Player character: modular bodies, faces, hairstyles, outfits | 3D shop, character creator | Placeholder box labelled "You". Character creator waits on pack approval. |

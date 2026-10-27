@@ -80,11 +80,13 @@ The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`
 | Field | Meaning |
 | ----- | ------- |
 | `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
+| `camera` | `focus`: `[x, z]` the view starts on. `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; players pinch between min and max and drag to pan. |
 | `spawn` | Where the player starts |
 | `walkSpeed` | Metres per second |
 | `playerRadius` | How close the player may get to walls and fixtures |
 | `gridStep` | Pathfinding grid size in metres |
 | `fixtures` | Everything in the room, below |
+| `zones` | Marked floor areas, below |
 
 Each fixture:
 
@@ -97,5 +99,13 @@ Each fixture:
 | `blocks` | Whether the player has to walk around it |
 | `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action` (`organ` opens the composing desk; `back-room` is a placeholder) |
 | `model` | Path to a model in `assets/`, or `null` for a labelled placeholder box |
+
+Each zone is a flat, labelled floor patch that doesn't block walking:
+
+| Field | Meaning |
+| ----- | ------- |
+| `id`, `label` | |
+| `kind` | `customers` (where customers browse, wait or get suggestions) or `upgrade` (an empty spot for future furniture) |
+| `rect` | `[centre x, centre z, width, depth]` |
 
 `validateShop` (run in the tests and at start-up) checks that fixtures are inside the room and every `standAt` and the spawn are reachable.

@@ -24,7 +24,7 @@ describe('shop layout', () => {
 
 describe('findPath', () => {
   it('walks straight across open floor', () => {
-    expect(findPath(shop, [1.5, 2.5], [-1, 2.5])).toEqual([[-1, 2.5]]);
+    expect(findPath(shop, [1, 1.5], [-1, 1.5])).toEqual([[-1, 1.5]]);
   });
 
   it('walks around the counter to reach the organ', () => {
@@ -38,7 +38,7 @@ describe('findPath', () => {
   });
 
   it('refuses a target inside a fixture or outside the room', () => {
-    expect(findPath(shop, shop.spawn, [0, -1.4])).toBeNull();
+    expect(findPath(shop, shop.spawn, [-0.8, -3.4])).toBeNull();
     expect(findPath(shop, shop.spawn, [10, 0])).toBeNull();
   });
 });

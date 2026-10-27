@@ -61,6 +61,7 @@ html, body { height: 100%; overflow: hidden; }
   white-space: nowrap;
 }
 .scene-label--action { border-style: solid; border-color: var(--accent); color: var(--accent); }
+.scene-label--zone { font-weight: 400; color: var(--muted); font-size: 0.7rem; border-style: dotted; }
 .scene-label--player { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
 #hud {

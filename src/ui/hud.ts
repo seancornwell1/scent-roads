@@ -8,6 +8,6 @@ export function hud(): string {
       <span class="hud-title">Field &amp; Flacon</span>
       <button class="chip" data-action="nav" data-to="book">Formula book</button>
     </div>
-    <p class="hud-hint">Tap the floor to walk. Tap the organ to compose.<br>Plain boxes are placeholders until the 3D packs are approved.</p>
+    <p class="hud-hint">Tap to walk · drag to look around · pinch to zoom</p>
     ${toast ? `<div class="toast" role="status"><span>${esc(toast)}</span><button class="link" data-action="dismiss-toast">OK</button></div>` : ''}`;
 }

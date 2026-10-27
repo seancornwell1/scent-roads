@@ -20,9 +20,13 @@ import type { Fixture, Point, ShopLayout } from '../game/shop';
 // The shop, seen from a fixed isometric camera. Until the approved model packs are
 // downloaded, every object is a plain box with a text label (see ASSETS_NEEDED.md).
 
-const PLACEHOLDER = { floor: 0xe6d8c8, wall: 0xf2e9df, fixture: 0xd3c2b1, player: 0xb69a86 };
+const PLACEHOLDER = { floor: 0xe6d8c8, wall: 0xf2e9df, fixture: 0xd3c2b1, player: 0xb69a86, customers: 0xeee3d6, upgrade: 0xd9cbbb };
 const PLAYER_SIZE: [number, number, number] = [0.5, 1.6, 0.5];
 const TAP_SLOP_PX = 10;
+/** Isometric viewing direction: the camera sits this far from its focus point. */
+const CAMERA_OFFSET = new Vector3(10, 10, 10);
+/** When the walking player leaves this part of the screen (in -1..1 units), the camera follows. */
+const FOLLOW_MARGIN = 0.55;
 
 export interface ShopSceneEvents {
   /** The player reached an interactive fixture they tapped. */
@@ -44,7 +48,10 @@ export class ShopScene {
   private pendingFixture: Fixture | null = null;
   private lastFrame = 0;
   private frameRequested = false;
-  private pointerDown: { x: number; y: number } | null = null;
+  private readonly focus = new Vector3();
+  private zoom: number;
+  private readonly pointers = new Map<number, { x: number; y: number }>();
+  private gesture: { moved: boolean; grab: Vector3 | null; pinchDist: number; pinchZoom: number } | null = null;
   enabled = true;
 
   constructor(
@@ -72,6 +79,16 @@ export class ShopScene {
     this.addBox([width, wallHeight, 0.1], [0, -depth / 2 - 0.05], PLACEHOLDER.wall);
     this.addBox([0.1, wallHeight, depth], [-width / 2 - 0.05, 0], PLACEHOLDER.wall);
 
+    // Zones are flat, labelled floor patches; they don't block walking.
+    for (const zone of layout.zones) {
+      const [x, z, w, d] = zone.rect;
+      const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: PLACEHOLDER[zone.kind] }));
+      patch.rotation.x = -Math.PI / 2;
+      patch.position.set(x, 0.005, z);
+      this.scene.add(patch);
+      this.addLabel(zone.label, patch, 0.05, 'scene-label--zone');
+    }
+
     for (const fixture of layout.fixtures) {
       const mesh = this.addBox(fixture.size, fixture.position, PLACEHOLDER.fixture);
       this.fixtureMeshes.set(mesh, fixture);
@@ -81,12 +98,15 @@ export class ShopScene {
     this.player = this.addBox(PLAYER_SIZE, layout.spawn, PLACEHOLDER.player);
     this.addLabel('You', this.player, PLAYER_SIZE[1] / 2 + 0.2, 'scene-label--player');
 
-    this.camera.position.set(10, 10, 10);
-    this.camera.lookAt(0, 0, 0);
+    this.zoom = layout.camera.defaultZoom;
+    this.focus.set(layout.camera.focus[0], 0, layout.camera.focus[1]);
+    this.placeCamera();
 
     const canvas = this.renderer.domElement;
-    canvas.addEventListener('pointerdown', (e) => (this.pointerDown = { x: e.clientX, y: e.clientY }));
+    canvas.addEventListener('pointerdown', (e) => this.onPointerDown(e));
+    canvas.addEventListener('pointermove', (e) => this.onPointerMove(e));
     canvas.addEventListener('pointerup', (e) => this.onPointerUp(e));
+    canvas.addEventListener('pointercancel', (e) => this.endPointer(e));
     new ResizeObserver(() => this.resize()).observe(container);
     this.resize();
   }
@@ -106,7 +126,7 @@ export class ShopScene {
     this.labels.push({ el, target, height });
   }
 
-  /** Fits the whole room in view, whatever the screen's shape. */
+  /** Zoom 1 fits the whole room across the screen; the camera keeps its isometric angle. */
   private resize(): void {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
@@ -115,25 +135,88 @@ export class ShopScene {
 
     const { width, depth, wallHeight } = this.layout.room;
     const box = new Box3(new Vector3(-width / 2, 0, -depth / 2), new Vector3(width / 2, wallHeight, depth / 2));
-    this.camera.updateMatrixWorld();
-    const view = box.clone().applyMatrix4(this.camera.matrixWorldInverse);
+    const probe = new OrthographicCamera();
+    probe.position.copy(CAMERA_OFFSET);
+    probe.lookAt(0, 0, 0);
+    probe.updateMatrixWorld();
+    const view = box.applyMatrix4(probe.matrixWorldInverse);
     const margin = 0.6;
     let halfW = (view.max.x - view.min.x) / 2 + margin;
     let halfH = (view.max.y - view.min.y) / 2 + margin;
     const aspect = w / h;
     if (halfW / halfH > aspect) halfH = halfW / aspect;
     else halfW = halfH * aspect;
-    const cx = (view.max.x + view.min.x) / 2;
-    const cy = (view.max.y + view.min.y) / 2;
-    Object.assign(this.camera, { left: cx - halfW, right: cx + halfW, top: cy + halfH, bottom: cy - halfH, near: -50, far: 100 });
+    Object.assign(this.camera, { left: -halfW, right: halfW, top: halfH, bottom: -halfH, near: -50, far: 100 });
+    this.placeCamera();
+  }
+
+  private placeCamera(): void {
+    const { width, depth } = this.layout.room;
+    this.focus.x = Math.min(Math.max(this.focus.x, -width / 2), width / 2);
+    this.focus.z = Math.min(Math.max(this.focus.z, -depth / 2), depth / 2);
+    this.camera.zoom = this.zoom;
+    this.camera.position.copy(this.focus).add(CAMERA_OFFSET);
+    this.camera.lookAt(this.focus);
     this.camera.updateProjectionMatrix();
+    this.camera.updateMatrixWorld();
     this.requestFrame();
   }
 
+  private floorPointAt(clientX: number, clientY: number): Vector3 | null {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new Vector2(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(ndc, this.camera);
+    // Intersect the infinite floor plane (y = 0), so panning works past the room's edge too.
+    const { origin, direction } = this.raycaster.ray;
+    if (Math.abs(direction.y) < 1e-6) return null;
+    return origin.clone().addScaledVector(direction, -origin.y / direction.y);
+  }
+
+  private onPointerDown(e: PointerEvent): void {
+    this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (this.pointers.size === 1) {
+      this.gesture = { moved: false, grab: this.floorPointAt(e.clientX, e.clientY), pinchDist: 0, pinchZoom: this.zoom };
+    } else if (this.pointers.size === 2 && this.gesture) {
+      const [a, b] = [...this.pointers.values()];
+      this.gesture.moved = true;
+      this.gesture.pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      this.gesture.pinchZoom = this.zoom;
+    }
+  }
+
+  private onPointerMove(e: PointerEvent): void {
+    const start = this.pointers.get(e.pointerId);
+    const g = this.gesture;
+    if (!start || !g) return;
+    if (this.pointers.size >= 2) {
+      this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const [a, b] = [...this.pointers.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      const { minZoom, maxZoom } = this.layout.camera;
+      if (g.pinchDist > 0) this.zoom = Math.min(Math.max((g.pinchZoom * dist) / g.pinchDist, minZoom), maxZoom);
+      this.placeCamera();
+      return;
+    }
+    if (!g.moved && Math.hypot(e.clientX - start.x, e.clientY - start.y) < TAP_SLOP_PX) return;
+    g.moved = true;
+    // Drag the floor: keep the point first touched under the finger.
+    const here = this.floorPointAt(e.clientX, e.clientY);
+    if (g.grab && here) {
+      this.focus.add(g.grab.clone().sub(here));
+      this.placeCamera();
+      g.grab = this.floorPointAt(e.clientX, e.clientY);
+    }
+  }
+
+  private endPointer(e: PointerEvent): void {
+    this.pointers.delete(e.pointerId);
+    if (this.pointers.size === 0) this.gesture = null;
+  }
+
   private onPointerUp(e: PointerEvent): void {
-    const down = this.pointerDown;
-    this.pointerDown = null;
-    if (!this.enabled || !down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > TAP_SLOP_PX) return;
+    const wasTap = this.pointers.size === 1 && this.gesture !== null && !this.gesture.moved;
+    this.endPointer(e);
+    if (!this.enabled || !wasTap) return;
     const rect = this.renderer.domElement.getBoundingClientRect();
     const ndc = new Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
     this.raycaster.setFromCamera(ndc, this.camera);
@@ -195,10 +278,21 @@ export class ShopScene {
       }
     }
 
+    if (this.path.length > 0) this.follow(dt);
     this.renderer.render(this.scene, this.camera);
     this.placeLabels();
     if (this.path.length > 0) this.requestFrame();
     else this.lastFrame = 0;
+  }
+
+  /** Eases the camera towards the walking player when they near the screen's edge. */
+  private follow(dt: number): void {
+    const p = this.player.position.clone().project(this.camera);
+    if (Math.abs(p.x) < FOLLOW_MARGIN && Math.abs(p.y) < FOLLOW_MARGIN) return;
+    const t = Math.min(dt * 3, 1);
+    this.focus.x += (this.player.position.x - this.focus.x) * t;
+    this.focus.z += (this.player.position.z - this.focus.z) * t;
+    this.placeCamera();
   }
 
   private placeLabels(): void {

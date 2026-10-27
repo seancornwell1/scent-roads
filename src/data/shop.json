@@ -1,14 +1,23 @@
 {
   "room": {
-    "width": 6,
-    "depth": 8,
-    "wallHeight": 2.6
+    "width": 10,
+    "depth": 12,
+    "wallHeight": 2.8
+  },
+  "camera": {
+    "focus": [
+      -0.5,
+      -1.5
+    ],
+    "defaultZoom": 1.6,
+    "minZoom": 1,
+    "maxZoom": 3
   },
   "spawn": [
-    1.2,
-    2.6
+    1,
+    1.5
   ],
-  "walkSpeed": 2.2,
+  "walkSpeed": 2.6,
   "playerRadius": 0.3,
   "gridStep": 0.25,
   "fixtures": [
@@ -16,97 +25,87 @@
       "id": "front-door",
       "label": "Front door",
       "position": [
-        -2.95,
-        3.0
+        -4.95,
+        4.4
       ],
       "size": [
         0.1,
         2.2,
-        1.2
+        1.4
       ],
       "blocks": false,
       "interact": null,
       "model": null
     },
     {
-      "id": "counter",
-      "label": "Counter",
+      "id": "back-room-door",
+      "label": "Back room",
       "position": [
-        0,
-        -1.4
+        -4.95,
+        -4.5
       ],
       "size": [
-        3,
-        1,
-        0.7
+        0.1,
+        2.2,
+        1.1
       ],
-      "blocks": true,
-      "interact": null,
+      "blocks": false,
+      "interact": {
+        "action": "back-room",
+        "standAt": [
+          -4.2,
+          -4.5
+        ]
+      },
       "model": null
     },
     {
       "id": "organ",
       "label": "The organ",
       "position": [
-        0,
-        -3.55
+        -0.8,
+        -5.55
       ],
       "size": [
-        2,
-        1.3,
+        2.6,
+        1.4,
         0.8
       ],
       "blocks": true,
       "interact": {
         "action": "organ",
         "standAt": [
-          0,
-          -2.6
+          -0.8,
+          -4.6
         ]
       },
       "model": null
     },
     {
-      "id": "shelf-left-front",
-      "label": "Shelf",
+      "id": "counter",
+      "label": "Counter",
       "position": [
-        -2.7,
-        1.2
+        -0.8,
+        -3.4
       ],
       "size": [
-        0.5,
-        2,
-        1.6
+        3.6,
+        1,
+        0.8
       ],
       "blocks": true,
       "interact": null,
       "model": null
     },
     {
-      "id": "shelf-left-back",
+      "id": "shelf-back",
       "label": "Shelf",
       "position": [
-        -2.7,
-        -0.6
+        3,
+        -5.7
       ],
       "size": [
-        0.5,
-        2,
-        1.6
-      ],
-      "blocks": true,
-      "interact": null,
-      "model": null
-    },
-    {
-      "id": "shelf-back-right",
-      "label": "Shelf",
-      "position": [
-        2.1,
-        -3.7
-      ],
-      "size": [
-        1.6,
+        2.2,
         2,
         0.5
       ],
@@ -115,26 +114,163 @@
       "model": null
     },
     {
-      "id": "back-room-door",
-      "label": "Back room",
+      "id": "shelf-left-1",
+      "label": "Shelf",
       "position": [
-        -2.95,
-        -2.6
+        -4.7,
+        -1.6
       ],
       "size": [
-        0.1,
-        2.2,
+        0.5,
+        2,
+        1.8
+      ],
+      "blocks": true,
+      "interact": null,
+      "model": null
+    },
+    {
+      "id": "shelf-left-2",
+      "label": "Shelf",
+      "position": [
+        -4.7,
+        0.8
+      ],
+      "size": [
+        0.5,
+        2,
+        1.8
+      ],
+      "blocks": true,
+      "interact": null,
+      "model": null
+    },
+    {
+      "id": "display-table",
+      "label": "Display table",
+      "position": [
+        -1.4,
+        -0.4
+      ],
+      "size": [
+        1.4,
+        0.9,
         1
       ],
-      "blocks": false,
-      "interact": {
-        "action": "back-room",
-        "standAt": [
-          -2.3,
-          -2.6
-        ]
-      },
+      "blocks": true,
+      "interact": null,
       "model": null
+    },
+    {
+      "id": "consultation-table",
+      "label": "Consultation table",
+      "position": [
+        2.6,
+        -1.8
+      ],
+      "size": [
+        1.2,
+        0.8,
+        1.2
+      ],
+      "blocks": true,
+      "interact": null,
+      "model": null
+    },
+    {
+      "id": "bench",
+      "label": "Bench",
+      "position": [
+        4.4,
+        1.6
+      ],
+      "size": [
+        0.6,
+        0.5,
+        2.2
+      ],
+      "blocks": true,
+      "interact": null,
+      "model": null
+    }
+  ],
+  "zones": [
+    {
+      "id": "browsing",
+      "label": "Customers browse",
+      "kind": "customers",
+      "rect": [
+        -3.4,
+        -0.4,
+        2.4,
+        4.2
+      ]
+    },
+    {
+      "id": "waiting",
+      "label": "Customers wait",
+      "kind": "customers",
+      "rect": [
+        3.1,
+        1.6,
+        1.6,
+        2.6
+      ]
+    },
+    {
+      "id": "consultation",
+      "label": "Give suggestions here",
+      "kind": "customers",
+      "rect": [
+        2.6,
+        -0.6,
+        2.4,
+        1
+      ]
+    },
+    {
+      "id": "slot-1",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        -2,
+        3.6,
+        1.4,
+        1.4
+      ]
+    },
+    {
+      "id": "slot-2",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        1.6,
+        4.4,
+        1.4,
+        1.4
+      ]
+    },
+    {
+      "id": "slot-3",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        3.9,
+        -3.8,
+        1.4,
+        1.4
+      ]
+    },
+    {
+      "id": "slot-4",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        -4.1,
+        2.6,
+        1,
+        1.2
+      ]
     }
   ]
 }
