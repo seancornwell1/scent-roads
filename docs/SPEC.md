@@ -4,11 +4,13 @@ _Formerly "Scent Roads" (working title)._
 
 Oct 26, 2026 · @Sean Cornwell
 
+> **Direction change — Oct 27, 2026.** The atelier is no longer a flat screen. The game now takes place in a small 3D perfume shop seen from a fixed isometric (orthographic) camera, in portrait. A character I create in a character creator walks the shop, serves customers and upgrades the store. The organ stands behind the counter; tapping it opens the composing desk from step 2 as a panel over the scene, with its logic unchanged. The world map becomes a back-room screen, reached through a door in the shop. Art is free low-poly 3D in one consistent style (see **Assets**). Where older text below says "atelier", read "the shop"; where it says "world map", read "the back room". Step 3 is now the shop; clients, sourcing and progression move to later steps (see **Claude Code prompts**).
+
 A cozy phone game about running a small perfume house. While I'm away, harvests ripen and shipments travel real sourcing routes; when I open the game, I compose perfumes for clients who come in with memories instead of orders. Every material, region and technique is real, so playing reinforces the perfumery course. Working title.
 
 ## The two loops
 
-The game is two halves that feed each other: the world map gathers materials while I'm away, and the atelier spends them when I'm playing.
+The game is two halves that feed each other: the world map (now a back-room screen) gathers materials while I'm away, and the shop spends them when I'm playing.
 
 |              | World map (idle)                                 | Atelier (active)                                      |
 | ------------ | ------------------------------------------------ | ----------------------------------------------------- |
@@ -51,6 +53,8 @@ The region list is a starting draft. Claude Code should check every fact here ag
 
 ## The atelier
 
+Since the direction change, this is a small 3D perfume shop: front door, counter, the organ behind it, shelves, and a door to the back room. My character walks where I tap, serves customers at the counter, and composes at the organ. The shop itself can be upgraded.
+
 Clients describe a memory, not a product. I translate it into a formula, and the perfume is judged across its whole drydown, not just the first spray.
 
 ### Clients
@@ -86,14 +90,22 @@ Clients describe a memory, not a product. I translate it into a formula, and the
 
 ## Look, sound and phone
 
-- **Look:** warm, illustrated and cozy. Painted map, sunlit atelier, apothecary bottles. All art is generated or sourced, never drawn in code.
+- **Look:** warm and cozy low-poly 3D, seen from a fixed isometric camera. A small sunlit shop, apothecary bottles, a player-made character. All models are sourced from free libraries in one consistent style, never drawn in code.
 - **Sound:** soft ambient music per screen, glass clinks, pouring, paper rustle. Sourced from CC0 libraries such as Freesound, never synthesized.
 - **Phone:** portrait, one-handed, installable from Safari with Add to Home Screen, and playable offline.
 - **Notifications:** optional alerts when harvests ripen or shipments arrive, if the phone allows them for home-screen web apps.
 - **Saves:** stored on the phone, with export and import from day one.
-- Built as a web app in TypeScript rather than Godot. It's mostly menus, a map and a desk, which a web app handles best on an iPhone.
+- Built as a web app in TypeScript rather than Godot, with Three.js for the shop scene. It must stay smooth on iPhone Safari.
 
 ## Assets
+
+Since the direction change (3D shop):
+
+- Never draw models, sprites, icons or effects in code, and never synthesize audio. Code only loads asset files.
+- Use free low-poly 3D libraries in one consistent style: Kenney.nl (CC0) and Quaternius (CC0) first, Poly Pizza for gaps. Download them into assets/ yourself. Propose the packs with preview links and wait for my OK before downloading.
+- Log every asset in CREDITS.md (source, author, license, URL). CC0 or CC BY only.
+
+Original rules, still in force where they don't conflict:
 
 - Never draw sprites, icons, backgrounds or effects in code, and never synthesize audio. Code only loads and displays asset files.
 - Find assets from free libraries first: Kenney.nl (CC0), Freesound (CC0 filter, API key in .env), itch.io free packs, OpenGameArt. Download them into assets/ yourself.
@@ -166,7 +178,25 @@ Start me with a free stock of every material for testing.
 Deploy and tell me what to try.
 ```
 
-### Prompt 3: clients and reviews
+### Prompt 3: the shop (after the direction change)
+
+```
+Then build step 3, the shop:
+- Three.js scene, fixed isometric (orthographic) camera, portrait,
+  smooth on iPhone Safari.
+- A small shop interior: front door, counter, the organ behind it, a
+  few shelves, and a door to the back room.
+- Character creator: a few faces, hairstyles, outfits and colors,
+  using modular character parts from the approved pack.
+- Tap to walk. Tapping the organ opens the existing composing desk
+  from step 2 as a panel over the scene. Keep its logic unchanged.
+- The back-room door is a placeholder for now.
+Deploy and give me the link.
+```
+
+The prompts below were written before the direction change and will be renumbered when they come up.
+
+### Prompt 3 (original): clients and reviews
 
 ```
 Step 3: clients. Briefs written as memories, each with a hidden target

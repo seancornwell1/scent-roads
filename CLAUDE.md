@@ -10,6 +10,14 @@
 6. **No ads, no purchases, no energy timers.** Waiting is only for things that really take time (harvests, curing, shipping).
 7. **Build only the step asked for.** Commit each step.
 
+## Asset rules
+
+The game is a 3D shop seen from a fixed isometric camera (see the direction change in `docs/SPEC.md`).
+
+- Never draw models, sprites, icons or effects in code, and never synthesize audio. Code only loads asset files.
+- Use free low-poly 3D libraries in one consistent style: Kenney.nl (CC0) and Quaternius (CC0) first, Poly Pizza for gaps. Download them into `assets/` yourself. Propose the packs with preview links and wait for Sean's OK before downloading.
+- Log every asset in `CREDITS.md` (source, author, license, URL). CC0 or CC BY only.
+
 ## Project
 
 - Vite + TypeScript web app, portrait, aimed at iPhone Safari and Add to Home Screen.
