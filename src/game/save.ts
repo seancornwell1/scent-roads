@@ -1,3 +1,4 @@
+import type { CharacterConfig } from './character';
 import type { Formula } from './types';
 
 // Saves live in this phone's browser storage. Times are real timestamps (ms since epoch).
@@ -23,6 +24,8 @@ export interface SaveData {
   formulas: SavedFormula[];
   /** Accord id → when and in which formula it was first hit. */
   discoveredAccords: Record<string, { at: number; formula: Formula }>;
+  /** The player's look; missing until the character creator has been used. */
+  character?: CharacterConfig;
 }
 
 export function newSave(now: number, materialIds: string[], testStockGrams: number): SaveData {

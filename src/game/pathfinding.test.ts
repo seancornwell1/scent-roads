@@ -3,7 +3,7 @@ import { findPath } from './pathfinding';
 import { isWalkable, shop, validateShop, type Point } from './shop';
 
 const crossesCounter = (path: Point[], from: Point) => {
-  const counter = shop.fixtures.find((f) => f.id === 'counter')!;
+  const counter = shop.fixtures.find((f) => f.id === 'counter-left')!;
   let prev = from;
   for (const p of path) {
     for (let t = 0; t <= 1; t += 0.02) {
@@ -24,21 +24,22 @@ describe('shop layout', () => {
 
 describe('findPath', () => {
   it('walks straight across open floor', () => {
-    expect(findPath(shop, [1, 1.5], [-1, 1.5])).toEqual([[-1, 1.5]]);
+    expect(findPath(shop, [-1, 4], [2, 5])).toEqual([[2, 5]]);
   });
 
   it('walks around the counter to reach the organ', () => {
     const organ = shop.fixtures.find((f) => f.id === 'organ')!;
-    const path = findPath(shop, shop.spawn, organ.interact!.standAt)!;
+    const from: [number, number] = [-1, 0];
+    const path = findPath(shop, from, organ.interact!.standAt)!;
     expect(path).not.toBeNull();
     expect(path.at(-1)).toEqual(organ.interact!.standAt);
     expect(path.length).toBeGreaterThan(1);
-    expect(crossesCounter(path, shop.spawn)).toBe(false);
+    expect(crossesCounter(path, from)).toBe(false);
     expect(path.every((p) => isWalkable(shop, p))).toBe(true);
   });
 
   it('refuses a target inside a fixture or outside the room', () => {
-    expect(findPath(shop, shop.spawn, [-0.8, -3.4])).toBeNull();
+    expect(findPath(shop, shop.spawn, [-1.78, -6.6])).toBeNull();
     expect(findPath(shop, shop.spawn, [10, 0])).toBeNull();
   });
 });

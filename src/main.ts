@@ -2,10 +2,13 @@ import './style.css';
 import { recognizeAccords } from './game/accords';
 import { content, materialsById, validateContent } from './game/content';
 import { addParts, totalParts } from './game/formula';
+import { characterOptions, defaultCharacter, randomCharacter, type CharacterConfig } from './game/character';
 import { shop, validateShop } from './game/shop';
+import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { commit, onChange, setDraft, state, type Screen } from './state';
 import { bookScreen } from './ui/book';
+import { creatorScreen } from './ui/creator';
 import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
 
@@ -26,7 +29,40 @@ const FIXTURE_ACTIONS: Record<string, () => void> = {
 
 const scene = new ShopScene(document.querySelector<HTMLDivElement>('#scene')!, shop, {
   arrive: (fixture) => fixture.interact && FIXTURE_ACTIONS[fixture.interact.action]?.(),
+  customer: (index) => {
+    scene.waveCustomer(index);
+    state.ui.toast = 'A customer waves hello. Conversations, sometimes with a hint about what they would like, arrive with the clients step.';
+    commit();
+  },
 });
+
+let kit: CharacterKit | null = null;
+let playerBuild = Promise.resolve();
+
+function currentLook(): CharacterConfig {
+  return state.save.character ?? defaultCharacter(kit!.style);
+}
+
+/** Rebuilds the player's model; builds run one after another so the last change wins. */
+function refreshPlayer(): void {
+  if (!kit) return;
+  const look = currentLook();
+  playerBuild = playerBuild.then(() => scene.setPlayer(kit!, look)).catch((e) => console.error(e));
+}
+
+CharacterKit.load(characterOptions.kit, characterOptions.style)
+  .then(async (loaded) => {
+    kit = loaded;
+    refreshPlayer();
+    const looks = Array.from({ length: characterOptions.customers.count }, () => randomCharacter(loaded.style, characterOptions, Math.random));
+    await scene.setCustomers(loaded, looks, Math.random);
+    if (!state.save.character) openPanel('creator');
+  })
+  .catch((e) => {
+    console.error(e);
+    state.ui.toast = 'Characters could not load. Check your connection and reopen the app.';
+    commit();
+  });
 
 let scrollToTop = false;
 
@@ -42,6 +78,7 @@ function render(): void {
   const { screen } = state.ui;
   hudRoot.innerHTML = hud();
   scene.enabled = screen === 'shop';
+  scene.focusOnPlayer(screen === 'creator');
 
   const panel = panelRoot.querySelector<HTMLElement>('.panel');
   const scroll = panel && !scrollToTop ? panel.scrollTop : 0;
@@ -50,8 +87,14 @@ function render(): void {
     panelRoot.innerHTML = '';
     return;
   }
-  panelRoot.innerHTML = `<div class="panel-backdrop" data-action="close-panel"></div>
+  if (screen === 'creator') {
+    if (!kit) return;
+    // No backdrop: the player stays visible above the panel while you change their look.
+    panelRoot.innerHTML = `<section class="panel panel--creator">${creatorScreen(kit.style, currentLook(), state.ui.creatorTab)}</section>`;
+  } else {
+    panelRoot.innerHTML = `<div class="panel-backdrop" data-action="close-panel"></div>
     <section class="panel">${screen === 'organ' ? organScreen() : bookScreen()}</section>`;
+  }
   panelRoot.querySelector<HTMLElement>('.panel')!.scrollTop = scroll;
 }
 
@@ -65,9 +108,27 @@ document.body.addEventListener('click', (event) => {
     case 'nav':
       return openPanel(target.dataset.to as Screen);
     case 'close-panel':
+      if (ui.screen === 'creator' && kit) save.character = currentLook();
       ui.screen = 'shop';
       ui.detail = null;
       break;
+    case 'look-tab':
+      ui.creatorTab = target.dataset.value!;
+      break;
+    case 'look-fit':
+    case 'look-part':
+    case 'look-color': {
+      if (!kit) return;
+      const look = structuredClone(currentLook());
+      const { key, value } = target.dataset as { key: string; value: string };
+      if (action === 'look-fit') look.fit = value;
+      else if (action === 'look-color') look.colors[key] = value;
+      else if (value) look.parts[key] = value;
+      else delete look.parts[key];
+      save.character = look;
+      refreshPlayer();
+      break;
+    }
     case 'dismiss-toast':
       ui.toast = null;
       break;

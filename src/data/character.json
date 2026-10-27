@@ -1,0 +1,135 @@
+{
+  "kit": "grab3d/characters/manifest.json",
+  "style": "cozy",
+  "slots": [
+    {
+      "id": "body",
+      "label": "Body"
+    },
+    {
+      "id": "head",
+      "label": "Face"
+    },
+    {
+      "id": "hair",
+      "label": "Hair"
+    },
+    {
+      "id": "hat",
+      "label": "Hat",
+      "optional": true
+    },
+    {
+      "id": "face",
+      "label": "Glasses & whiskers",
+      "optional": true
+    },
+    {
+      "id": "top",
+      "label": "Top"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom"
+    },
+    {
+      "id": "shoes",
+      "label": "Shoes"
+    },
+    {
+      "id": "handL",
+      "label": "Holding",
+      "optional": true
+    }
+  ],
+  "allowedParts": {
+    "head": [
+      "head_sunny",
+      "head_dreamy",
+      "head_cheeky",
+      "head_scamp"
+    ],
+    "hair": [
+      "hair_bob",
+      "hair_braids",
+      "hair_buns",
+      "hair_curly",
+      "hair_long",
+      "hair_ponytail",
+      "hair_spiky",
+      "hair_tousled"
+    ],
+    "hat": [
+      "hat_beanie",
+      "hat_chef",
+      "hat_explorer",
+      "hat_wizard"
+    ],
+    "face": [
+      "face_glasses",
+      "face_beard",
+      "face_mustache"
+    ],
+    "top": [
+      "top_sweater",
+      "top_tshirt",
+      "top_tunic",
+      "top_robe",
+      "top_chef"
+    ],
+    "bottom": [
+      "bottom_pants",
+      "bottom_cargo",
+      "bottom_skirt",
+      "bottom_shorts",
+      "bottom_puffy"
+    ],
+    "shoes": [
+      "shoes_sneakers",
+      "shoes_boots",
+      "shoes_curly"
+    ],
+    "handL": [
+      "handL_potion",
+      "handL_flower",
+      "handL_book"
+    ],
+    "body": []
+  },
+  "colors": [
+    {
+      "id": "skin",
+      "label": "Skin",
+      "palette": "skin",
+      "tab": "head"
+    },
+    {
+      "id": "eyes",
+      "label": "Eyes",
+      "palette": "eyes",
+      "tab": "head"
+    },
+    {
+      "id": "hair",
+      "label": "Hair colour",
+      "palette": "hair",
+      "tab": "hair"
+    },
+    {
+      "id": "top",
+      "label": "Top colour",
+      "palette": "cloth",
+      "tab": "top"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom colour",
+      "palette": "cloth",
+      "tab": "bottom"
+    }
+  ],
+  "customers": {
+    "count": 4,
+    "optionalChance": 0.35
+  }
+}

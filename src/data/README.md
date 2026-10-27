@@ -75,17 +75,20 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 
 ## `shop.json`
 
-The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`src/game/pathfinding.ts`). Floor coordinates are `[x, z]` in metres, centred on the room. The camera looks in from the front-right corner, so the visible walls are the left wall (`x = -width/2`) and the back wall (`z = -depth/2`). Put doors and wall fixtures there.
+The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`src/game/pathfinding.ts`). Floor coordinates are `[x, z]` in metres, centred on the room. The camera looks in from the front-right corner, so the visible walls are the left wall (`x = -width/2`) and the back wall (`z = -depth/2`). Model paths are relative to `assets/`.
 
 | Field | Meaning |
 | ----- | ------- |
 | `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
+| `floorColor` | Placeholder floor colour until a floor asset exists |
 | `camera` | `focus`: `[x, z]` the view starts on. `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; players pinch between min and max and drag to pan. |
-| `spawn` | Where the player starts |
+| `spawn` | Where the player starts, and where they stand while dressing in the character creator (keep it on open floor) |
 | `walkSpeed` | Metres per second |
 | `playerRadius` | How close the player may get to walls and fixtures |
 | `gridStep` | Pathfinding grid size in metres |
-| `fixtures` | Everything in the room, below |
+| `walls` | `panels`: panel kind → model. `back`: panel kinds left to right along the back wall; `left`: back to front along the left wall. Panels are 2 m wide, so these must cover the room exactly. |
+| `fixtures` | Furniture you walk around or use, below |
+| `decor` | Models only for looks, below |
 | `zones` | Marked floor areas, below |
 
 Each fixture:
@@ -93,19 +96,36 @@ Each fixture:
 | Field | Meaning |
 | ----- | ------- |
 | `id` | Stable id |
-| `label` | Text shown over it in the scene |
+| `label` | Text shown over it in the scene, or `null` |
+| `model` | Model path, or `null` for a labelled placeholder box |
 | `position` | `[x, z]` of its centre on the floor |
-| `size` | `[width, height, depth]` in metres |
+| `rotation` | Degrees around the vertical axis |
+| `size` | World-space footprint `[width, height, depth]` in metres, for walking and tapping (swap width and depth when rotated 90°) |
 | `blocks` | Whether the player has to walk around it |
 | `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action` (`organ` opens the composing desk; `back-room` is a placeholder) |
-| `model` | Path to a model in `assets/`, or `null` for a labelled placeholder box |
 
-Each zone is a flat, labelled floor patch that doesn't block walking:
+Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees.
+
+Each zone:
 
 | Field | Meaning |
 | ----- | ------- |
 | `id`, `label` | |
-| `kind` | `customers` (where customers browse, wait or get suggestions) or `upgrade` (an empty spot for future furniture) |
+| `kind` | `customers`: an invisible area where customers stand around. `upgrade`: a visible empty spot for future furniture. |
 | `rect` | `[centre x, centre z, width, depth]` |
 
-`validateShop` (run in the tests and at start-up) checks that fixtures are inside the room and every `standAt` and the spawn are reachable.
+`validateShop` (run in the tests and at start-up) checks that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable.
+
+## `character.json`
+
+Options for the player's character and for customers, built from the Grab3D Character Mixer kit (`assets/grab3d/characters/manifest.json`, which lists every part, palette, body fit and animation).
+
+| Field | Meaning |
+| ----- | ------- |
+| `kit`, `style` | Manifest path under `assets/` and which style in it to use (`cozy`) |
+| `slots` | The creator's pages, in order: `id` (a kit slot, or `body` for the body shape), `label`, `optional` (offers "None") |
+| `allowedParts` | Slot → part ids offered in the creator and used for customers. Leave out parts that don't suit a perfume shop. |
+| `colors` | Colour pickers: `id` (`skin`, `hair`, `eyes`, or a clothing slot whose main colour it sets), `label`, `palette` (a kit palette), `tab` (the creator page that shows it) |
+| `customers` | `count` standing in the shop; `optionalChance` that a customer wears an optional part |
+
+A saved look (`character` in the save) is `{ fit, parts: { slot: partId }, colors: { id: "#hex" } }`. `src/game/character.test.ts` checks every allowed part exists in the kit, in the right slot, and that its file is downloaded.

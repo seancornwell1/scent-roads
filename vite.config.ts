@@ -6,12 +6,15 @@ const base = process.env.BASE_PATH ?? '/';
 
 export default defineConfig({
   base,
+  // Downloaded asset files live in assets/ and are served as-is from the site root.
+  publicDir: 'assets',
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       workbox: {
-        globPatterns: ['**/*.{html,js,css,json,webmanifest,png,jpg,webp,svg,mp3,ogg,m4a,woff2}'],
+        globPatterns: ['**/*.{html,js,css,json,webmanifest,png,jpg,webp,svg,mp3,ogg,m4a,woff2,glb}'],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {
         name: 'Field & Flacon',

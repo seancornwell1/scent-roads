@@ -6,6 +6,8 @@ Oct 26, 2026 · @Sean Cornwell
 
 > **Direction change — Oct 27, 2026.** The atelier is no longer a flat screen. The game now takes place in a small 3D perfume shop seen from a fixed isometric (orthographic) camera, in portrait. A character I create in a character creator walks the shop, serves customers and upgrades the store. The organ stands behind the counter; tapping it opens the composing desk from step 2 as a panel over the scene, with its logic unchanged. The world map becomes a back-room screen, reached through a door in the shop. Art is free low-poly 3D in one consistent style (see **Assets**). Where older text below says "atelier", read "the shop"; where it says "world map", read "the back room". Step 3 is now the shop; clients, sourcing and progression move to later steps (see **Claude Code prompts**).
 
+> **Shop and customers — Oct 27, 2026.** The shop is long (now 10 × 18 m) with room for customers to hang around and for upgrades and furniture. There is no suggestion booth: customers stand around the shop (and sit, once seating upgrades exist) and can engage me in conversation. Sometimes a conversation gives a hint towards the final product they'll like. Art comes from Grab3D (CC0, one cozy pastel style, approved Oct 27, 2026); I'm happy to credit artists, so CC BY assets that fit the style are fine too.
+
 A cozy phone game about running a small perfume house. While I'm away, harvests ripen and shipments travel real sourcing routes; when I open the game, I compose perfumes for clients who come in with memories instead of orders. Every material, region and technique is real, so playing reinforces the perfumery course. Working title.
 
 ## The two loops
@@ -59,6 +61,7 @@ Clients describe a memory, not a product. I translate it into a formula, and the
 
 ### Clients
 
+- Customers stand around the shop (sitting once seating is upgraded) and can be talked to. Conversations are where briefs come from, and sometimes they drop a hint about what the customer will like in the final perfume.
 - Each brings a short brief: "My grandfather's workshop," "The first cold day of the year," "A wedding in a lemon grove."
 - Behind each brief is a hidden target: the olfactive families it wants, its mood, how strong it should be and how long it should last.
 - A few regulars return over time with new requests and remember what I made them before.

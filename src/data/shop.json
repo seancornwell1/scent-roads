@@ -1,275 +1,429 @@
 {
   "room": {
     "width": 10,
-    "depth": 12,
-    "wallHeight": 2.8
+    "depth": 18,
+    "wallHeight": 3
   },
+  "floorColor": "#e8d2b4",
   "camera": {
     "focus": [
       -0.5,
-      -1.5
+      -5
     ],
-    "defaultZoom": 1.6,
+    "defaultZoom": 2.4,
     "minZoom": 1,
-    "maxZoom": 3
+    "maxZoom": 4.5
   },
   "spawn": [
-    1,
-    1.5
+    -1,
+    -4.2
   ],
-  "walkSpeed": 2.6,
+  "walkSpeed": 2.4,
   "playerRadius": 0.3,
   "gridStep": 0.25,
+  "walls": {
+    "panels": {
+      "plain": "grab3d/models/modular-wall-straight.glb",
+      "window": "grab3d/models/modular-wall-window.glb",
+      "doorway": "grab3d/models/modular-wall-door.glb"
+    },
+    "back": [
+      "plain",
+      "window",
+      "plain",
+      "window",
+      "plain"
+    ],
+    "left": [
+      "plain",
+      "doorway",
+      "plain",
+      "window",
+      "plain",
+      "window",
+      "plain",
+      "doorway",
+      "plain"
+    ]
+  },
   "fixtures": [
-    {
-      "id": "front-door",
-      "label": "Front door",
-      "position": [
-        -4.95,
-        4.4
-      ],
-      "size": [
-        0.1,
-        2.2,
-        1.4
-      ],
-      "blocks": false,
-      "interact": null,
-      "model": null
-    },
-    {
-      "id": "back-room-door",
-      "label": "Back room",
-      "position": [
-        -4.95,
-        -4.5
-      ],
-      "size": [
-        0.1,
-        2.2,
-        1.1
-      ],
-      "blocks": false,
-      "interact": {
-        "action": "back-room",
-        "standAt": [
-          -4.2,
-          -4.5
-        ]
-      },
-      "model": null
-    },
     {
       "id": "organ",
       "label": "The organ",
+      "model": "grab3d/models/alchemy-table.glb",
       "position": [
-        -0.8,
-        -5.55
+        -1,
+        -8.55
       ],
+      "rotation": 0,
       "size": [
-        2.6,
-        1.4,
-        0.8
+        1.1,
+        1.27,
+        0.6
       ],
       "blocks": true,
       "interact": {
         "action": "organ",
         "standAt": [
-          -0.8,
-          -4.6
+          -1,
+          -7.6
         ]
-      },
-      "model": null
+      }
     },
     {
-      "id": "counter",
-      "label": "Counter",
+      "id": "back-room-door",
+      "label": "Back room",
+      "model": "grab3d/models/door.glb",
       "position": [
-        -0.8,
-        -3.4
+        -5.05,
+        -6
       ],
+      "rotation": 90,
       "size": [
-        3.6,
-        1,
-        0.8
-      ],
-      "blocks": true,
-      "interact": null,
-      "model": null
-    },
-    {
-      "id": "shelf-back",
-      "label": "Shelf",
-      "position": [
-        3,
-        -5.7
-      ],
-      "size": [
-        2.2,
-        2,
-        0.5
-      ],
-      "blocks": true,
-      "interact": null,
-      "model": null
-    },
-    {
-      "id": "shelf-left-1",
-      "label": "Shelf",
-      "position": [
-        -4.7,
-        -1.6
-      ],
-      "size": [
-        0.5,
-        2,
-        1.8
-      ],
-      "blocks": true,
-      "interact": null,
-      "model": null
-    },
-    {
-      "id": "shelf-left-2",
-      "label": "Shelf",
-      "position": [
-        -4.7,
-        0.8
-      ],
-      "size": [
-        0.5,
-        2,
-        1.8
-      ],
-      "blocks": true,
-      "interact": null,
-      "model": null
-    },
-    {
-      "id": "display-table",
-      "label": "Display table",
-      "position": [
-        -1.4,
-        -0.4
-      ],
-      "size": [
-        1.4,
-        0.9,
+        0.2,
+        2.07,
         1
       ],
-      "blocks": true,
-      "interact": null,
-      "model": null
+      "blocks": false,
+      "interact": {
+        "action": "back-room",
+        "standAt": [
+          -4.3,
+          -6
+        ]
+      }
     },
     {
-      "id": "consultation-table",
-      "label": "Consultation table",
+      "id": "potion-shelf-left",
+      "label": null,
+      "model": "grab3d/models/potion-shelf.glb",
       "position": [
-        2.6,
-        -1.8
+        -2.6,
+        -8.75
       ],
+      "rotation": 0,
       "size": [
-        1.2,
-        0.8,
+        0.94,
+        1.21,
+        0.32
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "potion-shelf-right",
+      "label": null,
+      "model": "grab3d/models/potion-shelf.glb",
+      "position": [
+        0.6,
+        -8.75
+      ],
+      "rotation": 0,
+      "size": [
+        0.94,
+        1.21,
+        0.32
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "counter-left",
+      "label": null,
+      "model": "grab3d/models/bar-counter.glb",
+      "position": [
+        -1.78,
+        -6.6
+      ],
+      "rotation": 0,
+      "size": [
+        1.56,
+        1.23,
+        0.66
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "counter-right",
+      "label": null,
+      "model": "grab3d/models/bar-counter.glb",
+      "position": [
+        -0.22,
+        -6.6
+      ],
+      "rotation": 0,
+      "size": [
+        1.56,
+        1.23,
+        0.66
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "shelf-unit-1",
+      "label": null,
+      "model": "grab3d/models/shelf-unit.glb",
+      "position": [
+        -4.75,
+        -3
+      ],
+      "rotation": 90,
+      "size": [
+        0.43,
+        1.16,
         1.2
       ],
       "blocks": true,
-      "interact": null,
-      "model": null
+      "interact": null
     },
     {
-      "id": "bench",
-      "label": "Bench",
+      "id": "shelf-unit-2",
+      "label": null,
+      "model": "grab3d/models/shelf-unit.glb",
       "position": [
-        4.4,
-        1.6
+        -4.75,
+        -1.6
       ],
+      "rotation": 90,
       "size": [
-        0.6,
-        0.5,
-        2.2
+        0.43,
+        1.16,
+        1.2
       ],
       "blocks": true,
-      "interact": null,
-      "model": null
+      "interact": null
+    },
+    {
+      "id": "potion-shelf-wall",
+      "label": null,
+      "model": "grab3d/models/potion-shelf.glb",
+      "position": [
+        -4.8,
+        1.5
+      ],
+      "rotation": 90,
+      "size": [
+        0.32,
+        1.21,
+        0.94
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "display-table-1",
+      "label": null,
+      "model": "grab3d/models/round-table.glb",
+      "position": [
+        0.6,
+        -2.4
+      ],
+      "rotation": 0,
+      "size": [
+        1.05,
+        0.75,
+        1.05
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "display-table-2",
+      "label": null,
+      "model": "grab3d/models/round-table.glb",
+      "position": [
+        2,
+        2.6
+      ],
+      "rotation": 0,
+      "size": [
+        1.05,
+        0.75,
+        1.05
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "monstera",
+      "label": null,
+      "model": "grab3d/models/monstera-plant.glb",
+      "position": [
+        4.3,
+        -8.3
+      ],
+      "rotation": 0,
+      "size": [
+        1.1,
+        1.1,
+        1.1
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "floor-lamp",
+      "label": null,
+      "model": "grab3d/models/floor-lamp.glb",
+      "position": [
+        -4.5,
+        -4.6
+      ],
+      "rotation": 90,
+      "size": [
+        0.6,
+        1.6,
+        0.5
+      ],
+      "blocks": true,
+      "interact": null
+    }
+  ],
+  "decor": [
+    {
+      "model": "grab3d/models/rug.glb",
+      "position": [
+        -1,
+        -4.6
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "grab3d/models/potion-bottle.glb",
+      "position": [
+        0.45,
+        -2.45
+      ],
+      "y": 0.75,
+      "rotation": 20
+    },
+    {
+      "model": "grab3d/models/candy-jar.glb",
+      "position": [
+        0.8,
+        -2.25
+      ],
+      "y": 0.75,
+      "rotation": 0
+    },
+    {
+      "model": "grab3d/models/potion-bottle.glb",
+      "position": [
+        2.15,
+        2.5
+      ],
+      "y": 0.75,
+      "rotation": -30
+    },
+    {
+      "model": "grab3d/models/candy-jar.glb",
+      "position": [
+        1.85,
+        2.75
+      ],
+      "y": 0.75,
+      "rotation": 0
+    },
+    {
+      "model": "grab3d/models/wall-clock.glb",
+      "position": [
+        2,
+        -8.97
+      ],
+      "y": 2.1,
+      "rotation": 0
     }
   ],
   "zones": [
     {
-      "id": "browsing",
-      "label": "Customers browse",
+      "id": "at-counter",
+      "label": "At the counter",
+      "kind": "customers",
+      "rect": [
+        -1,
+        -5.3,
+        3,
+        0.8
+      ]
+    },
+    {
+      "id": "browsing-shelves",
+      "label": "Browsing the shelves",
+      "kind": "customers",
+      "rect": [
+        -3.7,
+        -1.2,
+        1,
+        6
+      ]
+    },
+    {
+      "id": "around-display",
+      "label": "Around the display",
+      "kind": "customers",
+      "rect": [
+        1.4,
+        -0.2,
+        3,
+        2
+      ]
+    },
+    {
+      "id": "near-entrance",
+      "label": "Just arrived",
       "kind": "customers",
       "rect": [
         -3.4,
-        -0.4,
-        2.4,
-        4.2
-      ]
-    },
-    {
-      "id": "waiting",
-      "label": "Customers wait",
-      "kind": "customers",
-      "rect": [
-        3.1,
+        5.6,
         1.6,
-        1.6,
-        2.6
+        2
       ]
     },
     {
-      "id": "consultation",
-      "label": "Give suggestions here",
-      "kind": "customers",
-      "rect": [
-        2.6,
-        -0.6,
-        2.4,
-        1
-      ]
-    },
-    {
-      "id": "slot-1",
+      "id": "spot-1",
       "label": "Upgrade spot",
       "kind": "upgrade",
       "rect": [
-        -2,
-        3.6,
-        1.4,
-        1.4
+        3.4,
+        -4.6,
+        1.6,
+        1.6
       ]
     },
     {
-      "id": "slot-2",
+      "id": "spot-2",
       "label": "Upgrade spot",
       "kind": "upgrade",
       "rect": [
-        1.6,
+        -1,
         4.4,
-        1.4,
-        1.4
+        1.8,
+        1.6
       ]
     },
     {
-      "id": "slot-3",
+      "id": "spot-3",
       "label": "Upgrade spot",
       "kind": "upgrade",
       "rect": [
-        3.9,
-        -3.8,
-        1.4,
-        1.4
+        3.4,
+        6.2,
+        1.8,
+        1.8
       ]
     },
     {
-      "id": "slot-4",
+      "id": "spot-4",
       "label": "Upgrade spot",
       "kind": "upgrade",
       "rect": [
-        -4.1,
-        2.6,
-        1,
-        1.2
+        0.4,
+        7.8,
+        1.8,
+        1.4
       ]
     }
   ]

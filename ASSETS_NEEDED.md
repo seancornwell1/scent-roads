@@ -1,18 +1,12 @@
 # Assets needed
 
-Every placeholder in the game waiting for a real asset. Remove a line once the asset is in `assets/` and logged in `CREDITS.md`.
+Every placeholder or stand-in waiting for a real asset. Remove a line once the asset is in `assets/` and logged in `CREDITS.md`.
 
 | Asset | Where it shows | Notes |
 | ----- | -------------- | ----- |
-| App icon (180×180 PNG for iOS, plus 192 and 512 PNG) | Home Screen icon, manifest | Without it iOS uses a screenshot of the page as the icon. |
-| Shop room: floor, walls | 3D shop | Low-poly, warm, cozy. Placeholder: flat boxes. |
-| Front door | 3D shop, left wall | Placeholder box. |
-| Counter | 3D shop | Placeholder box. |
-| The organ (perfumer's desk with tiered shelves of bottles) | 3D shop, behind the counter | Placeholder box. |
-| Shelves (×3), ideally with apothecary bottles | 3D shop | Placeholder boxes. |
-| Back-room door | 3D shop, left wall | Placeholder box. |
-| Display table | 3D shop, browsing area | Placeholder box. |
-| Consultation table (with seats) | 3D shop, where you give customers suggestions | Placeholder box. |
-| Bench | 3D shop, customer waiting area | Placeholder box. |
+| Floor (wood boards or tiles) | 3D shop | Plain coloured floor for now (`floorColor` in `src/data/shop.json`). Grab3D has no floor model. |
+| Perfume bottles (flacons, atomizers) | Shelves, display tables, the organ | Using Grab3D potion bottles as stand-ins. Grab3D has no perfume bottle; candidates: a CC BY model (credit welcome), or ask Grab3D via its requests page. |
+| Front door | Front entrance, left wall | Open doorway for now; a shop door or bell could go here. |
+| Seating (benches, armchairs) for upgrades | Upgrade spots | Grab3D has a bench, sofa and armchair that match; add with the upgrades step. |
 | Furniture for the four upgrade spots | 3D shop | Empty floor patches until upgrades exist. |
-| Player character: modular bodies, faces, hairstyles, outfits | 3D shop, character creator | Placeholder box labelled "You". Character creator waits on pack approval. |
+| App icon (180×180 PNG for iOS, plus 192 and 512 PNG) | Home Screen icon, manifest | Without it iOS uses a screenshot as the icon. |
