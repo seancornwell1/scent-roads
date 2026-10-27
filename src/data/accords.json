@@ -1,0 +1,53 @@
+[
+  {
+    "id": "amber",
+    "name": "Amber",
+    "description": "Labdanum and vanilla, bergamot on top: the accord under Shalimar, Emeraude and a century of oriental perfumery.",
+    "course": { "mission": "01" },
+    "verified": true,
+    "check": [],
+    "requires": [
+      { "materials": ["labdanum"], "min": 15 },
+      { "materials": ["vanillin"], "min": 15 }
+    ]
+  },
+  {
+    "id": "chypre",
+    "name": "Chypre",
+    "description": "Coty's 1917 skeleton: bergamot, labdanum, oakmoss, patchouli.",
+    "course": { "mission": "03" },
+    "verified": true,
+    "check": [],
+    "requires": [
+      { "materials": ["bergamot"], "min": 5 },
+      { "materials": ["labdanum"], "min": 3 },
+      { "materials": ["oakmoss"], "min": 2 }
+    ]
+  },
+  {
+    "id": "fougere",
+    "name": "Fougère",
+    "description": "Houbigant's Fougère Royale, 1882: lavender, coumarin, oakmoss, bergamot. Fougères run coumarin at a few parts.",
+    "course": { "mission": "04" },
+    "verified": true,
+    "check": [],
+    "requires": [
+      { "materials": ["lavender"], "min": 5 },
+      { "materials": ["coumarin"], "min": 1 },
+      { "materials": ["oakmoss"], "min": 1 }
+    ]
+  },
+  {
+    "id": "cologne",
+    "name": "Cologne",
+    "description": "Mostly citrus with aromatic herbs and very little base: fresh, bright and short-lived.",
+    "course": { "mission": null },
+    "verified": false,
+    "check": ["definition"],
+    "requires": [
+      { "family": "citrus", "min": 40 },
+      { "family": "aromatic", "min": 5 },
+      { "layer": "base", "max": 15 }
+    ]
+  }
+]

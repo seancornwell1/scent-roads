@@ -2,9 +2,45 @@
 
 Facts Sean should confirm against the perfumery course. When a fact is confirmed, set `"verified": true` in its data file and move it to **Confirmed**.
 
-No data files exist yet. The items below come from the draft region table and processing list in `docs/SPEC.md`; they will become data in steps 2 and 4.
+Each data file entry has `"verified"` and a `"check"` list naming the fields to confirm. To confirm one, fix the value if needed, remove the field from `check`, and set `"verified": true` once `check` is empty. A test fails if an unverified entry is missing from this file.
 
-## To confirm
+Facts from your formula log and roadmap (descriptors, behaviour, course roles) count as course-backed. Everything else was written by Claude from general knowledge.
+
+Not facts: each material's `model.strength` and `model.halfLifeHours` are game tuning, not measurements. They are tuned so the drydown matches the observations in your formula log, and tests check that it does (`src/game/evaporation.test.ts`).
+
+## Materials — `src/data/materials.json`
+
+| id | Material | To confirm (current value) | Course |
+| -- | -------- | -------------------------- | ------ |
+| `labdanum` | Labdanum resinoid | **origin.region**: Spain (Andalusia) | Course mission 01 |
+| `iso-e-super` | Iso E Super | **layer**: base | Course mission 01 |
+| `stemone` | Stemone | **layer**: heart | Course mission 02 |
+| `gamma-octalactone` | Gamma octalactone | **layer**: heart | Course mission 02 |
+| `gamma-decalactone` | Gamma decalactone | **layer**: heart | Course mission 02 |
+| `cedarwood-virginia` | Cedarwood Virginia | **origin.region**: Southeastern United States | Course mission 02 |
+| `coumarin` | Coumarin | **family**: gourmand | Course mission 03 |
+| `oakmoss` | Oakmoss absolute | **origin.region**: Balkans and Morocco | Course mission 03 |
+| `lavender` | Lavender | **origin.region**: France (Provence) | Course mission 04 |
+| `dihydromyrcenol` | Dihydromyrcenol | **family**: aromatic | Course mission 04 |
+| `aldehyde-c11` | Aldehyde C-11 undecylenic | **layer**: top<br>**volatility**: high | Course mission 06 |
+| `allyl-amyl-glycolate` | Allyl amyl glycolate | **family**: green<br>**character**: Sharp, green and fruity, like pineapple skin and galbanum.<br>**volatility**: high | October order (outside the roadmap) |
+| `black-tea` | Black tea SFE | **family**: aromatic<br>**layer**: heart<br>**character**: Dark, dry tea leaf with smoky, hay-like and slightly leathery facets. | October order (outside the roadmap) |
+| `beta-damascone` | Beta-damascone | **character**: Rosy and fruity, like plum, blackcurrant and apple, with a hint of tobacco. Extremely strong; used in trace.<br>**family**: fruity | October order (outside the roadmap) |
+| `beta-ionone` | Beta-ionone | **character**: Violet and orris with a woody, slightly fruity edge. | October order (outside the roadmap) |
+| `delta-decalactone` | Delta-decalactone | **character**: Creamy, milky coconut with a soft peach note.<br>**layer**: base | October order (outside the roadmap) |
+| `douglas-fir` | Douglas fir needle | **family**: woody<br>**character**: Fresh, sweet conifer needles; green and slightly citrusy.<br>**origin.region**: Pacific Northwest, North America | October order (outside the roadmap) |
+| `isobornyl-acetate` | Isobornyl acetate | **family**: woody<br>**character**: Pine needles and camphor, clean and balsamic. | October order (outside the roadmap) |
+| `pink-pepper` | Pink peppercorn | **character**: Fresh, rosy pepper with a juicy, slightly citrus lift.<br>**origin.plant**: Schinus molle or Schinus terebinthifolius (berries)<br>**origin.region**: Varies by supplier (e.g. Réunion, Peru) | October order (outside the roadmap) |
+
+## Accords — `src/data/accords.json`
+
+| id | Accord | To confirm | Course |
+| -- | ------ | ---------- | ------ |
+| `cologne` | Cologne | **definition**: mostly citrus (at least 40% of the formula) with aromatic herbs (at least 5%) and a light base (base layer at most 15%). Not in your course yet; written from general knowledge. | Not in the roadmap |
+
+The minimum percentages in every accord's requirements (e.g. labdanum and vanillin at least 15% each for amber) are game tuning, not course facts.
+
+## Regions and processes — from the spec, data arrives in step 4
 
 | # | Claim (from the spec) | Notes from Claude | Will live in |
 | - | --------------------- | ----------------- | ------------ |

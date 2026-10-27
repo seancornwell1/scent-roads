@@ -1,7 +1,30 @@
 :root {
   --bg: #f6ece1;
-  --ink: #5a4048;
-  --line: #b9a39a;
+  --card: #fffaf4;
+  --ink: #4a3540;
+  --muted: #86717a;
+  --line: #d8c6bb;
+  --accent: #8a4b5c;
+  --accent-ink: #fff;
+  --warn: #9a5b12;
+  --warn-bg: #f7e3c4;
+
+  /* Family colours for the drydown graph (data display, not art). */
+  --fam-citrus: #e8b923;
+  --fam-aromatic: #8e8cc4;
+  --fam-green: #7aa34f;
+  --fam-floral: #dd7f9a;
+  --fam-fruity: #e0704f;
+  --fam-lactonic: #e9c9a0;
+  --fam-spicy: #b5452f;
+  --fam-aldehydic: #9fc3cf;
+  --fam-woody: #8b6440;
+  --fam-amber: #c5762c;
+  --fam-gourmand: #a8784f;
+  --fam-musk: #c9b3c9;
+  --fam-mossy: #4f6b47;
+
+  --tabs-h: 64px;
   color-scheme: light;
   font-family: ui-rounded, system-ui, -apple-system, sans-serif;
   color: var(--ink);
@@ -15,29 +38,248 @@
 html, body {
   margin: 0;
   min-height: 100%;
+  background: var(--bg);
   overscroll-behavior: none;
   touch-action: manipulation;
 }
 
 #app {
   min-height: 100dvh;
+  max-width: 520px;
+  margin: 0 auto;
   padding:
-    calc(env(safe-area-inset-top) + 24px)
+    calc(env(safe-area-inset-top) + 12px)
     calc(env(safe-area-inset-right) + 16px)
     calc(env(safe-area-inset-bottom) + 24px)
     calc(env(safe-area-inset-left) + 16px);
 }
 
-.home { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; text-align: center; }
-h1 { margin: 0; }
-.tagline, .status { margin: 0; opacity: 0.75; }
+h1, h2, h3, p { margin: 0; }
+h2 { font-size: 1rem; margin: 20px 0 8px; }
+h3 { font-size: 0.95rem; margin: 12px 0 4px; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: default; }
+
+.link { color: var(--accent); min-height: 44px; padding: 0 4px; }
+.danger { color: #a33; }
+.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 12px;
+  min-height: 44px;
+  padding: 0 18px;
+  font-weight: 600;
+}
+
+/* Home */
+.home { display: flex; flex-direction: column; gap: 16px; text-align: center; padding-top: 24px; }
+.title { font-size: 2rem; }
+.menu { display: grid; gap: 12px; }
+.big {
+  min-height: 56px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  font-weight: 600;
+}
 
 /* Plain placeholder boxes: a dashed outline and a text label, nothing drawn. */
 .placeholder {
   display: flex; align-items: center; justify-content: center;
   min-height: 52px; padding: 12px;
   border: 2px dashed var(--line); border-radius: 12px;
-  background: transparent; color: inherit; font: inherit;
+  color: var(--muted);
 }
 .placeholder--hero { aspect-ratio: 4 / 3; }
-.menu { display: grid; gap: 12px; }
+
+/* Screen header */
+.bar-top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.bar-top h1 { font-size: 1.15rem; }
+.bar-top .link { justify-self: start; padding-left: 0; }
+
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  display: inline-flex;
+  align-items: center;
+}
+.chip.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #ece2d9;
+  color: var(--muted);
+  vertical-align: 1px;
+}
+.tag--warn { background: var(--warn-bg); color: var(--warn); }
+.tag.block { display: block; font-size: 0.85rem; padding: 6px 8px; margin: 8px 0; }
+
+.banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: var(--warn-bg);
+  border-radius: 12px;
+  padding: 4px 4px 4px 12px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* Organ */
+.organ { padding-bottom: calc(var(--tabs-h) + env(safe-area-inset-bottom) + 8px); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+
+.material {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding-right: 8px;
+}
+.material-add {
+  flex: 1;
+  text-align: left;
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 10px 12px;
+  min-height: 56px;
+}
+.material-name { font-weight: 600; }
+.count {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 700;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+}
+.info { color: var(--accent); min-height: 44px; padding: 0 6px; font-size: 0.85rem; }
+
+.formula-row {
+  display: grid;
+  grid-template-columns: 12px 1fr auto 40px 40px 40px;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px 8px 6px 12px;
+}
+.formula-parts { text-align: center; font-weight: 700; }
+.pm {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 1.2rem;
+}
+.empty { padding: 32px 8px; text-align: center; color: var(--muted); }
+
+.save-row { display: flex; gap: 8px; }
+.save-row input {
+  flex: 1;
+  min-height: 44px;
+  font: inherit;
+  font-size: 16px; /* 16px stops iOS zooming into the field */
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+.tabs {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 8px calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 8px) calc(env(safe-area-inset-left) + 16px);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  max-width: 520px;
+  margin: 0 auto;
+}
+.tabs button {
+  min-height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.tabs button.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+/* Drydown graph */
+.graph { display: grid; gap: 14px; }
+.stage-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.track { height: 22px; border-radius: 6px; background: #ece2d9; overflow: hidden; }
+.fill { height: 100%; display: flex; }
+.seg { height: 100%; border-right: 1px solid var(--card); }
+.seg:last-child { border-right: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
+.legend-item { display: inline-flex; align-items: center; gap: 4px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+.fam-citrus { background: var(--fam-citrus); }
+.fam-aromatic { background: var(--fam-aromatic); }
+.fam-green { background: var(--fam-green); }
+.fam-floral { background: var(--fam-floral); }
+.fam-fruity { background: var(--fam-fruity); }
+.fam-lactonic { background: var(--fam-lactonic); }
+.fam-spicy { background: var(--fam-spicy); }
+.fam-aldehydic { background: var(--fam-aldehydic); }
+.fam-woody { background: var(--fam-woody); }
+.fam-amber { background: var(--fam-amber); }
+.fam-gourmand { background: var(--fam-gourmand); }
+.fam-musk { background: var(--fam-musk); }
+.fam-mossy { background: var(--fam-mossy); }
+
+/* Material details sheet */
+.sheet-backdrop { position: fixed; inset: 0; background: rgb(40 25 30 / 0.35); }
+.sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  max-width: 520px;
+  margin: 0 auto;
+  max-height: 85dvh;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: 18px 18px 0 0;
+  padding: 20px 16px calc(env(safe-area-inset-bottom) + 16px);
+  display: grid;
+  gap: 8px;
+}
+.sheet h2 { margin: 0; font-size: 1.2rem; }
+.plain { margin: 0; padding-left: 18px; }
+
+/* Formula book */
+.cards { gap: 10px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
