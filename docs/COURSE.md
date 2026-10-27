@@ -7,7 +7,7 @@ Facts here come from Sean's own course notes, so they count as course-confirmed.
 ## Where Sean is now (Oct 27, 2026)
 
 - Mission 01 (amber) done; Mission 02 (fig) in progress, paused for Christmas gift drafts.
-- The game starts with the current bench inventory below unlocked, then follows the course order after it.
+- The game starts with a small bench of four and unlocks the rest in course order as reputation grows (see "Materials and how they unlock" in `docs/SPEC.md`). The inventory below is reference only.
 
 ## Course methods worth modelling
 
@@ -36,7 +36,7 @@ Phase 2 (sketched, order not fixed): 07 florals (rose and jasmine from parts), 0
 
 ## Current bench inventory
 
-26 materials. This is the game's starting set.
+26 materials. Reference only; all of them are in the game, unlocked over time.
 
 | Material | Stock as bought | Level | Course mission | Notes |
 | -------- | --------------- | ----- | -------------- | ----- |
@@ -71,7 +71,7 @@ Materials marked "October order" came in for the Christmas gift drafts and are o
 
 ## Sean's material notes
 
-Descriptors and behaviour from the formula log, for writing in-game character notes in Sean's own terms.
+Descriptors and behaviour from the formula log. Reference only: the game uses standard descriptors (see `src/data/materials.json`), and unlocks materials through `src/data/unlocks.json` rather than this inventory.
 
 | Material | What it smells like | Behaviour learned |
 | -------- | ------------------- | ----------------- |

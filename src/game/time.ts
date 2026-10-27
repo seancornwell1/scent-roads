@@ -1,0 +1,22 @@
+import timeJson from '../data/time.json';
+
+// Game time runs on real time: 1 real hour = 1 game day by default (src/data/time.json).
+// For testing, add ?speed=N to the URL to make game time pass N times faster.
+
+export const time = timeJson as { realMinutesPerGameDay: number };
+
+let speed = 1;
+
+export function setTimeSpeed(multiplier: number): void {
+  speed = multiplier > 0 ? multiplier : 1;
+}
+
+/** Real milliseconds that a number of game hours takes. */
+export function gameHoursToMs(hours: number): number {
+  return (hours * time.realMinutesPerGameDay * 60_000) / 24 / speed;
+}
+
+/** Real minutes scaled by the testing speed (for things measured in real time, like arrivals). */
+export function realMinutesToMs(minutes: number): number {
+  return (minutes * 60_000) / speed;
+}

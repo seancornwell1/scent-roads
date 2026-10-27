@@ -10,6 +10,8 @@ export interface Family {
   id: string;
   name: string;
   description: string;
+  /** Moods this family lends a perfume (used when scoring against a brief). */
+  moods: string[];
 }
 
 export interface Origin {

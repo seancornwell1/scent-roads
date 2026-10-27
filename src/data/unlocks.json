@@ -1,0 +1,57 @@
+{
+  "sources": {
+    "natural": { "name": "Grown", "how": "Naturals grow somewhere in the world. You'll sign harvest contracts for them on the map in the back room." },
+    "synthetic": { "name": "Catalogue", "how": "Aroma chemicals come from the supplier's catalogue. You'll order them, and they ship to the shop." }
+  },
+  "tiers": [
+    {
+      "id": "first-bench",
+      "name": "Your first bench",
+      "reputation": 0,
+      "teaches": "One material for each layer, plus a herb: enough for an amber and a cologne.",
+      "materials": ["bergamot", "lavender", "labdanum", "vanillin"]
+    },
+    {
+      "id": "lift-and-glow",
+      "name": "Lift and glow",
+      "reputation": 5,
+      "teaches": "Modern helpers that make a blend bigger and longer, and a first spice.",
+      "materials": ["hedione", "iso-e-super", "ambroxan", "pink-pepper"]
+    },
+    {
+      "id": "green-and-creamy",
+      "name": "Green and creamy",
+      "reputation": 12,
+      "teaches": "Leaves, cut grass and lactones: everything a fig needs, plus a dry wood.",
+      "materials": ["stemone", "cis-3-hexenol", "gamma-octalactone", "gamma-decalactone", "cedarwood-virginia"]
+    },
+    {
+      "id": "moss-and-earth",
+      "name": "Moss and earth",
+      "reputation": 22,
+      "teaches": "The chypre: oakmoss and patchouli under a rose heart, with coumarin's hay.",
+      "materials": ["oakmoss", "patchouli", "phenylethyl-alcohol", "coumarin"]
+    },
+    {
+      "id": "the-barbershop",
+      "name": "The barbershop",
+      "reputation": 35,
+      "teaches": "Fresh fougères and the forest: clean, bright and resinous.",
+      "materials": ["dihydromyrcenol", "cashmeran", "douglas-fir", "isobornyl-acetate"]
+    },
+    {
+      "id": "fruit-and-flowers",
+      "name": "Fruit and flowers",
+      "reputation": 50,
+      "teaches": "Rich roses, violets, orchard fruit and tea.",
+      "materials": ["beta-damascone", "beta-ionone", "delta-decalactone", "allyl-amyl-glycolate", "black-tea"]
+    },
+    {
+      "id": "sparkle-and-skin",
+      "name": "Sparkle and skin",
+      "reputation": 70,
+      "teaches": "Aldehydic sparkle and soft musk: the finishing touches.",
+      "materials": ["aldehyde-c11", "ethylene-brassylate"]
+    }
+  ]
+}

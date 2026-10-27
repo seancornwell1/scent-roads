@@ -20,6 +20,7 @@ The olfactive families materials are sorted by on the organ, in display order.
 | `id` | string | Stable id, referenced by materials and accords |
 | `name` | string | Display name |
 | `description` | string | One plain-language line |
+| `moods` | string[] | Moods the family lends a perfume, used to score it against a customer's brief |
 
 ## `materials.json`
 
@@ -31,10 +32,10 @@ The olfactive families materials are sorted by on the organ, in display order.
 | `family` | family id | Olfactive family |
 | `layer` | `"top"` \| `"heart"` \| `"base"` | Where it sits in the pyramid |
 | `volatility` | `"very high"` … `"very low"` | How fast it evaporates, in words |
-| `character` | string | What it smells like, in plain language. Sean's own descriptors where the course has them. |
-| `behaviour` | string? | How it behaves in blends, from the formula log |
+| `character` | string | What it smells like, in standard perfumery terms (Sean's personal notes stay in `docs/COURSE.md`) |
+| `behaviour` | string? | How perfumers use it and how it behaves in a blend |
 | `origin` | object | Naturals: `plant`, `region`, `method`. Synthetics: `note`. A region with no fixed answer is omitted. |
-| `course` | object | `mission`: course mission that introduces it (`"01"`…), or `null` if outside the roadmap. `onBench`: in Sean's current inventory. |
+| `course` | object | `mission`: course mission that introduces it (`"01"`…), or `null` if outside the roadmap. `onBench`: in Sean's real inventory (reference only; the game unlocks materials through `unlocks.json`). |
 | `verified`, `check` | | See above |
 | `model.strength` | 1–10 | Game tuning, not a fact: odour impact. Each step doubles impact (see `model.json`). |
 | `model.halfLifeHours` | number > 0 | Game tuning, not a fact: hours until the material's intensity halves |
@@ -69,7 +70,7 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 | `stages` | The moments a perfume is judged: `id`, `name`, `hours` after application, `label`. Increasing hours. They mirror the course's blotter checks at 5 minutes, 1 hour and later. |
 | `strengthBase`, `strengthPivot` | How strength turns into impact. With 2 and 5, strength 5 is ×1 and each step up doubles it. |
 | `loudness` | Labels for how loud a stage is relative to the opening, highest `min` first |
-| `testStockGrams` | Grams of every material in a new save. Testing only; the world map replaces it in step 4. |
+| `testStockGrams` | Sample grams of each material. Stock isn't used up yet; trading replaces samples later. |
 
 `src/game/evaporation.test.ts` encodes observations from Sean's formula log. Run `npm test` after changing any tuning.
 
@@ -129,3 +130,43 @@ Options for the player's character and for customers, built from the Grab3D Char
 | `customers` | `count` standing in the shop; `optionalChance` that a customer wears an optional part |
 
 A saved look (`character` in the save) is `{ fit, parts: { slot: partId }, colors: { id: "#hex" } }`. `src/game/character.test.ts` checks every allowed part exists in the kit, in the right slot, and that its file is downloaded.
+
+## `unlocks.json`
+
+How the player gains materials. `src/game/unlocks.ts`; a test checks every material is unlocked exactly once.
+
+| Field | Meaning |
+| ----- | ------- |
+| `sources` | `natural` and `synthetic`: a name and a plain explanation of where they'll come from (grown on the map, or ordered from the catalogue) |
+| `tiers` | In order: `id`, `name`, `reputation` needed, `teaches` (one line), `materials` (ids). Tier 0 is the starting bench. |
+
+## `clients.json`
+
+Customers, briefs and how perfumes are judged. Logic in `src/game/customers.ts` (visits), `src/game/scoring.ts` (judging) and `src/game/clients.ts` (types and validation).
+
+| Field | Meaning |
+| ----- | ------- |
+| `timing` | `arrivalEveryRealMinutes`, `maxInShop`, `reviewAfterGameHours` (how long a perfume is worn before the review), `regularReturnsAfterGameHours`, `browseSeconds` `[min, max]`, `regularChance` (that an arrival is a regular who's due), `maxRegularsInShop` |
+| `scoring` | `difficulty` (`cozy` now; `realistic` later) and per-difficulty `stars` thresholds (total score for 2–5 stars) and `moodFullAt`; `weights` of stages, mood, strength and longevity in the total; `strengthBands` (average impact per part for strengths 2–5) and `strengthWords`; `longevityFadeAt` (fraction of the opening's intensity that counts as faded) and `longevityMaxHours` |
+| `economy` | `payShareAtWorstImpression` (share of the brief's pay given for the worst first impression; the best pays in full) and `reputationForStars` (change for 1–5 stars) |
+| `lines` | What customers say: `impression` and `stageWords` bands (`min` score → text), `stageNames`, and templates for reviews (`{stage}`, `{actual}`, `{target}`, `{moods}`), plus `chatter` |
+| `walkInNames` | Names for walk-in customers |
+| `briefs` | The walk-in pool, below |
+| `regulars` | Two or three people who come back, below |
+
+A brief:
+
+| Field | Meaning |
+| ----- | ------- |
+| `id` | Stable id |
+| `tier` | Unlock tier needed before it can come up; a test checks the tier's materials cover every family in the target |
+| `memory` | What the customer asks for, as a memory |
+| `hints` | Revealed one at a time when you ask about it |
+| `target` | Hidden: `families` (family → weight), `moods`, `strength` (1–5), `longevityHours` |
+| `pay` | Coins for a perfect first impression |
+
+A regular: `id`, `name`, `about`, a fixed `look` (same shape as the player's saved look), a `greeting`, `remember` lines (highest `minStars` first; `{perfume}` and `{stage}` fill in from their last review) and their own `briefs`, which they bring in order.
+
+## `time.json`
+
+`realMinutesPerGameDay`: how fast game time runs (60 = one real hour per game day). Add `?speed=N` to the URL to run game time N times faster when testing.

@@ -21,6 +21,31 @@
   "walkSpeed": 2.4,
   "playerRadius": 0.3,
   "gridStep": 0.25,
+  "customers": {
+    "entrance": [
+      -4.3,
+      6
+    ],
+    "queue": [
+      [
+        -2.2,
+        -5.5
+      ],
+      [
+        -0.9,
+        -5.5
+      ],
+      [
+        0.4,
+        -5.5
+      ],
+      [
+        1.7,
+        -5.5
+      ]
+    ],
+    "walkSpeed": 1.6
+  },
   "walls": {
     "panels": {
       "plain": "grab3d/models/modular-wall-straight.glb",
@@ -338,17 +363,6 @@
     }
   ],
   "zones": [
-    {
-      "id": "at-counter",
-      "label": "At the counter",
-      "kind": "customers",
-      "rect": [
-        -1,
-        -5.3,
-        3,
-        0.8
-      ]
-    },
     {
       "id": "browsing-shelves",
       "label": "Browsing the shelves",

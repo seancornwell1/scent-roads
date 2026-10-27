@@ -129,7 +129,6 @@
     }
   ],
   "customers": {
-    "count": 4,
     "optionalChance": 0.35
   }
 }

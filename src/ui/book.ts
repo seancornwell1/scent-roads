@@ -1,3 +1,4 @@
+import { clients } from '../game/clients';
 import { content, materialsById } from '../game/content';
 import { state } from '../state';
 import type { Formula } from '../game/types';
@@ -44,9 +45,22 @@ export function bookScreen(): string {
         .join('')
     : '<li class="muted">No saved formulas yet. Save one from the organ.</li>';
 
+  const reviews = (save.customers?.reviews ?? [])
+    .slice()
+    .reverse()
+    .map(
+      (r) => `<li class="card">
+        <div><strong>${esc(r.name)}</strong> <span class="muted small">${formatDate(r.at)}</span></div>
+        <p class="small">“${esc(r.perfume)}” · ${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)} · reputation ${r.reputation >= 0 ? '+' : ''}${r.reputation}</p>
+        ${r.weakStage ? `<p class="muted small">Let down by ${esc(clients.lines.stageNames[r.weakStage] ?? r.weakStage)}.</p>` : ''}
+      </li>`,
+    )
+    .join('');
+
   return `${header('Formula book')}
     <main class="book">
       <h2>Accords</h2><ul class="list cards">${accords}</ul>
       <h2>My formulas</h2><ul class="list cards">${formulas}</ul>
+      <h2>Reviews</h2><ul class="list cards">${reviews || '<li class="muted">No reviews yet. Customers come back to tell you how their perfume wore.</li>'}</ul>
     </main>`;
 }

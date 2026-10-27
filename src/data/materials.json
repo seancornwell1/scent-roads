@@ -6,13 +6,23 @@
     "family": "citrus",
     "layer": "top",
     "volatility": "very high",
-    "character": "Bright citrus zest with a floral background.",
-    "behaviour": "Gone in 10–30 minutes. Doubling it buys a louder opening, not a longer one.",
-    "origin": { "plant": "Citrus bergamia (peel)", "region": "Calabria, Italy", "method": "Cold pressing; bergapten-free (BF) grade" },
-    "course": { "mission": "01", "onBench": true },
+    "character": "Fresh, sparkling citrus with a soft floral, slightly peppery edge: the note that scents Earl Grey tea.",
+    "behaviour": "A classic top note, bright and quick to fade. The backbone of colognes and the lift in chypres and ambers.",
+    "origin": {
+      "plant": "Citrus bergamia (peel)",
+      "region": "Calabria, Italy",
+      "method": "Cold pressing; bergapten-free (BF) grade"
+    },
+    "course": {
+      "mission": "01",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 7, "halfLifeHours": 0.25 }
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 0.25
+    }
   },
   {
     "id": "labdanum",
@@ -21,13 +31,25 @@
     "family": "amber",
     "layer": "base",
     "volatility": "low",
-    "character": "Hazelnut and toffee, a new baseball glove, coffee and caramel.",
-    "behaviour": "At 70% of an accord it turns \"vitamin B\" and invades personal space.",
-    "origin": { "plant": "Cistus ladanifer (rockrose) gum", "region": "Spain (Andalusia)", "method": "Solvent extraction to a resinoid" },
-    "course": { "mission": "01", "onBench": true },
+    "character": "Warm, balsamic amber with leathery, honeyed and slightly animalic depth.",
+    "behaviour": "A base note at the heart of amber accords, and one pillar of the classic chypre.",
+    "origin": {
+      "plant": "Cistus ladanifer (rockrose) gum",
+      "region": "Spain (Andalusia)",
+      "method": "Solvent extraction to a resinoid"
+    },
+    "course": {
+      "mission": "01",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["origin.region"],
-    "model": { "strength": 6, "halfLifeHours": 12 }
+    "check": [
+      "origin.region"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 12
+    }
   },
   {
     "id": "vanillin",
@@ -36,13 +58,21 @@
     "family": "gourmand",
     "layer": "base",
     "volatility": "very low",
-    "character": "Warm, straightforward vanilla.",
-    "behaviour": "Strong up close with little reach. Outlives everything and dominates late drydowns.",
-    "origin": { "note": "Made in the lab; the main odorant of cured vanilla beans." },
-    "course": { "mission": "01", "onBench": true },
+    "character": "Sweet, creamy vanilla.",
+    "behaviour": "Very tenacious: it lingers into the far drydown and sweetens everything around it.",
+    "origin": {
+      "note": "Made in the lab; the main odorant of cured vanilla beans."
+    },
+    "course": {
+      "mission": "01",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 6, "halfLifeHours": 300 }
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 300
+    }
   },
   {
     "id": "iso-e-super",
@@ -51,13 +81,23 @@
     "family": "woody",
     "layer": "base",
     "volatility": "low",
-    "character": "Neutral mustiness at first, then velvety and woodsy. A transparent amplifier that makes its neighbours bigger.",
-    "behaviour": "Made the fig musty. Lacks Cashmeran's tang.",
-    "origin": { "note": "Synthetic woody-amber molecule." },
-    "course": { "mission": "01", "onBench": true },
+    "character": "Soft, velvety, transparent woody-amber with a cedar-like dryness.",
+    "behaviour": "Adds volume and radiance, often at high doses; on its own many people find it faint.",
+    "origin": {
+      "note": "Synthetic woody-amber molecule."
+    },
+    "course": {
+      "mission": "01",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["layer"],
-    "model": { "strength": 3, "halfLifeHours": 60 }
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 60
+    }
   },
   {
     "id": "ambroxan",
@@ -66,13 +106,21 @@
     "family": "amber",
     "layer": "base",
     "volatility": "very low",
-    "character": "Like Iso E Super but wider and warmer; dry, mineral, enveloping, almost aggressive.",
-    "behaviour": "Inaudible at 2 parts. A fixative with enormous tenacity.",
-    "origin": { "note": "Synthetic, modelled on ambergris." },
-    "course": { "mission": "01", "onBench": true },
+    "character": "Dry, mineral, ambergris-like warmth with a clean, slightly woody feel.",
+    "behaviour": "Extremely long-lasting; gives the base diffusion and a skin-like glow.",
+    "origin": {
+      "note": "Synthetic, modelled on ambergris."
+    },
+    "course": {
+      "mission": "01",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 5, "halfLifeHours": 400 }
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 400
+    }
   },
   {
     "id": "stemone",
@@ -81,13 +129,23 @@
     "family": "green",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Green fig leaf: dirt and woodiness, \"grassy knees on jeans\". Minty at strength.",
-    "behaviour": "The mint top burns off overnight, leaving green and grass. Far stronger than gamma octalactone at equal dilution.",
-    "origin": { "note": "Synthetic fig-leaf green molecule." },
-    "course": { "mission": "02", "onBench": true },
+    "character": "Green, leafy fig-leaf note with a fresh, slightly fruity edge.",
+    "behaviour": "Gives fig accords their green, leafy side. Strong, so used sparingly.",
+    "origin": {
+      "note": "Synthetic fig-leaf green molecule."
+    },
+    "course": {
+      "mission": "02",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["layer"],
-    "model": { "strength": 8, "halfLifeHours": 3 }
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 3
+    }
   },
   {
     "id": "cis-3-hexenol",
@@ -96,13 +154,21 @@
     "family": "green",
     "layer": "top",
     "volatility": "very high",
-    "character": "Cut grass with pear underneath.",
-    "behaviour": "Use in trace. Disappears into an effect rather than a note after maceration.",
-    "origin": { "note": "Leaf alcohol; made in the lab, also occurs in green leaves." },
-    "course": { "mission": "02", "onBench": true },
+    "character": "Intense, sharp green of freshly cut grass.",
+    "behaviour": "Very volatile and very strong: used in traces for a natural green lift.",
+    "origin": {
+      "note": "Leaf alcohol; made in the lab, also occurs in green leaves."
+    },
+    "course": {
+      "mission": "02",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 8, "halfLifeHours": 0.25 }
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 0.25
+    }
   },
   {
     "id": "gamma-octalactone",
@@ -111,13 +177,23 @@
     "family": "lactonic",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Fatty and creamy; obvious coconut and coconut milk.",
-    "behaviour": "Cloying in late drydown at 56 parts.",
-    "origin": { "note": "Synthetic lactone." },
-    "course": { "mission": "02", "onBench": true },
+    "character": "Creamy, sweet coconut.",
+    "behaviour": "Adds milky, creamy facets; turns heavy in excess.",
+    "origin": {
+      "note": "Synthetic lactone."
+    },
+    "course": {
+      "mission": "02",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["layer"],
-    "model": { "strength": 5, "halfLifeHours": 30 }
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 30
+    }
   },
   {
     "id": "gamma-decalactone",
@@ -126,13 +202,23 @@
     "family": "lactonic",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Peach in cream, easily cloying.",
-    "behaviour": "Much stronger than phenylethyl alcohol at equal dilution.",
-    "origin": { "note": "Synthetic lactone." },
-    "course": { "mission": "02", "onBench": true },
+    "character": "Ripe, creamy peach.",
+    "behaviour": "A strong fruity lactone: small amounts give a juicy, velvety peach effect.",
+    "origin": {
+      "note": "Synthetic lactone."
+    },
+    "course": {
+      "mission": "02",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["layer"],
-    "model": { "strength": 5, "halfLifeHours": 30 }
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 30
+    }
   },
   {
     "id": "cedarwood-virginia",
@@ -141,13 +227,25 @@
     "family": "woody",
     "layer": "base",
     "volatility": "low",
-    "character": "Dry pencil wood; immediately recognizable, cutting into sappy wood.",
-    "behaviour": "Grows in share as a blend ages. At 10 parts in amber it turned tree-sap.",
-    "origin": { "plant": "Juniperus virginiana (wood)", "region": "Southeastern United States", "method": "Steam distillation" },
-    "course": { "mission": "02", "onBench": true },
+    "character": "Dry, clean pencil-shaving wood.",
+    "behaviour": "A versatile woody base that dries a blend down and gives it structure.",
+    "origin": {
+      "plant": "Juniperus virginiana (wood)",
+      "region": "Southeastern United States",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": "02",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["origin.region"],
-    "model": { "strength": 5, "halfLifeHours": 40 }
+    "check": [
+      "origin.region"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 40
+    }
   },
   {
     "id": "hedione",
@@ -156,13 +254,21 @@
     "family": "floral",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Faint, sweet, honeyed floral. Lift, radiance, air.",
-    "behaviour": "Brightened bergamot and softened its sting; made the base louder and longer.",
-    "origin": { "note": "Synthetic jasmine-like molecule (methyl dihydrojasmonate)." },
-    "course": { "mission": "03", "onBench": true },
+    "character": "Light, airy, transparent jasmine with a fresh, slightly citrusy glow.",
+    "behaviour": "Adds radiance and diffusion; blends seamlessly and is used generously.",
+    "origin": {
+      "note": "Synthetic jasmine-like molecule (methyl dihydrojasmonate)."
+    },
+    "course": {
+      "mission": "03",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 3, "halfLifeHours": 24 }
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 24
+    }
   },
   {
     "id": "phenylethyl-alcohol",
@@ -171,13 +277,21 @@
     "family": "floral",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Imitation rose, very straightforward. Rose liquor.",
-    "behaviour": "Much weaker than gamma decalactone at equal dilution.",
-    "origin": { "note": "Made in the lab; a major component of rose." },
-    "course": { "mission": "03", "onBench": true },
+    "character": "Mild, sweet, fresh rose petal with a hint of honey.",
+    "behaviour": "The soft basis of many rose accords; gentle, so used in larger amounts.",
+    "origin": {
+      "note": "Made in the lab; a major component of rose."
+    },
+    "course": {
+      "mission": "03",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 3, "halfLifeHours": 6 }
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 6
+    }
   },
   {
     "id": "coumarin",
@@ -186,13 +300,23 @@
     "family": "gourmand",
     "layer": "base",
     "volatility": "low",
-    "character": "Wet paper, cardboard, hay and almond. Extremely strong.",
-    "behaviour": "Drowns a blend at 5 parts; useful range is 1–3.",
-    "origin": { "note": "Made in the lab; occurs naturally in tonka beans." },
-    "course": { "mission": "03", "onBench": true },
+    "character": "Sweet hay, tonka bean and almond, with a warm, slightly tobacco-like feel.",
+    "behaviour": "A key note of fougères and of tonka-like warmth; powerful at higher doses.",
+    "origin": {
+      "note": "Made in the lab; occurs naturally in tonka beans."
+    },
+    "course": {
+      "mission": "03",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["family"],
-    "model": { "strength": 9, "halfLifeHours": 60 }
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 60
+    }
   },
   {
     "id": "oakmoss",
@@ -201,13 +325,26 @@
     "family": "mossy",
     "layer": "base",
     "volatility": "very low",
-    "character": "Inky, bitter-green forest floor. A huge fixative.",
-    "behaviour": "Sensitization is cumulative: blotters unrestricted, skin wear light and occasional.",
-    "origin": { "plant": "Evernia prunastri (lichen on oak)", "region": "Balkans and Morocco", "method": "Solvent extraction to an absolute" },
-    "course": { "mission": "03", "onBench": false },
+    "character": "Damp, earthy forest floor: mossy, inky, slightly salty-sweet.",
+    "behaviour": "The classic base of chypres and fougères and a strong fixative. Its use is restricted by IFRA because it can cause skin sensitisation.",
+    "origin": {
+      "plant": "Evernia prunastri (lichen on oak)",
+      "region": "Balkans and Morocco",
+      "method": "Solvent extraction to an absolute"
+    },
+    "course": {
+      "mission": "03",
+      "onBench": false
+    },
     "verified": false,
-    "check": ["origin.region"],
-    "model": { "strength": 8, "halfLifeHours": 200 }
+    "check": [
+      "origin.region",
+      "behaviour"
+    ],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 200
+    }
   },
   {
     "id": "patchouli",
@@ -216,12 +353,23 @@
     "family": "woody",
     "layer": "base",
     "volatility": "low",
-    "character": "Earthy and dark, sweet-camphorous.",
-    "origin": { "plant": "Pogostemon cablin (dried leaves)", "region": "Indonesia", "method": "Steam distillation of dried leaves" },
-    "course": { "mission": "03", "onBench": false },
+    "character": "Rich, dark, earthy and slightly camphorous, with sweet, woody depth.",
+    "origin": {
+      "plant": "Pogostemon cablin (dried leaves)",
+      "region": "Indonesia",
+      "method": "Steam distillation of dried leaves"
+    },
+    "course": {
+      "mission": "03",
+      "onBench": false
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 7, "halfLifeHours": 150 }
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 150
+    },
+    "behaviour": "A tenacious base note and one pillar of the classic chypre."
   },
   {
     "id": "lavender",
@@ -230,13 +378,25 @@
     "family": "aromatic",
     "layer": "heart",
     "volatility": "high",
-    "character": "Astringent, almost menthol; camphor, like citronella in moderate doses.",
-    "behaviour": "Needs about twice its weight of vanillin before the camphor stops reading medicinal.",
-    "origin": { "plant": "Lavandula angustifolia (flowering tops)", "region": "France (Provence)", "method": "Steam distillation" },
-    "course": { "mission": "04", "onBench": true },
+    "character": "Fresh, herbal and floral, slightly camphorous.",
+    "behaviour": "The heart of fougères and a classic in colognes; pairs naturally with coumarin and citrus.",
+    "origin": {
+      "plant": "Lavandula angustifolia (flowering tops)",
+      "region": "France (Provence)",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": "04",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["origin.region"],
-    "model": { "strength": 6, "halfLifeHours": 1.5 }
+    "check": [
+      "origin.region"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 1.5
+    }
   },
   {
     "id": "dihydromyrcenol",
@@ -245,13 +405,23 @@
     "family": "aromatic",
     "layer": "top",
     "volatility": "high",
-    "character": "Witch hazel and menthol, with violet. The fresh molecule behind Cool Water.",
-    "behaviour": "Ate the amber at 2 parts, yet works over the same amber in Cool Water. Context decides.",
-    "origin": { "note": "Synthetic fresh molecule." },
-    "course": { "mission": "04", "onBench": true },
+    "character": "Fresh, clean, metallic lime-citrus with a crisp, laundry-fresh feel.",
+    "behaviour": "Defines many modern fresh and fougère scents; strong and bright.",
+    "origin": {
+      "note": "Synthetic fresh molecule."
+    },
+    "course": {
+      "mission": "04",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["family"],
-    "model": { "strength": 7, "halfLifeHours": 0.75 }
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 0.75
+    }
   },
   {
     "id": "cashmeran",
@@ -260,13 +430,21 @@
     "family": "woody",
     "layer": "base",
     "volatility": "low",
-    "character": "Wet paper, musk, a little spicy tang. Musky, woody, powerful.",
-    "behaviour": "At 2 parts it made the amber deeper and fuller.",
-    "origin": { "note": "Synthetic musky-woody molecule." },
-    "course": { "mission": "04", "onBench": true },
+    "character": "Warm, musky, woody and powdery, slightly spicy: soft like cashmere.",
+    "behaviour": "Adds soft, diffusive woody warmth to the heart and base.",
+    "origin": {
+      "note": "Synthetic musky-woody molecule."
+    },
+    "course": {
+      "mission": "04",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 7, "halfLifeHours": 50 }
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 50
+    }
   },
   {
     "id": "aldehyde-c11",
@@ -275,12 +453,24 @@
     "family": "aldehydic",
     "layer": "top",
     "volatility": "high",
-    "character": "Metallic sparkle, waxy and fizzy.",
-    "origin": { "note": "Synthetic aldehyde." },
-    "course": { "mission": "06", "onBench": true },
+    "character": "Waxy, clean and fresh, with a fizzy, metallic sparkle.",
+    "origin": {
+      "note": "Synthetic aldehyde."
+    },
+    "course": {
+      "mission": "06",
+      "onBench": true
+    },
     "verified": false,
-    "check": ["layer", "volatility"],
-    "model": { "strength": 8, "halfLifeHours": 4 }
+    "check": [
+      "layer",
+      "volatility"
+    ],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 4
+    },
+    "behaviour": "Strong: used in traces to add sparkle and lift, the 'aldehydic' effect."
   },
   {
     "id": "ethylene-brassylate",
@@ -289,12 +479,21 @@
     "family": "musk",
     "layer": "base",
     "volatility": "very low",
-    "character": "Powdery musk, like a plush case lining.",
-    "origin": { "note": "Synthetic musk." },
-    "course": { "mission": "06", "onBench": true },
+    "character": "Soft, sweet, powdery musk.",
+    "origin": {
+      "note": "Synthetic musk."
+    },
+    "course": {
+      "mission": "06",
+      "onBench": true
+    },
     "verified": true,
     "check": [],
-    "model": { "strength": 3, "halfLifeHours": 500 }
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 500
+    },
+    "behaviour": "A gentle, very long-lasting musk that rounds out and fixes the base."
   },
   {
     "id": "allyl-amyl-glycolate",
@@ -303,12 +502,25 @@
     "family": "green",
     "layer": "top",
     "volatility": "high",
-    "character": "Sharp, green and fruity, like pineapple skin and galbanum.",
-    "origin": { "note": "Synthetic." },
-    "course": { "mission": null, "onBench": true },
+    "character": "Sharp green-fruity, pineapple-like, with a galbanum edge.",
+    "origin": {
+      "note": "Synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["family", "character", "volatility"],
-    "model": { "strength": 8, "halfLifeHours": 3 }
+    "check": [
+      "family",
+      "character",
+      "volatility"
+    ],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 3
+    },
+    "behaviour": "Very strong; a little gives a juicy green lift to the top."
   },
   {
     "id": "black-tea",
@@ -317,12 +529,26 @@
     "family": "aromatic",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Dark, dry tea leaf with smoky, hay-like and slightly leathery facets.",
-    "origin": { "plant": "Camellia sinensis (fermented leaves)", "method": "Supercritical CO2 extraction (SFE)" },
-    "course": { "mission": null, "onBench": true },
+    "character": "Dry, smoky tea leaf with hay-like and leathery facets.",
+    "origin": {
+      "plant": "Camellia sinensis (fermented leaves)",
+      "method": "Supercritical CO2 extraction (SFE)"
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["family", "layer", "character"],
-    "model": { "strength": 5, "halfLifeHours": 12 }
+    "check": [
+      "family",
+      "layer",
+      "character"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 12
+    },
+    "behaviour": "Adds a dark, dry, slightly smoky depth to the heart."
   },
   {
     "id": "beta-damascone",
@@ -331,12 +557,24 @@
     "family": "fruity",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Rosy and fruity, like plum, blackcurrant and apple, with a hint of tobacco. Extremely strong; used in trace.",
-    "origin": { "note": "Synthetic rose ketone." },
-    "course": { "mission": null, "onBench": true },
+    "character": "Rich, fruity rose with plum, blackcurrant and tobacco facets.",
+    "origin": {
+      "note": "Synthetic rose ketone."
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["character", "family"],
-    "model": { "strength": 10, "halfLifeHours": 20 }
+    "check": [
+      "character",
+      "family"
+    ],
+    "model": {
+      "strength": 10,
+      "halfLifeHours": 20
+    },
+    "behaviour": "Extremely powerful: used in traces to make roses and fruits glow."
   },
   {
     "id": "beta-ionone",
@@ -345,12 +583,23 @@
     "family": "floral",
     "layer": "heart",
     "volatility": "medium",
-    "character": "Violet and orris with a woody, slightly fruity edge.",
-    "origin": { "note": "Synthetic violet ketone." },
-    "course": { "mission": null, "onBench": true },
+    "character": "Violet and orris, woody and slightly fruity.",
+    "origin": {
+      "note": "Synthetic violet ketone."
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["character"],
-    "model": { "strength": 6, "halfLifeHours": 20 }
+    "check": [
+      "character"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 20
+    },
+    "behaviour": "Gives violet and powdery orris effects to florals and woods."
   },
   {
     "id": "delta-decalactone",
@@ -360,11 +609,23 @@
     "layer": "base",
     "volatility": "low",
     "character": "Creamy, milky coconut with a soft peach note.",
-    "origin": { "note": "Synthetic lactone." },
-    "course": { "mission": null, "onBench": true },
+    "origin": {
+      "note": "Synthetic lactone."
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["character", "layer"],
-    "model": { "strength": 5, "halfLifeHours": 40 }
+    "check": [
+      "character",
+      "layer"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 40
+    },
+    "behaviour": "Adds a gentle milky creaminess to fruity and floral blends."
   },
   {
     "id": "douglas-fir",
@@ -373,12 +634,27 @@
     "family": "woody",
     "layer": "top",
     "volatility": "high",
-    "character": "Fresh, sweet conifer needles; green and slightly citrusy.",
-    "origin": { "plant": "Pseudotsuga menziesii (needles)", "region": "Pacific Northwest, North America", "method": "Steam distillation" },
-    "course": { "mission": null, "onBench": true },
+    "character": "Fresh, sweet conifer needles with a citrusy lift.",
+    "origin": {
+      "plant": "Pseudotsuga menziesii (needles)",
+      "region": "Pacific Northwest, North America",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["family", "character", "origin.region"],
-    "model": { "strength": 6, "halfLifeHours": 1 }
+    "check": [
+      "family",
+      "character",
+      "origin.region"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 1
+    },
+    "behaviour": "A bright, resinous top note for forest and winter accords."
   },
   {
     "id": "isobornyl-acetate",
@@ -387,12 +663,24 @@
     "family": "woody",
     "layer": "top",
     "volatility": "high",
-    "character": "Pine needles and camphor, clean and balsamic.",
-    "origin": { "note": "Synthetic conifer note." },
-    "course": { "mission": null, "onBench": true },
+    "character": "Fresh pine needles and camphor, clean and balsamic.",
+    "origin": {
+      "note": "Synthetic conifer note."
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["family", "character"],
-    "model": { "strength": 5, "halfLifeHours": 1 }
+    "check": [
+      "family",
+      "character"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 1
+    },
+    "behaviour": "A classic pine note for fresh, coniferous accords."
   },
   {
     "id": "pink-pepper",
@@ -401,11 +689,26 @@
     "family": "spicy",
     "layer": "top",
     "volatility": "very high",
-    "character": "Fresh, rosy pepper with a juicy, slightly citrus lift.",
-    "origin": { "plant": "Schinus molle or Schinus terebinthifolius (berries)", "region": "Varies by supplier (e.g. Réunion, Peru)", "method": "Steam distillation" },
-    "course": { "mission": null, "onBench": true },
+    "character": "Fresh, rosy, peppery-spicy with a citrus lift.",
+    "origin": {
+      "plant": "Schinus molle or Schinus terebinthifolius (berries)",
+      "region": "Varies by supplier (e.g. Réunion, Peru)",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": true
+    },
     "verified": false,
-    "check": ["character", "origin.plant", "origin.region"],
-    "model": { "strength": 6, "halfLifeHours": 0.75 }
+    "check": [
+      "character",
+      "origin.plant",
+      "origin.region"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.75
+    },
+    "behaviour": "A sparkling spicy top note; modern and bright."
   }
 ]

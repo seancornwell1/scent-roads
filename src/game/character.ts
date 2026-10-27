@@ -10,7 +10,8 @@ export interface CharacterOptions {
   allowedParts: Record<string, string[]>;
   /** Colour pickers; `tab` is the slot whose creator page shows it. */
   colors: { id: string; label: string; palette: string; tab: string }[];
-  customers: { count: number; optionalChance: number };
+  /** Chance that a random customer wears each optional part. */
+  customers: { optionalChance: number };
 }
 
 /** The parts of the kit manifest this game reads. */

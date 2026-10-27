@@ -1,15 +1,119 @@
 [
-  { "id": "citrus", "name": "Citrus", "description": "Peel oils and fresh, zesty materials. Bright and short-lived." },
-  { "id": "aromatic", "name": "Aromatic", "description": "Herbs and fresh, cool materials such as lavender." },
-  { "id": "green", "name": "Green", "description": "Cut grass, leaves and stems." },
-  { "id": "floral", "name": "Floral", "description": "Flowers: rose, jasmine, violet." },
-  { "id": "fruity", "name": "Fruity", "description": "Fruit notes other than citrus." },
-  { "id": "lactonic", "name": "Lactonic", "description": "Creamy, milky, coconut and peach-skin materials." },
-  { "id": "spicy", "name": "Spicy", "description": "Pepper, clove and other spices." },
-  { "id": "aldehydic", "name": "Aldehydic", "description": "Waxy, fizzy, metallic sparkle." },
-  { "id": "woody", "name": "Woody", "description": "Woods, roots and conifers." },
-  { "id": "amber", "name": "Amber", "description": "Warm resins and ambergris-like materials." },
-  { "id": "gourmand", "name": "Gourmand", "description": "Edible-smelling warmth: vanilla, tonka, hay, almond." },
-  { "id": "musk", "name": "Musk", "description": "Soft, skin-like, powdery and long-lasting." },
-  { "id": "mossy", "name": "Mossy", "description": "Oakmoss and forest-floor materials." }
+  {
+    "id": "citrus",
+    "name": "Citrus",
+    "description": "Peel oils and fresh, zesty materials. Bright and short-lived.",
+    "moods": [
+      "bright",
+      "fresh"
+    ]
+  },
+  {
+    "id": "aromatic",
+    "name": "Aromatic",
+    "description": "Herbs and fresh, cool materials such as lavender.",
+    "moods": [
+      "fresh",
+      "clean"
+    ]
+  },
+  {
+    "id": "green",
+    "name": "Green",
+    "description": "Cut grass, leaves and stems.",
+    "moods": [
+      "fresh",
+      "natural"
+    ]
+  },
+  {
+    "id": "floral",
+    "name": "Floral",
+    "description": "Flowers: rose, jasmine, violet.",
+    "moods": [
+      "romantic",
+      "soft"
+    ]
+  },
+  {
+    "id": "fruity",
+    "name": "Fruity",
+    "description": "Fruit notes other than citrus.",
+    "moods": [
+      "playful",
+      "sweet"
+    ]
+  },
+  {
+    "id": "lactonic",
+    "name": "Lactonic",
+    "description": "Creamy, milky, coconut and peach-skin materials.",
+    "moods": [
+      "soft",
+      "sweet"
+    ]
+  },
+  {
+    "id": "spicy",
+    "name": "Spicy",
+    "description": "Pepper, clove and other spices.",
+    "moods": [
+      "warm",
+      "bold"
+    ]
+  },
+  {
+    "id": "aldehydic",
+    "name": "Aldehydic",
+    "description": "Waxy, fizzy, metallic sparkle.",
+    "moods": [
+      "bright",
+      "clean"
+    ]
+  },
+  {
+    "id": "woody",
+    "name": "Woody",
+    "description": "Woods, roots and conifers.",
+    "moods": [
+      "calm",
+      "dry"
+    ]
+  },
+  {
+    "id": "amber",
+    "name": "Amber",
+    "description": "Warm resins and ambergris-like materials.",
+    "moods": [
+      "warm",
+      "dark"
+    ]
+  },
+  {
+    "id": "gourmand",
+    "name": "Gourmand",
+    "description": "Edible-smelling warmth: vanilla, tonka, hay, almond.",
+    "moods": [
+      "sweet",
+      "cozy"
+    ]
+  },
+  {
+    "id": "musk",
+    "name": "Musk",
+    "description": "Soft, skin-like, powdery and long-lasting.",
+    "moods": [
+      "soft",
+      "clean"
+    ]
+  },
+  {
+    "id": "mossy",
+    "name": "Mossy",
+    "description": "Oakmoss and forest-floor materials.",
+    "moods": [
+      "earthy",
+      "dark"
+    ]
+  }
 ]

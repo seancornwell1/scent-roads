@@ -1,4 +1,5 @@
 import type { CharacterConfig } from './character';
+import type { CustomerState } from './customers';
 import type { Formula } from './types';
 
 // Saves live in this phone's browser storage. Times are real timestamps (ms since epoch).
@@ -26,6 +27,10 @@ export interface SaveData {
   discoveredAccords: Record<string, { at: number; formula: Formula }>;
   /** The player's look; missing until the character creator has been used. */
   character?: CharacterConfig;
+  /** Money, reputation, customer visits and regulars (added in step 4; filled in on load). */
+  customers?: CustomerState;
+  /** Highest unlock tier the player has been told about. */
+  announcedTier?: number;
 }
 
 export function newSave(now: number, materialIds: string[], testStockGrams: number): SaveData {

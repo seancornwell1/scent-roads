@@ -4,7 +4,9 @@ Facts Sean should confirm against the perfumery course. When a fact is confirmed
 
 Each data file entry has `"verified"` and a `"check"` list naming the fields to confirm. To confirm one, fix the value if needed, remove the field from `check`, and set `"verified": true` once `check` is empty. A test fails if an unverified entry is missing from this file.
 
-Facts from your formula log and roadmap (descriptors, behaviour, course roles) count as course-backed. Everything else was written by Claude from general knowledge.
+Facts from your formula log and roadmap (course roles) count as course-backed. Everything else was written by Claude from general knowledge.
+
+**Oct 27, 2026:** every material's `character` and `behaviour` text was rewritten by Claude in standard perfumery terms, replacing your personal notes (which stay in `docs/COURSE.md`). These are widely used descriptions, so they're not all listed below one by one; please skim them in the game's material info and flag anything that doesn't match your course. Oakmoss's IFRA note is listed below.
 
 Not facts: each material's `model.strength` and `model.halfLifeHours` are game tuning, not measurements. They are tuned so the drydown matches the observations in your formula log, and tests check that it does (`src/game/evaporation.test.ts`).
 
@@ -19,7 +21,7 @@ Not facts: each material's `model.strength` and `model.halfLifeHours` are game t
 | `gamma-decalactone` | Gamma decalactone | **layer**: heart | Course mission 02 |
 | `cedarwood-virginia` | Cedarwood Virginia | **origin.region**: Southeastern United States | Course mission 02 |
 | `coumarin` | Coumarin | **family**: gourmand | Course mission 03 |
-| `oakmoss` | Oakmoss absolute | **origin.region**: Balkans and Morocco | Course mission 03 |
+| `oakmoss` | Oakmoss absolute | **origin.region**: Balkans and Morocco<br>**behaviour**: restricted by IFRA because it can cause skin sensitisation | Course mission 03 |
 | `lavender` | Lavender | **origin.region**: France (Provence) | Course mission 04 |
 | `dihydromyrcenol` | Dihydromyrcenol | **family**: aromatic | Course mission 04 |
 | `aldehyde-c11` | Aldehyde C-11 undecylenic | **layer**: top<br>**volatility**: high | Course mission 06 |

@@ -81,6 +81,25 @@ Clients describe a memory, not a product. I translate it into a formula, and the
 - A small drydown graph shows which notes dominate at each stage, which makes it a learning tool.
 - My own creations can be saved, named and put on the shop shelf for passive sales.
 
+## Materials and how they unlock
+
+_Added Oct 27, 2026._ The player starts with very few materials and gains more as their reputation grows. Each step is small and themed, and each material comes from one of two places that the idle side of the game will model:
+
+- **Grown (naturals):** each grows in a real region. They'll be sourced on the world map in the back room through harvest contracts.
+- **Catalogue (synthetics):** aroma chemicals ordered from a supplier's catalogue, shipped to the shop.
+
+| Reputation | Unlock | New materials | Teaches |
+| ---------- | ------ | ------------- | ------- |
+| 0 | Your first bench | Bergamot, lavender, labdanum, vanillin | One per layer plus a herb: an amber and a cologne |
+| 5 | Lift and glow | Hedione, Iso E Super, Ambroxan, pink pepper | Modern helpers that make a blend bigger and longer; a first spice |
+| 12 | Green and creamy | Stemone, cis-3-hexenol, gamma-octalactone, gamma-decalactone, cedarwood | The fig: leaves, grass, lactones, a dry wood |
+| 22 | Moss and earth | Oakmoss, patchouli, phenylethyl alcohol, coumarin | The chypre |
+| 35 | The barbershop | Dihydromyrcenol, Cashmeran, Douglas fir, isobornyl acetate | Fresh fougères and the forest |
+| 50 | Fruit and flowers | Beta-damascone, beta-ionone, delta-decalactone, allyl amyl glycolate, black tea | Rich florals, orchard fruit, tea |
+| 70 | Sparkle and skin | Aldehyde C-11, ethylene brassylate | Aldehydic sparkle and musk |
+
+The order follows the course (amber, fig, chypre, fougère, aldehydes), except lavender comes first so a cologne is possible from day one. Customers only bring briefs that the unlocked materials can answer. Until trading exists, each unlock comes with a sample of every new material. Material descriptions in the game use standard perfumery descriptors; Sean's own notes stay in `docs/COURSE.md` as reference.
+
 ## Progression and idle time
 
 - Money from clients and shelf sales buys harvest contracts, new regions and processing upgrades.
@@ -123,7 +142,7 @@ Answers to the open questions, Oct 27, 2026.
 - **Name.** Field & Flacon. (The repo and URL stay `scent-roads`.)
 - **Time speed.** 1 real hour = 1 game day, for now. Keep it a single tunable setting.
 - **Difficulty.** Mostly easy for now, but build towards a harder, realistic mode later. Scoring takes a strictness setting from the start, so a realistic mode is a new setting value rather than a rewrite.
-- **Course link.** Yes. Materials and accords follow the order of my perfumery course, unlocking as I learn them, starting with my current bench inventory. See `docs/COURSE.md`.
+- **Course link.** Yes. Materials and accords follow the order of my perfumery course. Revised Oct 27, 2026: the player starts with a small bench of four rather than my real inventory, and unlocks the rest by reputation (see **Materials and how they unlock**). My notes are reference only.
 
 ## Claude Code prompts
 
@@ -199,6 +218,22 @@ Deploy and give me the link.
 
 The prompts below were written before the direction change and will be renumbered when they come up.
 
+### Prompt 4: customers in the shop (after the direction change)
+
+```
+Step 4: customers in the shop.
+- Animated customers walk in, browse the shelves, and come to the
+  counter. Tapping one shows their memory brief.
+- Each brief has a hidden target (families, mood, strength,
+  longevity). I compose at the organ and hand over the perfume.
+- Score the opening, about one hour, and the drydown against the
+  target. They react right away, then return later in game time with
+  a full review that says which stage let them down.
+- Money, reputation, and two or three regulars who remember past
+  perfumes and look the same each visit.
+Deploy and give me the link.
+```
+
 ### Prompt 3 (original): clients and reviews
 
 ```
@@ -210,7 +245,7 @@ and reputation, and two or three regulars who remember past perfumes.
 Deploy and give me the link.
 ```
 
-### Prompt 4: the world map
+### Prompt 4 (original): the world map
 
 ```
 Step 4: the idle sourcing map. Regions from the spec, real seasons,

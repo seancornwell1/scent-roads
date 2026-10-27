@@ -1,10 +1,11 @@
 import { recognizeAccords } from './game/accords';
 import { content, materialsById } from './game/content';
+import { newCustomerState } from './game/customers';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'organ' | 'book' | 'creator';
+export type Screen = 'shop' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock';
 
 export interface UiState {
   screen: Screen;
@@ -16,6 +17,10 @@ export interface UiState {
   detail: string | null;
   /** Accords hit since the banner was last dismissed. */
   newAccords: string[];
+  /** The customer whose panel is open. */
+  visitId: string | null;
+  /** The customer you're composing for at the organ. */
+  orderId: string | null;
   /** Which page of the character creator is showing (a slot id). */
   creatorTab: string;
   /** A short message over the scene, e.g. for placeholders. */
@@ -24,7 +29,11 @@ export interface UiState {
 
 function initSave(): SaveData {
   const ids = content.materials.map((m) => m.id);
-  const save = loadSave() ?? newSave(Date.now(), ids, content.model.testStockGrams);
+  const loaded = loadSave();
+  const save = loaded ?? newSave(Date.now(), ids, content.model.testStockGrams);
+  // Saves from before step 4 start the customer side fresh.
+  save.customers ??= newCustomerState(Date.now());
+  save.announcedTier ??= 0;
   // Materials added to the data after this save was made still get test stock.
   for (const id of ids) if (!(id in save.stock)) save.stock[id] = content.model.testStockGrams;
   return save;
@@ -32,7 +41,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body' },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null },
 };
 
 let render = () => {};

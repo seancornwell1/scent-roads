@@ -26,6 +26,7 @@ import { findPath } from '../game/pathfinding';
 import { WALL_PANEL_WIDTH, type Fixture, type Point, type ShopLayout } from '../game/shop';
 import { loadGltf } from './assets';
 import type { Character, CharacterKit } from './characters';
+import { Crowd, type CrowdEntry, type Label } from './crowd';
 
 // The shop, seen from a fixed isometric camera. Models come from assets/ (see CREDITS.md);
 // anything without a model yet is a plain labelled box (see ASSETS_NEEDED.md).
@@ -39,19 +40,14 @@ const CAMERA_OFFSET = new Vector3(10, 10, 10);
 const FOLLOW_MARGIN = 0.5;
 /** Idle animations run at a gentle frame rate to save battery; movement runs at full rate. */
 const IDLE_FPS = 24;
-const CUSTOMER_TAP_SIZE: [number, number, number] = [0.6, 1.3, 0.6];
 
 export interface ShopSceneEvents {
   /** The player reached an interactive fixture they tapped. */
   arrive(fixture: Fixture): void;
-  /** A customer was tapped. */
-  customer(index: number): void;
+  /** A customer was tapped (by visit id). */
+  customer(id: string): void;
 }
 
-interface Customer {
-  character: Character;
-  hitBox: Mesh;
-}
 
 export class ShopScene {
   private readonly renderer: WebGLRenderer;
@@ -62,7 +58,7 @@ export class ShopScene {
   private readonly hitBoxes = new Map<Object3D, Fixture>();
   private readonly playerRoot = new Group();
   private player: Character | null = null;
-  private customers: Customer[] = [];
+  private readonly crowd: Crowd;
   private readonly labels: { el: HTMLElement; target: Object3D; height: number }[] = [];
   private readonly labelLayer: HTMLElement;
 
@@ -82,6 +78,7 @@ export class ShopScene {
     private readonly container: HTMLElement,
     private readonly layout: ShopLayout,
     private readonly events: ShopSceneEvents,
+    browseSeconds: [number, number],
   ) {
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -119,6 +116,17 @@ export class ShopScene {
     for (const d of layout.decor) {
       void this.addModel(d.model, d.position, d.rotation, d.y);
     }
+
+    this.crowd = new Crowd(
+      {
+        scene: this.scene,
+        layout,
+        addLabel: (text, target, height, modifier) => this.addLabel(text, target, height, modifier),
+        removeLabel: (label) => this.removeLabel(label),
+        requestFrame: () => this.requestFrame(),
+      },
+      browseSeconds,
+    );
 
     this.playerRoot.position.set(layout.spawn[0], 0, layout.spawn[1]);
     this.scene.add(this.playerRoot);
@@ -185,12 +193,19 @@ export class ShopScene {
     }
   }
 
-  private addLabel(text: string, target: Object3D, height: number, modifier: string): void {
+  private addLabel(text: string, target: Object3D, height: number, modifier: string): Label {
     const el = document.createElement('div');
     el.className = `scene-label ${modifier}`;
     el.textContent = text;
     this.labelLayer.appendChild(el);
     this.labels.push({ el, target, height });
+    return { el };
+  }
+
+  private removeLabel(label: Label): void {
+    label.el.remove();
+    const i = this.labels.findIndex((l) => l.el === label.el);
+    if (i >= 0) this.labels.splice(i, 1);
   }
 
   /** Replaces the player's look, keeping where they stand. */
@@ -203,34 +218,13 @@ export class ShopScene {
     this.requestFrame();
   }
 
-  /** Places customers at random spots in the layout's customer zones. */
-  async setCustomers(kit: CharacterKit, looks: CharacterConfig[], random: () => number): Promise<void> {
-    for (const c of this.customers) {
-      c.character.dispose();
-      c.hitBox.removeFromParent();
-    }
-    this.customers = [];
-    const zones = this.layout.zones.filter((z) => z.kind === 'customers');
-    const characters = await Promise.all(looks.map((look) => kit.build(look)));
-    characters.forEach((character, i) => {
-      const [x, z, w, d] = zones[i % zones.length].rect;
-      const px = x + (random() - 0.5) * w;
-      const pz = z + (random() - 0.5) * d;
-      character.root.position.set(px, 0, pz);
-      // Face roughly towards the room's centre line, with some variety.
-      character.root.rotation.y = Math.atan2(-px, 0.5) + (random() - 0.5) * 1.2;
-      this.scene.add(character.root);
-      const hitBox = new Mesh(new BoxGeometry(...CUSTOMER_TAP_SIZE), new MeshBasicMaterial({ visible: false }));
-      hitBox.position.set(px, CUSTOMER_TAP_SIZE[1] / 2, pz);
-      this.scene.add(hitBox);
-      this.customers.push({ character, hitBox });
-    });
-    this.requestFrame();
+  /** Brings the customers in the shop in line with the game state. */
+  syncCustomers(kit: CharacterKit, entries: CrowdEntry[]): Promise<void> {
+    return this.crowd.sync(kit, entries);
   }
 
-  waveCustomer(index: number): void {
-    this.customers[index]?.character.playOnce('wave');
-    this.requestFrame();
+  waveCustomer(id: string): void {
+    this.crowd.wave(id);
   }
 
   /** Zooms in on the player (for the character creator) or back to the previous view. */
@@ -350,11 +344,10 @@ export class ShopScene {
     this.raycaster.setFromCamera(this.ndc(e.clientX, e.clientY), this.camera);
 
     // Whatever is nearest the camera under the finger wins: a customer or an interactive fixture.
-    const customerBoxes = this.customers.map((c) => c.hitBox);
-    const hit = this.raycaster.intersectObjects([...customerBoxes, ...this.hitBoxes.keys()])[0];
-    const customerIndex = hit ? customerBoxes.indexOf(hit.object as Mesh) : -1;
-    if (customerIndex >= 0) {
-      this.events.customer(customerIndex);
+    const hit = this.raycaster.intersectObjects([...this.crowd.hitBoxes(), ...this.hitBoxes.keys()])[0];
+    const customerId = hit ? this.crowd.idOf(hit.object) : null;
+    if (customerId) {
+      this.events.customer(customerId);
       return;
     }
     const fixture = hit && this.hitBoxes.get(hit.object);
@@ -391,14 +384,14 @@ export class ShopScene {
 
     if (this.path.length > 0) this.step(dt);
     this.player?.mixer.update(dt);
-    for (const c of this.customers) c.character.mixer.update(dt);
+    const crowdMoving = this.crowd.update(dt);
     if (this.path.length > 0) this.follow(dt);
 
     this.renderer.render(this.scene, this.camera);
     this.placeLabels();
 
-    if (this.path.length > 0) this.requestFrame();
-    else if ((this.interactive || this.savedView) && (this.player || this.customers.length > 0)) {
+    if (this.path.length > 0 || (crowdMoving && this.interactive)) this.requestFrame();
+    else if ((this.interactive || this.savedView) && (this.player || this.crowd.size > 0)) {
       this.idleTimer = window.setTimeout(() => this.requestFrame(), 1000 / IDLE_FPS);
     } else this.lastFrame = 0;
   }

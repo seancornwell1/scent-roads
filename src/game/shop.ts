@@ -48,6 +48,8 @@ export interface ShopLayout {
   walkSpeed: number;
   playerRadius: number;
   gridStep: number;
+  /** Where customers come in, and the spots where they queue at the counter (front of the queue first). */
+  customers: { entrance: Point; queue: Point[]; walkSpeed: number };
   /** 2 m wall panels: `back` runs left to right along the back wall, `left` back to front along the left wall. */
   walls: { panels: Record<string, string>; back: string[]; left: string[] };
   fixtures: Fixture[];
@@ -102,5 +104,10 @@ export function validateShop(layout: ShopLayout): string[] {
   if (walls.left.length * WALL_PANEL_WIDTH !== room.depth) errors.push('walls.left must cover the room depth in 2 m panels');
   for (const kind of [...walls.back, ...walls.left]) if (!walls.panels[kind]) errors.push(`walls: unknown panel "${kind}"`);
   if (!isWalkable(layout, layout.spawn)) errors.push('spawn is not walkable');
+  if (!isWalkable(layout, layout.customers.entrance)) errors.push('customers.entrance is not walkable');
+  layout.customers.queue.forEach((p, i) => {
+    if (!isWalkable(layout, p)) errors.push(`customers.queue[${i}] is not walkable`);
+  });
+  if (!layout.zones.some((z) => z.kind === 'customers')) errors.push('zones: customers need at least one area to browse');
   return errors;
 }

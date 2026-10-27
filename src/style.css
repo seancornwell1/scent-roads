@@ -347,3 +347,30 @@ button:disabled { opacity: 0.5; cursor: default; }
   display: grid;
   gap: 6px;
 }
+
+/* Customers */
+.hud-stats { margin: 6px 0 0; font-size: 0.85rem; }
+.scene-label--customer { border-style: solid; border-color: var(--line); }
+.customer { display: grid; gap: 10px; }
+.memory {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--card);
+  border-radius: 0 12px 12px 0;
+  font-size: 1.05rem;
+}
+.hint { margin: 0; font-style: italic; }
+.stars { font-size: 1.6rem; letter-spacing: 2px; color: var(--accent); margin: 0; }
+.review li { margin: 2px 0; }
+.unlock-list li { margin: 8px 0; }
+.next-tier { margin-top: 16px; }
+.order {
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+.order p { margin: 0 0 4px; }
+.primary:disabled { opacity: 0.45; }
