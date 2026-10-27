@@ -1,0 +1,37 @@
+:root {
+  --cream: #f6ece1;
+  --rose: #d9a5b3;
+  --plum: #6b4a5a;
+  --wood: #8a5a44;
+  color-scheme: light;
+  font-family: ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  color: var(--plum);
+  background: var(--cream);
+  -webkit-tap-highlight-color: transparent;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+#app {
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+}
+
+.shop { max-width: 480px; margin: 0 auto; padding-top: 48px; text-align: center; }
+h1 { margin: 0; color: var(--wood); }
+.tagline { opacity: 0.8; }
+
+.shelf { list-style: none; padding: 0; display: grid; gap: 12px; }
+.shelf li {
+  display: flex; justify-content: space-between; align-items: center;
+  min-height: 48px; padding: 0 16px;
+  background: #fff8; border: 2px solid var(--rose); border-radius: 16px;
+}

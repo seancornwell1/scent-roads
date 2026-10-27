@@ -1,0 +1,11 @@
+{
+  "name": "Scent Roads",
+  "short_name": "Scent Roads",
+  "description": "A cozy perfume-house game.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6ece1",
+  "theme_color": "#f6ece1",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
