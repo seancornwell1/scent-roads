@@ -1,4 +1,4 @@
-# Scent Roads — rules for Claude Code
+# Field & Flacon — rules for Claude Code
 
 ## Rules
 
@@ -27,5 +27,6 @@
 ## Files to keep current
 
 - `docs/FACT_CHECK.md` — every unverified fact, with where it is used
+- `docs/COURSE.md` — course order and current bench inventory; the unlock order for materials and accords
 - `ASSETS_NEEDED.md` — every placeholder waiting for a real asset
 - `CREDITS.md` — every asset in `assets/`: source, author, license, URL

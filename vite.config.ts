@@ -14,8 +14,8 @@ export default defineConfig({
         globPatterns: ['**/*.{html,js,css,json,webmanifest,png,jpg,webp,svg,mp3,ogg,m4a,woff2}'],
       },
       manifest: {
-        name: 'Scent Roads',
-        short_name: 'Scent Roads',
+        name: 'Field & Flacon',
+        short_name: 'Field & Flacon',
         description: 'A cozy perfume-house game.',
         start_url: base,
         scope: base,

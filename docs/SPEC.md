@@ -1,4 +1,6 @@
-# Scent Roads — Game Spec
+# Field & Flacon — Game Spec
+
+_Formerly "Scent Roads" (working title)._
 
 Oct 26, 2026 · @Sean Cornwell
 
@@ -99,12 +101,14 @@ Clients describe a memory, not a product. I translate it into a formula, and the
 - Log every asset in CREDITS.md: source, author, license, URL. Only use CC0, CC BY, or licenses that allow use in my own game; skip anything "non-commercial" or unclear.
 - If nothing suitable exists, add it to ASSETS_NEEDED.md and use a plain labeled placeholder box. Never improvise art in code.
 
-## Open questions
+## Decisions
 
-- **Name.** Scent Roads is a placeholder.
-- **Time speed.** Is 1 real hour = 1 game day right, or should seasons turn slower?
-- **Difficulty.** How strict should clients be? Cozy and forgiving, or demanding like a real brief?
-- **Course link.** Should materials and accords follow the order of my perfumery course, unlocking as I learn them?
+Answers to the open questions, Oct 27, 2026.
+
+- **Name.** Field & Flacon. (The repo and URL stay `scent-roads`.)
+- **Time speed.** 1 real hour = 1 game day, for now. Keep it a single tunable setting.
+- **Difficulty.** Mostly easy for now, but build towards a harder, realistic mode later. Scoring takes a strictness setting from the start, so a realistic mode is a new setting value rather than a rewrite.
+- **Course link.** Yes. Materials and accords follow the order of my perfumery course, unlocking as I learn them, starting with my current bench inventory. See `docs/COURSE.md`.
 
 ## Claude Code prompts
 

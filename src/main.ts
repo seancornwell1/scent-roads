@@ -5,7 +5,7 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 // Placeholder home screen: plain labeled boxes until real art exists (see ASSETS_NEEDED.md).
 app.innerHTML = `
   <main class="home">
-    <h1>Scent Roads</h1>
+    <h1>Field &amp; Flacon</h1>
     <p class="tagline">A small perfume house. Coming soon.</p>
     <div class="placeholder placeholder--hero">Placeholder: atelier illustration</div>
     <nav class="menu">

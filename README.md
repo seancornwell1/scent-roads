@@ -1,7 +1,8 @@
-# Scent Roads
+# Field & Flacon
 
 A cozy perfume-house game for phones. Play it at **https://seancornwell1.github.io/scent-roads/** — on iPhone, open it in Safari and use Share → Add to Home Screen.
 
+- Course order and inventory: [`docs/COURSE.md`](docs/COURSE.md)
 - Spec: [`docs/SPEC.md`](docs/SPEC.md)
 - Rules for Claude Code: [`CLAUDE.md`](CLAUDE.md)
 - Facts awaiting confirmation: [`docs/FACT_CHECK.md`](docs/FACT_CHECK.md)
