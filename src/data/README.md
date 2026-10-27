@@ -72,3 +72,30 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 | `testStockGrams` | Grams of every material in a new save. Testing only; the world map replaces it in step 4. |
 
 `src/game/evaporation.test.ts` encodes observations from Sean's formula log. Run `npm test` after changing any tuning.
+
+## `shop.json`
+
+The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`src/game/pathfinding.ts`). Floor coordinates are `[x, z]` in metres, centred on the room. The camera looks in from the front-right corner, so the visible walls are the left wall (`x = -width/2`) and the back wall (`z = -depth/2`). Put doors and wall fixtures there.
+
+| Field | Meaning |
+| ----- | ------- |
+| `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
+| `spawn` | Where the player starts |
+| `walkSpeed` | Metres per second |
+| `playerRadius` | How close the player may get to walls and fixtures |
+| `gridStep` | Pathfinding grid size in metres |
+| `fixtures` | Everything in the room, below |
+
+Each fixture:
+
+| Field | Meaning |
+| ----- | ------- |
+| `id` | Stable id |
+| `label` | Text shown over it in the scene |
+| `position` | `[x, z]` of its centre on the floor |
+| `size` | `[width, height, depth]` in metres |
+| `blocks` | Whether the player has to walk around it |
+| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action` (`organ` opens the composing desk; `back-room` is a placeholder) |
+| `model` | Path to a model in `assets/`, or `null` for a labelled placeholder box |
+
+`validateShop` (run in the tests and at start-up) checks that fixtures are inside the room and every `standAt` and the spawn are reachable.

@@ -2,28 +2,60 @@ import './style.css';
 import { recognizeAccords } from './game/accords';
 import { content, materialsById, validateContent } from './game/content';
 import { addParts, totalParts } from './game/formula';
+import { shop, validateShop } from './game/shop';
+import { ShopScene } from './scene/shopScene';
 import { commit, onChange, setDraft, state, type Screen } from './state';
 import { bookScreen } from './ui/book';
-import { homeScreen } from './ui/home';
+import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
 
-const app = document.querySelector<HTMLDivElement>('#app')!;
+const hudRoot = document.querySelector<HTMLDivElement>('#hud')!;
+const panelRoot = document.querySelector<HTMLDivElement>('#panel-root')!;
 
-const problems = validateContent(content);
+const problems = [...validateContent(content), ...validateShop(shop)];
 if (problems.length > 0) console.error('Content problems:\n' + problems.join('\n'));
+
+// What tapping each interactive fixture does once the player reaches it (from shop.json).
+const FIXTURE_ACTIONS: Record<string, () => void> = {
+  organ: () => openPanel('organ'),
+  'back-room': () => {
+    state.ui.toast = 'The back room is a placeholder for now. The world map moves in here in a later step.';
+    commit();
+  },
+};
+
+const scene = new ShopScene(document.querySelector<HTMLDivElement>('#scene')!, shop, {
+  arrive: (fixture) => fixture.interact && FIXTURE_ACTIONS[fixture.interact.action]?.(),
+});
+
+let scrollToTop = false;
+
+function openPanel(screen: Screen): void {
+  state.ui.screen = screen;
+  state.ui.detail = null;
+  state.ui.toast = null;
+  scrollToTop = true;
+  commit();
+}
 
 function render(): void {
   const { screen } = state.ui;
-  app.innerHTML = screen === 'organ' ? organScreen() : screen === 'book' ? bookScreen() : homeScreen();
-  showStatus();
+  hudRoot.innerHTML = hud();
+  scene.enabled = screen === 'shop';
+
+  const panel = panelRoot.querySelector<HTMLElement>('.panel');
+  const scroll = panel && !scrollToTop ? panel.scrollTop : 0;
+  scrollToTop = false;
+  if (screen === 'shop') {
+    panelRoot.innerHTML = '';
+    return;
+  }
+  panelRoot.innerHTML = `<div class="panel-backdrop" data-action="close-panel"></div>
+    <section class="panel">${screen === 'organ' ? organScreen() : bookScreen()}</section>`;
+  panelRoot.querySelector<HTMLElement>('.panel')!.scrollTop = scroll;
 }
 
-function showStatus(): void {
-  const status = document.querySelector<HTMLParagraphElement>('#status');
-  if (status) status.textContent = navigator.onLine ? 'Online' : 'Offline — playing from the saved copy';
-}
-
-app.addEventListener('click', (event) => {
+document.body.addEventListener('click', (event) => {
   const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
   if (!target) return;
   const { action, id } = target.dataset;
@@ -31,13 +63,17 @@ app.addEventListener('click', (event) => {
 
   switch (action) {
     case 'nav':
-      ui.screen = target.dataset.to as Screen;
+      return openPanel(target.dataset.to as Screen);
+    case 'close-panel':
+      ui.screen = 'shop';
       ui.detail = null;
-      window.scrollTo(0, 0);
+      break;
+    case 'dismiss-toast':
+      ui.toast = null;
       break;
     case 'tab':
       ui.organTab = target.dataset.tab as typeof ui.organTab;
-      window.scrollTo(0, 0);
+      scrollToTop = true;
       break;
     case 'browse':
       ui.browseBy = target.dataset.by as typeof ui.browseBy;
@@ -74,16 +110,14 @@ app.addEventListener('click', (event) => {
         accords: recognizeAccords(save.draft, content.accords, materialsById).map((a) => a.id),
         createdAt: now,
       });
-      ui.screen = 'book';
-      window.scrollTo(0, 0);
-      break;
+      return openPanel('book');
     }
     case 'load-formula': {
       const formula = save.formulas.find((f) => f.id === id);
       if (!formula) return;
       ui.screen = 'organ';
       ui.organTab = 'formula';
-      window.scrollTo(0, 0);
+      scrollToTop = true;
       return setDraft({ ...formula.parts });
     }
     case 'delete-formula': {
@@ -97,7 +131,5 @@ app.addEventListener('click', (event) => {
   commit();
 });
 
-window.addEventListener('online', showStatus);
-window.addEventListener('offline', showStatus);
 onChange(render);
 render();

@@ -14,7 +14,7 @@ export function formatDate(timestamp: number): string {
 
 export function header(title: string): string {
   return `<header class="bar-top">
-    <button class="link" data-action="nav" data-to="home">‹ Home</button>
+    <button class="link" data-action="close-panel">Close</button>
     <h1>${esc(title)}</h1>
     <span></span>
   </header>`;

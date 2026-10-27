@@ -3,7 +3,8 @@ import { content, materialsById } from './game/content';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
-export type Screen = 'home' | 'organ' | 'book';
+/** 'shop' is the 3D scene alone; the others are panels over it. */
+export type Screen = 'shop' | 'organ' | 'book';
 
 export interface UiState {
   screen: Screen;
@@ -15,6 +16,8 @@ export interface UiState {
   detail: string | null;
   /** Accords hit since the banner was last dismissed. */
   newAccords: string[];
+  /** A short message over the scene, e.g. for placeholders. */
+  toast: string | null;
 }
 
 function initSave(): SaveData {
@@ -27,7 +30,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'home', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [] },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null },
 };
 
 let render = () => {};

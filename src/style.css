@@ -37,21 +37,72 @@
 
 html, body {
   margin: 0;
-  min-height: 100%;
   background: var(--bg);
   overscroll-behavior: none;
   touch-action: manipulation;
 }
 
-#app {
-  min-height: 100dvh;
+/* The 3D shop fills the screen; HUD and panels float over it. */
+html, body { height: 100%; overflow: hidden; }
+
+#scene { position: fixed; inset: 0; }
+#scene canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+.scene-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.scene-label {
+  position: absolute;
+  left: 0; top: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: rgb(255 250 244 / 0.85);
+  border: 1px dashed var(--line);
+  white-space: nowrap;
+}
+.scene-label--action { border-style: solid; border-color: var(--accent); color: var(--accent); }
+.scene-label--player { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+#hud {
+  position: fixed;
+  left: 0; right: 0; top: 0;
   max-width: 520px;
   margin: 0 auto;
-  padding:
-    calc(env(safe-area-inset-top) + 12px)
-    calc(env(safe-area-inset-right) + 16px)
-    calc(env(safe-area-inset-bottom) + 24px)
-    calc(env(safe-area-inset-left) + 16px);
+  padding: calc(env(safe-area-inset-top) + 10px) calc(env(safe-area-inset-right) + 16px) 0 calc(env(safe-area-inset-left) + 16px);
+  pointer-events: none;
+}
+#hud > * { pointer-events: auto; }
+.hud-top { display: flex; align-items: center; justify-content: space-between; }
+.hud-title { font-weight: 700; font-size: 1.1rem; }
+.hud-hint { margin-top: 6px; font-size: 0.85rem; color: var(--muted); pointer-events: none !important; }
+.toast {
+  position: fixed;
+  left: 16px; right: 16px;
+  bottom: calc(env(safe-area-inset-bottom) + 16px);
+  max-width: 488px;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px 6px 6px 14px;
+  font-size: 0.9rem;
+}
+
+.panel-backdrop { position: fixed; inset: 0; background: rgb(40 25 30 / 0.25); }
+.panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  top: calc(env(safe-area-inset-top) + 8dvh);
+  max-width: 520px;
+  margin: 0 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -4px 20px rgb(40 25 30 / 0.15);
+  padding: 12px calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + 16px);
 }
 
 h1, h2, h3, p { margin: 0; }
@@ -80,27 +131,6 @@ button:disabled { opacity: 0.5; cursor: default; }
   padding: 0 18px;
   font-weight: 600;
 }
-
-/* Home */
-.home { display: flex; flex-direction: column; gap: 16px; text-align: center; padding-top: 24px; }
-.title { font-size: 2rem; }
-.menu { display: grid; gap: 12px; }
-.big {
-  min-height: 56px;
-  border-radius: 14px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  font-weight: 600;
-}
-
-/* Plain placeholder boxes: a dashed outline and a text label, nothing drawn. */
-.placeholder {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 52px; padding: 12px;
-  border: 2px dashed var(--line); border-radius: 12px;
-  color: var(--muted);
-}
-.placeholder--hero { aspect-ratio: 4 / 3; }
 
 /* Screen header */
 .bar-top {
