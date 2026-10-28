@@ -1,0 +1,50 @@
+[
+  {
+    "id": "steam-distillation",
+    "name": "Steam distillation",
+    "output": "essential oil",
+    "about": "Steam carries the oil out of the plant. Fast and dependable.",
+    "gameHours": 12, "yield": 1, "quality": 1, "cost": 4, "reputation": 0,
+    "verified": true, "check": []
+  },
+  {
+    "id": "cold-pressing",
+    "name": "Cold pressing",
+    "output": "expressed oil",
+    "about": "The peel is pressed without heat. Citrus only; the freshest result.",
+    "gameHours": 6, "yield": 1, "quality": 1.05, "cost": 3, "reputation": 0,
+    "verified": true, "check": []
+  },
+  {
+    "id": "solvent-extraction",
+    "name": "Solvent extraction",
+    "output": "absolute",
+    "about": "A solvent draws out a waxy concrete, which is washed into an absolute. Slower and pricier, but richer.",
+    "gameHours": 36, "yield": 0.8, "quality": 1.15, "cost": 10, "reputation": 0,
+    "verified": false, "check": ["about"]
+  },
+  {
+    "id": "co2-extraction",
+    "name": "CO₂ extraction",
+    "output": "CO₂ extract",
+    "about": "Supercritical carbon dioxide gently extracts a very true-to-nature oil. Slow and costly.",
+    "gameHours": 24, "yield": 0.9, "quality": 1.1, "cost": 12, "reputation": 0,
+    "verified": false, "check": ["about"]
+  },
+  {
+    "id": "enfleurage",
+    "name": "Enfleurage",
+    "output": "pomade absolute",
+    "about": "Flowers laid on fat for days, replaced again and again. Very slow, tiny yield, the finest result. Almost never done today.",
+    "gameHours": 120, "yield": 0.35, "quality": 1.3, "cost": 20, "reputation": 60,
+    "verified": false, "check": ["about"]
+  },
+  {
+    "id": "curing",
+    "name": "Curing, then extraction",
+    "output": "absolute",
+    "about": "Green vanilla pods are blanched, sweated, sun-dried and conditioned for months before they're extracted.",
+    "gameHours": 2160, "yield": 1, "quality": 1.1, "cost": 15, "reputation": 0,
+    "verified": false, "check": ["gameHours"]
+  }
+]

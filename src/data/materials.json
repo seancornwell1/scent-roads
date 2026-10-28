@@ -710,5 +710,192 @@
       "halfLifeHours": 0.75
     },
     "behaviour": "A sparkling spicy top note; modern and bright."
+  },
+  {
+    "id": "jasmine",
+    "name": "Jasmine absolute",
+    "type": "natural",
+    "family": "floral",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Rich, heady, sweet white floral with fruity and slightly animalic (indolic) facets.",
+    "behaviour": "The great white floral of perfumery; a little gives a blend warmth and radiance.",
+    "origin": {
+      "plant": "Jasminum grandiflorum (flowers)",
+      "region": "Grasse, France",
+      "method": "Solvent extraction to an absolute"
+    },
+    "course": {
+      "mission": "07",
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "origin.region"
+    ],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 20
+    }
+  },
+  {
+    "id": "rose-centifolia",
+    "name": "Rose de mai absolute",
+    "type": "natural",
+    "family": "floral",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Rich, honeyed, deep rose with a green, slightly waxy edge.",
+    "behaviour": "The Grasse rose: fuller and more honeyed than the Bulgarian rose.",
+    "origin": {
+      "plant": "Rosa × centifolia (flowers)",
+      "region": "Grasse, France",
+      "method": "Solvent extraction to an absolute"
+    },
+    "course": {
+      "mission": "07",
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "origin.region",
+      "character"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 20
+    }
+  },
+  {
+    "id": "tuberose",
+    "name": "Tuberose absolute",
+    "type": "natural",
+    "family": "floral",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Creamy, narcotic white floral with buttery, coconut-like and slightly green facets.",
+    "behaviour": "Very powerful and creamy; dominates a blend easily.",
+    "origin": {
+      "plant": "Polianthes tuberosa (flowers)",
+      "region": "Grasse, France",
+      "method": "Solvent extraction to an absolute"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "origin.region"
+    ],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 30
+    }
+  },
+  {
+    "id": "rose-damascena",
+    "name": "Bulgarian rose oil",
+    "type": "natural",
+    "family": "floral",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Fresh, rich rose with honeyed and slightly spicy, clove-like facets.",
+    "behaviour": "Rose otto: the classic steam-distilled rose; precious and used with care.",
+    "origin": {
+      "plant": "Rosa × damascena (flowers)",
+      "region": "Valley of Roses, Bulgaria",
+      "method": "Steam distillation (rose otto)"
+    },
+    "course": {
+      "mission": "07",
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 15
+    }
+  },
+  {
+    "id": "vetiver",
+    "name": "Vetiver",
+    "type": "natural",
+    "family": "woody",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Earthy, smoky, woody roots with a fresh, grapefruit-like lift.",
+    "behaviour": "A deep, very tenacious base; Haitian vetiver is known for being clean and bright.",
+    "origin": {
+      "plant": "Chrysopogon zizanioides (roots)",
+      "region": "Haiti",
+      "method": "Steam distillation of the roots"
+    },
+    "course": {
+      "mission": "05",
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "behaviour"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 200
+    }
+  },
+  {
+    "id": "vanilla",
+    "name": "Vanilla absolute",
+    "type": "natural",
+    "family": "gourmand",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Rich, dark, sweet vanilla with woody, smoky and boozy facets beyond plain vanillin.",
+    "behaviour": "Deeper and more complex than vanillin; the beans must be cured for months first.",
+    "origin": {
+      "plant": "Vanilla planifolia (cured pods)",
+      "region": "Madagascar",
+      "method": "Solvent extraction of cured beans"
+    },
+    "course": {
+      "mission": "09",
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 250
+    }
+  },
+  {
+    "id": "frankincense",
+    "name": "Frankincense",
+    "type": "natural",
+    "family": "amber",
+    "layer": "heart",
+    "volatility": "high",
+    "character": "Fresh, lemony, pine-like resin with a dry, smoky, incense depth.",
+    "behaviour": "Brings a cool, churchy, resinous lift; the smoky side lingers.",
+    "origin": {
+      "plant": "Boswellia sacra (resin)",
+      "region": "Dhofar, Oman",
+      "method": "Steam distillation of the resin"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "layer",
+      "family"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 6
+    }
   }
 ]

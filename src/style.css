@@ -374,3 +374,20 @@ button:disabled { opacity: 0.5; cursor: default; }
 }
 .order p { margin: 0 0 4px; }
 .primary:disabled { opacity: 0.45; }
+
+/* Back room */
+.toast { z-index: 10; }
+.warn-text { color: var(--warn); }
+.backroom { display: grid; gap: 8px; }
+/* Plain placeholder boxes: a dashed outline and a text label, nothing drawn. */
+.placeholder {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 12px;
+  border: 2px dashed var(--line); border-radius: 12px;
+  color: var(--muted);
+}
+.placeholder--map { aspect-ratio: 16 / 9; margin: 8px 0; }
+.crop { border-top: 1px dashed var(--line); padding-top: 6px; }
+.crop p { margin: 0; }
+.crate { border-color: var(--accent); }
+.debug { margin-top: 24px; }

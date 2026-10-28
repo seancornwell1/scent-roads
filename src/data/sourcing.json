@@ -1,0 +1,114 @@
+{
+  "startingCoins": 80,
+  "calendarStart": {
+    "month": 3,
+    "day": 1
+  },
+  "shop": {
+    "lat": 48.86,
+    "lon": 2.35,
+    "note": "Placeholder location for distance-based shipping times."
+  },
+  "shipping": {
+    "baseGameHours": 6,
+    "kmPerGameHour": 400
+  },
+  "quality": {
+    "inWindow": 1,
+    "spoiled": 0.55,
+    "words": [
+      {
+        "min": 1.2,
+        "text": "exceptional"
+      },
+      {
+        "min": 1.05,
+        "text": "fine"
+      },
+      {
+        "min": 0.95,
+        "text": "good"
+      },
+      {
+        "min": 0.8,
+        "text": "fair"
+      },
+      {
+        "min": 0,
+        "text": "poor"
+      }
+    ],
+    "scoreEffect": 0.25
+  },
+  "aging": {
+    "patchouli": {
+      "perGameDay": 0.01,
+      "max": 0.25
+    },
+    "vetiver": {
+      "perGameDay": 0.008,
+      "max": 0.2
+    },
+    "vanilla": {
+      "perGameDay": 0.006,
+      "max": 0.15
+    },
+    "labdanum": {
+      "perGameDay": 0.006,
+      "max": 0.15
+    },
+    "frankincense": {
+      "perGameDay": 0.006,
+      "max": 0.15
+    },
+    "oakmoss": {
+      "perGameDay": 0.005,
+      "max": 0.1
+    }
+  },
+  "supplier": {
+    "name": "Your supplier",
+    "shippingGameHours": 8,
+    "lotGrams": 10,
+    "brokerQuality": 0.9,
+    "catalogueQuality": 1,
+    "prices": {
+      "bergamot": 12,
+      "lavender": 10,
+      "labdanum": 16,
+      "vanillin": 6,
+      "hedione": 8,
+      "iso-e-super": 8,
+      "ambroxan": 18,
+      "pink-pepper": 14,
+      "stemone": 14,
+      "cis-3-hexenol": 10,
+      "gamma-octalactone": 9,
+      "gamma-decalactone": 9,
+      "cedarwood-virginia": 8,
+      "oakmoss": 22,
+      "patchouli": 14,
+      "phenylethyl-alcohol": 6,
+      "coumarin": 7,
+      "dihydromyrcenol": 6,
+      "cashmeran": 14,
+      "douglas-fir": 12,
+      "isobornyl-acetate": 6,
+      "vetiver": 20,
+      "frankincense": 22,
+      "vanilla": 40,
+      "beta-damascone": 20,
+      "beta-ionone": 10,
+      "delta-decalactone": 10,
+      "allyl-amyl-glycolate": 10,
+      "black-tea": 24,
+      "jasmine": 70,
+      "rose-centifolia": 65,
+      "rose-damascena": 75,
+      "tuberose": 70,
+      "aldehyde-c11": 8,
+      "ethylene-brassylate": 8
+    }
+  },
+  "perfumeGrams": 1
+}

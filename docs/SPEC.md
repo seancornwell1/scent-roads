@@ -234,6 +234,26 @@ Step 4: customers in the shop.
 Deploy and give me the link.
 ```
 
+### Prompt 5: the back room (after the direction change)
+
+```
+Step 5: the back-room door opens the idle sourcing map from the spec:
+real regions and seasons, harvest contracts that ripen on real time
+with a best-quality window, processing methods, aging materials,
+shipping times, and offline progress from timestamps. Shipments
+arrive as crates in the back room. Remove the free starting stock.
+Add a debug option to speed up time. Deploy and give me the link.
+```
+
+How it was built (Oct 28, 2026):
+
+- **Calendar:** a new game starts on 1 March (spring); 1 real hour = 1 game day, so seasons come round about every 15 real days.
+- **Regions:** the spec's seven regions plus the places the other naturals grow (Haute-Provence, Andalusia, Réunion, Virginia, the Balkans, the Pacific Northwest, Assam). Seven new naturals came with them: jasmine, rose de mai, tuberose, Bulgarian rose, vetiver, vanilla absolute and frankincense, placed in two new unlock groups ("Roots and resins" at 42, "The great flowers" at 60).
+- **Harvests:** sign a contract in season → it ripens → collect in the best window for full quality, later for less → pick a processing method → it ships, with time based on distance → a crate appears by the back-room door → unpack it into stock.
+- **Supplier (added so a new shop is never stuck between seasons):** aroma chemicals from a catalogue, and naturals from a broker all year at a premium and of only fair quality. Harvesting yourself is cheaper and better, but seasonal and slower.
+- **Stock:** the free samples are gone. A new shop starts with 80 coins. Each perfume uses 1 g of material in total; better materials raise the score, and patchouli, vetiver, vanilla, labdanum, frankincense and oakmoss improve while they sit in stock.
+- **Debug:** time speed ×1, ×60 or ×600 at the bottom of the back room, or `?speed=N` in the URL.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

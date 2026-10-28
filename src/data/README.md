@@ -70,7 +70,6 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 | `stages` | The moments a perfume is judged: `id`, `name`, `hours` after application, `label`. Increasing hours. They mirror the course's blotter checks at 5 minutes, 1 hour and later. |
 | `strengthBase`, `strengthPivot` | How strength turns into impact. With 2 and 5, strength 5 is ×1 and each step up doubles it. |
 | `loudness` | Labels for how loud a stage is relative to the opening, highest `min` first |
-| `testStockGrams` | Sample grams of each material. Stock isn't used up yet; trading replaces samples later. |
 
 `src/game/evaporation.test.ts` encodes observations from Sean's formula log. Run `npm test` after changing any tuning.
 
@@ -91,6 +90,8 @@ The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`
 | `fixtures` | Furniture you walk around or use, below |
 | `decor` | Models only for looks, below |
 | `zones` | Marked floor areas, below |
+| `customers` | `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
+| `crates` | Arrived crates: `model`, the `spots` they stand on by the back-room door, and `stackHeights` (to stack one on top) |
 
 Each fixture:
 
@@ -103,7 +104,7 @@ Each fixture:
 | `rotation` | Degrees around the vertical axis |
 | `size` | World-space footprint `[width, height, depth]` in metres, for walking and tapping (swap width and depth when rotated 90°) |
 | `blocks` | Whether the player has to walk around it |
-| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action` (`organ` opens the composing desk; `back-room` is a placeholder) |
+| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action` (`organ` opens the composing desk; `back-room` opens the back room) |
 
 Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees.
 
@@ -169,4 +170,56 @@ A regular: `id`, `name`, `about`, a fixed `look` (same shape as the player's sav
 
 ## `time.json`
 
-`realMinutesPerGameDay`: how fast game time runs (60 = one real hour per game day). Add `?speed=N` to the URL to run game time N times faster when testing.
+`realMinutesPerGameDay`: how fast game time runs (60 = one real hour per game day). The game clock (`src/game/clock.ts`, saved as `clock`) counts game hours from real timestamps; the debug speed (back room, or `?speed=N` in the URL) re-anchors it so changing speed never jumps.
+
+## `regions.json`
+
+Where naturals grow, for harvest contracts on the back room's map (`src/game/sourcing.ts`). A test checks every natural material grows somewhere.
+
+| Field | Meaning |
+| ----- | ------- |
+| `id`, `name`, `country` | |
+| `lat`, `lon` | Location, for distance-based shipping (and the painted map later) |
+| `quirk` | One real fact shown in the game |
+| `crops` | What can be contracted there, below |
+
+Each crop:
+
+| Field | Meaning |
+| ----- | ------- |
+| `material` | Material id |
+| `months` | The season: months (1–12) when a contract can be signed. A fact: verify it. |
+| `growGameHours` | How long it takes to ripen (tuning) |
+| `bestWindowGameHours` | How long it stays at top quality once ripe (tuning; jasmine's is short because it must be picked at dawn) |
+| `spoilGameHours` | Hours after ripening when quality bottoms out (tuning) |
+| `grams` | Yield before processing (tuning) |
+| `cost` | Coins to sign (tuning) |
+| `methods` | Processing method ids that suit it |
+| `verified`, `check` | As for materials; `check` names `months` or `region` |
+
+## `processes.json`
+
+Processing methods. `about` is the fact to verify; the numbers are tuning.
+
+| Field | Meaning |
+| ----- | ------- |
+| `id`, `name`, `output` (what it makes), `about` | |
+| `gameHours` | Processing time |
+| `yield` | Share of the harvest's grams that comes out |
+| `quality` | Multiplies the harvest's quality |
+| `cost` | Coins |
+| `reputation` | Needed to use it (enfleurage is late) |
+| `verified`, `check` | |
+
+## `sourcing.json`
+
+| Field | Meaning |
+| ----- | ------- |
+| `startingCoins` | Coins a new shop starts with (there's no free stock) |
+| `calendarStart` | The date at game hour 0 (`month`, `day`) |
+| `shop` | A placeholder location for distance-based shipping |
+| `shipping` | `baseGameHours` plus distance ÷ `kmPerGameHour` |
+| `quality` | `inWindow` and `spoiled` harvest quality, `words` for quality bands, and `scoreEffect` (how much material quality shifts a perfume's score) |
+| `aging` | Material id → `perGameDay` quality gained in stock, up to `max` |
+| `supplier` | `name`, `shippingGameHours`, `lotGrams`, `brokerQuality` (naturals), `catalogueQuality` (synthetics), `prices` (coins per lot, every material) |
+| `perfumeGrams` | Grams of material one perfume uses in total, split by its formula |

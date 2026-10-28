@@ -25,4 +25,5 @@ Grab3D ([grab3d.com](https://grab3d.com)) releases every model under [CC0 1.0](h
 | `assets/grab3d/models/modular-wall-straight.glb` | Modular Wall Straight — Walls | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-straight/ |
 | `assets/grab3d/models/modular-wall-window.glb` | Modular Wall Window — Walls | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-window/ |
 | `assets/grab3d/models/modular-wall-door.glb` | Modular Wall Door — Front entrance and back-room doorway | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-door/ |
+| `assets/grab3d/models/wooden-crate.glb` | Wooden Crate — arrived shipments by the back-room door | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/props/wooden-crate/ |
 | `assets/grab3d/characters/` (manifest, skeleton, animations and 66 "Cozy" parts) | Character Mixer kit — player and customers | Grab3D | Grab3D | CC0 1.0 (stated in `manifest.json`) | https://grab3d.com/tools/character-mixer/ |

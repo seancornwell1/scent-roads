@@ -1,7 +1,13 @@
 {
   "sources": {
-    "natural": { "name": "Grown", "how": "Naturals grow somewhere in the world. You'll sign harvest contracts for them on the map in the back room." },
-    "synthetic": { "name": "Catalogue", "how": "Aroma chemicals come from the supplier's catalogue. You'll order them, and they ship to the shop." }
+    "natural": {
+      "name": "Grown",
+      "how": "Naturals grow somewhere in the world. You'll sign harvest contracts for them on the map in the back room."
+    },
+    "synthetic": {
+      "name": "Catalogue",
+      "how": "Aroma chemicals come from the supplier's catalogue. You'll order them, and they ship to the shop."
+    }
   },
   "tiers": [
     {
@@ -9,49 +15,107 @@
       "name": "Your first bench",
       "reputation": 0,
       "teaches": "One material for each layer, plus a herb: enough for an amber and a cologne.",
-      "materials": ["bergamot", "lavender", "labdanum", "vanillin"]
+      "materials": [
+        "bergamot",
+        "lavender",
+        "labdanum",
+        "vanillin"
+      ]
     },
     {
       "id": "lift-and-glow",
       "name": "Lift and glow",
       "reputation": 5,
       "teaches": "Modern helpers that make a blend bigger and longer, and a first spice.",
-      "materials": ["hedione", "iso-e-super", "ambroxan", "pink-pepper"]
+      "materials": [
+        "hedione",
+        "iso-e-super",
+        "ambroxan",
+        "pink-pepper"
+      ]
     },
     {
       "id": "green-and-creamy",
       "name": "Green and creamy",
       "reputation": 12,
       "teaches": "Leaves, cut grass and lactones: everything a fig needs, plus a dry wood.",
-      "materials": ["stemone", "cis-3-hexenol", "gamma-octalactone", "gamma-decalactone", "cedarwood-virginia"]
+      "materials": [
+        "stemone",
+        "cis-3-hexenol",
+        "gamma-octalactone",
+        "gamma-decalactone",
+        "cedarwood-virginia"
+      ]
     },
     {
       "id": "moss-and-earth",
       "name": "Moss and earth",
       "reputation": 22,
       "teaches": "The chypre: oakmoss and patchouli under a rose heart, with coumarin's hay.",
-      "materials": ["oakmoss", "patchouli", "phenylethyl-alcohol", "coumarin"]
+      "materials": [
+        "oakmoss",
+        "patchouli",
+        "phenylethyl-alcohol",
+        "coumarin"
+      ]
     },
     {
       "id": "the-barbershop",
       "name": "The barbershop",
       "reputation": 35,
-      "teaches": "Fresh fougères and the forest: clean, bright and resinous.",
-      "materials": ["dihydromyrcenol", "cashmeran", "douglas-fir", "isobornyl-acetate"]
+      "teaches": "Fresh foug\u00e8res and the forest: clean, bright and resinous.",
+      "materials": [
+        "dihydromyrcenol",
+        "cashmeran",
+        "douglas-fir",
+        "isobornyl-acetate"
+      ]
+    },
+    {
+      "id": "roots-and-resins",
+      "name": "Roots and resins",
+      "reputation": 42,
+      "teaches": "Vetiver, frankincense and real vanilla: deep bases from far-off harvests.",
+      "materials": [
+        "vetiver",
+        "frankincense",
+        "vanilla"
+      ]
     },
     {
       "id": "fruit-and-flowers",
       "name": "Fruit and flowers",
       "reputation": 50,
       "teaches": "Rich roses, violets, orchard fruit and tea.",
-      "materials": ["beta-damascone", "beta-ionone", "delta-decalactone", "allyl-amyl-glycolate", "black-tea"]
+      "materials": [
+        "beta-damascone",
+        "beta-ionone",
+        "delta-decalactone",
+        "allyl-amyl-glycolate",
+        "black-tea"
+      ]
+    },
+    {
+      "id": "the-great-flowers",
+      "name": "The great flowers",
+      "reputation": 60,
+      "teaches": "Jasmine, tuberose and the two roses: the precious florals of Grasse and Bulgaria.",
+      "materials": [
+        "jasmine",
+        "rose-centifolia",
+        "rose-damascena",
+        "tuberose"
+      ]
     },
     {
       "id": "sparkle-and-skin",
       "name": "Sparkle and skin",
-      "reputation": 70,
+      "reputation": 75,
       "teaches": "Aldehydic sparkle and soft musk: the finishing touches.",
-      "materials": ["aldehyde-c11", "ethylene-brassylate"]
+      "materials": [
+        "aldehyde-c11",
+        "ethylene-brassylate"
+      ]
     }
   ]
 }

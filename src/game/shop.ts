@@ -50,6 +50,8 @@ export interface ShopLayout {
   gridStep: number;
   /** Where customers come in, and the spots where they queue at the counter (front of the queue first). */
   customers: { entrance: Point; queue: Point[]; walkSpeed: number };
+  /** Where arrived crates stand in the shop, by the back-room door. */
+  crates: { model: string; spots: Point[]; stackHeights: number[] };
   /** 2 m wall panels: `back` runs left to right along the back wall, `left` back to front along the left wall. */
   walls: { panels: Record<string, string>; back: string[]; left: string[] };
   fixtures: Fixture[];

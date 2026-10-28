@@ -439,7 +439,7 @@
     },
     {
       "id": "autumn-orchard",
-      "tier": 5,
+      "tier": 6,
       "memory": "Picking plums in an orchard in late autumn.",
       "hints": [
         "The fruit was so ripe it was almost jam.",
@@ -462,7 +462,7 @@
     },
     {
       "id": "clean-sheets",
-      "tier": 6,
+      "tier": 8,
       "memory": "Climbing into fresh sheets that dried in the sun.",
       "hints": [
         "Soft and powdery, like skin after a bath.",

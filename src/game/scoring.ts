@@ -27,6 +27,8 @@ export interface ScoreResult {
   impression: number;
   /** The stage that let the customer down, or null if every stage held up. */
   weakStage: string | null;
+  /** Average quality of the materials used (1 = good), if known. */
+  quality?: number;
 }
 
 /** Below this, a stage counts as letting the customer down. */
@@ -122,4 +124,13 @@ export function scorePerfume(
   else if (longevityScore < 0.6) weakStage = stages[stages.length - 1]?.stage ?? null;
 
   return { stages, mood, strength, strengthScore, longevityHours, longevityScore, total, stars, impression, weakStage };
+}
+
+/** Better materials make better perfumes: shifts the scores by the materials' quality. */
+export function applyQuality(r: ScoreResult, quality: number, effect: number, config: ScoringConfig): ScoreResult {
+  const bonus = (quality - 1) * effect;
+  const clamp = (v: number) => Math.min(1, Math.max(0, v));
+  const total = clamp(r.total + bonus);
+  const stars = 1 + config.difficulties[config.difficulty].stars.filter((t) => total >= t).length;
+  return { ...r, total, stars, impression: clamp(r.impression + bonus), quality };
 }

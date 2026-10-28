@@ -33,6 +33,11 @@ Not facts: each material's `model.strength` and `model.halfLifeHours` are game t
 | `douglas-fir` | Douglas fir needle | **family**: woody<br>**character**: Fresh, sweet conifer needles; green and slightly citrusy.<br>**origin.region**: Pacific Northwest, North America | October order (outside the roadmap) |
 | `isobornyl-acetate` | Isobornyl acetate | **family**: woody<br>**character**: Pine needles and camphor, clean and balsamic. | October order (outside the roadmap) |
 | `pink-pepper` | Pink peppercorn | **character**: Fresh, rosy pepper with a juicy, slightly citrus lift.<br>**origin.plant**: Schinus molle or Schinus terebinthifolius (berries)<br>**origin.region**: Varies by supplier (e.g. Réunion, Peru) | October order (outside the roadmap) |
+| `jasmine` | Jasmine absolute | **origin.region**: Grasse, France | Added in step 5 (spec region) |
+| `rose-centifolia` | Rose de mai absolute | **origin.region**: Grasse, France<br>**character**: Rich, honeyed, deep rose with a green, slightly waxy edge. | Added in step 5 (spec region) |
+| `tuberose` | Tuberose absolute | **origin.region**: Grasse, France | Added in step 5 (spec region) |
+| `vetiver` | Vetiver | **behaviour**: A deep, very tenacious base; Haitian vetiver is known for being clean and bright. | Added in step 5 (spec region) |
+| `frankincense` | Frankincense | **layer**: heart<br>**family**: amber | Added in step 5 (spec region) |
 
 ## Accords — `src/data/accords.json`
 
@@ -42,7 +47,41 @@ Not facts: each material's `model.strength` and `model.halfLifeHours` are game t
 
 The minimum percentages in every accord's requirements (e.g. labdanum and vanillin at least 15% each for amber) are game tuning, not course facts.
 
-## Regions and processes — from the spec, data arrives in step 4
+## Regions and seasons — `src/data/regions.json`
+
+Seasons are the months a harvest contract can be signed. Grow times, quality windows, yields and costs are game tuning, not facts.
+
+| crop | To confirm | Region quirk shown in the game (also to confirm) |
+| ---- | ---------- | ----------------------- |
+| `calabria/bergamot` | **season**: Nov, Dec, Jan, Feb, Mar | Bergamot is a winter citrus; the oil is cold-pressed from the peel. |
+| `provence/lavender` | **season**: Jun, Jul, Aug | Lavender is cut in high summer, when the fields are in full flower. |
+| `andalusia/labdanum` | **season**: Jun, Jul, Aug, Sep | Rockrose sweats its sticky labdanum gum in the summer heat. |
+| `grasse/jasmine` | **season**: Aug, Sep, Oct | Jasmine is picked at dawn: late picks lose quality fast. |
+| `grasse/tuberose` | **season**: Jul, Aug, Sep, **region**: Grasse, France | Jasmine is picked at dawn: late picks lose quality fast. |
+| `bulgaria/rose-damascena` | **season**: May, Jun | A short harvest window in late spring; roses are picked in the early morning. |
+| `haiti/vetiver` | **region**: Les Cayes, Haiti | Vetiver roots are dug up all year round; the oil is earthy and smoky. |
+| `indonesia/patchouli` | **region**: Aceh, Sumatra, Indonesia, **season**: Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec | Patchouli leaves are dried and fermented before distilling, and the oil improves with age. |
+| `madagascar/vanilla` | **season**: Jun, Jul, Aug, Sep | Vanilla pods need months of curing before they're usable. |
+| `oman/frankincense` | **season**: Mar, Apr, May, Jun, Jul, Aug, Sep | Frankincense resin is tapped from the trees and collected over weeks as it hardens. |
+| `reunion/pink-pepper` | **season**: May, Jun, Jul, Aug, **region**: Réunion, France (overseas) | Pink peppercorns are the berries of the Brazilian pepper tree. |
+| `virginia/cedarwood-virginia` | **region**: Virginia & the Carolinas, United States | Cedarwood oil is distilled from sawmill wood, so it's available all year. |
+| `balkans/oakmoss` | **season**: Oct, Nov, Dec, Jan, Feb, Mar, Apr, **region**: The Balkans, North Macedonia & Bosnia | Oakmoss is a lichen gathered from oak bark in the damp months. |
+| `pacific-northwest/douglas-fir` | **season**: Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec | Douglas fir needles are distilled from the forest's prunings. |
+| `assam/black-tea` | **region**: Assam, India, **season**: Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov | Tea is plucked in flushes from spring to late autumn. |
+
+## Processing — `src/data/processes.json`
+
+Times, yields, quality and costs are game tuning. The descriptions below are the facts to confirm.
+
+| id | To confirm |
+| -- | ---------- |
+| `solvent-extraction` | Solvent extraction: **about**: A solvent draws out a waxy concrete, which is washed into an absolute. Slower and pricier, but richer. |
+| `co2-extraction` | CO₂ extraction: **about**: Supercritical carbon dioxide gently extracts a very true-to-nature oil. Slow and costly. |
+| `enfleurage` | Enfleurage: **about**: Flowers laid on fat for days, replaced again and again. Very slow, tiny yield, the finest result. Almost never done today. |
+| `curing` | Curing, then extraction: **gameHours**: 2160 |
+
+## Original spec claims (checked against the step 5 data above)
+
 
 | # | Claim (from the spec) | Notes from Claude | Will live in |
 | - | --------------------- | ----------------- | ------------ |

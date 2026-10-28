@@ -1,11 +1,13 @@
 import { recognizeAccords } from './game/accords';
 import { content, materialsById } from './game/content';
+import { gameNow, newClock } from './game/clock';
 import { newCustomerState } from './game/customers';
+import { newSourcingState, sourcing } from './game/sourcing';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock';
+export type Screen = 'shop' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom';
 
 export interface UiState {
   screen: Screen;
@@ -21,6 +23,8 @@ export interface UiState {
   visitId: string | null;
   /** The customer you're composing for at the organ. */
   orderId: string | null;
+  /** Which tab of the back room is showing. */
+  backroomTab: 'map' | 'harvests' | 'supplier' | 'stock';
   /** Which page of the character creator is showing (a slot id). */
   creatorTab: string;
   /** A short message over the scene, e.g. for placeholders. */
@@ -28,20 +32,24 @@ export interface UiState {
 }
 
 function initSave(): SaveData {
-  const ids = content.materials.map((m) => m.id);
-  const loaded = loadSave();
-  const save = loaded ?? newSave(Date.now(), ids, content.model.testStockGrams);
-  // Saves from before step 4 start the customer side fresh.
-  save.customers ??= newCustomerState(Date.now());
+  const now = Date.now();
+  const save = loadSave() ?? newSave(now);
+  // Fill in parts of the save that older versions didn't have.
+  save.customers ??= newCustomerState(now);
   save.announcedTier ??= 0;
-  // Materials added to the data after this save was made still get test stock.
-  for (const id of ids) if (!(id in save.stock)) save.stock[id] = content.model.testStockGrams;
+  save.clock ??= newClock(now);
+  if (!save.sourcing) {
+    // Step 5 removed the free sample stock: everyone starts with coins to buy their first materials.
+    save.sourcing = newSourcingState();
+    save.customers.money += sourcing.startingCoins;
+  }
+  delete (save as { stock?: unknown }).stock;
   return save;
 }
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'map' },
 };
 
 let render = () => {};
@@ -65,4 +73,9 @@ export function setDraft(formula: Formula): void {
     state.ui.newAccords.push(accord.id);
   }
   commit();
+}
+
+/** The current game time, in game hours. */
+export function nowGame(): number {
+  return gameNow(state.save.clock!, Date.now());
 }

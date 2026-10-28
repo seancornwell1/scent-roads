@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { clients, validateClients } from './clients';
 import { content, materialsById } from './content';
-import { scorePerfume } from './scoring';
+import { applyQuality, scorePerfume } from './scoring';
 import { unlocks, unlockedMaterialIds, validateUnlocks, tierIndex, nextTier } from './unlocks';
 import type { Formula } from './types';
 
@@ -61,6 +61,12 @@ describe('scoring', () => {
     expect(r.longevityScore).toBeLessThan(0.5);
     expect(r.weakStage).not.toBeNull();
     expect(r.stars).toBeLessThanOrEqual(2);
+  });
+
+  it('rewards better materials and punishes poor ones', () => {
+    const r = score({ labdanum: 35, vanillin: 30, bergamot: 25, lavender: 10 }, 'library-fire');
+    expect(applyQuality(r, 1.25, 0.25, clients.scoring).total).toBeGreaterThan(r.total);
+    expect(applyQuality(r, 0.6, 0.25, clients.scoring).total).toBeLessThan(r.total);
   });
 
   it('measures strength on a 1–5 scale', () => {

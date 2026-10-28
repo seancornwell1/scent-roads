@@ -4,8 +4,9 @@ import { drydown } from '../game/evaporation';
 import { percentages, totalParts } from '../game/formula';
 import { findBrief } from '../game/clients';
 import { LAYERS, type Material } from '../game/types';
+import { missingFor, qualityWord, stockOf, stockQuality } from '../game/sourcing';
 import { nextTier, unlockedMaterialIds } from '../game/unlocks';
-import { state } from '../state';
+import { nowGame, state } from '../state';
 import { drydownGraph, familyName } from './graph';
 import { esc, formatParts, header } from './html';
 
@@ -34,10 +35,12 @@ function orderBanner(): string {
   if (!visit) return '';
   const brief = findBrief(visit.briefId)!;
   const hints = brief.hints.slice(0, visit.hintsAsked).map((h) => `<span class="small">“${esc(h)}”</span>`).join('<br>');
-  const ready = totalParts(save.draft) > 0;
+  const missing = missingFor(save.sourcing!, save.draft).map((id) => materialsById.get(id)?.name ?? id);
+  const ready = totalParts(save.draft) > 0 && missing.length === 0;
   return `<div class="order">
     <p class="small"><strong>For ${esc(visit.name)}:</strong> “${esc(brief.memory)}”</p>
     ${hints ? `<p class="muted">${hints}</p>` : ''}
+    ${missing.length ? `<p class="small warn-text">Not enough ${esc(missing.join(', '))} in stock: order or harvest more in the back room.</p>` : ''}
     <div class="row-between">
       <button class="link" data-action="drop-order">Not now</button>
       <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>Hand over to ${esc(visit.name)}</button>
@@ -99,8 +102,21 @@ function materialRow(m: Material): string {
   </li>`;
 }
 
+function stockLine(id: string): string {
+  const s = state.save.sourcing!;
+  const grams = stockOf(s, id);
+  if (grams <= 0) return 'None in stock: order or harvest it in the back room.';
+  return `In stock: ${formatGrams(grams)} · ${qualityWord(stockQuality(s, id, nowGame()))} quality`;
+}
+
+function formatGrams(g: number): string {
+  return `${g >= 10 ? Math.round(g) : g.toFixed(1)} g`;
+}
+
 function tags(m: Material): string {
   let out = '';
+  const grams = stockOf(state.save.sourcing!, m.id);
+  out += grams > 0 ? ` <span class="tag">${formatGrams(grams)}</span>` : ' <span class="tag tag--warn">out of stock</span>';
   if (!m.verified) out += ' <span class="tag tag--warn">unverified</span>';
   return out;
 }
@@ -162,7 +178,7 @@ function detailSheet(m: Material): string {
     ${m.behaviour ? `<p><strong>In blends:</strong> ${esc(m.behaviour)}</p>` : ''}
     <h3>Origin</h3><ul class="plain">${origin}</ul>
     <p class="muted small">${course}</p>
-    <p class="muted small">On hand (test stock): ${formatParts(state.save.stock[m.id] ?? 0)} g</p>
+    <p class="muted small">${stockLine(m.id)}</p>
     <div class="row-between">
       <button class="link" data-action="close-detail">Close</button>
       <button class="primary" data-action="add" data-id="${esc(m.id)}">Add ${formatParts(state.ui.step)} part${state.ui.step === 1 ? '' : 's'}</button>

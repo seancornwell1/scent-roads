@@ -1,16 +1,42 @@
 {
   "stages": [
-    { "id": "opening", "name": "Opening", "hours": 0.083, "label": "5 minutes" },
-    { "id": "heart", "name": "Heart", "hours": 1, "label": "About 1 hour" },
-    { "id": "drydown", "name": "Drydown", "hours": 8, "label": "8 hours" }
+    {
+      "id": "opening",
+      "name": "Opening",
+      "hours": 0.083,
+      "label": "5 minutes"
+    },
+    {
+      "id": "heart",
+      "name": "Heart",
+      "hours": 1,
+      "label": "About 1 hour"
+    },
+    {
+      "id": "drydown",
+      "name": "Drydown",
+      "hours": 8,
+      "label": "8 hours"
+    }
   ],
   "strengthBase": 2,
   "strengthPivot": 5,
   "loudness": [
-    { "min": 0.75, "label": "Strong" },
-    { "min": 0.4, "label": "Moderate" },
-    { "min": 0.15, "label": "Soft" },
-    { "min": 0, "label": "Fading" }
-  ],
-  "testStockGrams": 10
+    {
+      "min": 0.75,
+      "label": "Strong"
+    },
+    {
+      "min": 0.4,
+      "label": "Moderate"
+    },
+    {
+      "min": 0.15,
+      "label": "Soft"
+    },
+    {
+      "min": 0,
+      "label": "Fading"
+    }
+  ]
 }

@@ -6,13 +6,17 @@ import { characterOptions, defaultCharacter, randomCharacter, type CharacterConf
 import { clients, findBrief } from './game/clients';
 import { completeReview, handOver, tick, type Visit } from './game/customers';
 import { seededRandom } from './game/random';
-import { scorePerfume } from './game/scoring';
+import { applyQuality, scorePerfume } from './game/scoring';
+import { setClockSpeed } from './game/clock';
+import { consume, harvest, missingFor, order, signContract, sourcing, tickSourcing, unpack } from './game/sourcing';
+import { unlockedMaterialIds } from './game/unlocks';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { shop, validateShop } from './game/shop';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
-import { commit, onChange, setDraft, state, type Screen } from './state';
+import { commit, nowGame, onChange, setDraft, state, type Screen } from './state';
+import { backroomScreen } from './ui/backroom';
 import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, reactionScreen, regularOf, unlockScreen } from './ui/customer';
@@ -22,9 +26,10 @@ import { organScreen } from './ui/organ';
 const hudRoot = document.querySelector<HTMLDivElement>('#hud')!;
 const panelRoot = document.querySelector<HTMLDivElement>('#panel-root')!;
 
-// Testing aid: ?speed=60 makes game time (reviews, arrivals) pass 60 times faster.
-const speed = Number(new URLSearchParams(location.search).get('speed'));
-if (speed > 0) setTimeSpeed(speed);
+// Debug: game time speed. Set in the back room, or with ?speed=60 in the URL.
+const urlSpeed = Number(new URLSearchParams(location.search).get('speed'));
+if (urlSpeed > 0) setClockSpeed(state.save.clock!, urlSpeed, Date.now());
+setTimeSpeed(state.save.clock!.speed);
 
 const problems = [...validateContent(content), ...validateShop(shop)];
 if (problems.length > 0) console.error('Content problems:\n' + problems.join('\n'));
@@ -32,10 +37,7 @@ if (problems.length > 0) console.error('Content problems:\n' + problems.join('\n
 // What tapping each interactive fixture does once the player reaches it (from shop.json).
 const FIXTURE_ACTIONS: Record<string, () => void> = {
   organ: () => openPanel('organ'),
-  'back-room': () => {
-    state.ui.toast = 'The back room is a placeholder for now. The world map moves in here in a later step.';
-    commit();
-  },
+  'back-room': () => openPanel('backroom'),
 };
 
 const scene = new ShopScene(
@@ -82,14 +84,18 @@ function syncCrowd(): void {
   scene.syncCustomers(kit, entries).catch((e) => console.error(e));
 }
 
-/** Brings arrivals and returning reviews up to date from timestamps. */
+/** Brings arrivals, reviews, harvests and shipments up to date from timestamps. */
 function runTick(): void {
   const c = state.save.customers!;
   const changed = tick(c, Date.now(), tierIndex(c.reputation), Math.random);
-  if (changed.length > 0) {
-    commit();
-    syncCrowd();
+  const crates = tickSourcing(state.save.sourcing!, nowGame());
+  if (crates.length > 0) {
+    state.ui.toast = crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`;
+    void scene.setCrates(state.save.sourcing!.crates.length);
   }
+  if (changed.length > 0) syncCrowd();
+  // Keep countdowns in the back room fresh.
+  if (changed.length > 0 || crates.length > 0 || state.ui.screen === 'backroom') commit();
 }
 
 CharacterKit.load(characterOptions.kit, characterOptions.style)
@@ -97,6 +103,8 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     kit = loaded;
     refreshPlayer();
     tick(state.save.customers!, Date.now(), tierIndex(state.save.customers!.reputation), Math.random);
+    tickSourcing(state.save.sourcing!, nowGame());
+    void scene.setCrates(state.save.sourcing!.crates.length);
     syncCrowd();
     commit();
     window.setInterval(runTick, 5000);
@@ -159,6 +167,8 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return reactionScreen(visit!);
     case 'unlock':
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
+    case 'backroom':
+      return backroomScreen();
     default:
       return bookScreen();
   }
@@ -212,7 +222,14 @@ document.body.addEventListener('click', (event) => {
       const visit = c.visits.find((v) => v.id === ui.orderId);
       const brief = visit && findBrief(visit.briefId);
       if (!visit || !brief || totalParts(save.draft) === 0) return;
-      const result = scorePerfume(save.draft, brief.target, materialsById, content.families, content.model, clients.scoring);
+      const missing = missingFor(save.sourcing!, save.draft);
+      if (missing.length > 0) {
+        ui.toast = `Not enough ${missing.map((m) => materialsById.get(m)?.name ?? m).join(', ')}. Order or harvest more in the back room.`;
+        break;
+      }
+      const quality = consume(save.sourcing!, save.draft, nowGame())!;
+      const raw = scorePerfume(save.draft, brief.target, materialsById, content.families, content.model, clients.scoring);
+      const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
       handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: { ...save.draft } }, result, Date.now());
       ui.orderId = null;
@@ -232,6 +249,39 @@ document.body.addEventListener('click', (event) => {
       }
       ui.screen = 'shop';
       ui.toast = `Reputation ${change >= 0 ? '+' : ''}${change}.`;
+      break;
+    }
+    case 'backroom-tab':
+      ui.backroomTab = target.dataset.value as typeof ui.backroomTab;
+      scrollToTop = true;
+      break;
+    case 'sign': {
+      const why = signContract(save.sourcing!, save.customers!, target.dataset.region!, target.dataset.material!, nowGame(), unlockedMaterialIds(save.customers!.reputation));
+      ui.toast = why ?? 'Contract signed. Watch it ripen under Harvests.';
+      break;
+    }
+    case 'harvest': {
+      const why = harvest(save.sourcing!, save.customers!, id!, target.dataset.method!, nowGame(), save.customers!.reputation);
+      ui.toast = why ?? "Harvested and off to be processed. It ships to you when it's done.";
+      break;
+    }
+    case 'order': {
+      const material = target.dataset.material!;
+      const natural = materialsById.get(material)?.type === 'natural';
+      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), unlockedMaterialIds(save.customers!.reputation));
+      ui.toast = why ?? `Ordered ${materialsById.get(material)?.name}. It's on its way.`;
+      break;
+    }
+    case 'unpack': {
+      const items = unpack(save.sourcing!, id!, nowGame());
+      ui.toast = items.length ? `Unpacked ${items.map((i) => `${i.grams} g of ${materialsById.get(i.material)?.name}`).join(', ')} into stock.` : null;
+      void scene.setCrates(save.sourcing!.crates.length);
+      break;
+    }
+    case 'debug-speed': {
+      const value = Number(target.dataset.value);
+      setClockSpeed(save.clock!, value, Date.now());
+      setTimeSpeed(value);
       break;
     }
     case 'dismiss-toast':

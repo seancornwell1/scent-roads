@@ -68,7 +68,6 @@ export interface Model {
   strengthBase: number;
   strengthPivot: number;
   loudness: { min: number; label: string }[];
-  testStockGrams: number;
 }
 
 /** Material id → parts. Parts are actual material, as in the course's parts per 100. */

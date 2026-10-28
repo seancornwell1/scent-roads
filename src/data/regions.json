@@ -1,0 +1,144 @@
+[
+  {
+    "id": "calabria",
+    "name": "Calabria",
+    "country": "Italy",
+    "lat": 38.1, "lon": 15.9,
+    "quirk": "Bergamot is a winter citrus; the oil is cold-pressed from the peel.",
+    "crops": [
+      { "material": "bergamot", "months": [11, 12, 1, 2, 3], "growGameHours": 72, "bestWindowGameHours": 24, "spoilGameHours": 96, "grams": 30, "cost": 20, "methods": ["cold-pressing"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "provence",
+    "name": "Haute-Provence",
+    "country": "France",
+    "lat": 43.9, "lon": 5.9,
+    "quirk": "Lavender is cut in high summer, when the fields are in full flower.",
+    "crops": [
+      { "material": "lavender", "months": [6, 7, 8], "growGameHours": 72, "bestWindowGameHours": 24, "spoilGameHours": 72, "grams": 30, "cost": 18, "methods": ["steam-distillation"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "andalusia",
+    "name": "Andalusia",
+    "country": "Spain",
+    "lat": 37.6, "lon": -5.9,
+    "quirk": "Rockrose sweats its sticky labdanum gum in the summer heat.",
+    "crops": [
+      { "material": "labdanum", "months": [6, 7, 8, 9], "growGameHours": 96, "bestWindowGameHours": 48, "spoilGameHours": 240, "grams": 25, "cost": 22, "methods": ["solvent-extraction"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "grasse",
+    "name": "Grasse",
+    "country": "France",
+    "lat": 43.66, "lon": 6.92,
+    "quirk": "Jasmine is picked at dawn: late picks lose quality fast.",
+    "crops": [
+      { "material": "jasmine", "months": [8, 9, 10], "growGameHours": 48, "bestWindowGameHours": 6, "spoilGameHours": 24, "grams": 8, "cost": 60, "methods": ["solvent-extraction", "enfleurage"], "verified": false, "check": ["months"] },
+      { "material": "rose-centifolia", "months": [5], "growGameHours": 72, "bestWindowGameHours": 12, "spoilGameHours": 36, "grams": 8, "cost": 55, "methods": ["solvent-extraction"], "verified": true, "check": [] },
+      { "material": "tuberose", "months": [7, 8, 9], "growGameHours": 72, "bestWindowGameHours": 12, "spoilGameHours": 36, "grams": 6, "cost": 60, "methods": ["solvent-extraction", "enfleurage"], "verified": false, "check": ["months", "region"] }
+    ]
+  },
+  {
+    "id": "bulgaria",
+    "name": "Valley of Roses",
+    "country": "Bulgaria",
+    "lat": 42.6, "lon": 25.4,
+    "quirk": "A short harvest window in late spring; roses are picked in the early morning.",
+    "crops": [
+      { "material": "rose-damascena", "months": [5, 6], "growGameHours": 72, "bestWindowGameHours": 12, "spoilGameHours": 36, "grams": 6, "cost": 65, "methods": ["steam-distillation", "solvent-extraction"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "haiti",
+    "name": "Les Cayes",
+    "country": "Haiti",
+    "lat": 18.2, "lon": -73.75,
+    "quirk": "Vetiver roots are dug up all year round; the oil is earthy and smoky.",
+    "crops": [
+      { "material": "vetiver", "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "growGameHours": 120, "bestWindowGameHours": 72, "spoilGameHours": 360, "grams": 20, "cost": 35, "methods": ["steam-distillation"], "verified": false, "check": ["region"] }
+    ]
+  },
+  {
+    "id": "indonesia",
+    "name": "Aceh, Sumatra",
+    "country": "Indonesia",
+    "lat": 4.7, "lon": 96.7,
+    "quirk": "Patchouli leaves are dried and fermented before distilling, and the oil improves with age.",
+    "crops": [
+      { "material": "patchouli", "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "growGameHours": 96, "bestWindowGameHours": 72, "spoilGameHours": 240, "grams": 25, "cost": 25, "methods": ["steam-distillation"], "verified": false, "check": ["region", "months"] }
+    ]
+  },
+  {
+    "id": "madagascar",
+    "name": "SAVA region",
+    "country": "Madagascar",
+    "lat": -14.3, "lon": 50.0,
+    "quirk": "Vanilla pods need months of curing before they're usable.",
+    "crops": [
+      { "material": "vanilla", "months": [6, 7, 8, 9], "growGameHours": 120, "bestWindowGameHours": 48, "spoilGameHours": 120, "grams": 15, "cost": 45, "methods": ["curing"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "oman",
+    "name": "Dhofar",
+    "country": "Oman",
+    "lat": 17.0, "lon": 54.1,
+    "quirk": "Frankincense resin is tapped from the trees and collected over weeks as it hardens.",
+    "crops": [
+      { "material": "frankincense", "months": [3, 4, 5, 6, 7, 8, 9], "growGameHours": 336, "bestWindowGameHours": 168, "spoilGameHours": 720, "grams": 20, "cost": 40, "methods": ["steam-distillation"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "reunion",
+    "name": "Réunion",
+    "country": "France (overseas)",
+    "lat": -21.1, "lon": 55.5,
+    "quirk": "Pink peppercorns are the berries of the Brazilian pepper tree.",
+    "crops": [
+      { "material": "pink-pepper", "months": [5, 6, 7, 8], "growGameHours": 72, "bestWindowGameHours": 36, "spoilGameHours": 120, "grams": 20, "cost": 25, "methods": ["steam-distillation", "co2-extraction"], "verified": false, "check": ["months", "region"] }
+    ]
+  },
+  {
+    "id": "virginia",
+    "name": "Virginia & the Carolinas",
+    "country": "United States",
+    "lat": 36.5, "lon": -79.5,
+    "quirk": "Cedarwood oil is distilled from sawmill wood, so it's available all year.",
+    "crops": [
+      { "material": "cedarwood-virginia", "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "growGameHours": 48, "bestWindowGameHours": 120, "spoilGameHours": 720, "grams": 40, "cost": 15, "methods": ["steam-distillation"], "verified": false, "check": ["region"] }
+    ]
+  },
+  {
+    "id": "balkans",
+    "name": "The Balkans",
+    "country": "North Macedonia & Bosnia",
+    "lat": 41.6, "lon": 21.7,
+    "quirk": "Oakmoss is a lichen gathered from oak bark in the damp months.",
+    "crops": [
+      { "material": "oakmoss", "months": [10, 11, 12, 1, 2, 3, 4], "growGameHours": 96, "bestWindowGameHours": 72, "spoilGameHours": 240, "grams": 15, "cost": 30, "methods": ["solvent-extraction"], "verified": false, "check": ["months", "region"] }
+    ]
+  },
+  {
+    "id": "pacific-northwest",
+    "name": "Pacific Northwest",
+    "country": "United States & Canada",
+    "lat": 47.5, "lon": -122.3,
+    "quirk": "Douglas fir needles are distilled from the forest's prunings.",
+    "crops": [
+      { "material": "douglas-fir", "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "growGameHours": 48, "bestWindowGameHours": 72, "spoilGameHours": 240, "grams": 30, "cost": 18, "methods": ["steam-distillation"], "verified": false, "check": ["months"] }
+    ]
+  },
+  {
+    "id": "assam",
+    "name": "Assam",
+    "country": "India",
+    "lat": 26.7, "lon": 94.2,
+    "quirk": "Tea is plucked in flushes from spring to late autumn.",
+    "crops": [
+      { "material": "black-tea", "months": [3, 4, 5, 6, 7, 8, 9, 10, 11], "growGameHours": 72, "bestWindowGameHours": 48, "spoilGameHours": 240, "grams": 20, "cost": 25, "methods": ["co2-extraction"], "verified": false, "check": ["region", "months"] }
+    ]
+  }
+]

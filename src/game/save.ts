@@ -1,5 +1,7 @@
 import type { CharacterConfig } from './character';
+import type { Clock } from './clock';
 import type { CustomerState } from './customers';
+import type { SourcingState } from './sourcing';
 import type { Formula } from './types';
 
 // Saves live in this phone's browser storage. Times are real timestamps (ms since epoch).
@@ -18,8 +20,6 @@ export interface SavedFormula {
 export interface SaveData {
   version: number;
   createdAt: number;
-  /** Material id → grams on the bench. */
-  stock: Record<string, number>;
   /** The formula currently on the organ. */
   draft: Formula;
   formulas: SavedFormula[];
@@ -31,12 +31,14 @@ export interface SaveData {
   customers?: CustomerState;
   /** Highest unlock tier the player has been told about. */
   announcedTier?: number;
+  /** The game clock (step 5; filled in on load). */
+  clock?: Clock;
+  /** Harvests, processing, shipments, crates and inventory (step 5; filled in on load). */
+  sourcing?: SourcingState;
 }
 
-export function newSave(now: number, materialIds: string[], testStockGrams: number): SaveData {
-  const stock: Record<string, number> = {};
-  for (const id of materialIds) stock[id] = testStockGrams;
-  return { version: SAVE_VERSION, createdAt: now, stock, draft: {}, formulas: [], discoveredAccords: {} };
+export function newSave(now: number): SaveData {
+  return { version: SAVE_VERSION, createdAt: now, draft: {}, formulas: [], discoveredAccords: {} };
 }
 
 export function loadSave(): SaveData | null {

@@ -59,6 +59,7 @@ export class ShopScene {
   private readonly playerRoot = new Group();
   private player: Character | null = null;
   private readonly crowd: Crowd;
+  private crates: Object3D[] = [];
   private readonly labels: { el: HTMLElement; target: Object3D; height: number }[] = [];
   private readonly labelLayer: HTMLElement;
 
@@ -215,6 +216,34 @@ export class ShopScene {
     this.player = next;
     this.playerRoot.add(next.root);
     if (this.path.length > 0) next.play('walk');
+    this.requestFrame();
+  }
+
+  /** Shows arrived crates by the back-room door; tapping one goes to the back room. */
+  async setCrates(count: number): Promise<void> {
+    for (const c of this.crates) {
+      c.removeFromParent();
+      this.hitBoxes.delete(c.userData.hitBox as Object3D);
+      (c.userData.hitBox as Object3D).removeFromParent();
+    }
+    this.crates = [];
+    const door = this.layout.fixtures.find((f) => f.interact?.action === 'back-room');
+    const { model, spots, stackHeights } = this.layout.crates;
+    const shown = Math.min(count, spots.length);
+    if (shown === 0) return this.requestFrame();
+    const gltf = await loadGltf(model);
+    for (let i = 0; i < shown; i++) {
+      const crate = gltf.scene.clone(true);
+      const [x, z] = spots[i];
+      crate.position.set(x, stackHeights[i] ?? 0, z);
+      crate.rotation.y = (i * 0.37) % 0.5; // a little untidy, like a real delivery
+      const hitBox = new Mesh(new BoxGeometry(0.66, 0.6, 0.66), new MeshBasicMaterial({ visible: false }));
+      hitBox.position.set(x, (stackHeights[i] ?? 0) + 0.3, z);
+      crate.userData.hitBox = hitBox;
+      this.scene.add(crate, hitBox);
+      if (door) this.hitBoxes.set(hitBox, door);
+      this.crates.push(crate);
+    }
     this.requestFrame();
   }
 
