@@ -64,6 +64,7 @@ html, body { height: 100%; overflow: hidden; }
 .scene-label--zone { font-weight: 400; color: var(--muted); font-size: 0.7rem; border-style: dotted; }
 /* With the whole room in view, the upgrade-spot labels would crowd it: show them zoomed in. */
 .scene-labels--far .scene-label--zone { display: none; }
+.scene-label--hidden { display: none; }
 .scene-label--player { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
 #hud {

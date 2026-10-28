@@ -12,10 +12,10 @@
   },
   "camera": {
     "focus": [
-      0,
-      0
+      -1,
+      -4.2
     ],
-    "defaultZoom": 1,
+    "defaultZoom": 3.4,
     "minZoom": 1,
     "maxZoom": 4.5
   },

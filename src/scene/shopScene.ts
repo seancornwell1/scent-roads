@@ -83,6 +83,8 @@ export class ShopScene {
   private readonly pointers = new Map<number, { x: number; y: number }>();
   private gesture: { moved: boolean; grab: Vector3 | null; pinchDist: number; pinchZoom: number } | null = null;
   private interactive = true;
+  /** Whether the view has been centred on the player since the screen first had a size. */
+  private centred = false;
 
   constructor(
     private readonly container: HTMLElement,
@@ -331,8 +333,10 @@ export class ShopScene {
   /** Frames the room below the HUD, which covers `px` screen pixels at the top. */
   setTopInset(px: number): void {
     if (Math.abs(px - this.topInset) < 1) return;
+    const first = this.topInset === 0;
     this.topInset = px;
     this.resize();
+    if (first) this.centreOnPlayer(); // the HUD's first measure: centre below it
   }
 
   /** Zoom 1 fits the whole room in the screen below the HUD; the camera keeps its isometric angle. */
@@ -360,6 +364,21 @@ export class ShopScene {
     const unitsPerPx = (2 * halfH) / below;
     const viewCentre = (view.max.y + view.min.y) / 2;
     Object.assign(this.camera, { left: -halfW, right: halfW, top: viewCentre + halfH + (h - below) * unitsPerPx, bottom: viewCentre - halfH, near: -50, far: 100 });
+    this.placeCamera();
+    if (!this.centred) {
+      this.centred = true;
+      this.centreOnPlayer();
+    }
+  }
+
+  /** Moves the view so the player stands in the middle of the part of the screen below the HUD. */
+  centreOnPlayer(): void {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const p = this.playerRoot.position.clone().project(this.camera);
+    const at = this.floorPointAt(rect.left + ((p.x + 1) / 2) * rect.width, rect.top + ((1 - p.y) / 2) * rect.height);
+    const mid = this.floorPointAt(rect.left + rect.width / 2, rect.top + (this.topInset + rect.height) / 2);
+    if (!at || !mid) return;
+    this.focus.add(at.sub(mid));
     this.placeCamera();
   }
 
@@ -553,6 +572,9 @@ export class ShopScene {
       target.getWorldPosition(v);
       v.y += height;
       v.project(this.camera);
+      // Upgrade spots only matter where you can see them: off screen, their labels would crowd the edges.
+      const offScreen = Math.abs(v.x) > 1 || Math.abs(v.y) > 1;
+      el.classList.toggle('scene-label--hidden', offScreen && el.classList.contains('scene-label--zone'));
       const width = el.offsetWidth;
       const tall = el.offsetHeight;
       const x = Math.min(Math.max(((v.x + 1) / 2) * w, width / 2 + 4), w - width / 2 - 4);

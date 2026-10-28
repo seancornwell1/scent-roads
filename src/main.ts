@@ -181,7 +181,10 @@ function runPost(crates: Crate[]): boolean {
   }
   // A new chapter is announced over the shop (the first comes in quietly after the intro).
   if (chapter !== null && chapter > 0) {
-    if (ui.screen === 'shop') openPanel('chapter');
+    const info = chapterInfo(chapter, sourcing.calendarStart);
+    // Past the written chapters a season has nothing to tell: a note is enough.
+    if (!info.text && !info.letters.length) ui.toast = `A new season: ${info.title}.`;
+    else if (ui.screen === 'shop') openPanel('chapter');
     else ui.toast = `A new chapter: ${chapterInfo(chapter, sourcing.calendarStart).title}. New letters are in the back room.`;
     notify('A new season', chapterInfo(chapter, sourcing.calendarStart).title);
   } else if (chapter === 0) ui.toast = 'Letters have come for you from her old suppliers. Read them in the back room.';

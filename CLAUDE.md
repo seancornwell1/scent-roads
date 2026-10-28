@@ -23,7 +23,7 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 
 - Vite + TypeScript web app, portrait, aimed at iPhone Safari and Add to Home Screen.
 - Content is JSON in `src/data/` (schemas in `src/data/README.md`); game logic in `src/game/` (no DOM, unit-tested); the Three.js shop scene in `src/scene/`; HTML panels and HUD in `src/ui/`.
-- The camera's zoom 1 frames the whole room below the HUD (`setTopInset`); scene labels are kept on screen, out from under the HUD and never overlapping, and tapping one counts as tapping its person or fixture.
+- The camera's zoom 1 frames the whole room below the HUD (`setTopInset`); the game opens zoomed in (`defaultZoom` in `shop.json`) and follows the player; scene labels are kept on screen, out from under the HUD and never overlapping, and tapping one counts as tapping its person or fixture.
 - The 3D scene renders on demand: full frame rate only while something moves, about 24 fps for idle character animation, and nothing while an organ or book panel covers it. Keep it that way for battery.
 - Files in `assets/` are served from the site root (Vite `publicDir`); refer to them by their path under `assets/` (e.g. `grab3d/models/door.glb`) and load them through `src/scene/assets.ts`.
 - Panels that sit over the scene without a backdrop must not scroll: a scrolling panel over the WebGL canvas broke compositing in testing. The character creator pages through categories instead.

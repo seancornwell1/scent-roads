@@ -91,7 +91,7 @@ The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`
 | `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
 | `floorColor` | Colour of the plane under the floor tiles (shows only past the tiles' edges) |
 | `floorTile` | Optional `{ model, size, height }`: a square floor model in metres, repeated across the room and sunk by `height` so its top is at floor level |
-| `camera` | `focus`: `[x, z]` the view starts on. `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; players pinch between min and max and drag to pan. |
+| `camera` | `focus`: `[x, z]` the view starts on (the spawn point). `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; the game opens close in (3.4) and follows you; players pinch between min and max and drag to pan. |
 | `spawn` | Where the player starts, and where they stand while dressing in the character creator (keep it on open floor) |
 | `walkSpeed` | Metres per second |
 | `playerRadius` | How close the player may get to walls and fixtures |
