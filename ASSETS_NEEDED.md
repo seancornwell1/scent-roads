@@ -11,6 +11,6 @@ Every placeholder or stand-in waiting for a real asset. Remove a line once the a
 | Newspaper masthead and illustrations | News panel | Text only for now. Nothing in the approved packs. |
 | Sitting animation | Customers on seating | The character kit has idle, walk, run, wave and jump only, so customers don't sit yet. |
 | Her formula book and letter (paper, handwriting font) | Book panel, story intro, page cards | Text only for now: smudged amounts are plain italic words, not drawn effects. A handwriting font (OFL) and paper texture would suit it. |
-| On-screen joystick (base and knob) | Bottom right of the shop | A plain labelled box for now. Candidate: Kenney's "Onscreen Controls" pack (CC0, https://kenney.nl/assets/onscreen-controls), waiting for Sean's OK. |
+| On-screen joystick (base and knob) | Bottom right of the shop | A plain labelled box for now. Approved: Kenney's "Mobile Controls" pack (CC0, https://kenney.nl/assets/mobile-controls). Kenney only serves the zip through a browser download, so it needs adding by hand. |
 | Bottle labels: plain paper, botanical, apothecary, art deco, watercolour, night sky | House perfumes (`labels` in `src/data/house.json`) | Plain labelled boxes for now; set each label's `image` once its art is in `assets/`. Players can already upload their own. Needs a CC0 or CC BY source in one style. |
 | House perfume bottles on the shelves | The shop's shelves, showing what's for sale | Not shown in the scene yet; would use the perfume bottle models above. |
