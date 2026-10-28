@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { bottlePrice, listPerfume, newDisplayState, settleSales } from './display';
 import { arrivalMultiplier, generateWeek, priceMultiplier, weekOf, yieldMultiplier, type NewsContext } from './events';
-import { newSourcingState, order, regions, tickSourcing, unpack } from './sourcing';
+import { newSourcingState, order, tickSourcing, unpack } from './sourcing';
 import { unlockedMaterialIds } from './unlocks';
 import {
   appealLevel,
@@ -13,10 +13,8 @@ import {
   furniture,
   inStorage,
   newUpgradeState,
-  openRegion,
   place,
   processStats,
-  regionOpen,
   unplace,
 } from './upgrades';
 
@@ -60,18 +58,7 @@ describe('furniture and appeal', () => {
   });
 });
 
-describe('regions and processing', () => {
-  it('start with the starting regions open; others cost coins and reputation', () => {
-    const u = newUpgradeState();
-    expect(regionOpen(u, 'calabria')).toBe(true);
-    expect(regionOpen(u, 'grasse')).toBe(false);
-    expect(openRegion(u, { money: 999 }, 'grasse', 0)).toMatch(/reputation/);
-    const wallet = { money: 999 };
-    expect(openRegion(u, wallet, 'grasse', 60)).toBeNull();
-    expect(regionOpen(u, 'grasse')).toBe(true);
-    for (const r of regions) expect(r.unlock.coins >= 0 && r.unlock.reputation >= 0).toBe(true);
-  });
-
+describe('processing', () => {
   it('own the basic methods, buy the rest, and upgrade for quality and speed', () => {
     const u = newUpgradeState();
     expect(processStats(u, 'steam-distillation').owned).toBe(true);

@@ -1,5 +1,6 @@
 import { MONTH_NAMES, dateAt, seasonOf } from '../game/clock';
 import { weekOf } from '../game/events';
+import { unreadLetters } from '../game/routes';
 import { sourcing } from '../game/sourcing';
 import { shopAppeal } from '../game/world';
 import { nowGame, state } from '../state';
@@ -13,6 +14,8 @@ export function hud(): string {
   const away = c ? c.visits.filter((v) => v.status === 'away').length : 0;
   const date = dateAt(nowGame(), sourcing.calendarStart);
   const crates = state.save.sourcing?.crates.length ?? 0;
+  const letters = state.save.routes ? unreadLetters(state.save.routes) : 0;
+  const chapter = (state.save.routes?.chapter ?? 0) + 1;
   const unread = hasUnreadNews();
   const { appeal, level } = shopAppeal(state.save);
   return `<div class="hud-top">
@@ -23,7 +26,7 @@ export function hud(): string {
         <button class="chip" data-action="nav" data-to="options">More</button>
       </span>
     </div>
-    <p class="hud-stats">${date.day} ${MONTH_NAMES[date.month - 1]} · ${seasonOf(date.month)}, week ${weekOf(nowGame()) + 1} · <strong>${c?.money ?? 0}</strong> coins · reputation <strong>${c?.reputation ?? 0}</strong> · ${esc(level.name)} (${appeal})${crates ? ` · ${crates} crate${crates === 1 ? '' : 's'} to unpack` : ''}${away ? ` · ${away} out being worn` : ''}</p>
+    <p class="hud-stats">${date.day} ${MONTH_NAMES[date.month - 1]} · Chapter ${chapter} · ${seasonOf(date.month)}, week ${weekOf(nowGame()) + 1} · <strong>${c?.money ?? 0}</strong> coins · reputation <strong>${c?.reputation ?? 0}</strong> · ${esc(level.name)} (${appeal})${letters ? ` · <strong>${letters} letter${letters === 1 ? '' : 's'}</strong> in the back room` : ''}${crates ? ` · ${crates} crate${crates === 1 ? '' : 's'} to unpack` : ''}${away ? ` · ${away} out being worn` : ''}</p>
     <p class="hud-hint">Tap a customer to chat · tap the organ to compose</p>
     ${toast ? `<div class="toast" role="status"><span>${esc(toast)}</span><button class="link" data-action="dismiss-toast">OK</button></div>` : ''}`;
 }

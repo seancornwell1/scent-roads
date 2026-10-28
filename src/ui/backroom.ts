@@ -17,16 +17,19 @@ import {
 } from '../game/sourcing';
 import { priceMultiplier, shippingDelay, yieldMultiplier } from '../game/events';
 import { unlocks } from '../game/unlocks';
-import { processStats, regionOpen } from '../game/upgrades';
+import { processStats } from '../game/upgrades';
+import { CHEMIST, chapterInfo, inTransit, routeById, routeOpen, unreadLetters, type Letter } from '../game/routes';
 import { newsFor, ownedMaterials } from '../game/world';
 import { nowGame, state } from '../state';
 import { esc } from './html';
 
-// The back room: crates that have arrived, the sourcing map, harvests in progress,
-// the supplier, and the stock room. Times show as real time left at the current speed.
+// The back room: crates that have arrived, letters from her supply network, the sourcing
+// map, harvests in progress, the supplier, and the stock room. Times show as real time
+// left at the current speed.
 
-export type BackroomTab = 'map' | 'harvests' | 'supplier' | 'stock';
+export type BackroomTab = 'letters' | 'map' | 'harvests' | 'supplier' | 'stock';
 const TABS: { id: BackroomTab; label: string }[] = [
+  { id: 'letters', label: 'Letters' },
   { id: 'map', label: 'Map' },
   { id: 'harvests', label: 'Harvests' },
   { id: 'supplier', label: 'Supplier' },
@@ -41,8 +44,11 @@ export function backroomScreen(): string {
   const now = nowGame();
   const date = dateAt(now, sourcing.calendarStart);
   const tab = ui.backroomTab;
-  const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="backroom-tab" data-value="${t.id}">${t.label}${t.id === 'harvests' && s.contracts.length + s.batches.length + s.shipments.length > 0 ? ` · ${s.contracts.length + s.batches.length + s.shipments.length}` : ''}</button>`).join('');
-  const body = tab === 'map' ? mapTab(now) : tab === 'harvests' ? harvestsTab(now) : tab === 'supplier' ? supplierTab() : stockTab(now);
+  const unread = unreadLetters(save.routes!);
+  const count = (id: BackroomTab) =>
+    id === 'harvests' && s.contracts.length + s.batches.length + s.shipments.length > 0 ? ` · ${s.contracts.length + s.batches.length + s.shipments.length}` : id === 'letters' && unread > 0 ? ` · ${unread}` : '';
+  const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="backroom-tab" data-value="${t.id}">${t.label}${count(t.id)}</button>`).join('');
+  const body = tab === 'letters' ? lettersTab() : tab === 'map' ? mapTab(now) : tab === 'harvests' ? harvestsTab(now) : tab === 'supplier' ? supplierTab() : stockTab(now);
   const speed = save.clock!.speed;
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>
@@ -83,7 +89,7 @@ function cratesSection(): string {
   const rows = crates
     .map(
       (c) => `<li class="card crate">
-        <div><strong>Crate from ${esc(c.from)}</strong></div>
+        <div><strong>Crate from ${esc(c.from)}</strong>${c.route && routeById(c.route) ? ` <span class="muted small">· a letter from ${esc(routeById(c.route)!.from)} is tucked in the lid (Letters)</span>` : ''}</div>
         <p class="small">${c.items.map((i) => `${esc(name(i.material))} · ${i.grams} g · ${qualityWord(i.quality)}`).join('<br>')}</p>
         <div class="row-between"><span></span><button class="primary" data-action="unpack" data-id="${esc(c.id)}">Unpack</button></div>
       </li>`,
@@ -109,6 +115,47 @@ function nextSeasonMonth(crop: Crop, now: number): string {
   return '';
 }
 
+function letterCard(l: Letter, action = ''): string {
+  const route = routeById(l.route);
+  const kind = l.kind === 'first' ? 'wrote to the shop' : l.kind === 'reply' ? 'wrote back' : 'sent a note with a crate';
+  return `<li class="card letter-card">
+    <div><strong>${esc(route?.from ?? l.route)}</strong> <span class="muted small">${kind}${l.read ? '' : ' <span class="tag">new</span>'}</span></div>
+    ${l.kind === 'first' && route ? `<p class="muted small">${esc(route.about)}</p>` : ''}
+    <div class="letter">${l.body.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
+    ${action}
+  </li>`;
+}
+
+function lettersTab(): string {
+  const r = state.save.routes!;
+  const chapter = chapterInfo(r.chapter, sourcing.calendarStart);
+  const transit = inTransit(r);
+  const waiting = r.letters.filter((l) => l.kind === 'first' && r.routes[l.route]?.status === 'waiting');
+  const waitingCards = waiting
+    .map((l) => {
+      const route = routeById(l.route);
+      const button = transit
+        ? `<p class="muted small">You can write back once ${esc(routeById(transit)?.from ?? '')} has answered.</p>`
+        : `<div class="row-between"><span class="muted small">${l.route === CHEMIST ? 'Reopens the catalogue of aroma chemicals' : `Reopens the route to ${esc(regions.find((x) => x.id === l.route)?.name ?? l.route)}`}</span><button class="primary" data-action="answer-letter" data-id="${esc(l.route)}">Write back</button></div>`;
+      return route ? letterCard(l, button) : '';
+    })
+    .join('');
+  const transitCard = transit
+    ? `<li class="card"><p class="small">Your letter to <strong>${esc(routeById(transit)?.from ?? transit)}</strong> is on its way. Their answer should come in ${timeLeft(r.routes[transit].opensAt!)}.</p></li>`
+    : '';
+  const others = r.letters
+    .filter((l) => !(l.kind === 'first' && r.routes[l.route]?.status === 'waiting'))
+    .slice()
+    .reverse()
+    .map((l) => letterCard(l))
+    .join('');
+  return `<p class="muted small"><strong>Chapter ${r.chapter + 1} · ${esc(chapter.title)}.</strong> Her growers and her chemist went quiet when she died. Write back to reopen a route, one letter at a time; new letters come with the seasons.</p>
+    ${transitCard ? `<ul class="list cards">${transitCard}</ul>` : ''}
+    ${waitingCards ? `<h2>Waiting for your answer</h2><ul class="list cards">${waitingCards}</ul>` : ''}
+    <h2>Letters</h2>
+    <ul class="list cards">${others || '<li class="muted">Nothing yet. Answered letters, and notes that come with crates, are kept here.</li>'}</ul>`;
+}
+
 function mapTab(now: number): string {
   const unlocked = ownedMaterials(state.save);
   const cards = regions.map((r) => regionCard(r, now, unlocked)).join('');
@@ -120,7 +167,16 @@ function mapTab(now: number): string {
 function regionCard(r: Region, now: number, unlocked: Set<string>): string {
   const s = state.save.sourcing!;
   const money = state.save.customers!.money;
-  const open = regionOpen(state.save.upgrades!, r.id);
+  const routes = state.save.routes!;
+  const open = routeOpen(routes, r.id);
+  const grower = routeById(r.id);
+  const status = routes.routes[r.id]?.status;
+  const closedWhy =
+    status === 'waiting'
+      ? `${grower?.from ?? 'The grower'} has written: answer under Letters to reopen this route`
+      : status === 'replied'
+        ? `Your letter to ${grower?.from ?? 'the grower'} is on its way`
+        : `${grower?.from ?? 'The grower'} hasn't written yet`;
   const news = newsFor(state.save, now);
   const crops = r.crops
     .map((crop) => {
@@ -130,7 +186,7 @@ function regionCard(r: Region, now: number, unlocked: Set<string>): string {
       let action: string;
       const bumper = yieldMultiplier(news, r.id, crop.material) > 1 ? ' <span class="tag">bumper crop this week</span>' : '';
       if (!unlocked.has(crop.material)) action = `<span class="muted small">Unlocks at reputation ${tier?.reputation ?? '?'}</span>`;
-      else if (!open) action = `<span class="muted small">Open ${esc(r.name)} under Shop → Regions (${r.unlock.coins} coins)</span>`;
+      else if (!open) action = `<span class="muted small">${esc(closedWhy)}</span>`;
       else if (s.contracts.some((c) => c.region === r.id && c.material === crop.material)) action = `<span class="muted small">Growing now</span>`;
       else if (!inSeason(crop, now)) action = `<span class="muted small">Out of season · next: ${nextSeasonMonth(crop, now)}</span>`;
       else
@@ -142,7 +198,7 @@ function regionCard(r: Region, now: number, unlocked: Set<string>): string {
     })
     .join('');
   return `<li class="card">
-    <div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)} · ships in ${duration(shippingGameHours(r) + shippingDelay(news, r.id))}${open ? '' : ' · closed'}</span>${shippingDelay(news, r.id) ? ' <span class="tag tag--warn">storm delays</span>' : ''}</div>
+    <div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)} · ships in ${duration(shippingGameHours(r) + shippingDelay(news, r.id))}${open ? '' : ' · route closed'}</span>${shippingDelay(news, r.id) ? ' <span class="tag tag--warn">storm delays</span>' : ''}</div>
     <p class="small">${esc(r.quirk)}</p>
     ${crops}
   </li>`;
@@ -193,7 +249,7 @@ function harvestsTab(now: number): string {
         <p class="small">On its way · arrives in ${timeLeft(x.arrivesAt)}</p></li>`,
     )
     .join('');
-  const empty = !contracts && !batches && !shipments ? '<p class="muted">Nothing on the go. Sign a harvest on the map, or order from the supplier.</p>' : '';
+  const empty = !contracts && !batches && !shipments ? '<p class="muted">Nothing on the go. Sign a harvest on the map, or order from the apothecary or the chemist.</p>' : '';
   return `${empty}
     ${contracts ? `<h2>Growing</h2><ul class="list cards">${contracts}</ul>` : ''}
     ${batches ? `<h2>Processing</h2><ul class="list cards">${batches}</ul>` : ''}
@@ -204,20 +260,29 @@ function supplierTab(): string {
   const unlocked = ownedMaterials(state.save);
   const money = state.save.customers!.money;
   const sup = sourcing.supplier;
-  const rows = [...unlocked]
-    .map((id) => materialsById.get(id)!)
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((m) => {
-      const multiplier = priceMultiplier(newsFor(state.save, nowGame()), m.id);
-      const price = priceOf(m.id, multiplier);
-      const deal = multiplier < 1 ? ' <span class="tag">on offer</span>' : multiplier > 1 ? ' <span class="tag tag--warn">prices up</span>' : '';
-      const kind = m.type === 'natural' ? `broker stock · ${qualityWord(sup.brokerQuality)} quality` : 'catalogue';
-      return `<li class="card"><div class="row-between"><div><strong>${esc(m.name)}</strong>${deal}<br><span class="muted small">${sup.lotGrams} g · ${kind}</span></div>
-        <button class="primary" data-action="order" data-material="${m.id}" ${money < price ? 'disabled' : ''}>${price} coins</button></div></li>`;
-    })
-    .join('');
-  return `<p class="muted small">${esc(sup.name)}: aroma chemicals from the catalogue, and naturals from a broker's stock all year round (at a premium and of ${qualityWord(sup.brokerQuality)} quality; harvest them yourself for better). Orders ship in ${duration(sup.shippingGameHours)}.</p>
-    <ul class="list cards">${rows}</ul>`;
+  const chemistOpen = routeOpen(state.save.routes!, CHEMIST);
+  const row = (id: string, kind: string, closed: boolean) => {
+    const m = materialsById.get(id)!;
+    const multiplier = priceMultiplier(newsFor(state.save, nowGame()), m.id);
+    const price = priceOf(m.id, multiplier);
+    const deal = multiplier < 1 ? ' <span class="tag">on offer</span>' : multiplier > 1 ? ' <span class="tag tag--warn">prices up</span>' : '';
+    return `<li class="card"><div class="row-between"><div><strong>${esc(m.name)}</strong>${deal}<br><span class="muted small">${sup.lotGrams} g · ${kind}</span></div>
+      <button class="primary" data-action="order" data-material="${m.id}" ${closed || money < price ? 'disabled' : ''}>${price} coins</button></div></li>`;
+  };
+  const owned = [...unlocked].map((id) => materialsById.get(id)!).sort((a, b) => a.name.localeCompare(b.name));
+  const naturals = owned.filter((m) => m.type === 'natural').map((m) => row(m.id, `broker stock · ${qualityWord(sup.brokerQuality)} quality`, false)).join('');
+  const synthetics = owned.filter((m) => m.type === 'synthetic').map((m) => row(m.id, 'catalogue', !chemistOpen)).join('');
+  const status = routeOpen(state.save.routes!, CHEMIST)
+    ? `Orders come by train in ${duration(sup.chemistShippingGameHours)}, with a note from Paul Varenne.`
+    : state.save.routes!.routes[CHEMIST]?.status === 'replied'
+      ? 'Your letter is on its way; you can order once they write back.'
+      : 'Closed until you answer their letter (Letters).';
+  return `<h2>${esc(sup.name)}</h2>
+    <p class="muted small">Naturals from a broker's stock all year round, at a premium and of ${qualityWord(sup.brokerQuality)} quality. Harvest them yourself for better. Ready in ${duration(sup.shippingGameHours)}.</p>
+    <ul class="list cards">${naturals || '<li class="muted">No naturals unlocked.</li>'}</ul>
+    <h2>${esc(sup.chemistName)}</h2>
+    <p class="muted small">Her old chemist: aroma chemicals from the catalogue. ${status}</p>
+    <ul class="list cards">${synthetics || '<li class="muted">No aroma chemicals unlocked yet.</li>'}</ul>`;
 }
 
 function stockTab(now: number): string {

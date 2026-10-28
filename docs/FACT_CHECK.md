@@ -47,6 +47,10 @@ Not facts: each material's `model.strength` and `model.halfLifeHours` are game t
 
 The minimum percentages in every accord's requirements (e.g. labdanum and vanillin at least 15% each for amber) are game tuning, not course facts.
 
+## Letters — `src/data/letters.json`
+
+Growers' letters are story, not new facts. Where a letter mentions a harvest season or method (bergamot picked through the winter, jasmine picked at dawn, vanilla cured for months), it repeats that region's entry in `src/data/regions.json`, so confirming the region confirms the letter. The growers, the chemist Varenne & Fils and their memories of Mireille are invented.
+
 ## Story pages — `src/data/story.json`
 
 The lesson shown when a page of Mireille's book is recovered. Her formulas themselves are invented game content, not facts.

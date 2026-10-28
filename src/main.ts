@@ -9,13 +9,13 @@ import { afterReview, meet, pageById, pageFormula, storyTick } from './game/stor
 import { seededRandom } from './game/random';
 import { applyQuality, scorePerfume } from './game/scoring';
 import { setClockSpeed } from './game/clock';
-import { consume, harvest, missingFor, order, signContract, sourcing, tickSourcing, unpack } from './game/sourcing';
+import { consume, contractStage, harvest, missingFor, order, qualityWord, signContract, sourcing, tickSourcing, unpack, type Crate } from './game/sourcing';
 import { listPerfume, removeListing, settleSales } from './game/display';
 import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
 import { parseSave, writeSave } from './game/save';
-import { buyItem, buyProcess, displayCapacity, furniture, itemById, openRegion, place, processStats, regionOpen, unplace } from './game/upgrades';
+import { buyItem, buyProcess, displayCapacity, furniture, itemById, place, processStats, unplace } from './game/upgrades';
+import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOpen, routesTick } from './game/routes';
 import { arrivalConditions, newsFor, ownedMaterials, shopAppeal } from './game/world';
-import { contractStage } from './game/sourcing';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { shop, validateShop } from './game/shop';
@@ -30,6 +30,7 @@ import { allSpots, upgradesScreen } from './ui/upgradesPanel';
 import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, lookOf, reactionScreen, unlockScreen } from './ui/customer';
+import { chapterScreen } from './ui/chapter';
 import { introScreen } from './ui/intro';
 import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
@@ -124,6 +125,33 @@ function notify(title: string, body: string): void {
 }
 
 /** Brings arrivals, reviews, harvests, shipments and sales up to date from timestamps. */
+/**
+ * The post: a new season's chapter brings letters, replies that come back reopen routes, and
+ * crates from open routes carry a note. Returns whether anything arrived.
+ */
+function runPost(crates: Crate[]): boolean {
+  const { save, ui } = state;
+  const now = nowGame();
+  const r = save.routes!;
+  for (const crate of crates) {
+    const item = crate.items[0];
+    if (crate.route && item) crateLetter(r, crate.route, now, { material: materialsById.get(item.material)?.name ?? item.material, quality: qualityWord(item.quality) });
+  }
+  const { chapter, opened } = routesTick(r, now, sourcing.calendarStart);
+  for (const id of opened) {
+    const from = routeById(id)?.from ?? id;
+    ui.toast = id === CHEMIST ? `${from} has written back: aroma chemicals are on order again from the back room.` : `${from} has written back: the route is open. Sign harvests from the back room.`;
+    notify('A letter has come back', `${from} wrote back.`);
+  }
+  // A new chapter is announced over the shop (the first comes in quietly after the intro).
+  if (chapter !== null && chapter > 0) {
+    if (ui.screen === 'shop') openPanel('chapter');
+    else ui.toast = `A new chapter: ${chapterInfo(chapter, sourcing.calendarStart).title}. New letters are in the back room.`;
+    notify('A new season', chapterInfo(chapter, sourcing.calendarStart).title);
+  } else if (chapter === 0) ui.toast = 'Letters have come for you from her old suppliers. Read them in the back room.';
+  return chapter !== null || opened.length > 0 || crates.some((k) => k.route);
+}
+
 function runTick(): void {
   const { save } = state;
   const c = save.customers!;
@@ -131,8 +159,10 @@ function runTick(): void {
   const changed = [...storyTick(save.story!, c, now, Date.now()), ...tick(c, Date.now(), ownedMaterials(save), Math.random, arrivalConditions(save, now))];
   const crates = tickSourcing(save.sourcing!, now, stormDelay);
   const sold = runSales();
+  const post = runPost(crates);
   if (crates.length > 0) {
-    state.ui.toast = crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`;
+    const note = crates.some((k) => k.route) ? ' There’s a letter in it.' : '';
+    state.ui.toast = (crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`) + note;
     void scene.setCrates(save.sourcing!.crates.length);
     sounds.play('crate');
     notify('A crate has arrived', `From ${crates.map((k) => k.from).join(', ')}.`);
@@ -151,7 +181,7 @@ function runTick(): void {
   if (returning.length > 0) notify('A customer is back', `${returning.map((v) => v.name).join(', ')} came back to tell you how their perfume wore.`);
   if (changed.length > 0) syncCrowd();
   // Keep countdowns fresh in panels that show them.
-  if (changed.length > 0 || crates.length > 0 || sold.bottles > 0 || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
+  if (changed.length > 0 || crates.length > 0 || sold.bottles > 0 || post || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
 }
 
 /** Puts placed furniture in the scene. */
@@ -178,7 +208,7 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     refreshPlayer();
     storyTick(state.save.story!, state.save.customers!, nowGame(), Date.now());
     tick(state.save.customers!, Date.now(), ownedMaterials(state.save), Math.random, arrivalConditions(state.save, nowGame()));
-    tickSourcing(state.save.sourcing!, nowGame(), stormDelay);
+    runPost(tickSourcing(state.save.sourcing!, nowGame(), stormDelay));
     runSales();
     const away = state.save.display!.unseen;
     if (away.bottles > 0) {
@@ -254,6 +284,8 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return customerScreen(visit!, state.save.customers!, state.save.story!);
     case 'reaction':
       return reactionScreen(visit!);
+    case 'chapter':
+      return chapterScreen();
     case 'unlock':
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
     case 'backroom':
@@ -305,6 +337,7 @@ document.body.addEventListener('click', (event) => {
       return openPanel(target.dataset.to as Screen);
     case 'close-panel':
       if (ui.screen === 'creator' && kit) save.character = currentLook();
+      if (ui.screen === 'backroom' && ui.backroomTab === 'letters') markRead(save.routes!);
       ui.screen = 'shop';
       ui.detail = null;
       break;
@@ -394,14 +427,25 @@ document.body.addEventListener('click', (event) => {
       return setDraft({ ...parts });
     }
     case 'backroom-tab':
+      // Letters count as read once you've looked at them and moved on.
+      if (ui.backroomTab === 'letters') markRead(save.routes!);
       ui.backroomTab = target.dataset.value as typeof ui.backroomTab;
       scrollToTop = true;
       break;
+    case 'read-letters':
+      ui.backroomTab = 'letters';
+      return openPanel('backroom');
+    case 'answer-letter': {
+      const why = answer(save.routes!, id!, nowGame());
+      ui.toast = why ?? `You've written back to ${routeById(id!)?.from}. Their answer will take a little while.`;
+      if (!why) sounds.play('paper');
+      break;
+    }
     case 'sign': {
       const region = target.dataset.region!;
       const material = target.dataset.material!;
       const why = signContract(save.sourcing!, save.customers!, region, material, nowGame(), ownedMaterials(save), {
-        regionOpen: regionOpen(save.upgrades!, region),
+        regionOpen: routeOpen(save.routes!, region),
         yieldMultiplier: yieldMultiplier(newsFor(save, nowGame()), region, material),
       });
       ui.toast = why ?? 'Contract signed. Watch it ripen under Harvests.';
@@ -417,7 +461,7 @@ document.body.addEventListener('click', (event) => {
       const material = target.dataset.material!;
       const natural = materialsById.get(material)?.type === 'natural';
       const multiplier = priceMultiplier(newsFor(save, nowGame()), material);
-      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), ownedMaterials(save), multiplier);
+      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), ownedMaterials(save), multiplier, routeOpen(save.routes!, CHEMIST));
       ui.toast = why ?? `Ordered ${materialsById.get(material)?.name}. It's on its way.`;
       break;
     }
@@ -468,11 +512,6 @@ document.body.addEventListener('click', (event) => {
     case 'unlist':
       removeListing(save.display!, id!);
       break;
-    case 'open-region': {
-      const why = openRegion(save.upgrades!, save.customers!, id!, save.customers!.reputation);
-      ui.toast = why ?? 'Region opened: sign harvests there from the back room.';
-      break;
-    }
     case 'buy-process': {
       const why = buyProcess(save.upgrades!, save.customers!, id!, save.customers!.reputation);
       ui.toast = why ?? 'Done: the new equipment is ready.';

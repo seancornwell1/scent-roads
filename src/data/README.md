@@ -199,7 +199,6 @@ Where naturals grow, for harvest contracts on the back room's map (`src/game/sou
 | `id`, `name`, `country` | |
 | `lat`, `lon` | Location, for distance-based shipping (and the painted map later) |
 | `quirk` | One real fact shown in the game |
-| `unlock` | `coins` and `reputation` to open the region (both 0 = open from the start) |
 | `crops` | What can be contracted there, below |
 
 Each crop:
@@ -241,7 +240,7 @@ Processing methods. `about` is the fact to verify; the numbers are tuning.
 | `shipping` | `baseGameHours` plus distance ÷ `kmPerGameHour` |
 | `quality` | `inWindow` and `spoiled` harvest quality, `words` for quality bands, and `scoreEffect` (how much material quality shifts a perfume's score) |
 | `aging` | Material id → `perGameDay` quality gained in stock, up to `max` |
-| `supplier` | `name`, `shippingGameHours`, `lotGrams`, `brokerQuality` (naturals), `catalogueQuality` (synthetics), `prices` (coins per lot, every material) |
+| `supplier` | The town apothecary (`name`, `shippingGameHours`), which sells naturals from a broker's stock all year at `brokerQuality`; her chemist (`chemistName`, `chemistShippingGameHours`), which sells aroma chemicals at `catalogueQuality` once you've answered their letter; `lotGrams` per order and `prices` (coins per lot, every material) |
 | `perfumeGrams` | Grams of material one perfume uses in total, split by its formula |
 
 ## `furniture.json`
@@ -303,3 +302,15 @@ A request:
 | `brief` | A brief as in `clients.json`. With `page`, its target is her formula for that page: 3 stars recovers the page, fewer brings them back with more specific hints. |
 
 A page: `id`, `title`, `dated`, `hiddenNames` (materials whose names have run as well as their amounts, until it's recovered), `margin` (her note, a clue), `signature` (the last, nearly blank page), and a `lesson` shown once it's recovered (`text`, with `verified` and `check` like materials; unverified lessons are listed in `docs/FACT_CHECK.md`). Her formula is the target of the request that recreates the page.
+
+## `letters.json`
+
+Her supply network (`src/game/routes.ts`). Every route starts closed: growers and her chemist went quiet when she died. Each season is a chapter in which some of them write; writing back reopens their route once their reply comes, and you wait on one reply at a time, so you choose who's next. Crates from an open route carry a note. A test checks every region has a grower and everyone writes in exactly one chapter.
+
+| Field | Meaning |
+| ----- | ------- |
+| `replyGameHours` | How long a grower takes to write back after you answer |
+| `routes` | One per region (same `id` as in `regions.json`) plus `chemist`: `from` (who signs), `about` (one line), `first` (their first letter, paragraphs), `reply` (when the route opens), `crate` (notes tucked into crates, in turn; `{material}` and `{quality}` fill in) |
+| `chapters` | In order from the first spring, one per season: `title`, `text`, and `letters` (route ids whose first letter arrives when the chapter begins). Past the last one, chapters are just the season and year. |
+
+The letters are story, not facts: where one mentions a season or method, it repeats the region's own (possibly unverified) data in `regions.json`.

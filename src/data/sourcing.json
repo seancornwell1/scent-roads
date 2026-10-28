@@ -67,8 +67,10 @@
     }
   },
   "supplier": {
-    "name": "Your supplier",
-    "shippingGameHours": 8,
+    "name": "The town apothecary",
+    "shippingGameHours": 4,
+    "chemistName": "Varenne & Fils",
+    "chemistShippingGameHours": 24,
     "lotGrams": 10,
     "brokerQuality": 0.9,
     "catalogueQuality": 1,

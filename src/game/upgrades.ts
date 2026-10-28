@@ -1,9 +1,10 @@
 import furnitureJson from '../data/furniture.json';
-import { processes, regions, type Process } from './sourcing';
+import { processes, type Process } from './sourcing';
 import type { Wallet } from './sourcing';
 
 // Shop upgrades: furniture you buy and place (which raises the shop's appeal),
-// and the regions and processing methods you open up with money and reputation.
+// and the processing methods you buy and upgrade with money and reputation. (Regions
+// open through growers' letters since Phase B: see routes.ts.)
 
 export interface FurnitureItem {
   id: string;
@@ -55,14 +56,12 @@ export interface UpgradeState {
   /** Item id → how many you own (placed or in storage). */
   owned: Record<string, number>;
   placed: Placement[];
-  /** Regions opened beyond the free starting ones. */
-  regions: string[];
   /** Process id → level: 0 = owned, 1+ = upgraded. Missing = not owned (unless free). */
   processes: Record<string, number>;
 }
 
 export function newUpgradeState(): UpgradeState {
-  return { owned: {}, placed: [], regions: [], processes: {} };
+  return { owned: {}, placed: [], processes: {} };
 }
 
 export const itemById = (id: string) => furniture.items.find((i) => i.id === id);
@@ -110,24 +109,6 @@ export function unplace(u: UpgradeState, spot: string): void {
 
 export function displayCapacity(u: UpgradeState): number {
   return u.placed.reduce((sum, p) => sum + (itemById(p.item)?.capacity ?? 0), 0);
-}
-
-// Regions
-
-export function regionOpen(u: UpgradeState, regionId: string): boolean {
-  const region = regions.find((r) => r.id === regionId);
-  return !!region && (region.unlock.coins === 0 && region.unlock.reputation === 0 ? true : u.regions.includes(regionId));
-}
-
-export function openRegion(u: UpgradeState, wallet: Wallet, regionId: string, reputation: number): string | null {
-  const region = regions.find((r) => r.id === regionId);
-  if (!region) return 'No such region.';
-  if (regionOpen(u, regionId)) return 'Already open.';
-  if (reputation < region.unlock.reputation) return `Needs reputation ${region.unlock.reputation}.`;
-  if (wallet.money < region.unlock.coins) return 'Not enough coins.';
-  wallet.money -= region.unlock.coins;
-  u.regions.push(regionId);
-  return null;
 }
 
 // Processing

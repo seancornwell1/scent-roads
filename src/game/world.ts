@@ -3,7 +3,8 @@ import { arrivalMultiplier, generateWeek, weekOf, type NewsItem } from './events
 import type { SaveData } from './save';
 import { regions } from './sourcing';
 import { unlockedMaterialIds } from './unlocks';
-import { appealLevel, appealOf, regionOpen, type AppealLevel } from './upgrades';
+import { routeOpen } from './routes';
+import { appealLevel, appealOf, type AppealLevel } from './upgrades';
 
 // Glue between the systems: this week's newspaper and the shop's appeal, read from the save.
 
@@ -21,7 +22,7 @@ export function newsFor(save: SaveData, gameHours: number): NewsItem[] {
   if (!news[week]) {
     const unlocked = ownedMaterials(save);
     const crops = regions
-      .filter((r) => regionOpen(save.upgrades!, r.id))
+      .filter((r) => routeOpen(save.routes!, r.id))
       .flatMap((r) => r.crops.filter((c) => unlocked.has(c.material)).map((c) => ({ region: r.id, regionName: r.name, material: c.material, materialName: materialsById.get(c.material)?.name ?? c.material })));
     const materials = [...unlocked].map((id) => ({ id, name: materialsById.get(id)?.name ?? id }));
     news[week] = generateWeek(week, save.createdAt % 100000, { crops, materials });

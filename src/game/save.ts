@@ -4,6 +4,7 @@ import type { CustomerState } from './customers';
 import type { DisplayState } from './display';
 import type { NewsItem } from './events';
 import type { SourcingState } from './sourcing';
+import type { RoutesState } from './routes';
 import type { StoryState } from './story';
 import type { UpgradeState } from './upgrades';
 import type { Formula } from './types';
@@ -54,6 +55,8 @@ export interface SaveData {
   sound?: number;
   /** The story: her book's recovered pages, townspeople's requests (filled in on load). */
   story?: StoryState;
+  /** Her supply network: growers' and the chemist's letters, and which routes are open (Phase B; filled in on load). */
+  routes?: RoutesState;
 }
 
 /** Checks that text looks like a save from this game before importing it. */

@@ -28,8 +28,6 @@ export interface Region {
   lat: number;
   lon: number;
   quirk: string;
-  /** Coins and reputation to open the region (both 0 for the starting regions). */
-  unlock: { coins: number; reputation: number };
   crops: Crop[];
 }
 
@@ -56,7 +54,17 @@ export interface SourcingData {
   shipping: { baseGameHours: number; kmPerGameHour: number };
   quality: { inWindow: number; spoiled: number; words: { min: number; text: string }[]; scoreEffect: number };
   aging: Record<string, { perGameDay: number; max: number }>;
-  supplier: { name: string; shippingGameHours: number; lotGrams: number; brokerQuality: number; catalogueQuality: number; prices: Record<string, number> };
+  /** The town apothecary (naturals, all year) and her chemist (aroma chemicals, once you've written back). */
+  supplier: {
+    name: string;
+    shippingGameHours: number;
+    chemistName: string;
+    chemistShippingGameHours: number;
+    lotGrams: number;
+    brokerQuality: number;
+    catalogueQuality: number;
+    prices: Record<string, number>;
+  };
   perfumeGrams: number;
 }
 
@@ -98,6 +106,8 @@ export interface Batch extends Item {
 export interface Shipment {
   id: string;
   from: string;
+  /** The route it came by (a region id, or "chemist"), for the letter tucked inside. */
+  route?: string;
   items: Item[];
   arrivesAt: number;
 }
@@ -105,6 +115,7 @@ export interface Shipment {
 export interface Crate {
   id: string;
   from: string;
+  route?: string;
   items: Item[];
   arrivedAt: number;
 }
@@ -187,7 +198,7 @@ export function signContract(
 ): string | null {
   const crop = cropOf(regionId, material);
   if (!crop) return 'No such crop.';
-  if (options.regionOpen === false) return 'Open this region first.';
+  if (options.regionOpen === false) return "This route is closed: answer the grower's letter in the back room first.";
   if (!unlocked.has(material)) return 'Not unlocked yet.';
   if (!inSeason(crop, now)) return 'Out of season.';
   if (s.contracts.some((c) => c.region === regionId && c.material === material)) return 'Already growing.';
@@ -235,7 +246,10 @@ export function harvest(
   return null;
 }
 
-/** Orders a lot from the supplier: naturals from the broker, synthetics from the catalogue. */
+/**
+ * Orders a lot: naturals from the town apothecary's broker stock, aroma chemicals from her
+ * chemist (only once you've written back to them and the route is open).
+ */
 export function order(
   s: SourcingState,
   wallet: Wallet,
@@ -244,15 +258,22 @@ export function order(
   now: number,
   unlocked: Set<string>,
   priceMultiplier = 1,
+  chemistOpen = true,
   data: SourcingData = sourcing,
 ): string | null {
-  if (data.supplier.prices[material] === undefined) return 'Not sold.';
+  const sup = data.supplier;
+  if (sup.prices[material] === undefined) return 'Not sold.';
   const price = priceOf(material, priceMultiplier, data);
   if (!unlocked.has(material)) return 'Not unlocked yet.';
+  if (!natural && !chemistOpen) return `Write back to ${sup.chemistName} first: their letter is in the back room.`;
   if (wallet.money < price) return 'Not enough coins.';
   wallet.money -= price;
-  const quality = natural ? data.supplier.brokerQuality : data.supplier.catalogueQuality;
-  s.shipments.push({ id: id(s, 's'), from: data.supplier.name, items: [{ material, grams: data.supplier.lotGrams, quality }], arrivesAt: now + data.supplier.shippingGameHours });
+  const lot = { material, grams: sup.lotGrams, quality: natural ? sup.brokerQuality : sup.catalogueQuality };
+  s.shipments.push(
+    natural
+      ? { id: id(s, 's'), from: sup.name, items: [lot], arrivesAt: now + sup.shippingGameHours }
+      : { id: id(s, 's'), from: sup.chemistName, route: 'chemist', items: [lot], arrivesAt: now + sup.chemistShippingGameHours },
+  );
   return null;
 }
 
@@ -268,11 +289,11 @@ export function tickSourcing(s: SourcingState, now: number, delay: (regionId: st
   for (const b of s.batches.filter((x) => x.readyAt <= now)) {
     const region = regionById(b.region)!;
     const arrivesAt = b.readyAt + shippingGameHours(region, data) + delay(region.id, b.readyAt);
-    s.shipments.push({ id: id(s, 's'), from: region.name, items: [{ material: b.material, grams: b.grams, quality: b.quality }], arrivesAt });
+    s.shipments.push({ id: id(s, 's'), from: region.name, route: region.id, items: [{ material: b.material, grams: b.grams, quality: b.quality }], arrivesAt });
   }
   s.batches = s.batches.filter((x) => x.readyAt > now);
   const arrived = s.shipments.filter((x) => x.arrivesAt <= now);
-  const crates = arrived.map((x) => ({ id: id(s, 'k'), from: x.from, items: x.items, arrivedAt: x.arrivesAt }));
+  const crates = arrived.map((x) => ({ id: id(s, 'k'), from: x.from, route: x.route, items: x.items, arrivedAt: x.arrivesAt }));
   s.crates.push(...crates);
   s.shipments = s.shipments.filter((x) => x.arrivesAt > now);
   return crates;

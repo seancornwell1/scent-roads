@@ -422,3 +422,7 @@ textarea {
 .intro p { margin: 0 0 10px; }
 .letter p { margin: 0 0 8px; }
 .letter .signoff { text-align: right; font-style: italic; }
+
+/* Letters from her supply network: text only. */
+.letter-card .letter { margin-top: 6px; }
+.letter-card .letter p { margin: 0 0 6px; font-style: italic; }

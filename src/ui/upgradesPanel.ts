@@ -1,18 +1,18 @@
 import { realMsUntil } from '../game/clock';
 import { bottlePrice } from '../game/display';
 import { shop } from '../game/shop';
-import { processes, regions } from '../game/sourcing';
-import { displayCapacity, furniture, inStorage, itemById, nextAppealLevel, processLevel, processStats, regionOpen } from '../game/upgrades';
+import { processes } from '../game/sourcing';
+import { displayCapacity, furniture, inStorage, itemById, nextAppealLevel, processLevel, processStats } from '../game/upgrades';
 import { shopAppeal } from '../game/world';
 import { state } from '../state';
 import { esc } from './html';
 
-// The Shop panel: furniture and decor, the display case, regions and processing.
+// The Shop panel: furniture and decor, the display case and processing. (Routes to
+// growers open through their letters in the back room.)
 
 const TABS = [
   { id: 'furniture', label: 'Furniture' },
   { id: 'display', label: 'Display case' },
-  { id: 'regions', label: 'Regions' },
   { id: 'processing', label: 'Processing' },
 ] as const;
 
@@ -39,7 +39,7 @@ export function upgradesScreen(): string {
   const { appeal, level } = shopAppeal(state.save);
   const next = nextAppealLevel(appeal);
   const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="upgrades-tab" data-value="${t.id}">${t.label}</button>`).join('');
-  const body = tab === 'furniture' ? furnitureTab() : tab === 'display' ? displayTab() : tab === 'regions' ? regionsTab() : processingTab();
+  const body = tab === 'furniture' ? furnitureTab() : tab === 'display' ? displayTab() : processingTab();
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>
       <h1>Shop</h1>
@@ -128,25 +128,6 @@ function displayTab(): string {
     ${listings ? `<ul class="list cards">${listings}</ul>` : ''}
     <h2>Your signature perfumes</h2>
     <ul class="list cards">${formulas || '<li class="muted">Save a formula from the organ first.</li>'}</ul>`;
-}
-
-function regionsTab(): string {
-  const u = state.save.upgrades!;
-  const reputation = state.save.customers!.reputation;
-  const money = state.save.customers!.money;
-  const rows = regions
-    .map((r) => {
-      const open = regionOpen(u, r.id);
-      const action = open
-        ? '<span class="muted small">Open</span>'
-        : reputation < r.unlock.reputation
-          ? `<span class="muted small">Reputation ${r.unlock.reputation}</span>`
-          : `<button class="primary" data-action="open-region" data-id="${r.id}" ${money < r.unlock.coins ? 'disabled' : ''}>Open · ${r.unlock.coins} coins</button>`;
-      const crops = r.crops.map((c) => c.material).join(', ');
-      return `<li class="card"><div class="row-between"><div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)}</span><br><span class="muted small">${esc(crops)}</span></div>${action}</div></li>`;
-    })
-    .join('');
-  return `<p class="muted small">Open a region to sign harvest contracts there. The supplier sells anything you've unlocked, but harvesting your own is cheaper and better.</p><ul class="list cards">${rows}</ul>`;
 }
 
 function processingTab(): string {

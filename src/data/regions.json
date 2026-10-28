@@ -6,10 +6,6 @@
     "lat": 38.1,
     "lon": 15.9,
     "quirk": "Bergamot is a winter citrus; the oil is cold-pressed from the peel.",
-    "unlock": {
-      "coins": 0,
-      "reputation": 0
-    },
     "crops": [
       {
         "material": "bergamot",
@@ -42,10 +38,6 @@
     "lat": 43.9,
     "lon": 5.9,
     "quirk": "Lavender is cut in high summer, when the fields are in full flower.",
-    "unlock": {
-      "coins": 0,
-      "reputation": 0
-    },
     "crops": [
       {
         "material": "lavender",
@@ -76,10 +68,6 @@
     "lat": 37.6,
     "lon": -5.9,
     "quirk": "Rockrose sweats its sticky labdanum gum in the summer heat.",
-    "unlock": {
-      "coins": 0,
-      "reputation": 0
-    },
     "crops": [
       {
         "material": "labdanum",
@@ -111,10 +99,6 @@
     "lat": 43.66,
     "lon": 6.92,
     "quirk": "Jasmine is picked at dawn: late picks lose quality fast.",
-    "unlock": {
-      "coins": 200,
-      "reputation": 60
-    },
     "crops": [
       {
         "material": "jasmine",
@@ -184,10 +168,6 @@
     "lat": 42.6,
     "lon": 25.4,
     "quirk": "A short harvest window in late spring; roses are picked in the early morning.",
-    "unlock": {
-      "coins": 200,
-      "reputation": 60
-    },
     "crops": [
       {
         "material": "rose-damascena",
@@ -218,10 +198,6 @@
     "lat": 18.2,
     "lon": -73.75,
     "quirk": "Vetiver roots are dug up all year round; the oil is earthy and smoky.",
-    "unlock": {
-      "coins": 120,
-      "reputation": 42
-    },
     "crops": [
       {
         "material": "vetiver",
@@ -261,10 +237,6 @@
     "lat": 4.7,
     "lon": 96.7,
     "quirk": "Patchouli leaves are dried and fermented before distilling, and the oil improves with age.",
-    "unlock": {
-      "coins": 80,
-      "reputation": 22
-    },
     "crops": [
       {
         "material": "patchouli",
@@ -305,10 +277,6 @@
     "lat": -14.3,
     "lon": 50.0,
     "quirk": "Vanilla pods need months of curing before they're usable.",
-    "unlock": {
-      "coins": 120,
-      "reputation": 42
-    },
     "crops": [
       {
         "material": "vanilla",
@@ -340,10 +308,6 @@
     "lat": 17.0,
     "lon": 54.1,
     "quirk": "Frankincense resin is tapped from the trees and collected over weeks as it hardens.",
-    "unlock": {
-      "coins": 120,
-      "reputation": 42
-    },
     "crops": [
       {
         "material": "frankincense",
@@ -378,10 +342,6 @@
     "lat": -21.1,
     "lon": 55.5,
     "quirk": "Pink peppercorns are the berries of the Brazilian pepper tree.",
-    "unlock": {
-      "coins": 50,
-      "reputation": 5
-    },
     "crops": [
       {
         "material": "pink-pepper",
@@ -415,10 +375,6 @@
     "lat": 36.5,
     "lon": -79.5,
     "quirk": "Cedarwood oil is distilled from sawmill wood, so it's available all year.",
-    "unlock": {
-      "coins": 60,
-      "reputation": 12
-    },
     "crops": [
       {
         "material": "cedarwood-virginia",
@@ -458,10 +414,6 @@
     "lat": 41.6,
     "lon": 21.7,
     "quirk": "Oakmoss is a lichen gathered from oak bark in the damp months.",
-    "unlock": {
-      "coins": 80,
-      "reputation": 22
-    },
     "crops": [
       {
         "material": "oakmoss",
@@ -497,10 +449,6 @@
     "lat": 47.5,
     "lon": -122.3,
     "quirk": "Douglas fir needles are distilled from the forest's prunings.",
-    "unlock": {
-      "coins": 90,
-      "reputation": 35
-    },
     "crops": [
       {
         "material": "douglas-fir",
@@ -540,10 +488,6 @@
     "lat": 26.7,
     "lon": 94.2,
     "quirk": "Tea is plucked in flushes from spring to late autumn.",
-    "unlock": {
-      "coins": 120,
-      "reputation": 50
-    },
     "crops": [
       {
         "material": "black-tea",

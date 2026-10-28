@@ -187,7 +187,7 @@ The order follows the course (amber, fig, chypre, fougère, aldehydes), except l
 
 - Money from clients and shelf sales buys harvest contracts, new regions and processing upgrades.
 - Reputation grows with good reviews and brings more demanding clients with better pay.
-- New regions unlock in stages, each adding new materials and new client types.
+- New regions open in stages: since Phase B, by answering growers' letters, which arrive with the seasons (see **The story**).
 - The formula book fills with discovered accords and my saved creations.
 - The shelf sells my saved perfumes slowly while I'm away, so the idle side earns too.
 - Aging: some materials improve with real time, rewarding patience.
@@ -409,6 +409,29 @@ How it was built (Oct 28, 2026):
   - Agathe, Henri and Lucien ask for the perfumes she made them. A 3-star match recovers the page, revealing her amounts and a short lesson; fewer stars brings them back later.
   - The last page, her signature, is nearly blank.
 - **Camera:** zoom 1 frames the whole room below the HUD and stays put; pinch to zoom in and pan. Labels never go under the HUD or off screen, overlapping labels stack, and tapping a name label counts as tapping that person or fixture. Upgrade-spot labels show only when zoomed in.
+
+### Prompt 9: Direction change #2, Phase B
+
+```
+Next phase
+```
+
+Phase B from **Direction change #2**: grower letters, route choice, seasons as chapters, the chemist's supply house.
+
+How it was built (Oct 28, 2026):
+
+- **Routes start closed.** Every region and her chemist went quiet when she died. Paying coins and reputation to open a region is gone, and so is the Shop panel's Regions tab.
+- **Seasons are chapters.**
+  - Chapter 1 (spring) brings letters from the growers of her bench (Calabria, Haute-Provence, Andalusia) and from her chemist, Varenne & Fils.
+  - Summer, autumn and winter bring three more growers each.
+  - The second spring brings Grasse and the Valley of Roses.
+  - Each new chapter is announced over the shop. The HUD shows the chapter number.
+- **Route choice.** The back room's new Letters tab holds their letters. Write back to one, and their answer comes about 12 game hours later (under 2 real hours) and opens the route. Only one reply can be on its way at a time, so you choose who comes first.
+- **Crates carry letters.** Every crate from an open route has a short note (memories of her, harvest news) kept in Letters. The HUD counts unread letters.
+- **Two suppliers.**
+  - Varenne & Fils is the only source of aroma chemicals, including more vanillin, once you've written back.
+  - The town apothecary sells naturals all year at a premium and fair quality, so you can't get stuck while routes are closed.
+- **Unchanged:** materials still unlock by reputation, so an open route can show crops you can't sign for yet.
 
 ### Prompt 3 (original): clients and reviews
 

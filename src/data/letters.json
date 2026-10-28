@@ -1,0 +1,337 @@
+{
+  "replyGameHours": 12,
+  "routes": [
+    {
+      "id": "chemist",
+      "from": "Paul Varenne",
+      "about": "Her old supplier of aroma chemicals, a family firm of chemists in the city.",
+      "first": [
+        "Dear friend of Mireille,",
+        "My father supplied your grandmother for thirty years, and I took over her orders when he retired. She was the only perfumer who ever sent our molecules back with notes on how to use them better.",
+        "If the shop is to reopen, our catalogue is yours. Write, and I'll put your name back on the books."
+      ],
+      "reply": [
+        "Your name is back on our books. Order anything from the catalogue and we'll send it by the next train.",
+        "She always took her vanillin in the brown bottle, never the clear one. I've kept the habit for you."
+      ],
+      "crate": [
+        "Packed this morning. Mind the caps: some of these travel better than they smell in the warehouse.",
+        "Your grandmother once returned a whole case because the labels were crooked. I still check every one.",
+        "A small catalogue note: our molecules are the same every time. That's the point of them, and the comfort."
+      ]
+    },
+    {
+      "id": "calabria",
+      "from": "Rocco Ferraro",
+      "about": "A bergamot grower on the Calabrian coast.",
+      "first": [
+        "Cara famiglia di Mireille,",
+        "For twenty winters my bergamot went to your grandmother's shop. She came down once, in her good coat, and stood in the grove smelling the peel off her own thumbnail.",
+        "When the letters stopped, I sold the oil elsewhere. If you want it again, only say so."
+      ],
+      "reply": [
+        "Bene! You'll have our bergamot again. The fruit is picked through the winter, and we press the peel the same day.",
+        "Sign for a harvest in season and I'll send what the trees give."
+      ],
+      "crate": [
+        "Here is your {material}, {quality} this time. My daughter wrapped the bottles; she says hello.",
+        "Mireille always asked whether the sea wind had been strong that year. It was. You can smell it, I think.",
+        "The grove is quiet now the picking is done. This {material} is from the last of it."
+      ]
+    },
+    {
+      "id": "provence",
+      "from": "Élise Arnaud",
+      "about": "A lavender farmer in Haute-Provence.",
+      "first": [
+        "Dear Mireille's grandchild,",
+        "Your grandmother bought our lavender from my mother, and then from me. Every July she sent a postcard asking if the bees were happy.",
+        "The fields are still here. Will the shop want our oil again?"
+      ],
+      "reply": [
+        "How lovely to hear from the shop again. We cut in high summer, when the fields are in full flower.",
+        "Sign for a harvest when the season comes and I'll keep the best rows for you."
+      ],
+      "crate": [
+        "Your {material}, {quality}. The still ran all night; the whole valley smelled of it.",
+        "I found one of her postcards in the kitchen drawer: 'Are the bees happy?' They are.",
+        "Here's this year's {material}. My mother says to tell you Mireille liked it a year old, after it had softened."
+      ]
+    },
+    {
+      "id": "andalusia",
+      "from": "Pilar Navarro",
+      "about": "She gathers rockrose gum in the Andalusian hills.",
+      "first": [
+        "Hola,",
+        "My grandfather gathered labdanum for your grandmother, and I gathered it with him. She said ours was the darkest, stickiest gum in Spain, and she meant it kindly.",
+        "The rockrose still sweats in the summer heat. Shall I send it to you?"
+      ],
+      "reply": [
+        "Good. The gum comes in summer, when the hills are hottest.",
+        "Sign for a harvest in season and I'll send it as soon as it's extracted."
+      ],
+      "crate": [
+        "Your {material}, {quality}. It stuck to everything on the way, as it always does.",
+        "Mireille told my grandfather that labdanum is the smell of a warm animal asleep. He laughed for a week.",
+        "This {material} will deepen if you leave it on the shelf. She always had an old bottle and a new one."
+      ]
+    },
+    {
+      "id": "reunion",
+      "from": "Josiane Payet",
+      "about": "She picks pink peppercorns on Réunion.",
+      "first": [
+        "Bonjour,",
+        "We met your grandmother only by post: she asked for our pink pepper when nobody in town had heard of it. She wrote that it smelled of roses that had learned to sneeze.",
+        "Would you like to hear from our trees again?"
+      ],
+      "reply": [
+        "Wonderful. The berries ripen from late spring into summer.",
+        "Sign for a harvest in season and we'll send you the first of it."
+      ],
+      "crate": [
+        "Your {material}, {quality}. The trees were heavy this year; the birds took their share.",
+        "I kept all of Mireille's letters. She wrote in green ink and always asked about the weather here.",
+        "Here is your {material}. Use a little: she said it was a spark, not a fire."
+      ]
+    },
+    {
+      "id": "virginia",
+      "from": "Earl Whitfield",
+      "about": "His family runs a cedar mill in Virginia.",
+      "first": [
+        "Hello there,",
+        "Our mill sold cedarwood oil to your grandmother for years. She wrote once to say it smelled like the inside of a pencil box, and my dad framed the letter.",
+        "We still distill the sawdust from the mill. Want some?"
+      ],
+      "reply": [
+        "Glad to have you. The mill runs all year, so the oil does too.",
+        "Sign for a batch whenever you like."
+      ],
+      "crate": [
+        "Your {material}, {quality}. Sawdust in the packing, sorry, it gets everywhere.",
+        "The framed letter is still on the office wall. People ask about it.",
+        "Here's your {material}. Dry and steady, like Mireille said a good base should be."
+      ]
+    },
+    {
+      "id": "indonesia",
+      "from": "Teuku Hasan",
+      "about": "A patchouli grower in Aceh, Sumatra.",
+      "first": [
+        "Greetings,",
+        "Your grandmother bought our patchouli for many years. She always asked for the oldest oil we had and paid extra to wait for it.",
+        "Our fields are planted again. Would the shop like our oil?"
+      ],
+      "reply": [
+        "We are glad. The leaves are dried before we distill them, and the oil grows better with age.",
+        "Sign for a harvest any time of year."
+      ],
+      "crate": [
+        "Your {material}, {quality}. Keep it somewhere dark and it will thank you.",
+        "She once wrote that young patchouli is like a loud guest who becomes good company late in the evening.",
+        "Here is your {material}. My son labelled it with the date, so you know how long it has been resting."
+      ]
+    },
+    {
+      "id": "balkans",
+      "from": "Mirela Hodžić",
+      "about": "She gathers oakmoss in the Balkan forests.",
+      "first": [
+        "Dear friend,",
+        "I gathered oakmoss for Mireille in the damp months, when the lichen is thick on the oaks. She said our moss smelled like the forest floor after rain.",
+        "Will you want it again?"
+      ],
+      "reply": [
+        "Good. We gather from autumn into spring, while it's damp.",
+        "Sign for a harvest in season and I'll send it to be extracted."
+      ],
+      "crate": [
+        "Your {material}, {quality}. The forest was very wet this year.",
+        "Mireille warned me never to let anyone tell her how much oakmoss she was allowed. Then she used it very carefully anyway.",
+        "Here is your {material}. Dark and green and a little salty, the way she liked it."
+      ]
+    },
+    {
+      "id": "oman",
+      "from": "Salim",
+      "about": "His family harvests frankincense in Dhofar.",
+      "first": [
+        "Peace be with you,",
+        "Your grandmother bought our frankincense. She said the white tears smelled of lemons and old churches at the same time.",
+        "The trees are tapped again this season. Shall I write when the resin is ready?"
+      ],
+      "reply": [
+        "It is agreed. The resin is collected over weeks as it hardens on the trees.",
+        "Sign for a harvest in season and I'll send what we gather."
+      ],
+      "crate": [
+        "Your {material}, {quality}. The wind was hot and the resin set quickly.",
+        "My father remembers Mireille's letters. She drew a small tree at the bottom of every one.",
+        "Here is your {material}. Burn a tear one evening and think of her."
+      ]
+    },
+    {
+      "id": "haiti",
+      "from": "Marie-Ange Pierre",
+      "about": "A vetiver farmer near Les Cayes, Haiti.",
+      "first": [
+        "Bonjou,",
+        "My family has grown vetiver for perfumers for three generations, and your grandmother was one of the kindest. She sent a parcel of books for the school every Christmas.",
+        "We dig the roots all year. Shall we send them again?"
+      ],
+      "reply": [
+        "We are so happy. Vetiver is dug all year round, so sign for a harvest whenever you like.",
+        "The children ask if the books will come again. No pressure!"
+      ],
+      "crate": [
+        "Your {material}, {quality}. Earthy and smoky, the way the roots should be.",
+        "We still have Mireille's books in the school, with her name inside the covers.",
+        "Here is your {material}. It lasts and lasts; she called it the floor every perfume stands on."
+      ]
+    },
+    {
+      "id": "pacific-northwest",
+      "from": "Dana Holt",
+      "about": "She distills fir needles in the Pacific Northwest.",
+      "first": [
+        "Hi,",
+        "I never met your grandmother, but she was my first customer. She found our fir needle oil at a trade fair and wrote me a two-page letter about it.",
+        "We're still distilling the forest's prunings. Interested?"
+      ],
+      "reply": [
+        "Great! We distill all year from what the foresters cut back.",
+        "Sign for a batch whenever you want."
+      ],
+      "crate": [
+        "Your {material}, {quality}. Smells like the whole forest got into the truck.",
+        "I still have her two-page letter. Page two was mostly about my handwriting.",
+        "Here's your {material}. Bright and green at the top, like walking into the trees."
+      ]
+    },
+    {
+      "id": "assam",
+      "from": "Anjali Bora",
+      "about": "Her family's tea garden is in Assam.",
+      "first": [
+        "Namaskar,",
+        "Your grandmother was the only perfumer who bought our tea for its smell rather than its taste. She asked us to send the leaves from the second flush.",
+        "Would you like our tea again?"
+      ],
+      "reply": [
+        "We'd be glad to. Tea is plucked in flushes from spring to late autumn.",
+        "Sign for a harvest in season and I'll send our best."
+      ],
+      "crate": [
+        "Your {material}, {quality}. The rains came early; the leaves were full.",
+        "Mireille once sent us a little bottle of the perfume she made with our tea. My grandmother wore it to weddings.",
+        "Here is your {material}. Malty and warm, she said, like toast in a library."
+      ]
+    },
+    {
+      "id": "madagascar",
+      "from": "Hery Rakoto",
+      "about": "A vanilla grower and curer in the SAVA region of Madagascar.",
+      "first": [
+        "Salama,",
+        "We cured vanilla for your grandmother for many years. She was patient: she never asked us to hurry the curing.",
+        "The vines are flowering. Will you want our pods again?"
+      ],
+      "reply": [
+        "Good. The pods need months of curing before they are ready, so plan ahead.",
+        "Sign for a harvest in season and we will cure it slowly for you."
+      ],
+      "crate": [
+        "Your {material}, {quality}. Months in the sun and the boxes, and worth it.",
+        "Mireille said real vanilla has a hundred voices and the molecule only one. She loved them both.",
+        "Here is your {material}. Every pod was turned by hand."
+      ]
+    },
+    {
+      "id": "grasse",
+      "from": "Famille Mercier",
+      "about": "Flower growers in Grasse: jasmine, rose and tuberose.",
+      "first": [
+        "Chère famille,",
+        "Mireille learned her trade here, picking jasmine for our grandfather before she ever owned a shop. She came back every August and picked a row herself, for luck.",
+        "Our flowers are yours again if you want them."
+      ],
+      "reply": [
+        "Welcome back. The roses come in May, the jasmine and tuberose in late summer.",
+        "Sign for a harvest in season. Jasmine is picked at dawn, so we'll start early."
+      ],
+      "crate": [
+        "Your {material}, {quality}. Picked before the sun was high.",
+        "There's still a row we call 'Mireille's row'. Nobody else picks it.",
+        "Here is your {material}. It took a great many flowers to make so little."
+      ]
+    },
+    {
+      "id": "bulgaria",
+      "from": "Stoyan Petrov",
+      "about": "A rose picker in Bulgaria's Valley of Roses.",
+      "first": [
+        "Dear friend,",
+        "Mireille bought our rose oil, a few grams a year, because that was all she could afford. She said a few grams of ours was worth a litre of anyone else's.",
+        "The roses will bloom again in late spring. Shall I send some?"
+      ],
+      "reply": [
+        "Good! The season is short, in late spring, and we pick in the early morning.",
+        "Sign for a harvest while the roses are open."
+      ],
+      "crate": [
+        "Your {material}, {quality}. The whole valley picked for three weeks.",
+        "Mireille visited once for the festival. She danced, which surprised everyone.",
+        "Here is your {material}. Small bottle, many flowers."
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "title": "The shop reopens",
+      "text": "Spring on the square. Her letters have started to come: growers and a chemist who supplied her for years, wondering whether the shop will buy from them again. Answer them one at a time.",
+      "letters": [
+        "calabria",
+        "provence",
+        "andalusia",
+        "chemist"
+      ]
+    },
+    {
+      "title": "Letters from far away",
+      "text": "Summer. Word has got around that Mireille's shop is open. Growers further afield are writing too.",
+      "letters": [
+        "reunion",
+        "virginia",
+        "indonesia"
+      ]
+    },
+    {
+      "title": "The damp months",
+      "text": "Autumn. The forests are wet and the resins are hardening. More of her old suppliers write.",
+      "letters": [
+        "balkans",
+        "oman",
+        "haiti"
+      ]
+    },
+    {
+      "title": "A quiet season",
+      "text": "Winter, and the shop is warm. The last of the far-off growers find your address.",
+      "letters": [
+        "pacific-northwest",
+        "assam",
+        "madagascar"
+      ]
+    },
+    {
+      "title": "The flowers",
+      "text": "A year since you opened the shop. Grasse and the Valley of Roses, where she learned and where she splurged, write at last.",
+      "letters": [
+        "grasse",
+        "bulgaria"
+      ]
+    }
+  ]
+}
