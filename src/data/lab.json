@@ -1,0 +1,232 @@
+{
+  "runCost": 10,
+  "levels": [
+    {
+      "name": "A bench chromatograph",
+      "coins": 150,
+      "reputation": 20,
+      "reveal": 2,
+      "percent": false,
+      "about": "Separates a sample and shows its two biggest components."
+    },
+    {
+      "name": "A longer column",
+      "coins": 300,
+      "reputation": 35,
+      "reveal": 4,
+      "percent": false,
+      "about": "Better separation: the four biggest components."
+    },
+    {
+      "name": "A mass spectrometer",
+      "coins": 600,
+      "reputation": 50,
+      "reveal": 99,
+      "percent": true,
+      "about": "Identifies every component, with rough percentages."
+    }
+  ],
+  "challenges": [
+    {
+      "id": "eau-imperiale",
+      "name": "Eau Impériale du Square",
+      "era": "An 18th-century eau de cologne",
+      "structure": {
+        "top": "bergamot, lemon, neroli, petitgrain",
+        "heart": "rosemary, lavender",
+        "base": "a trace of resin"
+      },
+      "about": "The classic cologne: a generous citrus splash, a bitter-orange flower heart and herbs, with almost no base. Fresh, bright and gone within a couple of hours.",
+      "reputation": 4,
+      "target": {
+        "formula": {
+          "bergamot": 35,
+          "lemon": 20,
+          "neroli": 10,
+          "petitgrain": 15,
+          "rosemary": 10,
+          "lavender": 8,
+          "benzoin": 2
+        }
+      },
+      "reward": {
+        "coins": 40,
+        "reputation": 2
+      }
+    },
+    {
+      "id": "green-bracken",
+      "name": "Green Bracken",
+      "era": "A late-19th-century fougère",
+      "structure": {
+        "top": "bergamot, lavender",
+        "heart": "geranium, clary sage",
+        "base": "coumarin, oakmoss, a dry wood"
+      },
+      "about": "The fougère, the 'fern' style born when coumarin was first made in a laboratory: fresh lavender over sweet hay and moss.",
+      "reputation": 22,
+      "target": {
+        "formula": {
+          "lavender": 30,
+          "bergamot": 20,
+          "geranium": 10,
+          "clary-sage": 5,
+          "coumarin": 10,
+          "oakmoss": 10,
+          "cedarwood-virginia": 10,
+          "tonka-bean": 5
+        },
+        "dilutions": {
+          "oakmoss": 10
+        }
+      },
+      "reward": {
+        "coins": 60,
+        "reputation": 3
+      }
+    },
+    {
+      "id": "mousse-dor",
+      "name": "Mousse d'Or",
+      "era": "A chypre in the style of 1917",
+      "structure": {
+        "top": "bergamot",
+        "heart": "rose, jasmine",
+        "base": "labdanum, oakmoss, patchouli"
+      },
+      "about": "The chypre: a bright citrus top over a dark, mossy, resinous base, with a floral heart between.",
+      "reputation": 30,
+      "target": {
+        "formula": {
+          "bergamot": 30,
+          "rose-damascena": 10,
+          "jasmine": 5,
+          "labdanum": 20,
+          "oakmoss": 15,
+          "patchouli": 15,
+          "vetiver": 5
+        },
+        "dilutions": {
+          "oakmoss": 1
+        }
+      },
+      "reward": {
+        "coins": 80,
+        "reputation": 4
+      }
+    },
+    {
+      "id": "ambre-lointain",
+      "name": "Ambre Lointain",
+      "era": "An amber of the 1920s",
+      "structure": {
+        "top": "bergamot",
+        "heart": "heliotropin, a little rose",
+        "base": "labdanum, vanillin, benzoin, tonka"
+      },
+      "about": "The great amber style: citrus on top of a deep, sweet, powdery resin and vanilla base that lasts all night.",
+      "reputation": 30,
+      "target": {
+        "formula": {
+          "bergamot": 20,
+          "heliotropin": 8,
+          "rose-centifolia": 2,
+          "labdanum": 25,
+          "vanillin": 20,
+          "benzoin": 15,
+          "tonka-bean": 10
+        }
+      },
+      "reward": {
+        "coins": 80,
+        "reputation": 4
+      }
+    },
+    {
+      "id": "ballroom",
+      "name": "Ballroom Aldehydes",
+      "era": "An aldehydic floral of the 1920s",
+      "structure": {
+        "top": "aldehydes C-10, C-11 and C-12, bergamot",
+        "heart": "rose, jasmine, ylang-ylang, orris",
+        "base": "sandalwood, vanillin, a soft musk"
+      },
+      "about": "A sparkle of fatty aldehydes over a rich bouquet of flowers and powder, on a soft, creamy base.",
+      "reputation": 40,
+      "target": {
+        "formula": {
+          "aldehyde-c10": 2,
+          "aldehyde-c11": 3,
+          "aldehyde-c12-lauric": 3,
+          "bergamot": 12,
+          "rose-centifolia": 12,
+          "jasmine": 12,
+          "ylang-ylang": 10,
+          "orris": 6,
+          "sandalwood": 20,
+          "vanillin": 10,
+          "exaltolide": 10
+        }
+      },
+      "reward": {
+        "coins": 100,
+        "reputation": 5
+      }
+    },
+    {
+      "id": "ocean-linen",
+      "name": "Ocean Linen",
+      "era": "A fresh musk of the 1990s",
+      "structure": {
+        "top": "bergamot, dihydromyrcenol",
+        "heart": "Hedione, Helional",
+        "base": "Galaxolide, Iso E Super"
+      },
+      "about": "Clean, transparent and airy: a fresh, metallic citrus over watery jasmine and laundry musk.",
+      "reputation": 46,
+      "target": {
+        "formula": {
+          "bergamot": 15,
+          "dihydromyrcenol": 15,
+          "hedione": 25,
+          "helional": 5,
+          "galaxolide": 25,
+          "iso-e-super": 15
+        }
+      },
+      "reward": {
+        "coins": 100,
+        "reputation": 5
+      }
+    },
+    {
+      "id": "modern-woods",
+      "name": "Modern Woods",
+      "era": "A woody amber of the 2000s",
+      "structure": {
+        "top": "pink pepper, bergamot",
+        "heart": "cedarwood",
+        "base": "Iso E Super, Ambroxan, a sandalwood molecule"
+      },
+      "about": "Huge, dry and radiant: woody-amber molecules in bold doses, lifted with pepper.",
+      "reputation": 65,
+      "target": {
+        "formula": {
+          "pink-pepper": 5,
+          "bergamot": 10,
+          "cedarwood-virginia": 15,
+          "iso-e-super": 40,
+          "ambroxan": 20,
+          "javanol": 10
+        },
+        "dilutions": {
+          "javanol": 10
+        }
+      },
+      "reward": {
+        "coins": 120,
+        "reputation": 6
+      }
+    }
+  ]
+}

@@ -21,21 +21,23 @@ import { processStats } from '../game/upgrades';
 import { CHEMIST, chapterInfo, inTransit, routeById, routeOpen, unreadLetters, type Letter } from '../game/routes';
 import { newsFor, ownedMaterials } from '../game/world';
 import { DILUTIONS } from '../game/blend';
+import { lab } from '../game/lab';
 import { DILUTION_BATCH_GRAMS } from '../game/sourcing';
 import { currentRank, nowGame, state } from '../state';
-import { esc } from './html';
+import { esc, starsText } from './html';
 
 // The back room: crates that have arrived, letters from her supply network, the sourcing
 // map, harvests in progress, the supplier, and the stock room. Times show as real time
 // left at the current speed.
 
-export type BackroomTab = 'letters' | 'map' | 'harvests' | 'supplier' | 'stock';
+export type BackroomTab = 'letters' | 'map' | 'harvests' | 'supplier' | 'stock' | 'lab';
 const TABS: { id: BackroomTab; label: string }[] = [
   { id: 'letters', label: 'Letters' },
   { id: 'map', label: 'Map' },
   { id: 'harvests', label: 'Harvests' },
   { id: 'supplier', label: 'Supplier' },
   { id: 'stock', label: 'Stock' },
+  { id: 'lab', label: 'Lab' },
 ];
 const SPEEDS = [1, 60, 600];
 const SHORT_MONTHS = MONTH_NAMES.map((m) => m.slice(0, 3));
@@ -50,7 +52,7 @@ export function backroomScreen(): string {
   const count = (id: BackroomTab) =>
     id === 'harvests' && s.contracts.length + s.batches.length + s.shipments.length > 0 ? ` · ${s.contracts.length + s.batches.length + s.shipments.length}` : id === 'letters' && unread > 0 ? ` · ${unread}` : '';
   const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="backroom-tab" data-value="${t.id}">${t.label}${count(t.id)}</button>`).join('');
-  const body = tab === 'letters' ? lettersTab() : tab === 'map' ? mapTab(now) : tab === 'harvests' ? harvestsTab(now) : tab === 'supplier' ? supplierTab() : stockTab(now);
+  const body = tab === 'letters' ? lettersTab() : tab === 'map' ? mapTab(now) : tab === 'harvests' ? harvestsTab(now) : tab === 'supplier' ? supplierTab() : tab === 'lab' ? labTab() : stockTab(now);
   const speed = save.clock!.speed;
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>
@@ -314,4 +316,43 @@ function stockTab(now: number): string {
     ? `Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula. A dilution is made with odourless solvent: ${DILUTION_BATCH_GRAMS} g at 10% takes 1 g of the neat material, at 1% only a tenth of a gram.`
     : `Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula. Junior perfumers can make dilutions here.`;
   return `<p class="muted small">${help}</p><ul class="list cards">${rows}</ul>`;
+}
+
+/** The analysis lab and its reconstruction challenges. */
+function labTab(): string {
+  const l = state.save.lab!;
+  const money = state.save.customers!.money;
+  const reputation = state.save.customers!.reputation;
+  const current = l.level > 0 ? lab.levels[l.level - 1] : null;
+  const next = lab.levels[l.level];
+  const equipment = `<li class="card"><div><strong>${current ? esc(current.name) : 'No equipment yet'}</strong></div>
+    ${current ? `<p class="muted small">${esc(current.about)}</p>` : '<p class="muted small">A chromatograph separates a perfume into its components, so you can see what it is made of.</p>'}
+    ${next ? `<div class="row-between"><span class="muted small">${esc(next.name)}: ${esc(next.about)}</span>${reputation < next.reputation ? `<span class="muted small">Reputation ${next.reputation}</span>` : `<button class="primary" data-action="lab-upgrade" ${money < next.coins ? 'disabled' : ''}>${next.coins} coins</button>`}</div>` : ''}
+  </li>`;
+  const challenges = lab.challenges
+    .filter((c) => reputation >= c.reputation)
+    .map((c) => {
+      const a = l.analyses[c.id];
+      const best = l.challenges[c.id]?.best ?? 0;
+      const result = a
+        ? `<p class="small"><strong>Analysis:</strong> ${a.components.map((x) => `${esc(materialsById.get(x.material)?.name ?? x.material)}${x.percent !== undefined ? ` ${x.percent}%` : ''}`).join(', ')}${a.level < lab.levels.length ? ' …' : ''}</p>`
+        : '';
+      return `<li class="card"><div><strong>${esc(c.name)}</strong> <span class="muted small">${esc(c.era)}</span>${best ? ` <span class="stars small">${starsText(best)}</span>` : ''}</div>
+        <p class="small">${esc(c.about)}</p>
+        <p class="muted small">Top: ${esc(c.structure.top)}. Heart: ${esc(c.structure.heart)}. Base: ${esc(c.structure.base)}.</p>
+        ${result}
+        <div class="row-between">
+          <button class="link" data-action="lab-run" data-id="${esc(c.id)}" ${l.level === 0 || money < lab.runCost ? 'disabled' : ''}>Analyse the sample · ${lab.runCost} coins</button>
+          <button class="primary" data-action="challenge-compose" data-id="${esc(c.id)}">Reconstruct</button>
+        </div>
+        <p class="muted small">Three stars earns ${c.reward.coins} coins and reputation +${c.reward.reputation}, once.</p>
+      </li>`;
+    })
+    .join('');
+  const upcoming = lab.challenges.filter((c) => reputation < c.reputation).length;
+  return `<p class="muted small">Reconstruct well-known perfume styles from their public structure (the names are the shop's own). Analysing a sample shows its biggest components; better equipment shows more.</p>
+    <ul class="list cards">${equipment}</ul>
+    <h2>Reconstructions</h2>
+    <ul class="list cards">${challenges || '<li class="muted">The first reconstruction comes at reputation 4.</li>'}</ul>
+    ${upcoming ? `<p class="muted small">${upcoming} more come with reputation.</p>` : ''}`;
 }

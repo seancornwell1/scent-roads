@@ -100,10 +100,11 @@
     {
       "id": "master",
       "name": "Master perfumer",
-      "about": "The town's perfumer, as she was. (Formulas in 1000 parts come later.)",
+      "about": "The town's perfumer, as she was: formulas in up to 1000 parts, for the finest balance.",
       "wearableParts": [
         10,
-        100
+        100,
+        1000
       ],
       "dilutions": true,
       "bases": true,

@@ -11,12 +11,13 @@ import { newRoutesState } from './game/routes';
 import { newLearningState } from './game/learning';
 import { newSignatureState } from './game/signature';
 import { newAwardsState } from './game/awards';
+import { newLabState } from './game/lab';
 import { newUpgradeState } from './game/upgrades';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -31,13 +32,16 @@ export interface UiState {
   /** The customer you're composing for at the organ (or "exam" for a rank exam's accord). */
   orderId: string | null;
   /** Which tab of the back room is showing. */
-  backroomTab: 'letters' | 'map' | 'harvests' | 'supplier' | 'stock';
+  backroomTab: 'letters' | 'map' | 'harvests' | 'supplier' | 'stock' | 'lab';
   /** Which tab of the shop-upgrades panel is showing. */
   upgradesTab: 'furniture' | 'display' | 'processing';
   /** A spot picked in the furniture tab, waiting for something to place on it. */
   pickSpot: string | null;
   /** Which page of the character creator is showing (a slot id). */
   creatorTab: string;
+  /** The formula whose sheet is open, and the batch size (grams of concentrate). */
+  sheetId: string | null;
+  sheetBatch: number;
   /** Parts added per tap at the organ (1 at 10 parts; 1, 5 or 10 at 100 parts). */
   step: number;
   /** Which tab of the formula book is showing, and which compendium page is open. */
@@ -72,6 +76,7 @@ function initSave(): SaveData {
   save.draftDilutions ??= {};
   save.signature ??= newSignatureState();
   save.awards ??= newAwardsState();
+  save.lab ??= newLabState();
   save.upgrades ??= newUpgradeState();
   save.display ??= newDisplayState();
   save.news ??= {};
@@ -83,7 +88,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, sheetId: null, sheetBatch: 10, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
 };
 
 let render = () => {};

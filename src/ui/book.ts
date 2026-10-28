@@ -121,6 +121,7 @@ export function bookScreen(): string {
             ${f.accords.length ? `<div class="chips">${f.accords.map((id) => `<span class="chip on">${esc(content.accords.find((a) => a.id === id)?.name ?? id)}</span>`).join('')}</div>` : ''}
             <div class="row-between">
               <button class="link danger" data-action="delete-formula" data-id="${esc(f.id)}">Delete</button>
+              <button class="link" data-action="open-sheet" data-id="${esc(f.id)}">Formula sheet</button>
               <button class="primary" data-action="load-formula" data-id="${esc(f.id)}">Open on the organ</button>
             </div>
           </li>`,
@@ -150,9 +151,17 @@ export function bookScreen(): string {
         : tab === 'accords'
           ? `<ul class="list cards">${accords}</ul>`
           : tab === 'formulas'
-            ? `<ul class="list cards">${formulas}</ul>${bases ? `<h2>My bases</h2><ul class="list cards">${bases}</ul>` : ''}`
+            ? `<ul class="list cards">${formulas}</ul>${bases ? `<h2>My bases</h2><ul class="list cards">${bases}</ul>` : ''}${importBox()}`
             : `<ul class="list cards">${reviews || '<li class="muted">No reviews yet. Customers come back to tell you how their perfume wore.</li>'}</ul>`;
   return `${header('Formula book')}
     <nav class="tab-chips">${tabs}</nav>
     <main class="book">${body}</main>`;
+}
+
+/** Paste one of your real formulas to see how it would wear. */
+function importBox(): string {
+  return `<h2>Import a formula</h2>
+    <p class="muted small">Paste one of your own formulas, one material a line: "Bergamot, 30" or "Oakmoss 2 at 10%". A formula sheet from this game works too. It opens on the organ so you can see its drydown.</p>
+    <textarea id="formula-import" rows="5" placeholder="Bergamot, 30&#10;Lavender, 20&#10;Oakmoss 2 at 10%"></textarea>
+    <div class="row-between"><span></span><button class="primary" data-action="import-formula">Open on the organ</button></div>`;
 }

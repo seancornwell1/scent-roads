@@ -381,3 +381,17 @@ The Town Perfume Awards (`src/game/awards.ts`): an open brief once a year.
 | `weights` | How the four judges' scores add up: `structure` (top, heart and base present; a recognisable accord), `balance` (no one material drowning a stage, nothing harsh, lasts the day), `originality` (unlike every brief and lesson, and not too simple), `cost` |
 | `costScale` | Euros per 100 g at which the cost score reaches zero |
 | `prizes` | Highest `min` reached wins: `name`, `coins`, `reputation` |
+
+## `lab.json`
+
+The analysis lab and reconstruction challenges (`src/game/lab.ts`).
+
+| Field | Meaning |
+| ----- | ------- |
+| `runCost` | Coins to run one sample |
+| `levels` | Equipment bought in order: `name`, `coins`, `reputation`, `reveal` (how many of the biggest components a run shows), `percent` (whether it shows rough percentages), `about` |
+| `challenges` | Well-known perfume styles under invented names: `id`, `name`, `era`, `structure` (`top`, `heart`, `base`, in words), `about`, `reputation` it appears at, `target` (100 parts, with `dilutions`; a test checks it's safe and not harsh), and `reward` (`coins`, `reputation`) for the first three-star reconstruction |
+
+The lab shows materials, not molecules: a natural shows up as itself, which a real chromatograph wouldn't do.
+
+Formula sheets and import (`src/game/sheet.ts`) need no data: a sheet lists each material's dilution, parts, share and grams for a batch of concentrate, and import reads lines like "Bergamot, 30", "Oakmoss 2 at 10%" or a sheet's own lines.

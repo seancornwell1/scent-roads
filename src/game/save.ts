@@ -8,6 +8,7 @@ import type { Base, Dilutions, Entry } from './blend';
 import type { LearningState } from './learning';
 import type { ExamState } from './ranks';
 import type { AwardsState } from './awards';
+import type { LabState } from './lab';
 import type { RoutesState } from './routes';
 import type { SignatureState } from './signature';
 import type { StoryState } from './story';
@@ -79,6 +80,8 @@ export interface SaveData {
   signature?: SignatureState;
   /** The yearly awards: your entries and the judges' verdicts. */
   awards?: AwardsState;
+  /** The analysis lab and reconstruction challenges (Phase F). */
+  lab?: LabState;
 }
 
 export type { Entry };

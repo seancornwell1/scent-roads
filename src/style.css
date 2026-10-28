@@ -440,3 +440,9 @@ textarea {
 .formula-name { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .dilution-chips { display: flex; gap: 4px; flex-wrap: nowrap; }
 .dilution-chips .chip { min-height: 26px; padding: 0 8px; font-size: 0.75rem; }
+
+/* Formula sheet. */
+.sheet-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 8px 0; }
+.sheet-table th, .sheet-table td { text-align: left; padding: 4px 2px; border-bottom: 1px solid var(--line); }
+.sheet-table .num { text-align: right; white-space: nowrap; }
+#formula-import { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }

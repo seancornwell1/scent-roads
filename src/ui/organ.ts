@@ -6,6 +6,7 @@ import { drydown } from '../game/evaporation';
 import { findBrief, type Brief } from '../game/clients';
 import { rankById } from '../game/ranks';
 import { signature } from '../game/signature';
+import { challengeBrief, lab } from '../game/lab';
 import { LAYERS, type Material } from '../game/types';
 import { missingFor, qualityWord, stockOf, stockQuality } from '../game/sourcing';
 import { nextTier } from '../game/unlocks';
@@ -19,7 +20,10 @@ import { drydownGraph, familyName } from './graph';
 import { esc, formatParts, header } from './html';
 
 const LAYER_NAMES = { top: 'Top', heart: 'Heart', base: 'Base' } as const;
-const STEPS = [1, 5, 10];
+/** Parts per tap offered, by the largest total your rank allows. */
+export function stepsFor(max: number): number[] {
+  return max >= 1000 ? [1, 10, 50, 100] : max > 10 ? [1, 5, 10] : [1];
+}
 
 export function organScreen(): string {
   const { ui } = state;
@@ -40,6 +44,10 @@ export function organScreen(): string {
 export function currentOrder(): { name: string; brief: Brief; exam: boolean } | null {
   const { ui, save } = state;
   if (ui.orderId === 'signature') return { name: 'her', brief: signature.brief, exam: true };
+  if (ui.orderId?.startsWith('challenge:')) {
+    const c = lab.challenges.find((x) => `challenge:${x.id}` === ui.orderId);
+    return c ? { name: c.name, brief: challengeBrief(c), exam: true } : null;
+  }
   if (ui.orderId === 'exam') {
     const brief = save.exam ? rankById(save.exam.rank).exam?.accord : undefined;
     return brief ? { name: 'the examiners', brief, exam: true } : null;
@@ -68,14 +76,14 @@ function orderBanner(): string {
   const page = brief.page ? pageById(brief.page) : undefined;
   const why = [...blockers(check), ...(missing.length ? [`Not enough ${missing.join(', ')} in stock: order, harvest or dilute more in the back room.`] : [])];
   return `<div class="order">
-    <p class="small"><strong>${ui.orderId === 'signature' ? 'Her perfume' : order.exam ? 'Exam' : `For ${esc(order.name)}`}:</strong> “${esc(brief.memory)}”</p>
+    <p class="small"><strong>${ui.orderId === 'signature' ? 'Her perfume' : ui.orderId?.startsWith('challenge:') ? `Reconstruct ${esc(order.name)}` : order.exam ? 'Exam' : `For ${esc(order.name)}`}:</strong> “${esc(brief.memory)}”</p>
     ${hints ? `<p class="muted">${hints}</p>` : ''}
     ${brief.budget !== undefined ? `<p class="small">Budget: <strong>€${brief.budget}</strong> per 100 g of concentrate · this costs €${check.cost.toFixed(2)}</p>` : ''}
     ${page ? `<details class="small"><summary>Her page</summary><ul class="list cards">${pageCard(page, save.story!, false)}</ul></details>` : ''}
     ${why.map((w) => `<p class="small warn-text">${esc(w)}</p>`).join('')}
     <div class="row-between">
       <button class="link" data-action="drop-order">Not now</button>
-      <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>${ui.orderId === 'signature' ? 'This is hers' : order.exam ? 'Hand in to the examiners' : `Hand over to ${esc(order.name)}`}</button>
+      <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>${ui.orderId === 'signature' ? 'This is hers' : ui.orderId?.startsWith('challenge:') ? 'Compare with the sample' : order.exam ? 'Hand in to the examiners' : `Hand over to ${esc(order.name)}`}</button>
     </div>
   </div>`;
 }
@@ -105,8 +113,9 @@ function partsMeter(): string {
   const allowed = currentRank().wearableParts;
   const target = allowed.find((t) => t >= total) ?? allowed[allowed.length - 1];
   const note = allowed.includes(total) ? 'A full formula, ready to wear.' : total > target ? `Too many: take ${formatParts(total - target)} out.` : `${formatParts(target - total)} more to go for ${target} parts.`;
-  const steps = allowed[allowed.length - 1] > 10
-    ? `<div class="row-between"><span class="muted small">Parts per tap</span><div class="chips">${STEPS.map((n) => `<button class="chip ${state.ui.step === n ? 'on' : ''}" data-action="step" data-step="${n}">${n}</button>`).join('')}</div></div>`
+  const options = stepsFor(allowed[allowed.length - 1]);
+  const steps = options.length > 1
+    ? `<div class="row-between"><span class="muted small">Parts per tap</span><div class="chips">${options.map((n) => `<button class="chip ${state.ui.step === n ? 'on' : ''}" data-action="step" data-step="${n}">${n}</button>`).join('')}</div></div>`
     : '';
   return `<div class="row-between"><span class="muted small">${note}</span><strong>${formatParts(total)} of ${allowed.join(' or ')} parts</strong></div>${steps}`;
 }
@@ -232,7 +241,7 @@ function formulaTab(): string {
   const accordLine = accords.length
     ? accords.map((a) => `<span class="chip on">${esc(a.name)}</span>`).join('')
     : '<span class="muted small">No accord recognized yet.</span>';
-  const scale = total === 10 && rank.wearableParts.includes(100) ? '<button class="link" data-action="scale-up">Scale to 100 parts</button>' : '';
+  const scale = (total === 10 || total === 100) && rank.wearableParts.includes(total * 10) ? `<button class="link" data-action="scale-up">Scale to ${total * 10} parts</button>` : '';
   return `${partsMeter()}
     <ul class="list">${baseRows}${materialRows}</ul>
     ${scale}

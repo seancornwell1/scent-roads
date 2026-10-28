@@ -31,6 +31,10 @@ import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, lookOf, reactionScreen, unlockScreen } from './ui/customer';
 import { chapterScreen } from './ui/chapter';
+import { sheetData, sheetScreen } from './ui/sheet';
+import { lab, recordChallenge, runSample, upgradeLab } from './game/lab';
+import { parseFormula } from './game/sheet';
+import { feedbackLines } from './game/feedback';
 import { epilogueScreen, signatureScreen } from './ui/signature';
 import { cluesFound, jarReady, signature, startJar } from './game/signature';
 import { awards, entriesOpen, settleAwards, yearAt } from './game/awards';
@@ -286,7 +290,7 @@ function render(): void {
 
   // Don't redraw a panel under someone typing (a note, a formula's name): it would lose
   // what they've typed. Their change is saved when they leave the box.
-  const typing = document.activeElement?.matches('textarea[data-note], #save-name') && panelRoot.contains(document.activeElement);
+  const typing = document.activeElement?.matches('textarea[data-note], #save-name, #formula-import, #import-text') && panelRoot.contains(document.activeElement);
   if (typing && screen !== 'shop') return;
   const panel = panelRoot.querySelector<HTMLElement>('.panel');
   const scroll = panel && !scrollToTop ? panel.scrollTop : 0;
@@ -333,6 +337,8 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return signatureScreen();
     case 'epilogue':
       return epilogueScreen();
+    case 'sheet':
+      return sheetScreen();
     case 'unlock':
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
     case 'backroom':
@@ -380,6 +386,11 @@ document.body.addEventListener('change', (event) => {
 document.body.addEventListener('click', (event) => {
   const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
   if (!target) return;
+  // Tapping a button ends any typing (saving a note through its change event), so the panel can redraw.
+  const active = document.activeElement;
+  if (active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement) {
+    if (active !== target && !(active.type === 'file')) active.blur();
+  }
   const { action, id } = target.dataset;
   const { ui, save } = state;
 
@@ -441,6 +452,21 @@ document.body.addEventListener('click', (event) => {
       if (!sellable(check)) {
         ui.toast = blockers(check)[0];
         break;
+      }
+      if (ui.orderId?.startsWith('challenge:')) {
+        // A reconstruction: compared with the sample at once.
+        const challengeId = ui.orderId.slice('challenge:'.length);
+        const result = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
+        const reward = recordChallenge(save.lab!, challengeId, result.stars);
+        if (reward) {
+          save.customers!.money += reward.coins;
+          save.customers!.reputation += reward.reputation;
+        }
+        const words = feedbackLines(result, 3).join(' ');
+        ui.toast = `${'★'.repeat(result.stars)}${'☆'.repeat(3 - result.stars)} ${result.stars >= 3 ? `A faithful reconstruction.${reward ? ` +${reward.coins} coins, reputation +${reward.reputation}.` : ''}` : words}`;
+        ui.orderId = null;
+        ui.backroomTab = 'lab';
+        return openPanel('backroom');
       }
       if (ui.orderId === 'signature') {
         // Her perfume: judged against her last page, using the aged labdanum from her jar.
@@ -561,6 +587,62 @@ document.body.addEventListener('click', (event) => {
       }
       save.awards!.entries[yearAt(now, sourcing.calendarStart)] = { name: formula.name, entries: blend };
       ui.toast = `“${formula.name}” is entered. The judges announce the results when the year turns.`;
+      break;
+    }
+    case 'lab-upgrade': {
+      const why = upgradeLab(save.lab!, save.customers!, save.customers!.reputation);
+      ui.toast = why ?? `The lab now has ${lab.levels[save.lab!.level - 1].name.toLowerCase()}.`;
+      break;
+    }
+    case 'lab-run': {
+      const why = runSample(save.lab!, save.customers!, id!);
+      ui.toast = why;
+      if (!why) sounds.play('glass');
+      break;
+    }
+    case 'challenge-compose':
+      ui.orderId = `challenge:${id}`;
+      ui.organTab = 'materials';
+      return openPanel('organ');
+    case 'open-sheet':
+      ui.sheetId = id!;
+      return openPanel('sheet');
+    case 'sheet-batch':
+      ui.sheetBatch = Number(target.dataset.value);
+      break;
+    case 'sheet-download': {
+      const data = sheetData();
+      if (!data) return;
+      const blob = new Blob([data.text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${data.name.replace(/[^\w -]+/g, '').trim() || 'formula'}.txt`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
+      return;
+    }
+    case 'sheet-copy': {
+      const data = sheetData();
+      if (!data) return;
+      void navigator.clipboard?.writeText(data.text).then(
+        () => ((ui.toast = 'Sheet copied.'), commit()),
+        () => ((ui.toast = 'Copying failed on this device; download it instead.'), commit()),
+      );
+      return;
+    }
+    case 'import-formula': {
+      const text = document.querySelector<HTMLTextAreaElement>('#formula-import')?.value ?? '';
+      const parsed = parseFormula(text, content.materials);
+      if (Object.keys(parsed.parts).length === 0) {
+        ui.toast = parsed.unknown.length ? `Couldn't read: ${parsed.unknown.slice(0, 3).join(', ')}.` : 'Paste a formula first.';
+        break;
+      }
+      ui.screen = 'organ';
+      ui.organTab = 'formula';
+      ui.orderId = null;
+      scrollToTop = true;
+      setDraft(parsed.parts, parsed.dilutions);
+      ui.toast = parsed.unknown.length ? `Opened. Not recognised: ${parsed.unknown.slice(0, 4).join(', ')}.` : 'Opened on the organ: see its drydown below.';
       break;
     }
     case 'exam-compose':
