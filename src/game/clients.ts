@@ -77,7 +77,8 @@ export interface ClientsData {
   scoring: ScoringConfig;
   style: { historySize: number; weight: number };
   /** Reputation for 1, 2 and 3 stars; 3 stars also pays a bonus share of the brief's pay. */
-  economy: { reputationForStars: number[]; threeStarBonus: number };
+  /** Reputation for 1–3 stars; the share of the price paid for 1–3 stars; the 3-star bonus as a share of the price. */
+  economy: { reputationForStars: number[]; payForStars: number[]; threeStarBonus: number };
   lines: {
     impression: Band[];
     stageWords: Band[];

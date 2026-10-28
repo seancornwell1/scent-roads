@@ -146,12 +146,12 @@ export function tick(
   return changed;
 }
 
-/** Gives a waiting customer their perfume: they pay now and come back later with a review. */
+/** Gives a waiting customer their perfume: they pay now (nothing for a one-star perfume) and come back later with a review. */
 export function handOver(s: CustomerState, visitId: string, perfume: { name: string; parts: Formula; entries?: Entry[] }, result: ScoreResult, now: number, data: ClientsData = clients): number {
   const v = s.visits.find((x) => x.id === visitId);
   const brief = v && findBrief(v.briefId, data);
   if (!v || !brief || v.status !== 'waiting') return 0;
-  const paid = Math.round(brief.pay * (v.payMultiplier ?? 1));
+  const paid = Math.round(brief.pay * (v.payMultiplier ?? 1) * (data.economy.payForStars[result.stars - 1] ?? 1));
   s.money += paid;
   v.perfume = { ...perfume, handedAt: now, paid };
   v.result = result;

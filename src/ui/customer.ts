@@ -142,8 +142,8 @@ export function reactionScreen(visit: Visit): string {
       <p class="muted small">They try “${esc(visit.perfume!.name)}” on their wrist…</p>
       <blockquote class="memory">“${esc(bandText(clients.lines.impression, result.impression))}”</blockquote>
       ${first}
-      <p>They pay <strong>${visit.perfume!.paid} coins</strong>.</p>
-      <p class="muted small">They'll come back to tell you how it wore through the day, in about ${minutes < 90 ? `${minutes} minutes` : `${Math.round(minutes / 60)} hours`}. Three stars earns a bonus.</p>
+      ${visit.perfume!.paid > 0 ? `<p>They pay <strong>${visit.perfume!.paid} coins</strong>.</p>` : `<p>It isn't what they came for, so they won't pay for it. The materials are spent all the same.</p>`}
+      <p class="muted small">They'll come back to tell you how it wore through the day, in about ${minutes < 90 ? `${minutes} minute${minutes === 1 ? '' : 's'}` : `${Math.round(minutes / 60)} hours`}. Three stars earns a bonus.</p>
       <div class="row-between"><span></span><button class="primary" data-action="close-panel">Goodbye!</button></div>
     </main>`;
 }

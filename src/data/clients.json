@@ -46,6 +46,11 @@
       1,
       3
     ],
+    "payForStars": [
+      0,
+      1,
+      1
+    ],
     "threeStarBonus": 0.5
   },
   "lines": {

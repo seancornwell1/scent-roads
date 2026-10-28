@@ -34,6 +34,15 @@ describe('customer visits', () => {
     for (const v of s.visits) expect(canAnswer(all.find((b) => b.id === v.briefId)!, bench)).toBe(true);
   });
 
+  it('pay nothing for a one-star perfume, but still come back with a review', () => {
+    const s = newCustomerState(0);
+    tick(s, 0, bench, seededRandom(2));
+    const v = s.visits[0];
+    expect(handOver(s, v.id, { name: 'Test', parts: { bergamot: 10 } }, result(1), 1000)).toBe(0);
+    expect(s.money).toBe(0);
+    expect(v.status).toBe('away');
+  });
+
   it('pay on hand-over, return with a review later, and change reputation; 3 stars earns a bonus', () => {
     const s = newCustomerState(0);
     tick(s, 0, bench, seededRandom(2));

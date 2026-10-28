@@ -162,7 +162,7 @@ Customers, briefs and how perfumes are judged. Logic in `src/game/customers.ts` 
 | ----- | ------- |
 | `timing` | `arrivalEveryRealMinutes`, `maxInShop`, `reviewAfterGameHours` (how long a perfume is worn before the review), `regularReturnsAfterGameHours`, `browseSeconds` `[min, max]`, `regularChance` (that an arrival is a regular who's due), `maxRegularsInShop` |
 | `scoring` | `difficulty` (`cozy` now; `realistic` later) and per-difficulty `stars`: the closeness needed for 2 and 3 stars. `weights` of the stages, strength and longevity in the closeness. `tolerance`: family-share differences smaller than this aren't mentioned. `longevityFadeAt` (fraction of the opening's intensity that counts as faded) and `longevityMaxHours` |
-| `economy` | `reputationForStars` (change for 1, 2 and 3 stars) and `threeStarBonus` (share of the brief's pay added when a 3-star review comes in; only 3 stars earns it) |
+| `economy` | `reputationForStars` (change for 1, 2 and 3 stars), `payForStars` (share of the brief's pay the customer hands over for 1, 2 and 3 stars: nothing for one star, so a poor perfume only costs its materials) and `threeStarBonus` (share of the brief's pay added when a 3-star review comes in; only 3 stars earns it) |
 | `lines` | What customers say: `impression` and `stageWords` bands (`min` closeness → text), `stageNames`, `letDown`/`allGood`, `chatter`, and `feedback` (below) |
 | `walkInNames` | Names for walk-in customers |
 | `briefs` | The walk-in pool, below |
