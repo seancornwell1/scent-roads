@@ -92,6 +92,7 @@ The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`
 | `zones` | Marked floor areas, below |
 | `customers` | `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
 | `crates` | Arrived crates: `model`, the `spots` they stand on by the back-room door, and `stackHeights` (to stack one on top) |
+| `surfaces` | Table and counter tops for small decor: `id`, `label`, `position`, `y` (height) |
 
 Each fixture:
 
@@ -113,7 +114,7 @@ Each zone:
 | Field | Meaning |
 | ----- | ------- |
 | `id`, `label` | |
-| `kind` | `customers`: an invisible area where customers stand around. `upgrade`: a visible empty spot for future furniture. |
+| `kind` | `customers`: an invisible area where customers stand around. `upgrade`: a floor spot where bought furniture can be placed. |
 | `rect` | `[centre x, centre z, width, depth]` |
 
 `validateShop` (run in the tests and at start-up) checks that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable.
@@ -181,6 +182,7 @@ Where naturals grow, for harvest contracts on the back room's map (`src/game/sou
 | `id`, `name`, `country` | |
 | `lat`, `lon` | Location, for distance-based shipping (and the painted map later) |
 | `quirk` | One real fact shown in the game |
+| `unlock` | `coins` and `reputation` to open the region (both 0 = open from the start) |
 | `crops` | What can be contracted there, below |
 
 Each crop:
@@ -208,7 +210,8 @@ Processing methods. `about` is the fact to verify; the numbers are tuning.
 | `yield` | Share of the harvest's grams that comes out |
 | `quality` | Multiplies the harvest's quality |
 | `cost` | Coins |
-| `reputation` | Needed to use it (enfleurage is late) |
+| `unlock` | `{ coins, reputation }` to buy it, or `null` if you start with it |
+| `upgrades` | Levels you can buy: `name`, `coins`, `reputation`, `quality` (added), `speed` (multiplies the time) |
 | `verified`, `check` | |
 
 ## `sourcing.json`
@@ -223,3 +226,22 @@ Processing methods. `about` is the fact to verify; the numbers are tuning.
 | `aging` | Material id → `perGameDay` quality gained in stock, up to `max` |
 | `supplier` | `name`, `shippingGameHours`, `lotGrams`, `brokerQuality` (naturals), `catalogueQuality` (synthetics), `prices` (coins per lot, every material) |
 | `perfumeGrams` | Grams of material one perfume uses in total, split by its formula |
+
+## `furniture.json`
+
+Furniture and decor for the Shop panel (`src/game/upgrades.ts`), and the display case (`src/game/display.ts`).
+
+| Field | Meaning |
+| ----- | ------- |
+| `appeal.levels` | Highest `min` reached wins: `name`, `payMultiplier` (customers' pay), `strictness` (added to every star threshold), `arrivalMultiplier` (time between customers and between display sales; below 1 is faster) |
+| `kinds` | Catalogue sections: kind id → heading |
+| `items` | Below |
+| `display` | `saleEveryGameHours` (before appeal), and pricing: `basePrice` + `pricePerAccord` × accords + `pricePerLayer` × layers + `pricePerLongevityHour` × hours, capped at `maxPrice`, times material quality and appeal pay; `bottleOptions` offered |
+
+Each item: `id`, `name`, `kind`, `model`, `placement` (`floor` spot or `surface` top), `price`, `appeal`, `reputation` (to buy), `size` `[width, depth]` (floor pieces become obstacles) and, for display cases, `capacity`.
+
+## `events.json`
+
+The newspaper (`src/game/events.ts`). Each game week prints `perWeek` `[min, max]` events, chosen from a seed and remembered in the save.
+
+Each type: `id`, `target` (`crop`, `region`, `material` or `none`, picked from what you have open), `headline` and `body` templates (`{region}`, `{material}`), and `effect`: `yield` (contracts signed that week), `shippingExtraGameHours` (shipments leaving the region that week), `price` (supplier price), `arrivals` (time between customers).

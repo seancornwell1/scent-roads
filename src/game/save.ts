@@ -1,7 +1,10 @@
 import type { CharacterConfig } from './character';
 import type { Clock } from './clock';
 import type { CustomerState } from './customers';
+import type { DisplayState } from './display';
+import type { NewsItem } from './events';
 import type { SourcingState } from './sourcing';
+import type { UpgradeState } from './upgrades';
 import type { Formula } from './types';
 
 // Saves live in this phone's browser storage. Times are real timestamps (ms since epoch).
@@ -35,6 +38,27 @@ export interface SaveData {
   clock?: Clock;
   /** Harvests, processing, shipments, crates and inventory (step 5; filled in on load). */
   sourcing?: SourcingState;
+  /** Furniture, opened regions and processing levels (step 6; filled in on load). */
+  upgrades?: UpgradeState;
+  /** Signature perfumes on display (step 6). */
+  display?: DisplayState;
+  /** Game week → that week's newspaper, fixed once printed. */
+  news?: Record<number, NewsItem[]>;
+  /** The latest week whose paper you've read. */
+  newsSeenWeek?: number;
+  /** Optional notifications for ripe harvests and arrivals. */
+  notify?: boolean;
+}
+
+/** Checks that text looks like a save from this game before importing it. */
+export function parseSave(text: string): SaveData | null {
+  try {
+    const data = JSON.parse(text) as SaveData;
+    if (data.version !== SAVE_VERSION || typeof data.createdAt !== 'number' || typeof data.draft !== 'object') return null;
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 export function newSave(now: number): SaveData {

@@ -254,6 +254,31 @@ How it was built (Oct 28, 2026):
 - **Stock:** the free samples are gone. A new shop starts with 80 coins. Each perfume uses 1 g of material in total; better materials raise the score, and patchouli, vetiver, vanilla, labdanum, frankincense and oakmoss improve while they sit in stock.
 - **Debug:** time speed ×1, ×60 or ×600 at the bottom of the back room, or `?speed=N` in the URL.
 
+### Prompt 6: store upgrades and progression (after the direction change)
+
+```
+Step 6: store upgrades and progression.
+- Buy and place furniture, display cases, lighting and decor. Decor
+  raises the shop's appeal, which brings more demanding,
+  better-paying customers.
+- A display case for my saved signature perfumes, which sell while
+  I'm away.
+- Region unlocks and processing upgrades bought with money and
+  reputation.
+- A small newspaper for events, save export and import, and optional
+  notifications for ripe harvests and arrivals.
+Deploy and give me the link.
+```
+
+How it was built (Oct 28, 2026):
+
+- **Shop panel:** buy furniture into storage, then place it on 7 floor spots or 4 table and counter tops. Every placed piece adds appeal. Appeal levels (Humble, Charming, Elegant, Renowned) raise pay (×1–×2), make customers stricter (star thresholds rise), bring them more often and make the display case sell faster.
+- **Display case:** the Signature shelf (3 places) or Display bookcase (6) holds bottles of saved formulas. Bottling uses stock; bottles sell on a timer from timestamps, so they sell while the app is closed. Price depends on accords, layers, longevity and material quality.
+- **Regions and processing:** Calabria, Provence and Andalusia start open; the rest cost coins and reputation. Steam distillation, cold pressing and solvent extraction start owned; CO₂ extraction, curing and enfleurage are bought; every method can be upgraded twice for quality and speed.
+- **Newspaper:** The Flacon Gazette prints one or two events a week (bumper crops, storms, price swings, scent fairs), fixed once printed, with real effects in the game.
+- **Saves:** export a file or copy text; import a file or pasted text (More panel).
+- **Notifications:** optional; shown for ripe harvests, crates and returning customers while the app is open in the background. Alerts while it's fully closed would need a push server.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

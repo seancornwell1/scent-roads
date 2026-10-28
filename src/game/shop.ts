@@ -50,11 +50,15 @@ export interface ShopLayout {
   gridStep: number;
   /** Where customers come in, and the spots where they queue at the counter (front of the queue first). */
   customers: { entrance: Point; queue: Point[]; walkSpeed: number };
+  /** Table and counter tops where small decor can be placed. */
+  surfaces: { id: string; label: string; position: Point; y: number }[];
   /** Where arrived crates stand in the shop, by the back-room door. */
   crates: { model: string; spots: Point[]; stackHeights: number[] };
   /** 2 m wall panels: `back` runs left to right along the back wall, `left` back to front along the left wall. */
   walls: { panels: Record<string, string>; back: string[]; left: string[] };
   fixtures: Fixture[];
+  /** Placed furniture to walk around, set at run time (not in the data). */
+  obstacles?: { position: Point; size: [number, number] }[];
   decor: Decor[];
   zones: Zone[];
 }
@@ -69,6 +73,9 @@ export function isWalkable(layout: ShopLayout, [x, z]: Point): boolean {
   const halfW = layout.room.width / 2 - r;
   const halfD = layout.room.depth / 2 - r;
   if (x < -halfW || x > halfW || z < -halfD || z > halfD) return false;
+  for (const o of layout.obstacles ?? []) {
+    if (Math.abs(x - o.position[0]) < o.size[0] / 2 + r && Math.abs(z - o.position[1]) < o.size[1] / 2 + r) return false;
+  }
   return layout.fixtures.every((f) => {
     if (!f.blocks) return true;
     const [fx, fz] = f.position;

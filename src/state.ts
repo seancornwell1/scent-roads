@@ -2,12 +2,14 @@ import { recognizeAccords } from './game/accords';
 import { content, materialsById } from './game/content';
 import { gameNow, newClock } from './game/clock';
 import { newCustomerState } from './game/customers';
+import { newDisplayState } from './game/display';
 import { newSourcingState, sourcing } from './game/sourcing';
+import { newUpgradeState } from './game/upgrades';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom';
+export type Screen = 'shop' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -25,6 +27,10 @@ export interface UiState {
   orderId: string | null;
   /** Which tab of the back room is showing. */
   backroomTab: 'map' | 'harvests' | 'supplier' | 'stock';
+  /** Which tab of the shop-upgrades panel is showing. */
+  upgradesTab: 'furniture' | 'display' | 'regions' | 'processing';
+  /** A spot picked in the furniture tab, waiting for something to place on it. */
+  pickSpot: string | null;
   /** Which page of the character creator is showing (a slot id). */
   creatorTab: string;
   /** A short message over the scene, e.g. for placeholders. */
@@ -43,13 +49,18 @@ function initSave(): SaveData {
     save.sourcing = newSourcingState();
     save.customers.money += sourcing.startingCoins;
   }
+  save.upgrades ??= newUpgradeState();
+  save.display ??= newDisplayState();
+  save.news ??= {};
+  save.newsSeenWeek ??= -1;
+  save.notify ??= false;
   delete (save as { stock?: unknown }).stock;
   return save;
 }
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'map' },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'map', upgradesTab: 'furniture', pickSpot: null },
 };
 
 let render = () => {};

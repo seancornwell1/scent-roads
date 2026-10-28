@@ -126,11 +126,12 @@ export function scorePerfume(
   return { stages, mood, strength, strengthScore, longevityHours, longevityScore, total, stars, impression, weakStage };
 }
 
-/** Better materials make better perfumes: shifts the scores by the materials' quality. */
-export function applyQuality(r: ScoreResult, quality: number, effect: number, config: ScoringConfig): ScoreResult {
+/** Better materials make better perfumes: shifts the scores by the materials' quality, and applies the customer's strictness. */
+export function applyQuality(r: ScoreResult, quality: number, effect: number, config: ScoringConfig, strictness = 0): ScoreResult {
   const bonus = (quality - 1) * effect;
   const clamp = (v: number) => Math.min(1, Math.max(0, v));
   const total = clamp(r.total + bonus);
-  const stars = 1 + config.difficulties[config.difficulty].stars.filter((t) => total >= t).length;
+  // More demanding customers (from a more appealing shop) raise every star threshold.
+  const stars = 1 + config.difficulties[config.difficulty].stars.filter((t) => total >= t + strictness).length;
   return { ...r, total, stars, impression: clamp(r.impression + bonus), quality };
 }

@@ -439,6 +439,39 @@
         1.8,
         1.4
       ]
+    },
+    {
+      "id": "spot-5",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        3.9,
+        -1.4,
+        1.4,
+        1.6
+      ]
+    },
+    {
+      "id": "spot-6",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        3.9,
+        2.6,
+        1.4,
+        1.6
+      ]
+    },
+    {
+      "id": "spot-7",
+      "label": "Upgrade spot",
+      "kind": "upgrade",
+      "rect": [
+        -2.2,
+        7.8,
+        1.4,
+        1.4
+      ]
     }
   ],
   "crates": {
@@ -477,5 +510,43 @@
       0,
       0.6
     ]
-  }
+  },
+  "surfaces": [
+    {
+      "id": "counter-left-end",
+      "label": "Counter",
+      "position": [
+        -2.3,
+        -6.55
+      ],
+      "y": 1.23
+    },
+    {
+      "id": "counter-right-end",
+      "label": "Counter",
+      "position": [
+        0.35,
+        -6.55
+      ],
+      "y": 1.23
+    },
+    {
+      "id": "display-table-1",
+      "label": "Display table",
+      "position": [
+        0.55,
+        -2.75
+      ],
+      "y": 0.75
+    },
+    {
+      "id": "display-table-2",
+      "label": "Display table",
+      "position": [
+        2.3,
+        2.85
+      ],
+      "y": 0.75
+    }
+  ]
 }

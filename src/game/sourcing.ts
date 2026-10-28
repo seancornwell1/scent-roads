@@ -28,6 +28,8 @@ export interface Region {
   lat: number;
   lon: number;
   quirk: string;
+  /** Coins and reputation to open the region (both 0 for the starting regions). */
+  unlock: { coins: number; reputation: number };
   crops: Crop[];
 }
 
@@ -40,7 +42,9 @@ export interface Process {
   yield: number;
   quality: number;
   cost: number;
-  reputation: number;
+  /** Coins and reputation to buy the method, or null if you start with it. */
+  unlock: { coins: number; reputation: number } | null;
+  upgrades: { name: string; coins: number; reputation: number; quality: number; speed: number }[];
   verified: boolean;
   check: string[];
 }
@@ -80,6 +84,8 @@ export interface Contract {
   ripeAt: number;
   bestUntil: number;
   spoiledAt: number;
+  /** Bumper crops yield more (from the newspaper's events). */
+  yieldMultiplier?: number;
 }
 
 export interface Batch extends Item {
@@ -170,40 +176,78 @@ export interface Wallet {
 }
 
 /** Signs a harvest contract. Returns null on success, or why it can't be signed. */
-export function signContract(s: SourcingState, wallet: Wallet, regionId: string, material: string, now: number, unlocked: Set<string>): string | null {
+export function signContract(
+  s: SourcingState,
+  wallet: Wallet,
+  regionId: string,
+  material: string,
+  now: number,
+  unlocked: Set<string>,
+  options: { regionOpen?: boolean; yieldMultiplier?: number } = {},
+): string | null {
   const crop = cropOf(regionId, material);
   if (!crop) return 'No such crop.';
+  if (options.regionOpen === false) return 'Open this region first.';
   if (!unlocked.has(material)) return 'Not unlocked yet.';
   if (!inSeason(crop, now)) return 'Out of season.';
   if (s.contracts.some((c) => c.region === regionId && c.material === material)) return 'Already growing.';
   if (wallet.money < crop.cost) return 'Not enough coins.';
   wallet.money -= crop.cost;
   const ripeAt = now + crop.growGameHours;
-  s.contracts.push({ id: id(s, 'c'), region: regionId, material, signedAt: now, ripeAt, bestUntil: ripeAt + crop.bestWindowGameHours, spoiledAt: ripeAt + crop.spoilGameHours });
+  s.contracts.push({
+    id: id(s, 'c'),
+    region: regionId,
+    material,
+    signedAt: now,
+    ripeAt,
+    bestUntil: ripeAt + crop.bestWindowGameHours,
+    spoiledAt: ripeAt + crop.spoilGameHours,
+    yieldMultiplier: options.yieldMultiplier ?? 1,
+  });
   return null;
 }
 
-/** Harvests a ripe contract and starts processing it. Returns null on success, or why not. */
-export function harvest(s: SourcingState, wallet: Wallet, contractId: string, methodId: string, now: number, reputation: number): string | null {
+/**
+ * Harvests a ripe contract and starts processing it. `stats` is the method as you own it
+ * (see processStats in upgrades.ts). Returns null on success, or why not.
+ */
+export function harvest(
+  s: SourcingState,
+  wallet: Wallet,
+  contractId: string,
+  methodId: string,
+  now: number,
+  stats: { owned: boolean; quality: number; gameHours: number },
+): string | null {
   const c = s.contracts.find((x) => x.id === contractId);
   const crop = c && cropOf(c.region, c.material);
   const method = processes.find((p) => p.id === methodId);
   if (!c || !crop || !method) return 'Unknown harvest or method.';
   if (now < c.ripeAt) return 'Not ripe yet.';
   if (!crop.methods.includes(methodId)) return `${method.name} doesn't suit this crop.`;
-  if (reputation < method.reputation) return `${method.name} unlocks at reputation ${method.reputation}.`;
+  if (!stats.owned) return `Buy ${method.name} first, under Shop → Processing.`;
   if (wallet.money < method.cost) return 'Not enough coins.';
   wallet.money -= method.cost;
-  const quality = Math.round(harvestQuality(c, now) * method.quality * 100) / 100;
-  s.batches.push({ id: id(s, 'b'), region: c.region, method: methodId, material: c.material, grams: Math.round(crop.grams * method.yield), quality, readyAt: now + method.gameHours });
+  const quality = Math.round(harvestQuality(c, now) * stats.quality * 100) / 100;
+  const grams = Math.round(crop.grams * method.yield * (c.yieldMultiplier ?? 1));
+  s.batches.push({ id: id(s, 'b'), region: c.region, method: methodId, material: c.material, grams, quality, readyAt: now + stats.gameHours });
   s.contracts = s.contracts.filter((x) => x.id !== contractId);
   return null;
 }
 
 /** Orders a lot from the supplier: naturals from the broker, synthetics from the catalogue. */
-export function order(s: SourcingState, wallet: Wallet, material: string, natural: boolean, now: number, unlocked: Set<string>, data: SourcingData = sourcing): string | null {
-  const price = data.supplier.prices[material];
-  if (price === undefined) return 'Not sold.';
+export function order(
+  s: SourcingState,
+  wallet: Wallet,
+  material: string,
+  natural: boolean,
+  now: number,
+  unlocked: Set<string>,
+  priceMultiplier = 1,
+  data: SourcingData = sourcing,
+): string | null {
+  if (data.supplier.prices[material] === undefined) return 'Not sold.';
+  const price = priceOf(material, priceMultiplier, data);
   if (!unlocked.has(material)) return 'Not unlocked yet.';
   if (wallet.money < price) return 'Not enough coins.';
   wallet.money -= price;
@@ -212,11 +256,19 @@ export function order(s: SourcingState, wallet: Wallet, material: string, natura
   return null;
 }
 
-/** Moves things along: finished processing ships out, and arrived shipments become crates. Returns new crates. */
-export function tickSourcing(s: SourcingState, now: number, data: SourcingData = sourcing): Crate[] {
+export function priceOf(material: string, multiplier = 1, data: SourcingData = sourcing): number {
+  return Math.max(1, Math.round(data.supplier.prices[material] * multiplier));
+}
+
+/**
+ * Moves things along: finished processing ships out, and arrived shipments become crates.
+ * `delay` adds game hours to a region's shipping (storms). Returns new crates.
+ */
+export function tickSourcing(s: SourcingState, now: number, delay: (regionId: string, at: number) => number = () => 0, data: SourcingData = sourcing): Crate[] {
   for (const b of s.batches.filter((x) => x.readyAt <= now)) {
     const region = regionById(b.region)!;
-    s.shipments.push({ id: id(s, 's'), from: region.name, items: [{ material: b.material, grams: b.grams, quality: b.quality }], arrivesAt: b.readyAt + shippingGameHours(region, data) });
+    const arrivesAt = b.readyAt + shippingGameHours(region, data) + delay(region.id, b.readyAt);
+    s.shipments.push({ id: id(s, 's'), from: region.name, items: [{ material: b.material, grams: b.grams, quality: b.quality }], arrivesAt });
   }
   s.batches = s.batches.filter((x) => x.readyAt > now);
   const arrived = s.shipments.filter((x) => x.arrivesAt <= now);

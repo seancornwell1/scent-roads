@@ -1,0 +1,41 @@
+{
+  "paper": "The Flacon Gazette",
+  "perWeek": [1, 2],
+  "types": [
+    {
+      "id": "bumper",
+      "target": "crop",
+      "headline": "Bumper {material} crop in {region}",
+      "body": "Growers in {region} report their best {material} harvest in years. Contracts signed there this week yield half as much again.",
+      "effect": { "yield": 1.5 }
+    },
+    {
+      "id": "storm",
+      "target": "region",
+      "headline": "Storms delay shipping from {region}",
+      "body": "Rough weather around {region}: anything shipping from there this week takes an extra day.",
+      "effect": { "shippingExtraGameHours": 24 }
+    },
+    {
+      "id": "price-up",
+      "target": "material",
+      "headline": "{material} prices climb",
+      "body": "Brokers are asking more for {material} this week: prices are up by a third.",
+      "effect": { "price": 1.33 }
+    },
+    {
+      "id": "price-down",
+      "target": "material",
+      "headline": "{material} on offer",
+      "body": "A glut of {material} has the supplier selling it at a discount this week.",
+      "effect": { "price": 0.7 }
+    },
+    {
+      "id": "fair",
+      "target": "none",
+      "headline": "Scent fair comes to town",
+      "body": "Visitors from the fair are curious about perfume: more customers drop in this week.",
+      "effect": { "arrivals": 0.7 }
+    }
+  ]
+}

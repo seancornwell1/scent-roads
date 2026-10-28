@@ -4,6 +4,7 @@ import {
   contractStage,
   harvestQuality,
   inSeason,
+  priceOf,
   processes,
   qualityWord,
   regions,
@@ -14,7 +15,10 @@ import {
   type Crop,
   type Region,
 } from '../game/sourcing';
+import { priceMultiplier, shippingDelay, yieldMultiplier } from '../game/events';
 import { unlockedMaterialIds, unlocks } from '../game/unlocks';
+import { processStats, regionOpen } from '../game/upgrades';
+import { newsFor } from '../game/world';
 import { nowGame, state } from '../state';
 import { esc } from './html';
 
@@ -116,25 +120,29 @@ function mapTab(now: number): string {
 function regionCard(r: Region, now: number, unlocked: Set<string>): string {
   const s = state.save.sourcing!;
   const money = state.save.customers!.money;
+  const open = regionOpen(state.save.upgrades!, r.id);
+  const news = newsFor(state.save, now);
   const crops = r.crops
     .map((crop) => {
       const m = materialsById.get(crop.material)!;
       const tier = unlocks.tiers.find((t) => t.materials.includes(crop.material));
       const season = `${seasonText(crop)}${crop.verified ? '' : ' <span class="tag tag--warn">unverified</span>'}`;
       let action: string;
+      const bumper = yieldMultiplier(news, r.id, crop.material) > 1 ? ' <span class="tag">bumper crop this week</span>' : '';
       if (!unlocked.has(crop.material)) action = `<span class="muted small">Unlocks at reputation ${tier?.reputation ?? '?'}</span>`;
+      else if (!open) action = `<span class="muted small">Open ${esc(r.name)} under Shop → Regions (${r.unlock.coins} coins)</span>`;
       else if (s.contracts.some((c) => c.region === r.id && c.material === crop.material)) action = `<span class="muted small">Growing now</span>`;
       else if (!inSeason(crop, now)) action = `<span class="muted small">Out of season · next: ${nextSeasonMonth(crop, now)}</span>`;
       else
         action = `<button class="primary" data-action="sign" data-region="${r.id}" data-material="${crop.material}" ${money < crop.cost ? 'disabled' : ''}>Sign · ${crop.cost} coins</button>`;
       return `<div class="crop">
-        <p><strong>${esc(m.name)}</strong> <span class="muted small">· season ${season} · ${crop.grams} g · ripens in ${duration(crop.growGameHours)}</span></p>
+        <p><strong>${esc(m.name)}</strong>${bumper} <span class="muted small">· season ${season} · ${crop.grams} g · ripens in ${duration(crop.growGameHours)}</span></p>
         <div class="row-between"><span></span>${action}</div>
       </div>`;
     })
     .join('');
   return `<li class="card">
-    <div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)} · ships in ${duration(shippingGameHours(r))}</span></div>
+    <div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)} · ships in ${duration(shippingGameHours(r) + shippingDelay(news, r.id))}${open ? '' : ' · closed'}</span>${shippingDelay(news, r.id) ? ' <span class="tag tag--warn">storm delays</span>' : ''}</div>
     <p class="small">${esc(r.quirk)}</p>
     ${crops}
   </li>`;
@@ -142,7 +150,6 @@ function regionCard(r: Region, now: number, unlocked: Set<string>): string {
 
 function harvestsTab(now: number): string {
   const s = state.save.sourcing!;
-  const reputation = state.save.customers!.reputation;
   const contracts = s.contracts
     .map((c) => {
       const region = regions.find((r) => r.id === c.region)!;
@@ -159,9 +166,9 @@ function harvestsTab(now: number): string {
           : crop.methods
               .map((id) => processes.find((p) => p.id === id)!)
               .map((p) => {
-                const locked = reputation < p.reputation;
-                return `<button class="chip" data-action="harvest" data-id="${esc(c.id)}" data-method="${p.id}" ${locked || state.save.customers!.money < p.cost ? 'disabled' : ''}>
-                  ${esc(p.name)} · ${p.cost} coins · ${duration(p.gameHours)}${locked ? ` · rep ${p.reputation}` : ''}
+                const stats = processStats(state.save.upgrades!, p.id);
+                return `<button class="chip" data-action="harvest" data-id="${esc(c.id)}" data-method="${p.id}" ${!stats.owned || state.save.customers!.money < p.cost ? 'disabled' : ''}>
+                  ${esc(p.name)} · ${p.cost} coins · ${duration(stats.gameHours)}${stats.owned ? '' : ' · buy under Shop → Processing'}
                 </button>`;
               })
               .join('');
@@ -201,9 +208,11 @@ function supplierTab(): string {
     .map((id) => materialsById.get(id)!)
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((m) => {
-      const price = sup.prices[m.id];
+      const multiplier = priceMultiplier(newsFor(state.save, nowGame()), m.id);
+      const price = priceOf(m.id, multiplier);
+      const deal = multiplier < 1 ? ' <span class="tag">on offer</span>' : multiplier > 1 ? ' <span class="tag tag--warn">prices up</span>' : '';
       const kind = m.type === 'natural' ? `broker stock · ${qualityWord(sup.brokerQuality)} quality` : 'catalogue';
-      return `<li class="card"><div class="row-between"><div><strong>${esc(m.name)}</strong><br><span class="muted small">${sup.lotGrams} g · ${kind}</span></div>
+      return `<li class="card"><div class="row-between"><div><strong>${esc(m.name)}</strong>${deal}<br><span class="muted small">${sup.lotGrams} g · ${kind}</span></div>
         <button class="primary" data-action="order" data-material="${m.id}" ${money < price ? 'disabled' : ''}>${price} coins</button></div></li>`;
     })
     .join('');

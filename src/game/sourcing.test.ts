@@ -28,6 +28,7 @@ const naturals = new Set(content.materials.filter((m) => m.type === 'natural').m
 const MARCH = 0;
 const DECEMBER = 24 * (31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 5);
 const JULY = 24 * (31 + 30 + 31 + 30 + 5);
+const owned = { owned: true, quality: 1.05, gameHours: 6 };
 
 describe('sourcing data', () => {
   it('is valid: every natural grows somewhere and everything has a price', () => {
@@ -83,9 +84,9 @@ describe('harvest contracts', () => {
     const wallet = { money: 100 };
     signContract(s, wallet, 'calabria', 'bergamot', MARCH, unlockedMaterialIds(0));
     const c = s.contracts[0];
-    expect(harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt - 1, 0)).toBe('Not ripe yet.');
-    expect(harvest(s, wallet, c.id, 'steam-distillation', c.ripeAt, 0)).toMatch(/doesn't suit/);
-    expect(harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt, 0)).toBeNull();
+    expect(harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt - 1, owned)).toBe('Not ripe yet.');
+    expect(harvest(s, wallet, c.id, 'steam-distillation', c.ripeAt, owned)).toMatch(/doesn't suit/);
+    expect(harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt, owned)).toBeNull();
   });
 
   it('process, ship by distance, and arrive as a crate that unpacks into stock', () => {
@@ -93,7 +94,7 @@ describe('harvest contracts', () => {
     const wallet = { money: 100 };
     signContract(s, wallet, 'calabria', 'bergamot', MARCH, unlockedMaterialIds(0));
     const c = s.contracts[0];
-    harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt, 0);
+    harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt, owned);
     const readyAt = s.batches[0].readyAt;
     const arrives = readyAt + shippingGameHours(regions.find((r) => r.id === 'calabria')!);
     expect(tickSourcing(s, readyAt)).toEqual([]);

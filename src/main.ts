@@ -10,6 +10,12 @@ import { applyQuality, scorePerfume } from './game/scoring';
 import { setClockSpeed } from './game/clock';
 import { consume, harvest, missingFor, order, signContract, sourcing, tickSourcing, unpack } from './game/sourcing';
 import { unlockedMaterialIds } from './game/unlocks';
+import { listPerfume, removeListing, settleSales } from './game/display';
+import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
+import { parseSave, writeSave } from './game/save';
+import { buyItem, buyProcess, displayCapacity, furniture, itemById, openRegion, place, processStats, regionOpen, unplace } from './game/upgrades';
+import { arrivalConditions, newsFor, shopAppeal } from './game/world';
+import { contractStage } from './game/sourcing';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { shop, validateShop } from './game/shop';
@@ -17,6 +23,9 @@ import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { commit, nowGame, onChange, setDraft, state, type Screen } from './state';
 import { backroomScreen } from './ui/backroom';
+import { newsScreen } from './ui/news';
+import { optionsScreen } from './ui/options';
+import { allSpots, upgradesScreen } from './ui/upgradesPanel';
 import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, reactionScreen, regularOf, unlockScreen } from './ui/customer';
@@ -84,27 +93,89 @@ function syncCrowd(): void {
   scene.syncCustomers(kit, entries).catch((e) => console.error(e));
 }
 
-/** Brings arrivals, reviews, harvests and shipments up to date from timestamps. */
+/** Storms in the news slow shipping from their region in the week a batch ships. */
+const stormDelay = (regionId: string, at: number) => shippingDelay(newsFor(state.save, at), regionId);
+
+/** Game hours between display-case sales: a more appealing shop sells faster. */
+const saleInterval = () => furniture.display.saleEveryGameHours * shopAppeal(state.save).level.arrivalMultiplier;
+
+/** Sells from the display case; returns what sold. */
+function runSales(): { bottles: number; coins: number } {
+  const sold = settleSales(state.save.display!, nowGame(), saleInterval());
+  state.save.customers!.money += sold.coins;
+  return sold;
+}
+
+// Notifications: only for things that newly happen while the app is in the background.
+const ripeNotified = new Set<string>();
+function notify(title: string, body: string): void {
+  if (!state.save.notify || !('Notification' in window) || Notification.permission !== 'granted') return;
+  if (document.visibilityState === 'visible') return;
+  navigator.serviceWorker?.ready.then((reg) => reg.showNotification(title, { body, tag: title })).catch(() => {});
+}
+
+/** Brings arrivals, reviews, harvests, shipments and sales up to date from timestamps. */
 function runTick(): void {
-  const c = state.save.customers!;
-  const changed = tick(c, Date.now(), tierIndex(c.reputation), Math.random);
-  const crates = tickSourcing(state.save.sourcing!, nowGame());
+  const { save } = state;
+  const c = save.customers!;
+  const now = nowGame();
+  const changed = tick(c, Date.now(), tierIndex(c.reputation), Math.random, arrivalConditions(save, now));
+  const crates = tickSourcing(save.sourcing!, now, stormDelay);
+  const sold = runSales();
   if (crates.length > 0) {
     state.ui.toast = crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`;
-    void scene.setCrates(state.save.sourcing!.crates.length);
+    void scene.setCrates(save.sourcing!.crates.length);
+    notify('A crate has arrived', `From ${crates.map((k) => k.from).join(', ')}.`);
   }
+  if (sold.bottles > 0) {
+    state.ui.toast = `Sold ${sold.bottles} bottle${sold.bottles === 1 ? '' : 's'} from the display case: +${sold.coins} coins.`;
+    save.display!.unseen = { bottles: 0, coins: 0 };
+  }
+  for (const k of save.sourcing!.contracts) {
+    if (contractStage(k, now) === 'best' && !ripeNotified.has(k.id)) {
+      ripeNotified.add(k.id);
+      notify('A harvest is ripe', `${materialsById.get(k.material)?.name} is at its best now. Harvest it soon.`);
+    }
+  }
+  const returning = c.visits.filter((v) => changed.includes(v.id) && v.status === 'returning');
+  if (returning.length > 0) notify('A customer is back', `${returning.map((v) => v.name).join(', ')} came back to tell you how their perfume wore.`);
   if (changed.length > 0) syncCrowd();
-  // Keep countdowns in the back room fresh.
-  if (changed.length > 0 || crates.length > 0 || state.ui.screen === 'backroom') commit();
+  // Keep countdowns fresh in panels that show them.
+  if (changed.length > 0 || crates.length > 0 || sold.bottles > 0 || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
+}
+
+/** Puts placed furniture in the scene. */
+function refreshFurniture(): void {
+  const spots = new Map(allSpots().map((spot) => [spot.id, spot]));
+  const pieces = state.save.upgrades!.placed.flatMap((p) => {
+    const item = itemById(p.item);
+    const spot = spots.get(p.spot);
+    if (!item || !spot) return [];
+    if (spot.kind === 'floor') {
+      const zone = shop.zones.find((z) => z.id === p.spot)!;
+      const extent = (item.size[0] + item.size[1]) / Math.SQRT2; // turned 45° towards the room
+      return [{ spot: p.spot, model: item.model, position: [zone.rect[0], zone.rect[1]] as [number, number], y: 0, size: [extent, extent] as [number, number], floor: true }];
+    }
+    const surface = shop.surfaces.find((x) => x.id === p.spot)!;
+    return [{ spot: p.spot, model: item.model, position: surface.position, y: surface.y, size: item.size, floor: false }];
+  });
+  void scene.setFurniture(pieces);
 }
 
 CharacterKit.load(characterOptions.kit, characterOptions.style)
   .then((loaded) => {
     kit = loaded;
     refreshPlayer();
-    tick(state.save.customers!, Date.now(), tierIndex(state.save.customers!.reputation), Math.random);
-    tickSourcing(state.save.sourcing!, nowGame());
+    tick(state.save.customers!, Date.now(), tierIndex(state.save.customers!.reputation), Math.random, arrivalConditions(state.save, nowGame()));
+    tickSourcing(state.save.sourcing!, nowGame(), stormDelay);
+    runSales();
+    const away = state.save.display!.unseen;
+    if (away.bottles > 0) {
+      state.ui.toast = `While you were away, ${away.bottles} bottle${away.bottles === 1 ? '' : 's'} sold from the display case: +${away.coins} coins.`;
+      state.save.display!.unseen = { bottles: 0, coins: 0 };
+    }
     void scene.setCrates(state.save.sourcing!.crates.length);
+    refreshFurniture();
     syncCrowd();
     commit();
     window.setInterval(runTick, 5000);
@@ -169,10 +240,36 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
     case 'backroom':
       return backroomScreen();
+    case 'upgrades':
+      return upgradesScreen();
+    case 'news':
+      return newsScreen();
+    case 'options':
+      return optionsScreen(optionsMessage);
     default:
       return bookScreen();
   }
 }
+
+let optionsMessage: string | null = null;
+
+function importSave(text: string): void {
+  const data = parseSave(text.trim());
+  if (!data) {
+    optionsMessage = "That doesn't look like a Field & Flacon save.";
+    commit();
+    return;
+  }
+  if (!confirm('Replace this game with the imported one?')) return;
+  writeSave(data);
+  location.reload();
+}
+
+document.body.addEventListener('change', (event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.id !== 'import-file' || !input.files?.[0]) return;
+  void input.files[0].text().then(importSave);
+});
 
 document.body.addEventListener('click', (event) => {
   const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
@@ -182,6 +279,8 @@ document.body.addEventListener('click', (event) => {
 
   switch (action) {
     case 'nav':
+      if (target.dataset.to === 'news') state.save.newsSeenWeek = weekOf(nowGame());
+      if (target.dataset.to === 'options') optionsMessage = null;
       return openPanel(target.dataset.to as Screen);
     case 'close-panel':
       if (ui.screen === 'creator' && kit) save.character = currentLook();
@@ -229,7 +328,7 @@ document.body.addEventListener('click', (event) => {
       }
       const quality = consume(save.sourcing!, save.draft, nowGame())!;
       const raw = scorePerfume(save.draft, brief.target, materialsById, content.families, content.model, clients.scoring);
-      const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring);
+      const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring, visit.strictness ?? 0);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
       handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: { ...save.draft } }, result, Date.now());
       ui.orderId = null;
@@ -256,19 +355,26 @@ document.body.addEventListener('click', (event) => {
       scrollToTop = true;
       break;
     case 'sign': {
-      const why = signContract(save.sourcing!, save.customers!, target.dataset.region!, target.dataset.material!, nowGame(), unlockedMaterialIds(save.customers!.reputation));
+      const region = target.dataset.region!;
+      const material = target.dataset.material!;
+      const why = signContract(save.sourcing!, save.customers!, region, material, nowGame(), unlockedMaterialIds(save.customers!.reputation), {
+        regionOpen: regionOpen(save.upgrades!, region),
+        yieldMultiplier: yieldMultiplier(newsFor(save, nowGame()), region, material),
+      });
       ui.toast = why ?? 'Contract signed. Watch it ripen under Harvests.';
       break;
     }
     case 'harvest': {
-      const why = harvest(save.sourcing!, save.customers!, id!, target.dataset.method!, nowGame(), save.customers!.reputation);
+      const method = target.dataset.method!;
+      const why = harvest(save.sourcing!, save.customers!, id!, method, nowGame(), processStats(save.upgrades!, method));
       ui.toast = why ?? "Harvested and off to be processed. It ships to you when it's done.";
       break;
     }
     case 'order': {
       const material = target.dataset.material!;
       const natural = materialsById.get(material)?.type === 'natural';
-      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), unlockedMaterialIds(save.customers!.reputation));
+      const multiplier = priceMultiplier(newsFor(save, nowGame()), material);
+      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), unlockedMaterialIds(save.customers!.reputation), multiplier);
       ui.toast = why ?? `Ordered ${materialsById.get(material)?.name}. It's on its way.`;
       break;
     }
@@ -278,6 +384,80 @@ document.body.addEventListener('click', (event) => {
       void scene.setCrates(save.sourcing!.crates.length);
       break;
     }
+    case 'upgrades-tab':
+      ui.upgradesTab = target.dataset.value as typeof ui.upgradesTab;
+      ui.pickSpot = null;
+      scrollToTop = true;
+      break;
+    case 'pick-spot':
+      ui.pickSpot = ui.pickSpot === id ? null : id!;
+      break;
+    case 'place': {
+      const spot = allSpots().find((x) => x.id === id)!;
+      const why = place(save.upgrades!, target.dataset.item!, spot.id, spot.kind);
+      ui.toast = why;
+      ui.pickSpot = null;
+      refreshFurniture();
+      break;
+    }
+    case 'unplace':
+      unplace(save.upgrades!, id!);
+      refreshFurniture();
+      break;
+    case 'buy-item': {
+      const why = buyItem(save.upgrades!, save.customers!, id!, save.customers!.reputation);
+      ui.toast = why ?? `Bought ${itemById(id!)?.name}. Place it from the spots above.`;
+      break;
+    }
+    case 'list': {
+      const formula = save.formulas.find((f) => f.id === id);
+      if (!formula) return;
+      const why = listPerfume(save.display!, save.sourcing!, formula, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
+      ui.toast = why ?? `“${formula.name}” is on display.`;
+      break;
+    }
+    case 'unlist':
+      removeListing(save.display!, id!);
+      break;
+    case 'open-region': {
+      const why = openRegion(save.upgrades!, save.customers!, id!, save.customers!.reputation);
+      ui.toast = why ?? 'Region opened: sign harvests there from the back room.';
+      break;
+    }
+    case 'buy-process': {
+      const why = buyProcess(save.upgrades!, save.customers!, id!, save.customers!.reputation);
+      ui.toast = why ?? 'Done: the new equipment is ready.';
+      break;
+    }
+    case 'toggle-notify':
+      if (save.notify) save.notify = false;
+      else {
+        void Notification.requestPermission().then((p) => {
+          save.notify = p === 'granted';
+          optionsMessage = p === 'granted' ? null : 'Notifications were not allowed.';
+          commit();
+        });
+        return;
+      }
+      break;
+    case 'export-save': {
+      const blob = new Blob([JSON.stringify(save)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `field-and-flacon-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
+      return;
+    }
+    case 'copy-save':
+      void navigator.clipboard?.writeText(JSON.stringify(save)).then(
+        () => ((optionsMessage = 'Save copied. Paste it somewhere safe.'), commit()),
+        () => ((optionsMessage = 'Copying failed on this device; use Export instead.'), commit()),
+      );
+      return;
+    case 'import-text':
+      importSave(document.querySelector<HTMLTextAreaElement>('#import-text')?.value ?? '');
+      return;
     case 'debug-speed': {
       const value = Number(target.dataset.value);
       setClockSpeed(save.clock!, value, Date.now());

@@ -60,6 +60,9 @@ export class ShopScene {
   private player: Character | null = null;
   private readonly crowd: Crowd;
   private crates: Object3D[] = [];
+  private readonly spotMarkers = new Map<string, { patch: Object3D; label: Label }>();
+  private placed: Object3D[] = [];
+  private placedKey = '';
   private readonly labels: { el: HTMLElement; target: Object3D; height: number }[] = [];
   private readonly labelLayer: HTMLElement;
 
@@ -111,7 +114,8 @@ export class ShopScene {
       patch.rotation.x = -Math.PI / 2;
       patch.position.set(x, 0.01, z);
       this.scene.add(patch);
-      this.addLabel(zone.label, patch, 0.05, 'scene-label--zone');
+      const label = this.addLabel(zone.label, patch, 0.05, 'scene-label--zone');
+      this.spotMarkers.set(zone.id, { patch, label });
     }
     for (const fixture of layout.fixtures) this.addFixture(fixture);
     for (const d of layout.decor) {
@@ -216,6 +220,34 @@ export class ShopScene {
     this.player = next;
     this.playerRoot.add(next.root);
     if (this.path.length > 0) next.play('walk');
+    this.requestFrame();
+  }
+
+  /**
+   * Shows bought furniture where it's been placed. Floor pieces hide their spot's marker and
+   * become obstacles to walk around; surface pieces sit on table and counter tops.
+   */
+  async setFurniture(pieces: { spot: string; model: string; position: Point; y: number; size: [number, number]; floor: boolean }[]): Promise<void> {
+    const key = JSON.stringify(pieces);
+    if (key === this.placedKey) return;
+    this.placedKey = key;
+    for (const o of this.placed) o.removeFromParent();
+    this.placed = [];
+    const occupied = new Set(pieces.map((p) => p.spot));
+    for (const [id, marker] of this.spotMarkers) {
+      marker.patch.visible = !occupied.has(id);
+      marker.label.el.hidden = occupied.has(id);
+    }
+    this.layout.obstacles = pieces.filter((p) => p.floor).map((p) => ({ position: p.position, size: p.size }));
+    const models = await Promise.all(pieces.map((p) => loadGltf(p.model)));
+    if (key !== this.placedKey) return; // changed again while loading
+    pieces.forEach((p, i) => {
+      const model = models[i].scene.clone(true);
+      model.position.set(p.position[0], p.y, p.position[1]);
+      model.rotation.y = Math.PI / 4; // angled towards the room
+      this.scene.add(model);
+      this.placed.push(model);
+    });
     this.requestFrame();
   }
 

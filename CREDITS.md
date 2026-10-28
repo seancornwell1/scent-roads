@@ -26,4 +26,19 @@ Grab3D ([grab3d.com](https://grab3d.com)) releases every model under [CC0 1.0](h
 | `assets/grab3d/models/modular-wall-window.glb` | Modular Wall Window — Walls | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-window/ |
 | `assets/grab3d/models/modular-wall-door.glb` | Modular Wall Door — Front entrance and back-room doorway | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-door/ |
 | `assets/grab3d/models/wooden-crate.glb` | Wooden Crate — arrived shipments by the back-room door | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/props/wooden-crate/ |
+| `assets/grab3d/models/bench.glb` | Bench — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/bench/ |
+| `assets/grab3d/models/bar-stool.glb` | Bar Stool — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/bar-stool/ |
+| `assets/grab3d/models/armchair.glb` | Armchair — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/armchair/ |
+| `assets/grab3d/models/rocking-chair.glb` | Rocking Chair — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/rocking-chair/ |
+| `assets/grab3d/models/sofa.glb` | Sofa — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/sofa/ |
+| `assets/grab3d/models/snake-plant.glb` | Snake Plant — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/nature/snake-plant/ |
+| `assets/grab3d/models/fern.glb` | Fern — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/nature/fern/ |
+| `assets/grab3d/models/table-lamp.glb` | Table Lamp — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/table-lamp/ |
+| `assets/grab3d/models/candle-cluster.glb` | Candle Cluster — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/candle-cluster/ |
+| `assets/grab3d/models/star-lantern.glb` | Star Lantern — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/star-lantern/ |
+| `assets/grab3d/models/vase.glb` | Vase — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/vase/ |
+| `assets/grab3d/models/globe.glb` | Globe — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/props/globe/ |
+| `assets/grab3d/models/full-length-mirror.glb` | Full-Length Mirror — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/full-length-mirror/ |
+| `assets/grab3d/models/vanity-table.glb` | Vanity Table — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/vanity-table/ |
+| `assets/grab3d/models/bookshelf.glb` | Bookshelf — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/bookshelf/ |
 | `assets/grab3d/characters/` (manifest, skeleton, animations and 66 "Cozy" parts) | Character Mixer kit — player and customers | Grab3D | Grab3D | CC0 1.0 (stated in `manifest.json`) | https://grab3d.com/tools/character-mixer/ |

@@ -20,6 +20,9 @@ export interface Visit {
   status: VisitStatus;
   arrivedAt: number;
   perfume?: { name: string; parts: Formula; handedAt: number; paid: number };
+  /** From the shop's appeal when they arrived: better shops draw better-paying, more demanding customers. */
+  payMultiplier?: number;
+  strictness?: number;
   result?: ScoreResult;
   reviewDueAt?: number;
 }
@@ -75,7 +78,23 @@ function pickWalkInBrief(s: CustomerState, tier: number, random: () => number, d
  * Brings the shop up to date: reviews that are due come back, and new customers arrive
  * on schedule (up to the shop's capacity). Returns ids of visits that changed.
  */
-export function tick(s: CustomerState, now: number, tier: number, random: () => number, data: ClientsData = clients): string[] {
+export interface ArrivalConditions {
+  /** Multiplies the time between arrivals (below 1 = more customers). */
+  arrivalMultiplier: number;
+  payMultiplier: number;
+  strictness: number;
+}
+
+const NORMAL: ArrivalConditions = { arrivalMultiplier: 1, payMultiplier: 1, strictness: 0 };
+
+export function tick(
+  s: CustomerState,
+  now: number,
+  tier: number,
+  random: () => number,
+  conditions: ArrivalConditions = NORMAL,
+  data: ClientsData = clients,
+): string[] {
   const changed: string[] = [];
   for (const v of s.visits) {
     if (v.status === 'away' && v.reviewDueAt !== undefined && v.reviewDueAt <= now) {
@@ -83,7 +102,8 @@ export function tick(s: CustomerState, now: number, tier: number, random: () => 
       changed.push(v.id);
     }
   }
-  const interval = realMinutesToMs(data.timing.arrivalEveryRealMinutes);
+  const interval = realMinutesToMs(data.timing.arrivalEveryRealMinutes * conditions.arrivalMultiplier);
+  const extra = { payMultiplier: conditions.payMultiplier, strictness: conditions.strictness };
   for (let guard = 0; s.nextArrivalAt <= now && guard < 50; guard++) {
     if (inShop(s) >= data.timing.maxInShop) {
       s.nextArrivalAt = now + interval;
@@ -94,11 +114,11 @@ export function tick(s: CustomerState, now: number, tier: number, random: () => 
     if (regular) {
       const progress = s.regulars[regular.id] ?? { nextBrief: 0, nextVisitAt: 0, history: [] };
       s.regulars[regular.id] = progress;
-      s.visits.push({ id, regularId: regular.id, name: regular.name, lookSeed: 0, briefId: regular.briefs[progress.nextBrief].id, hintsAsked: 0, status: 'waiting', arrivedAt: s.nextArrivalAt });
+      s.visits.push({ id, regularId: regular.id, name: regular.name, lookSeed: 0, briefId: regular.briefs[progress.nextBrief].id, hintsAsked: 0, status: 'waiting', arrivedAt: s.nextArrivalAt, ...extra });
     } else {
       const brief = pickWalkInBrief(s, tier, random, data);
       const name = data.walkInNames[Math.floor(random() * data.walkInNames.length)];
-      s.visits.push({ id, regularId: null, name, lookSeed: Math.floor(random() * 2 ** 31), briefId: brief.id, hintsAsked: 0, status: 'waiting', arrivedAt: s.nextArrivalAt });
+      s.visits.push({ id, regularId: null, name, lookSeed: Math.floor(random() * 2 ** 31), briefId: brief.id, hintsAsked: 0, status: 'waiting', arrivedAt: s.nextArrivalAt, ...extra });
     }
     changed.push(id);
     s.nextArrivalAt += interval;
@@ -112,7 +132,7 @@ export function handOver(s: CustomerState, visitId: string, perfume: { name: str
   const brief = v && findBrief(v.briefId, data);
   if (!v || !brief || v.status !== 'waiting') return 0;
   const share = data.economy.payShareAtWorstImpression;
-  const paid = Math.round(brief.pay * (share + (1 - share) * Math.min(1, Math.max(0, result.impression))));
+  const paid = Math.round(brief.pay * (v.payMultiplier ?? 1) * (share + (1 - share) * Math.min(1, Math.max(0, result.impression))));
   s.money += paid;
   v.perfume = { ...perfume, handedAt: now, paid };
   v.result = result;
