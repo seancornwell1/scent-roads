@@ -14,6 +14,12 @@ describe('content', () => {
     expect(missing).toEqual([]);
   });
 
+  it('lists every material whose reference numbers are unverified in docs/FACT_CHECK.md', () => {
+    const factCheck = readFileSync(new URL('../../docs/FACT_CHECK.md', import.meta.url), 'utf8');
+    const reference = factCheck.slice(factCheck.indexOf('### Reference numbers'));
+    expect(content.materials.filter((m) => !m.ref.verified && !reference.includes(`\`${m.id}\``)).map((m) => m.id)).toEqual([]);
+  });
+
   it('includes the whole bench inventory', () => {
     expect(content.materials.filter((m) => m.course.onBench)).toHaveLength(26);
   });

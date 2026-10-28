@@ -22,98 +22,171 @@
       ]
     },
     {
-      "id": "lift-and-glow",
-      "name": "Lift and glow",
-      "reputation": 5,
-      "teaches": "Modern helpers that make a blend bigger and longer, and a first spice.",
+      "id": "waters-and-resins",
+      "name": "Waters and resins",
+      "reputation": 4,
+      "teaches": "The oldest palette: citrus and herb waters from the 1700s, and resins burned since antiquity.",
       "materials": [
-        "hedione",
-        "iso-e-super",
-        "ambroxan",
-        "pink-pepper"
+        "lemon",
+        "sweet-orange",
+        "petitgrain",
+        "neroli",
+        "rosemary",
+        "benzoin",
+        "myrrh",
+        "frankincense"
       ]
     },
     {
-      "id": "green-and-creamy",
-      "name": "Green and creamy",
-      "reputation": 12,
-      "teaches": "Leaves, cut grass and lactones: everything a fig needs, plus a dry wood.",
+      "id": "the-old-garden",
+      "name": "The old garden",
+      "reputation": 9,
+      "teaches": "Flowers and spices of the 19th-century perfumer.",
       "materials": [
-        "stemone",
+        "rose-damascena",
+        "rose-centifolia",
+        "jasmine",
+        "tuberose",
+        "orange-blossom",
+        "geranium",
+        "ylang-ylang",
+        "clove",
+        "mandarin",
+        "clary-sage",
+        "peppermint"
+      ]
+    },
+    {
+      "id": "woods-and-roots",
+      "name": "Woods and roots",
+      "reputation": 15,
+      "teaches": "Long-lasting bases from roots, woods and resins.",
+      "materials": [
+        "cedarwood-virginia",
+        "sandalwood",
+        "vetiver",
+        "patchouli",
+        "orris",
+        "tonka-bean",
+        "vanilla",
+        "opoponax",
+        "ambrette-seed",
+        "nutmeg",
+        "cardamom"
+      ]
+    },
+    {
+      "id": "the-first-molecules",
+      "name": "The first molecules",
+      "reputation": 22,
+      "teaches": "1868 to 1900: chemists make coumarin, heliotropin and the ionones, and the fougère is born.",
+      "materials": [
+        "coumarin",
+        "oakmoss",
+        "heliotropin",
+        "beta-ionone",
+        "ethyl-vanillin",
+        "benzyl-acetate",
+        "linalool",
+        "linalyl-acetate",
+        "geraniol",
+        "citronellol",
+        "eugenol",
+        "benzaldehyde",
+        "indole",
+        "isobutyl-quinoline",
+        "birch-tar",
+        "phenylethyl-alcohol"
+      ]
+    },
+    {
+      "id": "aldehydes-and-chypres",
+      "name": "Aldehydes and chypres",
+      "reputation": 30,
+      "teaches": "1900 to 1930: sparkling aldehydes, peach lactones and the chypre.",
+      "materials": [
+        "aldehyde-c10",
+        "aldehyde-c11",
+        "aldehyde-c12-lauric",
+        "aldehyde-c12-mna",
+        "hydroxycitronellal",
+        "aldehyde-c14",
+        "aldehyde-c18",
+        "methyl-ionone",
+        "benzyl-salicylate",
+        "exaltolide",
+        "ambrettolide",
+        "treemoss",
+        "violet-leaf",
+        "mimosa",
+        "citral",
+        "isobornyl-acetate",
+        "guaiacwood",
+        "cypress",
+        "atlas-cedar",
+        "grapefruit",
+        "lime",
+        "black-pepper",
+        "ginger"
+      ]
+    },
+    {
+      "id": "mid-century",
+      "name": "Mid-century",
+      "reputation": 40,
+      "teaches": "1930 to 1970: green notes, transparent jasmine, ambergris and clean musks.",
+      "materials": [
         "cis-3-hexenol",
+        "cis-3-hexenyl-acetate",
+        "galbanum",
+        "triplal",
+        "allyl-amyl-glycolate",
+        "allyl-hexanoate",
         "gamma-octalactone",
         "gamma-decalactone",
-        "cedarwood-virginia"
-      ]
-    },
-    {
-      "id": "moss-and-earth",
-      "name": "Moss and earth",
-      "reputation": 22,
-      "teaches": "The chypre: oakmoss and patchouli under a rose heart, with coumarin's hay.",
-      "materials": [
-        "oakmoss",
-        "patchouli",
-        "phenylethyl-alcohol",
-        "coumarin"
-      ]
-    },
-    {
-      "id": "the-barbershop",
-      "name": "The barbershop",
-      "reputation": 35,
-      "teaches": "Fresh fougères and the forest: clean, bright and resinous.",
-      "materials": [
-        "dihydromyrcenol",
-        "cashmeran",
-        "douglas-fir",
-        "isobornyl-acetate"
-      ]
-    },
-    {
-      "id": "roots-and-resins",
-      "name": "Roots and resins",
-      "reputation": 42,
-      "teaches": "Vetiver, frankincense and real vanilla: deep bases from far-off harvests.",
-      "materials": [
-        "vetiver",
-        "frankincense",
-        "vanilla"
-      ]
-    },
-    {
-      "id": "fruit-and-flowers",
-      "name": "Fruit and flowers",
-      "reputation": 50,
-      "teaches": "Rich roses, violets, orchard fruit and tea.",
-      "materials": [
-        "beta-damascone",
-        "beta-ionone",
         "delta-decalactone",
-        "allyl-amyl-glycolate",
-        "black-tea"
+        "hedione",
+        "helional",
+        "rose-oxide",
+        "ambroxan",
+        "galaxolide",
+        "ethylene-brassylate",
+        "evernyl",
+        "vertofix",
+        "raspberry-ketone",
+        "blackcurrant-bud",
+        "lavandin",
+        "basil"
       ]
     },
     {
-      "id": "the-great-flowers",
-      "name": "The great flowers",
-      "reputation": 60,
-      "teaches": "Jasmine, tuberose and the two roses: the precious florals of Grasse and Bulgaria.",
+      "id": "the-modern-palette",
+      "name": "The modern palette",
+      "reputation": 52,
+      "teaches": "1970 to today: radiant woods, damascones, sweet gourmands and modern musks.",
       "materials": [
-        "jasmine",
-        "rose-centifolia",
-        "rose-damascena",
-        "tuberose"
+        "iso-e-super",
+        "cashmeran",
+        "dihydromyrcenol",
+        "beta-damascone",
+        "ethyl-maltol",
+        "stemone",
+        "javanol",
+        "habanolide",
+        "helvetolide"
       ]
     },
     {
-      "id": "sparkle-and-skin",
-      "name": "Sparkle and skin",
-      "reputation": 75,
-      "teaches": "Aldehydic sparkle and soft musk: the finishing touches.",
+      "id": "far-harvests",
+      "name": "Far harvests",
+      "reputation": 65,
+      "teaches": "Newer naturals: pink pepper, fir needles, tea and cocoa, smoky cypriol.",
       "materials": [
-        "aldehyde-c11",
-        "ethylene-brassylate"
+        "pink-pepper",
+        "douglas-fir",
+        "black-tea",
+        "cocoa",
+        "cypriol"
       ]
     }
   ]

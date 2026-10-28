@@ -32,6 +32,7 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 - The Pages base path comes from `BASE_PATH` at build time; never hard-code `/scent-roads/` in source. Reference assets via `import.meta.env.BASE_URL`.
 - Story, briefs and scoring (Direction change #2): her book, townspeople and their requests are data in `src/data/story.json` (`src/game/story.ts`). Every brief's hidden target is a reference formula of exactly `wearableParts` (10) whole parts; scoring is closeness at each stage plus strength and longevity, shown as 1–3 stars (`src/game/scoring.ts`), and customers' feedback is directional words, never numbers (`src/game/feedback.ts`, phrases in `clients.json`).
 - Her supply network (Phase B): growers' and her chemist's letters, chapters by season and which routes are open live in `src/data/letters.json` and `src/game/routes.ts` (saved as `routes`). Harvests need the region's route open; aroma chemicals need the chemist's. The town apothecary sells naturals all along so the player can't get stuck.
+- Materials (Phase C): each has a `ref` block of reference numbers (era, tenacity, dilution, IFRA limit, cost) with its own `verified`/`check`. Unlock tiers follow perfumery's history. Learning (uses, your notes, nose training) lives in `src/game/learning.ts` and `src/data/training.json`, saved as `learning`; training days are real calendar days.
 - Game time: 1 real day = 1 game week (`src/data/time.json`). Use the game clock (`src/game/clock.ts`, `nowGame()` in `src/state.ts`) for anything measured in game hours. The debug speed (back room, or `?speed=N`) re-anchors it. Customers' visit timestamps are real milliseconds scaled by the same speed (`src/game/time.ts`).
 - Secrets (e.g. the Freesound API key) go in `.env`, which is git-ignored; `.env.example` lists the names.
 - Sound cues are data in `src/data/sounds.json`, played by `src/scene/audio.ts` (files only). `npm run sounds` fetches CC0 sounds from Freesound into `assets/sounds/` and credits them; it needs `FREESOUND_API_KEY` and network access to `freesound.org` and `cdn.freesound.org`.
@@ -41,6 +42,7 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 - `npm run dev` — dev server, reachable from a phone on the same network
 - `npm test` — unit tests (Vitest)
 - `npm run sounds` — fetch missing sound cues from Freesound
+- `npm run factcheck` — regenerate the materials tables in `docs/FACT_CHECK.md` after editing materials
 - `npm run typecheck` / `npm run build`
 
 ## Files to keep current

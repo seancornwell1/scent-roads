@@ -6,12 +6,13 @@ import { newDisplayState } from './game/display';
 import { newSourcingState, sourcing } from './game/sourcing';
 import { newStoryState, story } from './game/story';
 import { newRoutesState } from './game/routes';
+import { newLearningState } from './game/learning';
 import { newUpgradeState } from './game/upgrades';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'intro' | 'chapter' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -33,6 +34,11 @@ export interface UiState {
   pickSpot: string | null;
   /** Which page of the character creator is showing (a slot id). */
   creatorTab: string;
+  /** Which tab of the formula book is showing, and which compendium page is open. */
+  bookTab: 'pages' | 'compendium' | 'accords' | 'formulas' | 'reviews';
+  compendiumId: string | null;
+  /** In nose training, the question whose answer is being shown. */
+  trainingFeedback: number | null;
   /** A short message over the scene, e.g. for placeholders. */
   toast: string | null;
 }
@@ -52,6 +58,7 @@ function initSave(): SaveData {
   }
   save.story ??= newStoryState();
   save.routes ??= newRoutesState();
+  save.learning ??= newLearningState();
   save.upgrades ??= newUpgradeState();
   save.display ??= newDisplayState();
   save.news ??= {};
@@ -63,7 +70,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
 };
 
 let render = () => {};

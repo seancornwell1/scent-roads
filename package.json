@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "sounds": "node scripts/fetch-sounds.mjs"
+    "sounds": "node scripts/fetch-sounds.mjs",
+    "factcheck": "node scripts/fact-check.mjs"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.5.1",

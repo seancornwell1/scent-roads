@@ -31,6 +31,8 @@ import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, lookOf, reactionScreen, unlockScreen } from './ui/customer';
 import { chapterScreen } from './ui/chapter';
+import { trainingScreen } from './ui/training';
+import { answerQuestion, dayNumber, recordUse, startToday } from './game/learning';
 import { introScreen } from './ui/intro';
 import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
@@ -249,6 +251,10 @@ function render(): void {
   scene.enabled = screen === 'shop';
   scene.focusOnPlayer(screen === 'creator');
 
+  // Don't redraw a panel under someone typing (a note, a formula's name): it would lose
+  // what they've typed. Their change is saved when they leave the box.
+  const typing = document.activeElement?.matches('textarea[data-note], #save-name') && panelRoot.contains(document.activeElement);
+  if (typing && screen !== 'shop') return;
   const panel = panelRoot.querySelector<HTMLElement>('.panel');
   const scroll = panel && !scrollToTop ? panel.scrollTop : 0;
   scrollToTop = false;
@@ -286,6 +292,8 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return reactionScreen(visit!);
     case 'chapter':
       return chapterScreen();
+    case 'training':
+      return trainingScreen();
     case 'unlock':
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
     case 'backroom':
@@ -316,6 +324,15 @@ function importSave(text: string): void {
 }
 
 document.body.addEventListener('change', (event) => {
+  // Your own notes on a material: saved when you leave the box.
+  const note = (event.target as HTMLElement).closest<HTMLTextAreaElement>('textarea[data-note]');
+  if (note) {
+    const text = note.value.trim();
+    if (text) state.save.learning!.notes[note.dataset.note!] = text;
+    else delete state.save.learning!.notes[note.dataset.note!];
+    writeSave(state.save);
+    return;
+  }
   const input = event.target as HTMLInputElement;
   if (input.id !== 'import-file' || !input.files?.[0]) return;
   void input.files[0].text().then(importSave);
@@ -334,6 +351,11 @@ document.body.addEventListener('click', (event) => {
         sounds.play('paper');
       }
       if (target.dataset.to === 'options') optionsMessage = null;
+      if (target.dataset.to === 'training') {
+        const owned = content.materials.filter((m) => ownedMaterials(save).has(m.id));
+        startToday(save.learning!, owned, content.families, dayNumber(new Date()), Math.random);
+        ui.trainingFeedback = null;
+      }
       return openPanel(target.dataset.to as Screen);
     case 'close-panel':
       if (ui.screen === 'creator' && kit) save.character = currentLook();
@@ -390,6 +412,7 @@ document.body.addEventListener('click', (event) => {
       const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring, visit.strictness ?? 0);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
       handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: { ...save.draft } }, result, Date.now());
+      recordUse(save.learning!, save.draft);
       ui.orderId = null;
       ui.visitId = visit.id;
       sounds.play('pouring');
@@ -412,6 +435,29 @@ document.body.addEventListener('click', (event) => {
       ui.toast = page ? `A page of her book is whole again: “${pageById(page)?.title}”.` : `Reputation ${change >= 0 ? '+' : ''}${change}.`;
       break;
     }
+    case 'book-tab':
+      ui.bookTab = target.dataset.value as typeof ui.bookTab;
+      ui.compendiumId = null;
+      scrollToTop = true;
+      break;
+    case 'open-entry':
+      ui.compendiumId = id!;
+      scrollToTop = true;
+      break;
+    case 'close-entry':
+      ui.compendiumId = null;
+      break;
+    case 'train-answer': {
+      const index = Number(target.dataset.index);
+      const right = answerQuestion(save.learning!, index, Number(target.dataset.value), dayNumber(new Date()));
+      if (right === null) return;
+      ui.trainingFeedback = index;
+      sounds.play(right ? 'glass' : 'paper');
+      break;
+    }
+    case 'train-next':
+      ui.trainingFeedback = null;
+      break;
     case 'start-story': {
       save.story!.introSeen = true;
       if (!save.character) return openPanel('creator');
@@ -506,7 +552,10 @@ document.body.addEventListener('click', (event) => {
       }
       const why = listPerfume(save.display!, save.sourcing!, formula, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
       ui.toast = why ?? `“${formula.name}” is on display.`;
-      if (!why) sounds.play('pouring');
+      if (!why) {
+        sounds.play('pouring');
+        recordUse(save.learning!, formula.parts);
+      }
       break;
     }
     case 'unlist':
@@ -593,6 +642,7 @@ document.body.addEventListener('click', (event) => {
       const input = document.querySelector<HTMLInputElement>('#save-name');
       const name = input?.value.trim() || `Formula ${save.formulas.length + 1}`;
       const now = Date.now();
+      recordUse(save.learning!, save.draft);
       save.formulas.push({
         id: `f${now}`,
         name,

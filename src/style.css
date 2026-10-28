@@ -426,3 +426,12 @@ textarea {
 /* Letters from her supply network: text only. */
 .letter-card .letter { margin-top: 6px; }
 .letter-card .letter p { margin: 0 0 6px; font-style: italic; }
+
+/* Compendium and nose training. */
+.mastery { letter-spacing: 1px; color: var(--accent); }
+.locked { border-left: 3px solid var(--line); padding-left: 8px; }
+.my-notes { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+.compendium-entry h3 { margin: 12px 0 4px; font-size: 0.95rem; }
+.training-row { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; }
+.train-options { flex-direction: column; align-items: stretch; }
+.train-options .chip { justify-content: flex-start; text-align: left; min-height: 44px; }

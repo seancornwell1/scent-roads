@@ -466,6 +466,218 @@
         }
       },
       "pay": 70
+    },
+    {
+      "id": "orange-grove-morning",
+      "memory": "The orange grove at dawn on my honeymoon.",
+      "hints": [
+        "The blossom and the fruit at the same time.",
+        "It was gone by noon, like the morning."
+      ],
+      "target": {
+        "formula": {
+          "sweet-orange": 4,
+          "neroli": 2,
+          "petitgrain": 2,
+          "bergamot": 2
+        }
+      },
+      "pay": 30
+    },
+    {
+      "id": "fathers-cologne",
+      "memory": "My father's cologne, splashed on after shaving.",
+      "hints": [
+        "Very clean, a bit sharp.",
+        "Herbs from the garden, rosemary I think."
+      ],
+      "target": {
+        "formula": {
+          "lemon": 3,
+          "bergamot": 3,
+          "rosemary": 2,
+          "lavender": 2
+        }
+      },
+      "pay": 30
+    },
+    {
+      "id": "harbour-chapel",
+      "memory": "The old harbour chapel, candles lit and the door open to the sea.",
+      "hints": [
+        "Incense, of course, and something bitter.",
+        "You could smell lemons from the market outside."
+      ],
+      "target": {
+        "formula": {
+          "frankincense": 4,
+          "myrrh": 2,
+          "lemon": 2,
+          "labdanum": 2
+        }
+      },
+      "pay": 35
+    },
+    {
+      "id": "rose-arbour",
+      "memory": "The rose arbour at my grandparents' house.",
+      "hints": [
+        "Roses, but spicy, like the old varieties.",
+        "A bit of warmth at the very end."
+      ],
+      "target": {
+        "formula": {
+          "rose-damascena": 4,
+          "geranium": 2,
+          "clove": 1,
+          "labdanum": 2,
+          "bergamot": 1
+        }
+      },
+      "pay": 40
+    },
+    {
+      "id": "tropical-night",
+      "memory": "A warm night in the tropics, flowers everywhere.",
+      "hints": [
+        "Heavy, sweet flowers.",
+        "Sticky warm air, and a little fruit."
+      ],
+      "target": {
+        "formula": {
+          "ylang-ylang": 4,
+          "jasmine": 2,
+          "vanillin": 2,
+          "sweet-orange": 2
+        }
+      },
+      "pay": 40
+    },
+    {
+      "id": "winter-kitchen",
+      "memory": "Baking spiced biscuits on a winter afternoon.",
+      "hints": [
+        "Cloves, lots of cloves.",
+        "Orange zest and sugar."
+      ],
+      "target": {
+        "formula": {
+          "clove": 2,
+          "vanillin": 4,
+          "mandarin": 2,
+          "labdanum": 2
+        }
+      },
+      "pay": 40
+    },
+    {
+      "id": "temple-garden",
+      "memory": "A temple garden after rain, incense still burning.",
+      "hints": [
+        "Soft, creamy wood.",
+        "Smoke and wet earth."
+      ],
+      "target": {
+        "formula": {
+          "sandalwood": 5,
+          "frankincense": 2,
+          "vetiver": 2,
+          "cedarwood-virginia": 1
+        }
+      },
+      "pay": 45
+    },
+    {
+      "id": "powder-compact",
+      "memory": "My grandmother's powder compact.",
+      "hints": [
+        "Soft and powdery, like violets.",
+        "Sweet underneath, almost like vanilla."
+      ],
+      "target": {
+        "formula": {
+          "orris": 2,
+          "tonka-bean": 3,
+          "vanilla": 2,
+          "rose-centifolia": 2,
+          "sandalwood": 1
+        }
+      },
+      "pay": 45
+    },
+    {
+      "id": "violet-sweets",
+      "memory": "A tin of violet sweets from the corner shop.",
+      "hints": [
+        "Violets, sugary ones.",
+        "A powdery, almond sweetness."
+      ],
+      "target": {
+        "formula": {
+          "beta-ionone": 4,
+          "heliotropin": 2,
+          "vanillin": 2,
+          "benzyl-acetate": 1,
+          "bergamot": 1
+        }
+      },
+      "pay": 50
+    },
+    {
+      "id": "cherry-pie",
+      "memory": "Cherry pie cooling on the windowsill.",
+      "hints": [
+        "Almonds and cherries.",
+        "Warm pastry, a bit of vanilla."
+      ],
+      "target": {
+        "formula": {
+          "heliotropin": 3,
+          "benzaldehyde": 1,
+          "ethyl-vanillin": 2,
+          "sweet-orange": 2,
+          "tonka-bean": 2
+        }
+      },
+      "pay": 50
+    },
+    {
+      "id": "evening-gloves",
+      "memory": "Long silk gloves at a ball, a hundred years ago.",
+      "hints": [
+        "It sparkled, like champagne and clean linen.",
+        "Flowers underneath, and a soft powdery wood."
+      ],
+      "target": {
+        "formula": {
+          "aldehyde-c12-lauric": 1,
+          "aldehyde-c11": 1,
+          "jasmine": 2,
+          "rose-centifolia": 2,
+          "orris": 1,
+          "sandalwood": 2,
+          "vanillin": 1
+        }
+      },
+      "pay": 55
+    },
+    {
+      "id": "peach-wall",
+      "memory": "Peaches warming on a mossy garden wall.",
+      "hints": [
+        "Ripe, velvety peaches.",
+        "The wall was damp and green with moss."
+      ],
+      "target": {
+        "formula": {
+          "aldehyde-c14": 3,
+          "bergamot": 2,
+          "oakmoss": 2,
+          "labdanum": 2,
+          "jasmine": 1
+        }
+      },
+      "pay": 55
     }
   ],
   "regulars": [

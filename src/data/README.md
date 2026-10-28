@@ -30,6 +30,7 @@ The olfactive families materials are sorted by on the organ, in display order.
 | `name` | string | Display name |
 | `type` | `"natural"` \| `"synthetic"` | Natural extract or lab-made aroma chemical |
 | `family` | family id | Olfactive family |
+| `subfamily` | string | A finer description within the family (`rose`, `powdery`, `smoky wood`) |
 | `layer` | `"top"` \| `"heart"` \| `"base"` | Where it sits in the pyramid |
 | `volatility` | `"very high"` … `"very low"` | How fast it evaporates, in words |
 | `character` | string | What it smells like, in standard perfumery terms (Sean's personal notes stay in `docs/COURSE.md`) |
@@ -39,6 +40,9 @@ The olfactive families materials are sorted by on the organ, in display order.
 | `verified`, `check` | | See above |
 | `model.strength` | 1–10 | Game tuning, not a fact: odour impact. Each step doubles impact (see `model.json`). |
 | `model.halfLifeHours` | number > 0 | Game tuning, not a fact: hours until the material's intensity halves |
+| `ref` | object | Reference numbers from public sources, with their own `verified` and `check` (Phase C): `year` (when a synthetic came into use, or the era a natural was in use by; before 1500 shows as antiquity), `tenacityHours` (time on a smelling strip), `dilution` (100, 10 or 1: the strength it's usually worked at), `ifraLimit` (maximum percent in a finished fine fragrance, IFRA category 4, or `null` if unrestricted), `costPerKg` (rough euros) |
+
+After editing materials, run `npm run factcheck` to regenerate the materials tables in `docs/FACT_CHECK.md`; a test fails if an unverified material is missing from them.
 
 ## `accords.json`
 
@@ -142,7 +146,7 @@ How the player gains materials. `src/game/unlocks.ts`; a test checks every mater
 | Field | Meaning |
 | ----- | ------- |
 | `sources` | `natural` and `synthetic`: a name and a plain explanation of where they'll come from (grown on the map, or ordered from the catalogue) |
-| `tiers` | In order: `id`, `name`, `reputation` needed, `teaches` (one line), `materials` (ids). Tier 0 is her bench. |
+| `tiers` | In order: `id`, `name`, `reputation` needed, `teaches` (one line), `materials` (ids). Tier 0 is her bench; since Phase C the tiers follow perfumery's history (old waters and resins, the 19th-century garden, woods and roots, the first molecules, aldehydes and chypres, mid-century, the modern palette, newer naturals), and a test checks each tier is roughly no older than the one before. |
 
 A material may instead be given by the story (`gives` in `story.json`, like vanillin in week 1); the test counts those as unlocked.
 
@@ -240,7 +244,7 @@ Processing methods. `about` is the fact to verify; the numbers are tuning.
 | `shipping` | `baseGameHours` plus distance ÷ `kmPerGameHour` |
 | `quality` | `inWindow` and `spoiled` harvest quality, `words` for quality bands, and `scoreEffect` (how much material quality shifts a perfume's score) |
 | `aging` | Material id → `perGameDay` quality gained in stock, up to `max` |
-| `supplier` | The town apothecary (`name`, `shippingGameHours`), which sells naturals from a broker's stock all year at `brokerQuality`; her chemist (`chemistName`, `chemistShippingGameHours`), which sells aroma chemicals at `catalogueQuality` once you've answered their letter; `lotGrams` per order and `prices` (coins per lot, every material) |
+| `supplier` | Every material needs a price; Phase C priced the new ones from their `ref.costPerKg` (4 + 6 × log10 of the cost per kilo). The town apothecary (`name`, `shippingGameHours`), which sells naturals from a broker's stock all year at `brokerQuality`; her chemist (`chemistName`, `chemistShippingGameHours`), which sells aroma chemicals at `catalogueQuality` once you've answered their letter; `lotGrams` per order and `prices` (coins per lot, every material) |
 | `perfumeGrams` | Grams of material one perfume uses in total, split by its formula |
 
 ## `furniture.json`
@@ -314,3 +318,19 @@ Her supply network (`src/game/routes.ts`). Every route starts closed: growers an
 | `chapters` | In order from the first spring, one per season: `title`, `text`, and `letters` (route ids whose first letter arrives when the chapter begins). Past the last one, chapters are just the season and year. |
 
 The letters are story, not facts: where one mentions a season or method, it repeats the region's own (possibly unverified) data in `regions.json`.
+
+## `training.json`
+
+Nose training and the compendium (`src/game/learning.ts`).
+
+| Field | Meaning |
+| ----- | ------- |
+| `questionsPerDay` | Questions in a day's session |
+| `intervalsDays` | Days until a material comes up again, by the box (mastery) it has just moved to; a wrong answer sends it back to box 0 |
+| `maxMastery` | The top box |
+| `kinds` | Question kinds, taken in turn by mastery: `identify` (name it from its description), `family`, `layer` |
+| `prompts` | The question for each kind (`{name}` fills in) |
+| `layerNames` | How layers read in questions and pages |
+| `reveal` | When parts of a compendium page fill in: `behaviour` (how it behaves in a blend, and its origin), `reference` (tenacity, dilution, era) and `safety` (IFRA limit and cost), each after `uses` perfumes or that much `mastery` |
+
+Training days are real calendar days, so the streak means coming back each day. Uses count perfumes handed over, bottled or saved.

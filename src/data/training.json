@@ -1,0 +1,17 @@
+{
+  "questionsPerDay": 5,
+  "intervalsDays": [1, 1, 2, 4, 8, 16],
+  "maxMastery": 5,
+  "kinds": ["identify", "family", "layer"],
+  "prompts": {
+    "identify": "Which material is this?",
+    "family": "Which family is {name} in?",
+    "layer": "Where does {name} sit in a perfume?"
+  },
+  "layerNames": { "top": "Top note", "heart": "Heart note", "base": "Base note" },
+  "reveal": {
+    "behaviour": { "uses": 1, "mastery": 1 },
+    "reference": { "uses": 3, "mastery": 2 },
+    "safety": { "uses": 6, "mastery": 4 }
+  }
+}

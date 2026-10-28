@@ -21,8 +21,16 @@ describe('unlocks', () => {
     expect([...unlockedMaterialIds(0)].sort()).toEqual(['bergamot', 'labdanum', 'lavender']);
     expect(storyMaterials.has('vanillin')).toBe(true);
     expect(tierIndex(0)).toBe(0);
-    expect(nextTier(0)?.id).toBe('lift-and-glow');
-    expect(unlockedMaterialIds(5).has('hedione')).toBe(true);
+    expect(nextTier(0)?.id).toBe('waters-and-resins');
+    expect(unlockedMaterialIds(4).has('lemon')).toBe(true);
+  });
+
+  it('unlock in roughly historical order: each tier is no older than the one before, on average', () => {
+    const years = unlocks.tiers.slice(1).map((t) => {
+      const ys = t.materials.map((id) => materialsById.get(id)!.ref.year);
+      return ys.reduce((a, b) => a + b, 0) / ys.length;
+    });
+    for (let i = 1; i < years.length; i++) expect(years[i]).toBeGreaterThanOrEqual(years[i - 1] - 50);
   });
 });
 

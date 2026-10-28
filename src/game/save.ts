@@ -4,6 +4,7 @@ import type { CustomerState } from './customers';
 import type { DisplayState } from './display';
 import type { NewsItem } from './events';
 import type { SourcingState } from './sourcing';
+import type { LearningState } from './learning';
 import type { RoutesState } from './routes';
 import type { StoryState } from './story';
 import type { UpgradeState } from './upgrades';
@@ -57,6 +58,8 @@ export interface SaveData {
   story?: StoryState;
   /** Her supply network: growers' and the chemist's letters, and which routes are open (Phase B; filled in on load). */
   routes?: RoutesState;
+  /** Material uses, your own notes and nose training (Phase C; filled in on load). */
+  learning?: LearningState;
 }
 
 /** Checks that text looks like a save from this game before importing it. */

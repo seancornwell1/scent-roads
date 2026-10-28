@@ -1,5 +1,5 @@
 import { recognizeAccords } from '../game/accords';
-import { content, familiesById, materialsById } from '../game/content';
+import { content, materialsById } from '../game/content';
 import { drydown } from '../game/evaporation';
 import { percentages, totalParts } from '../game/formula';
 import { findBrief } from '../game/clients';
@@ -10,6 +10,8 @@ import { ownedMaterials } from '../game/world';
 import { pageById } from '../game/story';
 import { nowGame, state } from '../state';
 import { pageCard } from './book';
+import { compendiumEntry } from './compendium';
+import { currentStreak, dayNumber, nextQuestion } from '../game/learning';
 import { drydownGraph, familyName } from './graph';
 import { esc, formatParts, header } from './html';
 
@@ -64,6 +66,16 @@ function accordBanner(): string {
   </div>`;
 }
 
+/** Today's nose training, from the organ. */
+function trainingButton(): string {
+  const l = state.save.learning!;
+  const day = dayNumber(new Date());
+  const done = l.today?.day === day && nextQuestion(l) < 0;
+  const streak = currentStreak(l, day);
+  return `<div class="row-between training-row"><span class="small">${done ? 'Nose training done for today' : 'Nose training: a few questions today'} · streak ${streak}</span>
+    <button class="chip" data-action="nav" data-to="training">${done ? 'Review' : 'Train'}</button></div>`;
+}
+
 /** How full the formula is: wearables must total exactly the wearable parts. */
 function partsMeter(): string {
   const total = totalParts(state.save.draft);
@@ -94,7 +106,7 @@ function materialsTab(): string {
     .filter((g) => g.items.length > 0)
     .map((g) => `<h2>${esc(g.title)}</h2><ul class="list">${g.items.sort(byName).map(materialRow).join('')}</ul>`)
     .join('');
-  return `<div class="row-between">${toggle}</div>${partsMeter()}${list}${upcoming}`;
+  return `${trainingButton()}<div class="row-between">${toggle}</div>${partsMeter()}${list}${upcoming}`;
 }
 
 function materialRow(m: Material): string {
@@ -168,27 +180,20 @@ function formulaTab(): string {
     <button class="link danger" data-action="clear">Clear the organ</button>`;
 }
 
+/** A material's compendium page, as a sheet over the organ. */
 function detailSheet(m: Material): string {
-  const o = m.origin;
-  const origin = [o.plant, o.region, o.method, o.note].filter(Boolean).map((x) => `<li>${esc(x!)}</li>`).join('');
-  const source = m.type === 'natural' ? 'Grown: sourced on the world map' : 'Catalogue: ordered from the supplier';
+  const source = m.type === 'natural' ? 'Grown: harvested on the map, or from the apothecary' : 'Catalogue: ordered from the chemist';
   const course = `${source}${m.course.mission ? ` · course mission ${esc(m.course.mission)}` : ''}`;
-  const unverified = m.verified
-    ? ''
-    : `<p class="tag tag--warn block">Unverified: ${esc(m.check.map((field) => field.split('.').pop()).join(', '))}. Listed in the fact check.</p>`;
   return `<div class="sheet-backdrop" data-action="close-detail"></div>
   <section class="sheet" role="dialog" aria-label="${esc(m.name)}">
-    <h2>${esc(m.name)}</h2>
-    <p class="muted small">${m.type === 'natural' ? 'Natural' : 'Synthetic'} · ${esc(familiesById.get(m.family)?.name ?? m.family)} · ${LAYER_NAMES[m.layer]} note · ${esc(m.volatility)} volatility</p>
-    ${unverified}
-    <p>${esc(m.character)}</p>
-    ${m.behaviour ? `<p><strong>In blends:</strong> ${esc(m.behaviour)}</p>` : ''}
-    <h3>Origin</h3><ul class="plain">${origin}</ul>
-    <p class="muted small">${course}</p>
-    <p class="muted small">${stockLine(m.id)}</p>
-    <div class="row-between">
-      <button class="link" data-action="close-detail">Close</button>
-      <button class="primary" data-action="add" data-id="${esc(m.id)}">Add 1 part</button>
-    </div>
+    ${compendiumEntry(
+      m,
+      `<p class="muted small">${course}</p>
+      <p class="muted small">${stockLine(m.id)}</p>
+      <div class="row-between">
+        <button class="link" data-action="close-detail">Close</button>
+        <button class="primary" data-action="add" data-id="${esc(m.id)}">Add 1 part</button>
+      </div>`,
+    )}
   </section>`;
 }

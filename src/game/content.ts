@@ -28,6 +28,17 @@ export function validateContent(c: Content): string[] {
     if (m.verified !== (m.check.length === 0)) errors.push(`${at}: verified must be true exactly when check is empty`);
     if (!(m.model.strength >= 1 && m.model.strength <= 10)) errors.push(`${at}: strength must be 1–10`);
     if (!(m.model.halfLifeHours > 0)) errors.push(`${at}: halfLifeHours must be positive`);
+    if (!m.subfamily) errors.push(`${at}: needs a subfamily`);
+    const r = m.ref;
+    if (!r) errors.push(`${at}: needs ref`);
+    else {
+      if (![100, 10, 1].includes(r.dilution)) errors.push(`${at}: ref.dilution must be 100, 10 or 1`);
+      if (!(r.tenacityHours > 0)) errors.push(`${at}: ref.tenacityHours must be positive`);
+      if (!(r.costPerKg > 0)) errors.push(`${at}: ref.costPerKg must be positive`);
+      if (r.ifraLimit !== null && !(r.ifraLimit > 0 && r.ifraLimit <= 100)) errors.push(`${at}: ref.ifraLimit must be null or a percentage`);
+      if (!Number.isInteger(r.year)) errors.push(`${at}: ref.year must be a whole year`);
+      if (r.verified !== (r.check.length === 0)) errors.push(`${at}: ref.verified must be true exactly when ref.check is empty`);
+    }
   }
 
   const accordIds = new Set<string>();

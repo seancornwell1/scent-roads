@@ -23,7 +23,6 @@ import {
 import { unlockedMaterialIds } from './unlocks';
 
 const all = new Set(content.materials.map((m) => m.id));
-const naturals = new Set(content.materials.filter((m) => m.type === 'natural').map((m) => m.id));
 // Game hour 0 is 1 March. These are game-hour timestamps for days in other months.
 const MARCH = 0;
 const DECEMBER = 24 * (31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 5);
@@ -34,8 +33,8 @@ const owned = { owned: true, quality: 1.05, gameHours: 6 };
 const ownedMaterials = new Set([...unlockedMaterialIds(0), 'vanillin']);
 
 describe('sourcing data', () => {
-  it('is valid: every natural grows somewhere and everything has a price', () => {
-    expect(validateSourcing(all, naturals)).toEqual([]);
+  it('is valid: every crop is a known material and everything has a price', () => {
+    expect(validateSourcing(all)).toEqual([]);
   });
 
   it('lists every unverified crop fact in docs/FACT_CHECK.md', () => {

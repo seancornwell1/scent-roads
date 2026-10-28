@@ -171,17 +171,19 @@ _Added Oct 27, 2026; revised Oct 28, 2026 by Direction change #2: the starting s
 - **Grown (naturals):** each grows in a real region. They'll be sourced on the world map in the back room through harvest contracts.
 - **Catalogue (synthetics):** aroma chemicals ordered from a supplier's catalogue, shipped to the shop.
 
-| Reputation | Unlock | New materials | Teaches |
-| ---------- | ------ | ------------- | ------- |
-| 0 | Her bench | Bergamot, lavender, labdanum (vanillin arrives with a customer in week 1) | One per layer: a cologne, then an amber once vanillin arrives |
-| 5 | Lift and glow | Hedione, Iso E Super, Ambroxan, pink pepper | Modern helpers that make a blend bigger and longer; a first spice |
-| 12 | Green and creamy | Stemone, cis-3-hexenol, gamma-octalactone, gamma-decalactone, cedarwood | The fig: leaves, grass, lactones, a dry wood |
-| 22 | Moss and earth | Oakmoss, patchouli, phenylethyl alcohol, coumarin | The chypre |
-| 35 | The barbershop | Dihydromyrcenol, Cashmeran, Douglas fir, isobornyl acetate | Fresh fougères and the forest |
-| 50 | Fruit and flowers | Beta-damascone, beta-ionone, delta-decalactone, allyl amyl glycolate, black tea | Rich florals, orchard fruit, tea |
-| 70 | Sparkle and skin | Aldehyde C-11, ethylene brassylate | Aldehydic sparkle and musk |
+| Reputation | Era | New materials | Teaches |
+| ---------- | --- | ------------- | ------- |
+| 0 | Her bench | Bergamot, Lavender, Labdanum resinoid (vanillin arrives with a customer in week 1) | Three of her bottles, one for each layer: enough for a cologne. Vanillin comes back to the shop in your first week. |
+| 4 | Waters and resins | Lemon, Sweet orange, Petitgrain bigarade, Neroli, Rosemary, Benzoin Siam, Myrrh, Frankincense | The oldest palette: citrus and herb waters from the 1700s, and resins burned since antiquity. |
+| 9 | The old garden | Bulgarian rose oil, Rose de mai absolute, Jasmine absolute, Tuberose absolute, Orange flower absolute, Geranium, Ylang-ylang extra, Clove bud, Mandarin, Clary sage, Peppermint | Flowers and spices of the 19th-century perfumer. |
+| 15 | Woods and roots | Cedarwood Virginia, Sandalwood, Vetiver, Patchouli, Orris butter, Tonka absolute, Vanilla absolute, Opoponax, Ambrette seed, Nutmeg, Cardamom | Long-lasting bases from roots, woods and resins. |
+| 22 | The first molecules | Coumarin, Oakmoss absolute, Heliotropin, Beta-ionone, Ethyl vanillin, Benzyl acetate, Linalool, Linalyl acetate, Geraniol, Citronellol, Eugenol, Benzaldehyde, Indole, Isobutyl quinoline, Birch tar (rectified), Phenylethyl alcohol | 1868 to 1900: chemists make coumarin, heliotropin and the ionones, and the fougère is born. |
+| 30 | Aldehydes and chypres | Aldehyde C-10 (decanal), Aldehyde C-11 undecylenic, Aldehyde C-12 lauric, Aldehyde C-12 MNA, Hydroxycitronellal, Aldehyde C-14 (peach), Aldehyde C-18 (coconut), Methyl ionone, Benzyl salicylate, Exaltolide, Ambrettolide, Treemoss absolute, Violet leaf absolute, Mimosa absolute, Citral, Isobornyl acetate, Guaiac wood, Cypress, Atlas cedarwood, Grapefruit, Lime (distilled), Black pepper, Ginger | 1900 to 1930: sparkling aldehydes, peach lactones and the chypre. |
+| 40 | Mid-century | cis-3-Hexenol, cis-3-Hexenyl acetate, Galbanum, Ligustral (Triplal), Allyl amyl glycolate, Allyl caproate, Gamma octalactone, Gamma decalactone, Delta-decalactone, Hedione, Helional, Rose oxide, Ambroxan, Galaxolide, Ethylene brassylate, Evernyl, Vertofix, Raspberry ketone, Blackcurrant bud absolute, Lavandin grosso, Basil | 1930 to 1970: green notes, transparent jasmine, ambergris and clean musks. |
+| 52 | The modern palette | Iso E Super, Cashmeran, Dihydromyrcenol, Beta-damascone, Ethyl maltol, Stemone, Javanol, Habanolide, Helvetolide | 1970 to today: radiant woods, damascones, sweet gourmands and modern musks. |
+| 65 | Far harvests | Pink peppercorn, Douglas fir needle, Black tea SFE, Cocoa absolute, Cypriol | Newer naturals: pink pepper, fir needles, tea and cocoa, smoky cypriol. |
 
-The order follows the course (amber, fig, chypre, fougère, aldehydes), except lavender comes first so a cologne is possible from day one. Customers only bring briefs that the unlocked materials can answer. Until trading exists, each unlock comes with a sample of every new material. Material descriptions in the game use standard perfumery descriptors; Sean's own notes stay in `docs/COURSE.md` as reference.
+Since Phase C (Oct 28, 2026) the tiers follow perfumery's history rather than the course, as Direction change #2 asks: her book spans eras. Customers only bring briefs that the materials you have can answer, and new materials are bought from the apothecary or the chemist, or harvested once a grower's route is open. Material descriptions in the game use standard perfumery descriptors; Sean's own notes stay in `docs/COURSE.md` as reference.
 
 ## Progression and idle time
 
@@ -432,6 +434,31 @@ How it was built (Oct 28, 2026):
   - Varenne & Fils is the only source of aroma chemicals, including more vanillin, once you've written back.
   - The town apothecary sells naturals all year at a premium and fair quality, so you can't get stuck while routes are closed.
 - **Unchanged:** materials still unlock by reputation, so an open route can show crops you can't sign for yet.
+
+### Prompt 10: Direction change #2, Phase C
+
+```
+Next
+```
+
+Phase C from **Direction change #2**: materials database expansion, the compendium with my notes, daily nose training with streaks.
+
+How it was built (Oct 28, 2026):
+
+- **Materials:** from 35 to 108 materials across all 13 families, naturals and aroma chemicals.
+  - Each has a subfamily and a `ref` block of reference numbers: era, tenacity on a strip, typical dilution, IFRA limit and rough cost per kilo.
+  - All the reference numbers are unconfirmed and listed in `docs/FACT_CHECK.md`. That file's materials tables are now generated from the data (`npm run factcheck`).
+  - Phase D uses dilution, safety limits and cost.
+- **Historical unlocks:** nine tiers by era, from her bench through "Waters and resins" (1700s), "The old garden", "Woods and roots", "The first molecules" (1868–1900), "Aldehydes and chypres" (1900–1930), "Mid-century", "The modern palette", and newer naturals. Twelve new walk-in briefs cover the early eras.
+- **Compendium:** a Book tab with a page per material you have.
+  - A page starts with the material's description.
+  - It adds how it behaves in a blend and where it comes from once you've used it.
+  - Tenacity, dilution and era come after three uses (or some mastery); safety limit and cost after six (or more mastery).
+  - Each page has a "My notes" box that only you write in. The organ's Info sheet shows the same page.
+- **Nose training:** a few spaced-repetition questions a day at the organ.
+  - Name a material from its description, its family, or its layer.
+  - A right answer raises that material's mastery (0–5) and spaces it out; a wrong one sends it back to the start.
+  - Training days are real calendar days, with a streak for consecutive days.
 
 ### Prompt 3 (original): clients and reviews
 

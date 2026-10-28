@@ -21,11 +21,28 @@ export interface Origin {
   note?: string;
 }
 
+/** Reference numbers from public sources, with their own verification (Phase C). */
+export interface MaterialRef {
+  /** Roughly when it entered perfumery: a synthetic's first use, a natural's era. */
+  year: number;
+  /** Hours it stays noticeable on a smelling strip. */
+  tenacityHours: number;
+  /** Strength it's usually worked at, in percent: 100, 10 or 1. */
+  dilution: 100 | 10 | 1;
+  /** Maximum percent in a finished fine fragrance (IFRA), or null if not restricted. */
+  ifraLimit: number | null;
+  /** Rough price per kilo, in euros. */
+  costPerKg: number;
+  verified: boolean;
+  check: string[];
+}
+
 export interface Material {
   id: string;
   name: string;
   type: 'natural' | 'synthetic';
   family: string;
+  subfamily: string;
   layer: Layer;
   volatility: Volatility;
   character: string;
@@ -35,6 +52,7 @@ export interface Material {
   verified: boolean;
   check: string[];
   model: { strength: number; halfLifeHours: number };
+  ref: MaterialRef;
 }
 
 /** One requirement of an accord, as a percentage of the formula's total parts. */

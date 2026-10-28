@@ -362,7 +362,7 @@ export function qualityWord(q: number, data: SourcingData = sourcing): string {
   return data.quality.words.find((w) => q >= w.min)?.text ?? '';
 }
 
-export function validateSourcing(materialIds: Set<string>, naturalIds: Set<string>, data: SourcingData = sourcing): string[] {
+export function validateSourcing(materialIds: Set<string>, data: SourcingData = sourcing): string[] {
   const errors: string[] = [];
   const grown = new Set<string>();
   const processIds = new Set(processes.map((p) => p.id));
@@ -375,7 +375,6 @@ export function validateSourcing(materialIds: Set<string>, naturalIds: Set<strin
       if (c.verified !== (c.check.length === 0)) errors.push(`region "${r.id}": ${c.material} verified must match check`);
     }
   }
-  for (const id of naturalIds) if (!grown.has(id)) errors.push(`natural "${id}" grows in no region`);
   for (const id of materialIds) if (data.supplier.prices[id] === undefined) errors.push(`supplier: no price for "${id}"`);
   return errors;
 }

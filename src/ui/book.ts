@@ -7,8 +7,18 @@ import { ownedMaterials } from '../game/world';
 import { state } from '../state';
 import type { Formula } from '../game/types';
 import { esc, formatDate, formatParts, header, starsText } from './html';
+import { compendiumList } from './compendium';
 
-// The formula book: Mireille's pages first, then accords, my own formulas and reviews.
+const TABS = [
+  { id: 'pages', label: 'Her pages' },
+  { id: 'compendium', label: 'Compendium' },
+  { id: 'accords', label: 'Accords' },
+  { id: 'formulas', label: 'My formulas' },
+  { id: 'reviews', label: 'Reviews' },
+] as const;
+
+// The formula book: Mireille's pages, the compendium of materials, accords, my own
+// formulas and reviews, in tabs.
 
 function formulaText(formula: Formula): string {
   return Object.entries(formula)
@@ -114,13 +124,19 @@ export function bookScreen(): string {
     )
     .join('');
 
+  const tab = state.ui.bookTab;
+  const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="book-tab" data-value="${t.id}">${t.label}</button>`).join('');
+  const body =
+    tab === 'pages'
+      ? `<p class="muted small">${esc(story.grandmother)}'s pages: ${recoveredCount} of ${story.pages.filter((p) => !p.signature).length} recovered so far. When someone remembers one of her perfumes, recreate it for them: a three-star match fills in her page.</p><ul class="list cards">${pages}</ul>`
+      : tab === 'compendium'
+        ? compendiumList()
+        : tab === 'accords'
+          ? `<ul class="list cards">${accords}</ul>`
+          : tab === 'formulas'
+            ? `<ul class="list cards">${formulas}</ul>`
+            : `<ul class="list cards">${reviews || '<li class="muted">No reviews yet. Customers come back to tell you how their perfume wore.</li>'}</ul>`;
   return `${header('Formula book')}
-    <main class="book">
-      <h2>${esc(story.grandmother)}'s pages</h2>
-      <p class="muted small">${recoveredCount} of ${story.pages.filter((p) => !p.signature).length} recovered so far. When someone remembers one of her perfumes, recreate it for them: a three-star match fills in her page.</p>
-      <ul class="list cards">${pages}</ul>
-      <h2>Accords</h2><ul class="list cards">${accords}</ul>
-      <h2>My formulas</h2><ul class="list cards">${formulas}</ul>
-      <h2>Reviews</h2><ul class="list cards">${reviews || '<li class="muted">No reviews yet. Customers come back to tell you how their perfume wore.</li>'}</ul>
-    </main>`;
+    <nav class="tab-chips">${tabs}</nav>
+    <main class="book">${body}</main>`;
 }

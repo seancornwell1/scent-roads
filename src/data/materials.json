@@ -22,6 +22,22 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 0.25
+    },
+    "subfamily": "fresh citrus",
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 4,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 60,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -49,6 +65,22 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 12
+    },
+    "subfamily": "resinous, leathery",
+    "ref": {
+      "year": 1500,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 60,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -72,6 +104,22 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 300
+    },
+    "subfamily": "vanilla",
+    "ref": {
+      "year": 1874,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 15,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -97,6 +145,22 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 60
+    },
+    "subfamily": "woody-amber",
+    "ref": {
+      "year": 1973,
+      "tenacityHours": 400,
+      "dilution": 100,
+      "ifraLimit": 21.4,
+      "costPerKg": 25,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -120,6 +184,22 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 400
+    },
+    "subfamily": "ambergris",
+    "ref": {
+      "year": 1950,
+      "tenacityHours": 700,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 700,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -145,6 +225,22 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 3
+    },
+    "subfamily": "fig leaf",
+    "ref": {
+      "year": 1990,
+      "tenacityHours": 48,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 120,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -168,6 +264,22 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 0.25
+    },
+    "subfamily": "cut grass",
+    "ref": {
+      "year": 1933,
+      "tenacityHours": 2,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 50,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -193,6 +305,22 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 30
+    },
+    "subfamily": "coconut",
+    "ref": {
+      "year": 1910,
+      "tenacityHours": 200,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 60,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -218,6 +346,22 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 30
+    },
+    "subfamily": "peach",
+    "ref": {
+      "year": 1910,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -245,6 +389,22 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 40
+    },
+    "subfamily": "dry cedar",
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 300,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 15,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -268,6 +428,22 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 24
+    },
+    "subfamily": "transparent jasmine",
+    "ref": {
+      "year": 1962,
+      "tenacityHours": 400,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 20,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -291,6 +467,22 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 6
+    },
+    "subfamily": "rose",
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 50,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -316,6 +508,22 @@
     "model": {
       "strength": 9,
       "halfLifeHours": 60
+    },
+    "subfamily": "hay, tonka",
+    "ref": {
+      "year": 1868,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": 1.6,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -344,6 +552,22 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 200
+    },
+    "subfamily": "oakmoss",
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": 0.1,
+      "costPerKg": 300,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -369,7 +593,23 @@
       "strength": 7,
       "halfLifeHours": 150
     },
-    "behaviour": "A tenacious base note and one pillar of the classic chypre."
+    "behaviour": "A tenacious base note and one pillar of the classic chypre.",
+    "subfamily": "earthy",
+    "ref": {
+      "year": 1840,
+      "tenacityHours": 400,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 50,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "lavender",
@@ -396,6 +636,22 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 1.5
+    },
+    "subfamily": "lavender",
+    "ref": {
+      "year": 1600,
+      "tenacityHours": 8,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -421,6 +677,22 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 0.75
+    },
+    "subfamily": "fresh, metallic",
+    "ref": {
+      "year": 1970,
+      "tenacityHours": 6,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -444,6 +716,22 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 50
+    },
+    "subfamily": "musky wood",
+    "ref": {
+      "year": 1970,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -470,7 +758,23 @@
       "strength": 8,
       "halfLifeHours": 4
     },
-    "behaviour": "Strong: used in traces to add sparkle and lift, the 'aldehydic' effect."
+    "behaviour": "Strong: used in traces to add sparkle and lift, the 'aldehydic' effect.",
+    "subfamily": "waxy, soapy",
+    "ref": {
+      "year": 1905,
+      "tenacityHours": 30,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "ethylene-brassylate",
@@ -493,7 +797,23 @@
       "strength": 3,
       "halfLifeHours": 500
     },
-    "behaviour": "A gentle, very long-lasting musk that rounds out and fixes the base."
+    "behaviour": "A gentle, very long-lasting musk that rounds out and fixes the base.",
+    "subfamily": "clean musk",
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 600,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 20,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "allyl-amyl-glycolate",
@@ -520,7 +840,23 @@
       "strength": 8,
       "halfLifeHours": 3
     },
-    "behaviour": "Very strong; a little gives a juicy green lift to the top."
+    "behaviour": "Very strong; a little gives a juicy green lift to the top.",
+    "subfamily": "pineapple, galbanum",
+    "ref": {
+      "year": 1965,
+      "tenacityHours": 24,
+      "dilution": 1,
+      "ifraLimit": 0.3,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "black-tea",
@@ -548,7 +884,23 @@
       "strength": 5,
       "halfLifeHours": 12
     },
-    "behaviour": "Adds a dark, dry, slightly smoky depth to the heart."
+    "behaviour": "Adds a dark, dry, slightly smoky depth to the heart.",
+    "subfamily": "tea leaf",
+    "ref": {
+      "year": 2000,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 2000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "beta-damascone",
@@ -574,7 +926,23 @@
       "strength": 10,
       "halfLifeHours": 20
     },
-    "behaviour": "Extremely powerful: used in traces to make roses and fruits glow."
+    "behaviour": "Extremely powerful: used in traces to make roses and fruits glow.",
+    "subfamily": "rose, plum",
+    "ref": {
+      "year": 1970,
+      "tenacityHours": 200,
+      "dilution": 1,
+      "ifraLimit": 0.02,
+      "costPerKg": 500,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "beta-ionone",
@@ -599,7 +967,23 @@
       "strength": 6,
       "halfLifeHours": 20
     },
-    "behaviour": "Gives violet and powdery orris effects to florals and woods."
+    "behaviour": "Gives violet and powdery orris effects to florals and woods.",
+    "subfamily": "violet",
+    "ref": {
+      "year": 1893,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "delta-decalactone",
@@ -625,7 +1009,23 @@
       "strength": 5,
       "halfLifeHours": 40
     },
-    "behaviour": "Adds a gentle milky creaminess to fruity and floral blends."
+    "behaviour": "Adds a gentle milky creaminess to fruity and floral blends.",
+    "subfamily": "creamy coconut",
+    "ref": {
+      "year": 1950,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 50,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "douglas-fir",
@@ -654,7 +1054,23 @@
       "strength": 6,
       "halfLifeHours": 1
     },
-    "behaviour": "A bright, resinous top note for forest and winter accords."
+    "behaviour": "A bright, resinous top note for forest and winter accords.",
+    "subfamily": "conifer needles",
+    "ref": {
+      "year": 1985,
+      "tenacityHours": 4,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 200,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "isobornyl-acetate",
@@ -680,7 +1096,23 @@
       "strength": 5,
       "halfLifeHours": 1
     },
-    "behaviour": "A classic pine note for fresh, coniferous accords."
+    "behaviour": "A classic pine note for fresh, coniferous accords.",
+    "subfamily": "pine",
+    "ref": {
+      "year": 1910,
+      "tenacityHours": 8,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 8,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "pink-pepper",
@@ -709,7 +1141,23 @@
       "strength": 6,
       "halfLifeHours": 0.75
     },
-    "behaviour": "A sparkling spicy top note; modern and bright."
+    "behaviour": "A sparkling spicy top note; modern and bright.",
+    "subfamily": "rosy pepper",
+    "ref": {
+      "year": 1985,
+      "tenacityHours": 4,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 300,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
   },
   {
     "id": "jasmine",
@@ -736,6 +1184,22 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 20
+    },
+    "subfamily": "white flowers",
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 4000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -764,6 +1228,22 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 20
+    },
+    "subfamily": "rose",
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 6000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -791,6 +1271,22 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 30
+    },
+    "subfamily": "white flowers",
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 300,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 7000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -816,6 +1312,22 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 15
+    },
+    "subfamily": "rose",
+    "ref": {
+      "year": 1600,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 10000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -843,6 +1355,22 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 200
+    },
+    "subfamily": "earthy roots",
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 600,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 300,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -868,6 +1396,22 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 250
+    },
+    "subfamily": "vanilla",
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 1500,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   },
   {
@@ -896,6 +1440,2961 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 6
+    },
+    "subfamily": "incense",
+    "ref": {
+      "year": 1000,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 200,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "lemon",
+    "name": "Lemon",
+    "type": "natural",
+    "family": "citrus",
+    "subfamily": "zesty citrus",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Bright, sharp, zesty lemon peel: clean and mouth-watering.",
+    "behaviour": "A fast, fresh opening. Cold-pressed lemon oil can make skin react to sunlight, so it is limited in leave-on products.",
+    "origin": {
+      "plant": "Citrus limon (peel)",
+      "region": "Sicily, Spain, Argentina",
+      "method": "Cold pressing"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.25
+    },
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 4,
+      "dilution": 100,
+      "ifraLimit": 2,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "sweet-orange",
+    "name": "Sweet orange",
+    "type": "natural",
+    "family": "citrus",
+    "subfamily": "juicy citrus",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Sweet, juicy orange peel, cheerful and round.",
+    "behaviour": "A soft, sweet citrus top note that fades quickly; cheap and friendly in colognes.",
+    "origin": {
+      "plant": "Citrus sinensis (peel)",
+      "region": "Brazil, United States",
+      "method": "Cold pressing"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 0.25
+    },
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 3,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "grapefruit",
+    "name": "Grapefruit",
+    "type": "natural",
+    "family": "citrus",
+    "subfamily": "bitter citrus",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Juicy, bitter grapefruit with a faintly sulphurous, sweaty edge that reads as real fruit.",
+    "behaviour": "Brightens an opening and adds a modern, tart freshness.",
+    "origin": {
+      "plant": "Citrus paradisi (peel)",
+      "method": "Cold pressing"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.25
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 3,
+      "dilution": 10,
+      "ifraLimit": 4,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "lime",
+    "name": "Lime (distilled)",
+    "type": "natural",
+    "family": "citrus",
+    "subfamily": "sharp citrus",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Sharp, fizzy, candied lime, greener than lemon.",
+    "behaviour": "Distilled lime oil gives a bright, sherbet-like top note.",
+    "origin": {
+      "plant": "Citrus aurantifolia (fruit)",
+      "region": "Mexico, Peru",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.25
+    },
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 3,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 50,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "mandarin",
+    "name": "Mandarin",
+    "type": "natural",
+    "family": "citrus",
+    "subfamily": "juicy citrus",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Sweet, juicy mandarin with a soft, slightly floral peel note.",
+    "behaviour": "Rounder and sweeter than orange; lovely in colognes and children-of-summer accords.",
+    "origin": {
+      "plant": "Citrus reticulata (peel)",
+      "region": "Italy",
+      "method": "Cold pressing"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 0.3
+    },
+    "ref": {
+      "year": 1850,
+      "tenacityHours": 4,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "petitgrain",
+    "name": "Petitgrain bigarade",
+    "type": "natural",
+    "family": "citrus",
+    "subfamily": "green citrus",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Green, woody-floral bitter orange leaves and twigs, with a fresh, slightly bitter edge.",
+    "behaviour": "Bridges citrus and neroli; a classic part of eau de cologne.",
+    "origin": {
+      "plant": "Citrus aurantium (leaves and twigs)",
+      "region": "Paraguay",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1700,
+      "tenacityHours": 8,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "neroli",
+    "name": "Neroli",
+    "type": "natural",
+    "family": "floral",
+    "subfamily": "orange blossom",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, honeyed, green orange blossom with a bitter, slightly metallic sparkle.",
+    "behaviour": "The luminous heart of classic colognes; expensive, so used with care.",
+    "origin": {
+      "plant": "Citrus aurantium (flowers)",
+      "region": "Tunisia, Morocco",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 1
+    },
+    "ref": {
+      "year": 1680,
+      "tenacityHours": 12,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 4000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "citral",
+    "name": "Citral",
+    "type": "synthetic",
+    "family": "citrus",
+    "subfamily": "lemon",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Intensely sharp, sweet lemon: lemongrass more than lemon peel.",
+    "behaviour": "Gives lemony lift but is unstable in some bases and is a known skin sensitiser.",
+    "origin": {
+      "note": "Aldehyde found in lemongrass and lemon; also made synthetically."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 0.5
+    },
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 8,
+      "dilution": 10,
+      "ifraLimit": 0.6,
+      "costPerKg": 20,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "rosemary",
+    "name": "Rosemary",
+    "type": "natural",
+    "family": "aromatic",
+    "subfamily": "camphoraceous herb",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, camphoraceous, woody herb with a cool, slightly medicinal lift.",
+    "behaviour": "Adds a brisk herbal top note; a traditional partner to citrus in colognes.",
+    "origin": {
+      "plant": "Salvia rosmarinus (leaves)",
+      "region": "Tunisia, Morocco, Spain",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1600,
+      "tenacityHours": 6,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "clary-sage",
+    "name": "Clary sage",
+    "type": "natural",
+    "family": "aromatic",
+    "subfamily": "sage",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Herbaceous, tea-like and slightly ambery, with a musky, almost leathery warmth.",
+    "behaviour": "Softens and warms fougères and lavender accords.",
+    "origin": {
+      "plant": "Salvia sclarea (flowering tops)",
+      "region": "France, Russia",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 4
+    },
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 24,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 150,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "peppermint",
+    "name": "Peppermint",
+    "type": "natural",
+    "family": "aromatic",
+    "subfamily": "mint",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Cool, sweet, unmistakable mint.",
+    "behaviour": "Very recognisable; a little gives coolness, a lot smells of toothpaste.",
+    "origin": {
+      "plant": "Mentha piperita (leaves)",
+      "region": "United States",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1750,
+      "tenacityHours": 6,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "basil",
+    "name": "Basil",
+    "type": "natural",
+    "family": "aromatic",
+    "subfamily": "green herb",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Green, sweet, anise-like herb with a peppery freshness.",
+    "behaviour": "Adds a culinary green freshness to citrus and floral tops.",
+    "origin": {
+      "plant": "Ocimum basilicum (leaves)",
+      "region": "Egypt, India",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 6,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "lavandin",
+    "name": "Lavandin grosso",
+    "type": "natural",
+    "family": "aromatic",
+    "subfamily": "lavender",
+    "layer": "heart",
+    "volatility": "high",
+    "character": "Lavender with a sharper, more camphoraceous and woody edge.",
+    "behaviour": "A cheaper, bolder cousin of lavender; good in fougères and soaps.",
+    "origin": {
+      "plant": "Lavandula × intermedia (flowering tops)",
+      "region": "Provence, France",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 1.5
+    },
+    "ref": {
+      "year": 1930,
+      "tenacityHours": 8,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 25,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "linalool",
+    "name": "Linalool",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "fresh floral",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, light, floral-woody, a little like lavender and bergamot without the citrus.",
+    "behaviour": "One of the most used materials in perfumery: it freshens and blends almost anything.",
+    "origin": {
+      "note": "Found in lavender, coriander and rosewood; made in quantity synthetically."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 8,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "linalyl-acetate",
+    "name": "Linalyl acetate",
+    "type": "synthetic",
+    "family": "aromatic",
+    "subfamily": "bergamot-lavender",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, fruity, bergamot-lavender ester, soft and clean.",
+    "behaviour": "Gives the sweet, fruity side of lavender and bergamot.",
+    "origin": {
+      "note": "Ester found in lavender and bergamot; also synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 6,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "galbanum",
+    "name": "Galbanum",
+    "type": "natural",
+    "family": "green",
+    "subfamily": "bitter green",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Intensely green, bitter and resinous, like snapped stems and green peppers.",
+    "behaviour": "Very powerful: a drop gives a sharp, natural green opening.",
+    "origin": {
+      "plant": "Ferula gummosa (gum resin)",
+      "region": "Iran",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 3
+    },
+    "ref": {
+      "year": 1000,
+      "tenacityHours": 24,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 300,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "violet-leaf",
+    "name": "Violet leaf absolute",
+    "type": "natural",
+    "family": "green",
+    "subfamily": "leafy, cucumber",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Leafy and green, like cucumber skin and wet earth, with a faint violet sweetness.",
+    "behaviour": "Potent; gives a dewy green freshness in tiny amounts.",
+    "origin": {
+      "plant": "Viola odorata (leaves)",
+      "region": "Egypt, France",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 6
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 48,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 3000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "triplal",
+    "name": "Ligustral (Triplal)",
+    "type": "synthetic",
+    "family": "green",
+    "subfamily": "sharp leafy",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Sharp, leafy, green-grassy aldehyde with a hint of citrus.",
+    "behaviour": "A strong green kick; a little goes a long way.",
+    "origin": {
+      "note": "Synthetic green aldehyde."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 1
+    },
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 24,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "cis-3-hexenyl-acetate",
+    "name": "cis-3-Hexenyl acetate",
+    "type": "synthetic",
+    "family": "green",
+    "subfamily": "green fruit",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Sharp, sweet green: unripe banana and fresh-cut leaves.",
+    "behaviour": "Makes green notes juicier and fruitier than hexenol alone.",
+    "origin": {
+      "note": "Ester of the \"cut grass\" alcohol."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 0.25
+    },
+    "ref": {
+      "year": 1950,
+      "tenacityHours": 2,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 50,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "geranium",
+    "name": "Geranium",
+    "type": "natural",
+    "family": "floral",
+    "subfamily": "rose-mint",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Rosy, minty-green and slightly fruity, like crushed geranium leaves.",
+    "behaviour": "A rose helper and a staple of fougères and masculine florals.",
+    "origin": {
+      "plant": "Pelargonium graveolens (leaves)",
+      "region": "Egypt, Réunion",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 4
+    },
+    "ref": {
+      "year": 1850,
+      "tenacityHours": 24,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 120,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "ylang-ylang",
+    "name": "Ylang-ylang extra",
+    "type": "natural",
+    "family": "floral",
+    "subfamily": "white flowers",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Sweet, creamy, heady flower with banana and spice facets.",
+    "behaviour": "Rich and narcotic: rounds out florals and orientals.",
+    "origin": {
+      "plant": "Cananga odorata (flowers)",
+      "region": "Comoros, Madagascar",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 8
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 48,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 150,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "orange-blossom",
+    "name": "Orange flower absolute",
+    "type": "natural",
+    "family": "floral",
+    "subfamily": "white flowers",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Heady, honeyed, slightly indolic orange blossom, richer and warmer than neroli.",
+    "behaviour": "A luxurious white-floral heart.",
+    "origin": {
+      "plant": "Citrus aurantium (flowers)",
+      "region": "Morocco, Tunisia",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 12
+    },
+    "ref": {
+      "year": 1850,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 5000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "orris",
+    "name": "Orris butter",
+    "type": "natural",
+    "family": "floral",
+    "subfamily": "powdery",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Powdery, buttery violet and rooty carrot, cool and refined.",
+    "behaviour": "One of the most precious materials; the rhizomes are aged for years before extraction.",
+    "origin": {
+      "plant": "Iris pallida (rhizomes)",
+      "region": "Tuscany, Italy",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 60
+    },
+    "ref": {
+      "year": 1600,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 50000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "mimosa",
+    "name": "Mimosa absolute",
+    "type": "natural",
+    "family": "floral",
+    "subfamily": "powdery",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Powdery, honeyed, slightly green flower with a soft cucumber edge.",
+    "behaviour": "Gives a sunny, powdery softness.",
+    "origin": {
+      "plant": "Acacia dealbata (flowers)",
+      "region": "France, India",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 20
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 200,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 1500,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "benzyl-acetate",
+    "name": "Benzyl acetate",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "jasmine, fruity",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Sweet, fruity-floral, like jasmine and pear drops.",
+    "behaviour": "The main component of jasmine; brightens white florals.",
+    "origin": {
+      "note": "Ester found in jasmine and ylang-ylang; synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 6,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 5,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "hydroxycitronellal",
+    "name": "Hydroxycitronellal",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "lily of the valley",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Soft, fresh, sweet lily of the valley.",
+    "behaviour": "A classic muguet material; restricted because it can sensitise skin.",
+    "origin": {
+      "note": "Synthetic floral aldehyde."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 15
+    },
+    "ref": {
+      "year": 1905,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": 1,
+      "costPerKg": 25,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "helional",
+    "name": "Helional",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "watery",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Watery, green, cyclamen-like floral with an airy, ozonic freshness.",
+    "behaviour": "Adds air and transparency to florals.",
+    "origin": {
+      "note": "Synthetic aldehyde."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 12
+    },
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 100,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "geraniol",
+    "name": "Geraniol",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "rose",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Sweet, rosy and slightly citrusy.",
+    "behaviour": "A building block of rose accords; restricted as a possible sensitiser.",
+    "origin": {
+      "note": "Found in rose and geranium oils; also synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 6
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 48,
+      "dilution": 100,
+      "ifraLimit": 5.3,
+      "costPerKg": 15,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "citronellol",
+    "name": "Citronellol",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "rose",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Fresh, waxy, rosy, a little citrusy.",
+    "behaviour": "With phenylethyl alcohol and geraniol, the backbone of a rose accord.",
+    "origin": {
+      "note": "Found in rose and geranium oils; also synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 6
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 48,
+      "dilution": 100,
+      "ifraLimit": 8,
+      "costPerKg": 15,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "heliotropin",
+    "name": "Heliotropin",
+    "type": "synthetic",
+    "family": "gourmand",
+    "subfamily": "powdery almond",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Powdery, almondy and vanillic, like cherry pie and heliotrope flowers.",
+    "behaviour": "Gives a soft, powdery sweetness; a classic of old-fashioned powders.",
+    "origin": {
+      "note": "Also called piperonal."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 60
+    },
+    "ref": {
+      "year": 1885,
+      "tenacityHours": 200,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "methyl-ionone",
+    "name": "Methyl ionone",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "orris, violet",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Powdery orris and violet with a soft woody warmth.",
+    "behaviour": "Gives an orris effect without the price; a staple of powdery florals.",
+    "origin": {
+      "note": "Alpha-isomethyl ionone; synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 20
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 200,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 25,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "indole",
+    "name": "Indole",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "indolic",
+    "layer": "heart",
+    "volatility": "low",
+    "character": "Neat, it smells of mothballs and animal; in a trace, it makes white flowers heady and alive.",
+    "behaviour": "Present in jasmine and orange blossom. Always used very diluted.",
+    "origin": {
+      "note": "Found in jasmine and orange blossom; synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 20
+    },
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 200,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "benzyl-salicylate",
+    "name": "Benzyl salicylate",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "sunny balsamic",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Faint, sweet, balsamic-floral, like warm skin in the sun.",
+    "behaviour": "Barely smells on its own but rounds and fixes florals.",
+    "origin": {
+      "note": "Synthetic; also in some flower absolutes."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 2,
+      "halfLifeHours": 100
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 400,
+      "dilution": 100,
+      "ifraLimit": 4,
+      "costPerKg": 8,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "rose-oxide",
+    "name": "Rose oxide",
+    "type": "synthetic",
+    "family": "floral",
+    "subfamily": "green rose",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Metallic, green, geranium-like rose with a fresh lift.",
+    "behaviour": "Very strong: a trace gives a natural, dewy rose top.",
+    "origin": {
+      "note": "Found in rose and geranium oils; synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 1.5
+    },
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 24,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 150,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "raspberry-ketone",
+    "name": "Raspberry ketone",
+    "type": "synthetic",
+    "family": "fruity",
+    "subfamily": "red berries",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Sweet raspberry jam with a soft, slightly woody warmth.",
+    "behaviour": "Lasting fruitiness for berry accords.",
+    "origin": {
+      "note": "Found in raspberries; synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 80
+    },
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 25,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "aldehyde-c14",
+    "name": "Aldehyde C-14 (peach)",
+    "type": "synthetic",
+    "family": "lactonic",
+    "subfamily": "peach",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Creamy, velvety peach skin.",
+    "behaviour": "Despite the name it is a lactone (gamma-undecalactone). Famous in early-20th-century chypres.",
+    "origin": {
+      "note": "Gamma-undecalactone."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 30
+    },
+    "ref": {
+      "year": 1908,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "aldehyde-c18",
+    "name": "Aldehyde C-18 (coconut)",
+    "type": "synthetic",
+    "family": "lactonic",
+    "subfamily": "coconut",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Creamy, sweet coconut.",
+    "behaviour": "Despite the name it is a lactone (gamma-nonalactone).",
+    "origin": {
+      "note": "Gamma-nonalactone."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 30
+    },
+    "ref": {
+      "year": 1908,
+      "tenacityHours": 200,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 25,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "allyl-hexanoate",
+    "name": "Allyl caproate",
+    "type": "synthetic",
+    "family": "fruity",
+    "subfamily": "pineapple",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Sweet, juicy pineapple.",
+    "behaviour": "A bright fruity top note.",
+    "origin": {
+      "note": "Synthetic fruity ester."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 0.5
+    },
+    "ref": {
+      "year": 1950,
+      "tenacityHours": 4,
+      "dilution": 1,
+      "ifraLimit": 0.1,
+      "costPerKg": 15,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "blackcurrant-bud",
+    "name": "Blackcurrant bud absolute",
+    "type": "natural",
+    "family": "fruity",
+    "subfamily": "blackcurrant",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Green, fruity blackcurrant with a sharp, catty, sulphurous edge.",
+    "behaviour": "Gives a tart, natural cassis effect.",
+    "origin": {
+      "plant": "Ribes nigrum (buds)",
+      "region": "Burgundy, France",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 6
+    },
+    "ref": {
+      "year": 1950,
+      "tenacityHours": 48,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 1500,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "clove",
+    "name": "Clove bud",
+    "type": "natural",
+    "family": "spicy",
+    "subfamily": "warm spice",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Warm, sweet, spicy clove, like mulled wine.",
+    "behaviour": "A classic warm spice; restricted because its eugenol can sensitise skin.",
+    "origin": {
+      "plant": "Syzygium aromaticum (buds)",
+      "region": "Madagascar, Indonesia",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 6
+    },
+    "ref": {
+      "year": 1600,
+      "tenacityHours": 48,
+      "dilution": 10,
+      "ifraLimit": 0.5,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "cardamom",
+    "name": "Cardamom",
+    "type": "natural",
+    "family": "spicy",
+    "subfamily": "fresh spice",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, sweet, camphoraceous spice with a eucalyptus-like coolness.",
+    "behaviour": "Bright, airy spice for openings.",
+    "origin": {
+      "plant": "Elettaria cardamomum (seeds)",
+      "region": "Guatemala, India",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 1
+    },
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 8,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 150,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "black-pepper",
+    "name": "Black pepper",
+    "type": "natural",
+    "family": "spicy",
+    "subfamily": "fresh spice",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Dry, woody, piney pepper, fresh rather than hot.",
+    "behaviour": "Gives a lively, dry spice to openings.",
+    "origin": {
+      "plant": "Piper nigrum (berries)",
+      "region": "India, Madagascar",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 0.75
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 8,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "nutmeg",
+    "name": "Nutmeg",
+    "type": "natural",
+    "family": "spicy",
+    "subfamily": "warm spice",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Warm, sweet, woody spice with a fresh, slightly terpenic lift.",
+    "behaviour": "Warms a fougère or woody accord.",
+    "origin": {
+      "plant": "Myristica fragrans (seeds)",
+      "region": "Indonesia",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 1
+    },
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 12,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 60,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "ginger",
+    "name": "Ginger",
+    "type": "natural",
+    "family": "spicy",
+    "subfamily": "fresh spice",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, lemony, warm and slightly woody root.",
+    "behaviour": "Sparkling spice for openings.",
+    "origin": {
+      "plant": "Zingiber officinale (rhizome)",
+      "region": "China, India",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 1
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 12,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "eugenol",
+    "name": "Eugenol",
+    "type": "synthetic",
+    "family": "spicy",
+    "subfamily": "clove",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Spicy, sweet, warm clove.",
+    "behaviour": "The main smell of clove; restricted as a possible sensitiser.",
+    "origin": {
+      "note": "Main component of clove oil."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 8
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 48,
+      "dilution": 10,
+      "ifraLimit": 2.5,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "aldehyde-c10",
+    "name": "Aldehyde C-10 (decanal)",
+    "type": "synthetic",
+    "family": "aldehydic",
+    "subfamily": "orange peel",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Waxy, fatty orange peel.",
+    "behaviour": "Makes citrus tops brighter and more lifelike.",
+    "origin": {
+      "note": "Decanal, found in orange peel."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 1.5
+    },
+    "ref": {
+      "year": 1905,
+      "tenacityHours": 24,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "aldehyde-c12-lauric",
+    "name": "Aldehyde C-12 lauric",
+    "type": "synthetic",
+    "family": "aldehydic",
+    "subfamily": "waxy, soapy",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Waxy, soapy, clean, with a violet and pine-needle edge.",
+    "behaviour": "The \"clean linen\" sparkle of classic aldehydic florals.",
+    "origin": {
+      "note": "Dodecanal."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 3
+    },
+    "ref": {
+      "year": 1905,
+      "tenacityHours": 48,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "aldehyde-c12-mna",
+    "name": "Aldehyde C-12 MNA",
+    "type": "synthetic",
+    "family": "aldehydic",
+    "subfamily": "ambery aldehyde",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Waxy and herbaceous with an ambergris-like, incense warmth.",
+    "behaviour": "Gives aldehydic florals their rich, metallic radiance.",
+    "origin": {
+      "note": "Methyl nonyl acetaldehyde."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "layer"
+    ],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 8
+    },
+    "ref": {
+      "year": 1905,
+      "tenacityHours": 100,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "sandalwood",
+    "name": "Sandalwood",
+    "type": "natural",
+    "family": "woody",
+    "subfamily": "creamy wood",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Soft, creamy, milky wood with a sweet, buttery warmth.",
+    "behaviour": "A gentle, long-lasting base. Indian sandalwood was over-harvested; most now comes from managed plantations.",
+    "origin": {
+      "plant": "Santalum album (heartwood)",
+      "region": "Australia, India",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 200
+    },
+    "ref": {
+      "year": 1500,
+      "tenacityHours": 500,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 2500,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "guaiacwood",
+    "name": "Guaiac wood",
+    "type": "natural",
+    "family": "woody",
+    "subfamily": "smoky wood",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Smoky, rosy, slightly tea-like wood.",
+    "behaviour": "Adds a soft smoke to woody bases.",
+    "origin": {
+      "plant": "Bulnesia sarmientoi (wood)",
+      "region": "Paraguay",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 150
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 400,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 60,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "cypress",
+    "name": "Cypress",
+    "type": "natural",
+    "family": "woody",
+    "subfamily": "conifer",
+    "layer": "top",
+    "volatility": "high",
+    "character": "Fresh, resinous, green conifer with a smoky dryness.",
+    "behaviour": "A crisp coniferous lift for chypres and fougères.",
+    "origin": {
+      "plant": "Cupressus sempervirens (twigs)",
+      "region": "France, Spain",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 1
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 12,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 60,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "atlas-cedar",
+    "name": "Atlas cedarwood",
+    "type": "natural",
+    "family": "woody",
+    "subfamily": "sweet cedar",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Sweet, honeyed, slightly balsamic cedar, softer than Virginia cedar.",
+    "behaviour": "A warm, lasting woody base.",
+    "origin": {
+      "plant": "Cedrus atlantica (wood)",
+      "region": "Morocco",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 60
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 300,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "javanol",
+    "name": "Javanol",
+    "type": "synthetic",
+    "family": "woody",
+    "subfamily": "creamy wood",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Powerful, creamy, rosy sandalwood.",
+    "behaviour": "A modern sandalwood molecule, strong enough to use in traces.",
+    "origin": {
+      "note": "Synthetic sandalwood molecule."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 8,
+      "halfLifeHours": 200
+    },
+    "ref": {
+      "year": 1997,
+      "tenacityHours": 600,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 800,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "vertofix",
+    "name": "Vertofix",
+    "type": "synthetic",
+    "family": "woody",
+    "subfamily": "dry wood",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Dry, woody-ambery, vetiver-like and slightly leathery.",
+    "behaviour": "A cheap, lasting dry-woody base.",
+    "origin": {
+      "note": "Methyl cedryl ketone, made from cedarwood oil."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 150
+    },
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 400,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 30,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "birch-tar",
+    "name": "Birch tar (rectified)",
+    "type": "natural",
+    "family": "woody",
+    "subfamily": "leather, smoke",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Smoky, tarry, leathery: a campfire and a new saddle.",
+    "behaviour": "The traditional heart of Russian-leather accords. Only refined grades are allowed.",
+    "origin": {
+      "plant": "Betula pendula (bark)",
+      "method": "Dry distillation, then rectified"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 100
+    },
+    "ref": {
+      "year": 1880,
+      "tenacityHours": 400,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "cypriol",
+    "name": "Cypriol",
+    "type": "natural",
+    "family": "woody",
+    "subfamily": "smoky wood",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Smoky, earthy, woody root, a little like vetiver and leather.",
+    "behaviour": "Adds dark, dry depth to woody bases.",
+    "origin": {
+      "plant": "Cyperus scariosus (roots)",
+      "region": "India",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 120
+    },
+    "ref": {
+      "year": 1990,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 300,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "isobutyl-quinoline",
+    "name": "Isobutyl quinoline",
+    "type": "synthetic",
+    "family": "woody",
+    "subfamily": "leather",
+    "layer": "heart",
+    "volatility": "medium",
+    "character": "Harsh, green, earthy leather.",
+    "behaviour": "Very strong; the leathery bite in classic leather and chypre accords.",
+    "origin": {
+      "note": "Synthetic leather note."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 9,
+      "halfLifeHours": 20
+    },
+    "ref": {
+      "year": 1890,
+      "tenacityHours": 200,
+      "dilution": 1,
+      "ifraLimit": null,
+      "costPerKg": 50,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "benzoin",
+    "name": "Benzoin Siam",
+    "type": "natural",
+    "family": "amber",
+    "subfamily": "balsamic",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Sweet, warm, vanilla-like balsam.",
+    "behaviour": "A soft, sweet fixative in ambers and orientals.",
+    "origin": {
+      "plant": "Styrax tonkinensis (resin)",
+      "region": "Laos, Thailand",
+      "method": "Solvent extraction (resinoid)"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 150
+    },
+    "ref": {
+      "year": 1000,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "myrrh",
+    "name": "Myrrh",
+    "type": "natural",
+    "family": "amber",
+    "subfamily": "resinous",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Warm, bitter, mushroomy resin with a slightly medicinal edge.",
+    "behaviour": "Gives depth and a churchy darkness to resinous bases.",
+    "origin": {
+      "plant": "Commiphora myrrha (resin)",
+      "region": "Somalia, Ethiopia",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 40
+    },
+    "ref": {
+      "year": 1000,
+      "tenacityHours": 200,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 200,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "opoponax",
+    "name": "Opoponax",
+    "type": "natural",
+    "family": "amber",
+    "subfamily": "balsamic",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Sweet, warm, honeyed balsam with a powdery, spicy edge.",
+    "behaviour": "Rich and ambery; a classic oriental base.",
+    "origin": {
+      "plant": "Commiphora guidottii (resin)",
+      "region": "Somalia",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 80
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 200,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "tonka-bean",
+    "name": "Tonka absolute",
+    "type": "natural",
+    "family": "gourmand",
+    "subfamily": "hay, tonka",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Sweet hay, almond and caramel: coumarin with a warm, rounded naturalness.",
+    "behaviour": "A cozy, sweet base; its coumarin is restricted.",
+    "origin": {
+      "plant": "Dipteryx odorata (beans)",
+      "region": "Venezuela, Brazil",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 100
+    },
+    "ref": {
+      "year": 1850,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 1000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "ethyl-vanillin",
+    "name": "Ethyl vanillin",
+    "type": "synthetic",
+    "family": "gourmand",
+    "subfamily": "vanilla",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Sweeter, creamier and about three times stronger than vanillin.",
+    "behaviour": "Gives a rich vanilla with less material.",
+    "origin": {
+      "note": "Synthetic, not found in nature."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 300
+    },
+    "ref": {
+      "year": 1894,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 15,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "ethyl-maltol",
+    "name": "Ethyl maltol",
+    "type": "synthetic",
+    "family": "gourmand",
+    "subfamily": "caramel",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Sweet, caramelised sugar and candy floss.",
+    "behaviour": "The fairground-sweet note of modern gourmands.",
+    "origin": {
+      "note": "Synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 100
+    },
+    "ref": {
+      "year": 1970,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 20,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "cocoa",
+    "name": "Cocoa absolute",
+    "type": "natural",
+    "family": "gourmand",
+    "subfamily": "chocolate",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Dark, dusty cocoa powder, bitter and warm.",
+    "behaviour": "A rich, dark gourmand note.",
+    "origin": {
+      "plant": "Theobroma cacao (beans)",
+      "region": "West Africa",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 5,
+      "halfLifeHours": 80
+    },
+    "ref": {
+      "year": 1990,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 500,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "benzaldehyde",
+    "name": "Benzaldehyde",
+    "type": "synthetic",
+    "family": "gourmand",
+    "subfamily": "almond",
+    "layer": "top",
+    "volatility": "very high",
+    "character": "Bitter almond and cherry.",
+    "behaviour": "A sweet, nutty top note.",
+    "origin": {
+      "note": "Found in bitter almond oil; synthetic."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": false,
+    "check": [
+      "family"
+    ],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 0.5
+    },
+    "ref": {
+      "year": 1870,
+      "tenacityHours": 4,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 5,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "galaxolide",
+    "name": "Galaxolide",
+    "type": "synthetic",
+    "family": "musk",
+    "subfamily": "clean musk",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Clean, sweet, powdery musk: the smell of fresh laundry.",
+    "behaviour": "One of the most used musks; soft and long-lasting.",
+    "origin": {
+      "note": "Polycyclic musk."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 400
+    },
+    "ref": {
+      "year": 1965,
+      "tenacityHours": 600,
+      "dilution": 100,
+      "ifraLimit": null,
+      "costPerKg": 10,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "habanolide",
+    "name": "Habanolide",
+    "type": "synthetic",
+    "family": "musk",
+    "subfamily": "metallic musk",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Clean, slightly metallic, warm musk, like hot ironed sheets.",
+    "behaviour": "A modern macrocyclic musk.",
+    "origin": {
+      "note": "Macrocyclic musk."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 400
+    },
+    "ref": {
+      "year": 1995,
+      "tenacityHours": 600,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "helvetolide",
+    "name": "Helvetolide",
+    "type": "synthetic",
+    "family": "musk",
+    "subfamily": "fruity musk",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Fruity, pear-like, powdery musk.",
+    "behaviour": "A modern musk with a soft fruity lift.",
+    "origin": {
+      "note": "Synthetic musk."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 400
+    },
+    "ref": {
+      "year": 1990,
+      "tenacityHours": 600,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 100,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "ambrettolide",
+    "name": "Ambrettolide",
+    "type": "synthetic",
+    "family": "musk",
+    "subfamily": "powdery musk",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Musky, fruity, wine-like and powdery: the musk of ambrette seed.",
+    "behaviour": "A luxurious, natural-smelling musk.",
+    "origin": {
+      "note": "Macrocyclic musk found in ambrette seed."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 400
+    },
+    "ref": {
+      "year": 1930,
+      "tenacityHours": 600,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 400,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "ambrette-seed",
+    "name": "Ambrette seed",
+    "type": "natural",
+    "family": "musk",
+    "subfamily": "natural musk",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Musky, pear-like and slightly winey: a plant musk.",
+    "behaviour": "A rare natural musk, once the vegetable alternative to animal musks.",
+    "origin": {
+      "plant": "Abelmoschus moschatus (seeds)",
+      "region": "Ecuador, India",
+      "method": "Steam distillation"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 4,
+      "halfLifeHours": 150
+    },
+    "ref": {
+      "year": 1800,
+      "tenacityHours": 300,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 3000,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "exaltolide",
+    "name": "Exaltolide",
+    "type": "synthetic",
+    "family": "musk",
+    "subfamily": "powdery musk",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Elegant, powdery, slightly animalic musk.",
+    "behaviour": "One of the first macrocyclic musks.",
+    "origin": {
+      "note": "Pentadecanolide, a macrocyclic musk."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 3,
+      "halfLifeHours": 400
+    },
+    "ref": {
+      "year": 1927,
+      "tenacityHours": 600,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 150,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "treemoss",
+    "name": "Treemoss absolute",
+    "type": "natural",
+    "family": "mossy",
+    "subfamily": "inky moss",
+    "layer": "base",
+    "volatility": "low",
+    "character": "Inky, woody, slightly turpentine-like moss, sharper than oakmoss.",
+    "behaviour": "Strictly limited; adds a dark, mossy depth to chypres.",
+    "origin": {
+      "plant": "Pseudevernia furfuracea (lichen)",
+      "region": "Balkans, Morocco",
+      "method": "Solvent extraction"
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 7,
+      "halfLifeHours": 150
+    },
+    "ref": {
+      "year": 1900,
+      "tenacityHours": 400,
+      "dilution": 1,
+      "ifraLimit": 0.1,
+      "costPerKg": 200,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
+    }
+  },
+  {
+    "id": "evernyl",
+    "name": "Evernyl",
+    "type": "synthetic",
+    "family": "mossy",
+    "subfamily": "oakmoss",
+    "layer": "base",
+    "volatility": "very low",
+    "character": "Earthy, woody, oakmoss-like, dry and powdery.",
+    "behaviour": "A key synthetic for chypres now that oakmoss is restricted.",
+    "origin": {
+      "note": "Methyl atrarate (veramoss), a component of oakmoss."
+    },
+    "course": {
+      "mission": null,
+      "onBench": false
+    },
+    "verified": true,
+    "check": [],
+    "model": {
+      "strength": 6,
+      "halfLifeHours": 200
+    },
+    "ref": {
+      "year": 1960,
+      "tenacityHours": 400,
+      "dilution": 10,
+      "ifraLimit": null,
+      "costPerKg": 40,
+      "verified": false,
+      "check": [
+        "year",
+        "tenacityHours",
+        "dilution",
+        "ifraLimit",
+        "costPerKg"
+      ]
     }
   }
 ]
