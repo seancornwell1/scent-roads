@@ -46,6 +46,10 @@ export interface ShopSceneEvents {
   arrive(fixture: Fixture): void;
   /** A customer was tapped (by visit id). */
   customer(id: string): void;
+  /** The player started (true) or stopped (false) walking. */
+  walking(on: boolean): void;
+  /** A customer came in through the front door. */
+  customerEntered(): void;
 }
 
 
@@ -105,6 +109,11 @@ export class ShopScene {
     this.floor = new Mesh(new PlaneGeometry(width, depth), new MeshLambertMaterial({ color: new Color(layout.floorColor) }));
     this.floor.rotation.x = -Math.PI / 2;
     this.scene.add(this.floor);
+    if (layout.floorTile) {
+      // The plain plane stays underneath the tiles, out of their way.
+      this.floor.position.y = -layout.floorTile.height - 0.01;
+      this.addFloorTiles(layout.floorTile);
+    }
 
     this.addWalls();
     for (const zone of layout.zones) {
@@ -129,6 +138,7 @@ export class ShopScene {
         addLabel: (text, target, height, modifier) => this.addLabel(text, target, height, modifier),
         removeLabel: (label) => this.removeLabel(label),
         requestFrame: () => this.requestFrame(),
+        entered: () => this.events.customerEntered(),
       },
       browseSeconds,
     );
@@ -164,6 +174,14 @@ export class ShopScene {
     this.scene.add(model);
     this.requestFrame();
     return model;
+  }
+
+  /** Repeats the floor tile model across the room, sunk so its top is level with y = 0. */
+  private addFloorTiles({ model, size, height }: { model: string; size: number; height: number }): void {
+    const { width, depth } = this.layout.room;
+    for (let x = -width / 2 + size / 2; x < width / 2; x += size) {
+      for (let z = -depth / 2 + size / 2; z < depth / 2; z += size) void this.addModel(model, [x, z], 0, -height);
+    }
   }
 
   private addWalls(): void {
@@ -427,6 +445,7 @@ export class ShopScene {
     this.path = path;
     this.pendingFixture = fixture;
     this.player?.play('walk');
+    this.events.walking(true);
     this.requestFrame();
   }
 
@@ -479,6 +498,7 @@ export class ShopScene {
     }
     if (this.path.length === 0) {
       this.player?.play('idle');
+      this.events.walking(false);
       if (this.pendingFixture) {
         const arrived = this.pendingFixture;
         this.pendingFixture = null;

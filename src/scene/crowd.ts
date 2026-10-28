@@ -25,6 +25,8 @@ export interface CrowdHost {
   addLabel(text: string, target: Object3D, height: number, modifier: string): Label;
   removeLabel(label: Label): void;
   requestFrame(): void;
+  /** Someone walked in through the front door. */
+  entered(): void;
 }
 
 type Phase = 'entering' | 'browsing' | 'queueing' | 'waiting' | 'leaving';
@@ -105,6 +107,7 @@ export class Crowd {
     }
     const [ex, ez] = layout.customers.entrance;
     character.root.position.set(ex, 0, ez);
+    this.host.entered();
     this.walk(member, this.browseSpot(), 'entering');
   }
 

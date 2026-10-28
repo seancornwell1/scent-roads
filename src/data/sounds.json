@@ -1,0 +1,74 @@
+{
+  "cues": {
+    "door-chime": {
+      "file": null,
+      "volume": 0.6,
+      "loop": false,
+      "search": "shop door bell chime",
+      "duration": [
+        1,
+        6
+      ]
+    },
+    "footsteps": {
+      "file": null,
+      "volume": 0.35,
+      "loop": true,
+      "search": "footsteps wooden floor walking",
+      "duration": [
+        2,
+        15
+      ]
+    },
+    "glass": {
+      "file": null,
+      "volume": 0.5,
+      "loop": false,
+      "search": "glass bottle clink",
+      "duration": [
+        0.3,
+        4
+      ]
+    },
+    "pouring": {
+      "file": null,
+      "volume": 0.5,
+      "loop": false,
+      "search": "pouring liquid small bottle",
+      "duration": [
+        1,
+        8
+      ]
+    },
+    "paper": {
+      "file": null,
+      "volume": 0.5,
+      "loop": false,
+      "search": "paper rustle newspaper page",
+      "duration": [
+        0.5,
+        5
+      ]
+    },
+    "crate": {
+      "file": null,
+      "volume": 0.6,
+      "loop": false,
+      "search": "wooden crate box open",
+      "duration": [
+        0.5,
+        6
+      ]
+    },
+    "ambience": {
+      "file": null,
+      "volume": 0.25,
+      "loop": true,
+      "search": "calm shop interior ambience room tone",
+      "duration": [
+        30,
+        240
+      ]
+    }
+  }
+}

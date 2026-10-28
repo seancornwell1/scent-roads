@@ -5,6 +5,11 @@
     "wallHeight": 3
   },
   "floorColor": "#e8d2b4",
+  "floorTile": {
+    "model": "grab3d/models/modular-floor-tile.glb",
+    "size": 2,
+    "height": 0.1
+  },
   "camera": {
     "focus": [
       -0.5,
@@ -307,6 +312,15 @@
     }
   ],
   "decor": [
+    {
+      "model": "grab3d/models/door.glb",
+      "position": [
+        -4.55,
+        6.5
+      ],
+      "y": 0,
+      "rotation": 0
+    },
     {
       "model": "grab3d/models/rug.glb",
       "position": [

@@ -31,11 +31,13 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 - The Pages base path comes from `BASE_PATH` at build time; never hard-code `/scent-roads/` in source. Reference assets via `import.meta.env.BASE_URL`.
 - Game time: use the game clock (`src/game/clock.ts`, `nowGame()` in `src/state.ts`) for anything measured in game hours. The debug speed (back room, or `?speed=N`) re-anchors it. Customers' visit timestamps are real milliseconds scaled by the same speed (`src/game/time.ts`).
 - Secrets (e.g. the Freesound API key) go in `.env`, which is git-ignored; `.env.example` lists the names.
+- Sound cues are data in `src/data/sounds.json`, played by `src/scene/audio.ts` (files only). `npm run sounds` fetches CC0 sounds from Freesound into `assets/sounds/` and credits them; it needs `FREESOUND_API_KEY` and network access to `freesound.org` and `cdn.freesound.org`.
 
 ## Commands
 
 - `npm run dev` — dev server, reachable from a phone on the same network
 - `npm test` — unit tests (Vitest)
+- `npm run sounds` — fetch missing sound cues from Freesound
 - `npm run typecheck` / `npm run build`
 
 ## Files to keep current

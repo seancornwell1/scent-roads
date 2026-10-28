@@ -10,7 +10,8 @@
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sounds": "node scripts/fetch-sounds.mjs"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.5.1",

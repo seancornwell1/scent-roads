@@ -21,6 +21,7 @@ import { tierIndex, unlocks } from './game/unlocks';
 import { shop, validateShop } from './game/shop';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
+import { SoundBoard } from './scene/audio';
 import { commit, nowGame, onChange, setDraft, state, type Screen } from './state';
 import { backroomScreen } from './ui/backroom';
 import { newsScreen } from './ui/news';
@@ -49,6 +50,9 @@ const FIXTURE_ACTIONS: Record<string, () => void> = {
   'back-room': () => openPanel('backroom'),
 };
 
+const sounds = new SoundBoard(state.save.sound ?? 0.8);
+sounds.loop('ambience', true);
+
 const scene = new ShopScene(
   document.querySelector<HTMLDivElement>('#scene')!,
   shop,
@@ -59,6 +63,8 @@ const scene = new ShopScene(
       state.ui.visitId = id;
       openPanel('customer');
     },
+    walking: (on) => sounds.loop('footsteps', on),
+    customerEntered: () => sounds.play('door-chime'),
   },
   clients.timing.browseSeconds,
 );
@@ -125,6 +131,7 @@ function runTick(): void {
   if (crates.length > 0) {
     state.ui.toast = crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`;
     void scene.setCrates(save.sourcing!.crates.length);
+    sounds.play('crate');
     notify('A crate has arrived', `From ${crates.map((k) => k.from).join(', ')}.`);
   }
   if (sold.bottles > 0) {
@@ -279,7 +286,10 @@ document.body.addEventListener('click', (event) => {
 
   switch (action) {
     case 'nav':
-      if (target.dataset.to === 'news') state.save.newsSeenWeek = weekOf(nowGame());
+      if (target.dataset.to === 'news') {
+        state.save.newsSeenWeek = weekOf(nowGame());
+        sounds.play('paper');
+      }
       if (target.dataset.to === 'options') optionsMessage = null;
       return openPanel(target.dataset.to as Screen);
     case 'close-panel':
@@ -310,6 +320,7 @@ document.body.addEventListener('click', (event) => {
       break;
     }
     case 'compose-for':
+      sounds.play('paper');
       ui.orderId = ui.visitId;
       ui.organTab = 'materials';
       return openPanel('organ');
@@ -333,6 +344,7 @@ document.body.addEventListener('click', (event) => {
       handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: { ...save.draft } }, result, Date.now());
       ui.orderId = null;
       ui.visitId = visit.id;
+      sounds.play('pouring');
       syncCrowd(); // they head for the door
       return openPanel('reaction');
     }
@@ -382,6 +394,7 @@ document.body.addEventListener('click', (event) => {
       const items = unpack(save.sourcing!, id!, nowGame());
       ui.toast = items.length ? `Unpacked ${items.map((i) => `${i.grams} g of ${materialsById.get(i.material)?.name}`).join(', ')} into stock.` : null;
       void scene.setCrates(save.sourcing!.crates.length);
+      if (items.length) sounds.play('crate');
       break;
     }
     case 'upgrades-tab':
@@ -414,6 +427,7 @@ document.body.addEventListener('click', (event) => {
       if (!formula) return;
       const why = listPerfume(save.display!, save.sourcing!, formula, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
       ui.toast = why ?? `“${formula.name}” is on display.`;
+      if (!why) sounds.play('pouring');
       break;
     }
     case 'unlist':
@@ -429,6 +443,10 @@ document.body.addEventListener('click', (event) => {
       ui.toast = why ?? 'Done: the new equipment is ready.';
       break;
     }
+    case 'sound-volume':
+      save.sound = Number(target.dataset.value);
+      sounds.volume = save.sound;
+      break;
     case 'toggle-notify':
       if (save.notify) save.notify = false;
       else {
@@ -479,6 +497,7 @@ document.body.addEventListener('click', (event) => {
       break;
     case 'add':
     case 'inc':
+      sounds.play('glass');
       return setDraft(addParts(save.draft, id!, ui.step));
     case 'dec':
       return setDraft(addParts(save.draft, id!, -ui.step));

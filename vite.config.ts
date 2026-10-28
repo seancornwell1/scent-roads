@@ -26,8 +26,12 @@ export default defineConfig({
         orientation: 'portrait',
         background_color: '#f6ece1',
         theme_color: '#f6ece1',
-        // App icons are listed in ASSETS_NEEDED.md; add them here once sourced.
-        icons: [],
+        // Rendered from the CC0 Grab3D potion bottle (see CREDITS.md).
+        icons: [
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
       },
     }),
   ],

@@ -80,7 +80,8 @@ The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`
 | Field | Meaning |
 | ----- | ------- |
 | `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
-| `floorColor` | Placeholder floor colour until a floor asset exists |
+| `floorColor` | Colour of the plane under the floor tiles (shows only past the tiles' edges) |
+| `floorTile` | Optional `{ model, size, height }`: a square floor model in metres, repeated across the room and sunk by `height` so its top is at floor level |
 | `camera` | `focus`: `[x, z]` the view starts on. `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; players pinch between min and max and drag to pan. |
 | `spawn` | Where the player starts, and where they stand while dressing in the character creator (keep it on open floor) |
 | `walkSpeed` | Metres per second |
@@ -245,3 +246,17 @@ Each item: `id`, `name`, `kind`, `model`, `placement` (`floor` spot or `surface`
 The newspaper (`src/game/events.ts`). Each game week prints `perWeek` `[min, max]` events, chosen from a seed and remembered in the save.
 
 Each type: `id`, `target` (`crop`, `region`, `material` or `none`, picked from what you have open), `headline` and `body` templates (`{region}`, `{material}`), and `effect`: `yield` (contracts signed that week), `shippingExtraGameHours` (shipments leaving the region that week), `price` (supplier price), `arrivals` (time between customers).
+
+## `sounds.json`
+
+Sound cues the game plays. Files are recorded sounds under `assets/` (fetched by `npm run sounds`, CC0 only, each logged in `CREDITS.md`); nothing is synthesized, and a cue whose `file` is `null` stays silent.
+
+| Field | Meaning |
+| ----- | ------- |
+| `cues.<id>.file` | Path under `assets/` (e.g. `sounds/glass.mp3`), or `null` until fetched |
+| `cues.<id>.volume` | Playback volume, 0–1, before the player's volume setting |
+| `cues.<id>.loop` | Whether it loops (footsteps while walking, ambience) |
+| `cues.<id>.search` | Freesound search words the fetch script uses |
+| `cues.<id>.duration` | `[min, max]` seconds the fetch script accepts |
+
+Cue ids are fixed in code (`src/scene/audio.ts`): `door-chime`, `footsteps`, `glass`, `pouring`, `paper`, `crate`, `ambience`.

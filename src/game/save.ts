@@ -48,6 +48,8 @@ export interface SaveData {
   newsSeenWeek?: number;
   /** Optional notifications for ripe harvests and arrivals. */
   notify?: boolean;
+  /** Sound volume, 0 (off) to 1; 0.8 when unset. */
+  sound?: number;
 }
 
 /** Checks that text looks like a save from this game before importing it. */

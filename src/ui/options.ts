@@ -1,9 +1,16 @@
 import { state } from '../state';
 import { esc } from './html';
 
-// More: your character, saving and loading, and notifications.
+// More: your character, sound, notifications, and saving and loading.
+
+const SOUND_LEVELS = [
+  { label: 'Off', value: 0 },
+  { label: 'Quiet', value: 0.4 },
+  { label: 'Normal', value: 0.8 },
+];
 
 export function optionsScreen(message: string | null): string {
+  const volume = state.save.sound ?? 0.8;
   const notifySupported = 'Notification' in window && 'serviceWorker' in navigator;
   const permission = notifySupported ? Notification.permission : 'unsupported';
   const notifyLine = !notifySupported
@@ -20,6 +27,9 @@ export function optionsScreen(message: string | null): string {
     </header>
     <main class="customer">
       <button class="big-button" data-action="nav" data-to="creator">Change your character</button>
+
+      <h2>Sound</h2>
+      <div class="chips">${SOUND_LEVELS.map((l) => `<button class="chip ${volume === l.value ? 'on' : ''}" data-action="sound-volume" data-value="${l.value}">${l.label}</button>`).join('')}</div>
 
       <h2>Notifications</h2>
       <p class="small">${esc(notifyLine)}</p>

@@ -40,8 +40,10 @@ export interface Zone {
 
 export interface ShopLayout {
   room: { width: number; depth: number; wallHeight: number };
-  /** Placeholder floor colour until a floor asset exists. */
+  /** Colour of the plane under the floor tiles. */
   floorColor: string;
+  /** A square floor tile model repeated across the room; its top sits at y = 0. */
+  floorTile?: { model: string; size: number; height: number };
   /** Where the view starts, as [x, z]. Zoom 1 shows the whole room across the screen's width. */
   camera: { focus: Point; defaultZoom: number; minZoom: number; maxZoom: number };
   spawn: Point;

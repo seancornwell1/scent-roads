@@ -279,6 +279,23 @@ How it was built (Oct 28, 2026):
 - **Saves:** export a file or copy text; import a file or pasted text (More panel).
 - **Notifications:** optional; shown for ripe harvests, crates and returning customers while the app is open in the background. Alerts while it's fully closed would need a push server.
 
+### Prompt 7: sound and finishing touches (after the direction change)
+
+```
+Step 7: sound and finishing touches. Source CC0 sounds through the
+Freesound API (key in .env): door chime, footsteps, glass clinks,
+pouring, paper, crates, and calm shop ambience. Fill any remaining
+ASSETS_NEEDED.md items from the approved packs, and replace any
+leftover placeholders. Deploy and give me the link.
+```
+
+How it was built (Oct 28, 2026):
+
+- **Sound:** cues are data (`src/data/sounds.json`): door chime when a customer comes in, footsteps while you walk, a glass clink as you add a material, pouring when you hand over a perfume or bottle one for display, paper for the newspaper and taking an order, crates when one arrives or is unpacked, and a looping shop ambience. The game only plays recorded files; it starts on the first tap (phones require it) and pauses while the app is hidden. Volume (Off, Quiet, Normal) is under More.
+- **Fetching sounds:** `npm run sounds` searches Freesound for CC0 sounds only, saves the high-quality MP3 previews to `assets/sounds/`, fills in `sounds.json` and logs each in `CREDITS.md`. Not run yet: this environment's network can't reach freesound.org and has no `FREESOUND_API_KEY`. Until then the game is silent.
+- **From the approved packs:** the Grab3D wooden floor tile now covers the floor, the Grab3D door stands open in the front doorway, and the app icon is a render of the Grab3D potion bottle (CC0).
+- **Still waiting** (nothing in the approved packs): perfume bottles, a painted world map, a glass display case, a newspaper masthead and a sitting animation. See `ASSETS_NEEDED.md`.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

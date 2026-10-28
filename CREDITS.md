@@ -21,11 +21,12 @@ Grab3D ([grab3d.com](https://grab3d.com)) releases every model under [CC0 1.0](h
 | `assets/grab3d/models/monstera-plant.glb` | Monstera Plant — Back corner | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/nature/monstera-plant/ |
 | `assets/grab3d/models/floor-lamp.glb` | Floor Lamp — By the back-room door | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/floor-lamp/ |
 | `assets/grab3d/models/wall-clock.glb` | Wall Clock — Back wall | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/wall-clock/ |
-| `assets/grab3d/models/door.glb` | Door — Back-room door | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/door/ |
+| `assets/grab3d/models/door.glb` | Door — Back-room door, and the front door standing open | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/door/ |
 | `assets/grab3d/models/modular-wall-straight.glb` | Modular Wall Straight — Walls | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-straight/ |
 | `assets/grab3d/models/modular-wall-window.glb` | Modular Wall Window — Walls | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-window/ |
 | `assets/grab3d/models/modular-wall-door.glb` | Modular Wall Door — Front entrance and back-room doorway | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-wall-door/ |
 | `assets/grab3d/models/wooden-crate.glb` | Wooden Crate — arrived shipments by the back-room door | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/props/wooden-crate/ |
+| `assets/grab3d/models/modular-floor-tile.glb` | Modular Floor Tile — the shop floor, repeated in a 5 × 9 grid | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/buildings/modular-floor-tile/ |
 | `assets/grab3d/models/bench.glb` | Bench — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/bench/ |
 | `assets/grab3d/models/bar-stool.glb` | Bar Stool — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/bar-stool/ |
 | `assets/grab3d/models/armchair.glb` | Armchair — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/armchair/ |
@@ -42,3 +43,9 @@ Grab3D ([grab3d.com](https://grab3d.com)) releases every model under [CC0 1.0](h
 | `assets/grab3d/models/vanity-table.glb` | Vanity Table — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/vanity-table/ |
 | `assets/grab3d/models/bookshelf.glb` | Bookshelf — buyable furniture (step 6) | Grab3D | Grab3D | CC0 1.0 | https://grab3d.com/models/furniture/bookshelf/ |
 | `assets/grab3d/characters/` (manifest, skeleton, animations and 66 "Cozy" parts) | Character Mixer kit — player and customers | Grab3D | Grab3D | CC0 1.0 (stated in `manifest.json`) | https://grab3d.com/tools/character-mixer/ |
+
+## App icons
+
+| File | What it is | Source | Author | License | URL |
+| ---- | ---------- | ------ | ------ | ------- | --- |
+| `assets/icons/icon-512.png`, `assets/icons/icon-192.png`, `assets/icons/apple-touch-icon.png` | Home Screen and manifest icons: a still render of the Grab3D Potion Bottle on the game's background colour, resized to 512, 192 and 180 px | Grab3D (derived) | Grab3D | CC0 1.0 | https://grab3d.com/models/props/potion-bottle/ |
