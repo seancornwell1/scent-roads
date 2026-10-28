@@ -121,6 +121,27 @@ function syncCrowd(): void {
 /** Storms in the news slow shipping from their region in the week a batch ships. */
 const stormDelay = (regionId: string, at: number) => shippingDelay(newsFor(state.save, at), regionId);
 
+/**
+ * Opens the organ for an order. A formula made for a different brief is cleared first, so
+ * one customer's perfume is never handed to the next by mistake; the same brief (a retry)
+ * keeps what you had, and so does one you composed with no order open.
+ */
+function composeFor(orderId: string): void {
+  const { ui, save } = state;
+  ui.orderId = orderId;
+  ui.organTab = 'materials';
+  const briefId = currentOrder()?.brief.id ?? orderId;
+  if (save.draftFor !== briefId) {
+    const stale = save.draftFor !== undefined;
+    save.draftFor = briefId;
+    if (stale && totalParts(save.draft) > 0) {
+      setDraft({}, {});
+      ui.toast = 'A clean organ for this order.';
+    }
+  }
+  openPanel('organ');
+}
+
 /** Game hours between display-case sales: a more appealing shop sells faster. */
 const saleInterval = () => furniture.display.saleEveryGameHours * shopAppeal(state.save).level.arrivalMultiplier;
 
@@ -437,9 +458,7 @@ document.body.addEventListener('click', (event) => {
     }
     case 'compose-for':
       sounds.play('paper');
-      ui.orderId = ui.visitId;
-      ui.organTab = 'materials';
-      return openPanel('organ');
+      return composeFor(ui.visitId!);
     case 'drop-order':
       ui.orderId = null;
       break;
@@ -571,9 +590,7 @@ document.body.addEventListener('click', (event) => {
       break;
     }
     case 'signature-compose':
-      ui.orderId = 'signature';
-      ui.organTab = 'materials';
-      return openPanel('organ');
+      return composeFor('signature');
     case 'enter-awards': {
       const formula = save.formulas.find((f) => f.id === id);
       const now = nowGame();
@@ -605,9 +622,7 @@ document.body.addEventListener('click', (event) => {
       break;
     }
     case 'challenge-compose':
-      ui.orderId = `challenge:${id}`;
-      ui.organTab = 'materials';
-      return openPanel('organ');
+      return composeFor(`challenge:${id}`);
     case 'open-sheet':
       ui.sheetId = id!;
       return openPanel('sheet');
@@ -650,9 +665,7 @@ document.body.addEventListener('click', (event) => {
       break;
     }
     case 'exam-compose':
-      ui.orderId = 'exam';
-      ui.organTab = 'materials';
-      return openPanel('organ');
+      return composeFor('exam');
     case 'exam-retry-accord':
       if (save.exam) delete save.exam.accord;
       ui.orderId = 'exam';

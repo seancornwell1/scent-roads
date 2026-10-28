@@ -37,6 +37,8 @@ export interface SaveData {
   /** The formula currently on the organ, and the dilution of each material in it. */
   draft: Formula;
   draftDilutions?: Dilutions;
+  /** The brief the organ's formula was made for: a different order starts on a clean organ. */
+  draftFor?: string;
   formulas: SavedFormula[];
   /** Accord id → when and in which formula it was first hit. */
   discoveredAccords: Record<string, { at: number; formula: Formula }>;

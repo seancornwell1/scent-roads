@@ -115,6 +115,8 @@ export function draftBlend(): Entry[] {
 /** Replaces the organ's formula (and optionally its dilutions) and records any accord hit for the first time. */
 export function setDraft(formula: Formula, dilutions?: Dilutions): void {
   state.save.draft = formula;
+  // A formula worked on with no order open is yours: the next order keeps it on the organ.
+  if (!state.ui.orderId) state.save.draftFor = undefined;
   if (dilutions) state.save.draftDilutions = { ...dilutions };
   for (const id of Object.keys(state.save.draftDilutions ?? {})) if (!(id in formula)) delete state.save.draftDilutions![id];
   const now = Date.now();
