@@ -9,6 +9,7 @@ import type { Tier } from '../game/unlocks';
 import { unlocks } from '../game/unlocks';
 import { pageById, personById, requestById, type StoryState } from '../game/story';
 import { drydownGraph } from './graph';
+import { effective, entriesOf } from '../game/blend';
 import { esc, starsText } from './html';
 import { pageCard } from './book';
 
@@ -87,6 +88,7 @@ function briefScreen(visit: Visit, state: CustomerState, story: StoryState): str
       ${intro}
       <p class="muted small">${page ? 'They remember it like this:' : "They'd like a perfume of a memory:"}</p>
       <blockquote class="memory">“${esc(brief.memory)}”</blockquote>
+      ${brief.budget !== undefined ? `<p class="small">They can spend up to <strong>€${brief.budget}</strong> per 100 g of concentrate on materials.</p>` : ''}
       ${hints}${chatter}
       ${pageBlock}
       <div class="row-between">
@@ -121,7 +123,7 @@ function reviewScreen(visit: Visit): string {
       ${remarks.map((x) => `<p>“${esc(x)}”</p>`).join('')}
       ${outcome}
       <h2>Their perfume's drydown</h2>
-      ${drydownGraph(drydown(parts, materialsById, content.model))}
+      ${drydownGraph(drydown(effective(visit.perfume!.entries ?? entriesOf({ parts })), materialsById, content.model))}
       <div class="row-between">
         <span class="muted small">Reputation ${change >= 0 ? '+' : ''}${change}${bonus ? ` · bonus ${bonus} coins` : ''}</span>
         <button class="primary" data-action="complete-review">Thank ${esc(visit.name)}</button>

@@ -1,4 +1,7 @@
-import { state } from '../state';
+import { content } from '../game/content';
+import { examBlockers, nextRank } from '../game/ranks';
+import { ownedMaterials } from '../game/world';
+import { currentRank, state } from '../state';
 import { esc } from './html';
 
 // More: your character, sound, notifications, and saving and loading.
@@ -28,6 +31,8 @@ export function optionsScreen(message: string | null): string {
     <main class="customer">
       <button class="big-button" data-action="nav" data-to="creator">Change your character</button>
 
+      ${rankSection()}
+
       <h2>Sound</h2>
       <div class="chips">${SOUND_LEVELS.map((l) => `<button class="chip ${volume === l.value ? 'on' : ''}" data-action="sound-volume" data-value="${l.value}">${l.label}</button>`).join('')}</div>
 
@@ -48,4 +53,23 @@ export function optionsScreen(message: string | null): string {
       <button class="link" data-action="import-text">Import pasted text</button>
       ${message ? `<p class="small warn-text">${esc(message)}</p>` : ''}
     </main>`;
+}
+
+/** Your rank, and what it takes to sit the next exam. */
+function rankSection(): string {
+  const rank = currentRank();
+  const next = nextRank(rank.id);
+  const parts = `Formulas of ${rank.wearableParts.join(' or ')} parts${rank.dilutions ? ', dilutions' : ''}${rank.bases ? ', saved bases' : ''}${rank.budgets ? ', budget briefs' : ''}.`;
+  let exam = '<p class="small">You are a master. There is no higher rank.</p>';
+  if (next) {
+    const owned = content.materials.filter((m) => ownedMaterials(state.save).has(m.id));
+    const blockers = examBlockers(next, state.save.customers!.reputation, state.save.learning!, owned);
+    const inProgress = state.save.exam?.rank === next.id;
+    exam = `<p class="small"><strong>Next: ${esc(next.name)}.</strong> ${esc(next.about)}</p>
+      <p class="muted small">The exam: name ${next.exam!.identify.pass} of ${next.exam!.identify.questions} materials from their descriptions alone, then build a classic accord to three stars.</p>
+      ${blockers.length ? `<ul class="plain small">${blockers.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : `<button class="primary" data-action="${inProgress ? 'nav' : 'start-exam'}" data-to="exam">${inProgress ? 'Continue the exam' : 'Sit the exam'}</button>`}`;
+  }
+  return `<h2>Your rank: ${esc(rank.name)}</h2>
+    <p class="small">${esc(parts)}</p>
+    ${exam}`;
 }

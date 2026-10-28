@@ -1,14 +1,16 @@
 import { recognizeAccords } from '../game/accords';
+import { DILUTIONS, baseKey, effective, isBaseKey, partsTotal, written, type Entry } from '../game/blend';
+import { blockers, checkPerfume, sellable } from '../game/checks';
 import { content, materialsById } from '../game/content';
 import { drydown } from '../game/evaporation';
-import { percentages, totalParts } from '../game/formula';
-import { findBrief } from '../game/clients';
+import { findBrief, type Brief } from '../game/clients';
+import { rankById } from '../game/ranks';
 import { LAYERS, type Material } from '../game/types';
 import { missingFor, qualityWord, stockOf, stockQuality } from '../game/sourcing';
 import { nextTier } from '../game/unlocks';
 import { ownedMaterials } from '../game/world';
 import { pageById } from '../game/story';
-import { nowGame, state } from '../state';
+import { currentRank, draftBlend, nowGame, state } from '../state';
 import { pageCard } from './book';
 import { compendiumEntry } from './compendium';
 import { currentStreak, dayNumber, nextQuestion } from '../game/learning';
@@ -16,10 +18,11 @@ import { drydownGraph, familyName } from './graph';
 import { esc, formatParts, header } from './html';
 
 const LAYER_NAMES = { top: 'Top', heart: 'Heart', base: 'Base' } as const;
+const STEPS = [1, 5, 10];
 
 export function organScreen(): string {
-  const { ui, save } = state;
-  const total = totalParts(save.draft);
+  const { ui } = state;
+  const total = partsTotal(draftBlend());
   const body = ui.organTab === 'materials' ? materialsTab() : formulaTab();
   return `${header('The organ')}
     ${orderBanner()}
@@ -27,32 +30,50 @@ export function organScreen(): string {
     <main class="organ">${body}</main>
     <nav class="tabs">
       <button class="${ui.organTab === 'materials' ? 'on' : ''}" data-action="tab" data-tab="materials">Materials</button>
-      <button class="${ui.organTab === 'formula' ? 'on' : ''}" data-action="tab" data-tab="formula">Formula · ${formatParts(total)} of ${content.model.wearableParts} parts</button>
+      <button class="${ui.organTab === 'formula' ? 'on' : ''}" data-action="tab" data-tab="formula">Formula · ${formatParts(total)} parts</button>
     </nav>
     ${ui.detail ? detailSheet(materialsById.get(ui.detail)!) : ''}`;
 }
 
-/** Who you're composing for, with their memory and anything they've told you. */
+/** What you're composing for: a waiting customer, or a rank exam's accord. */
+export function currentOrder(): { name: string; brief: Brief; exam: boolean } | null {
+  const { ui, save } = state;
+  if (ui.orderId === 'exam') {
+    const brief = save.exam ? rankById(save.exam.rank).exam?.accord : undefined;
+    return brief ? { name: 'the examiners', brief, exam: true } : null;
+  }
+  const visit = save.customers?.visits.find((v) => v.id === ui.orderId && v.status === 'waiting');
+  const brief = visit && findBrief(visit.briefId);
+  return visit && brief ? { name: visit.name, brief, exam: false } : null;
+}
+
+function entryName(e: Entry): string {
+  return `${materialsById.get(e.material)?.name ?? e.material}${e.dilution < 100 ? ` at ${e.dilution}%` : ''}`;
+}
+
+/** Who you're composing for, with their memory and anything they've told you, and what still stops it being sold. */
 function orderBanner(): string {
   const { ui, save } = state;
-  const visit = save.customers?.visits.find((v) => v.id === ui.orderId && v.status === 'waiting');
-  if (!visit) return '';
-  const brief = findBrief(visit.briefId)!;
-  const hints = brief.hints.slice(0, visit.hintsAsked).map((h) => `<span class="small">“${esc(h)}”</span>`).join('<br>');
-  const missing = missingFor(save.sourcing!, save.draft).map((id) => materialsById.get(id)?.name ?? id);
-  const total = totalParts(save.draft);
-  const full = total === content.model.wearableParts;
-  const ready = full && missing.length === 0;
+  const order = currentOrder();
+  if (!order) return '';
+  const { brief } = order;
+  const visit = save.customers?.visits.find((v) => v.id === ui.orderId);
+  const hints = brief.hints.slice(0, order.exam ? brief.hints.length : visit?.hintsAsked ?? 0).map((h) => `<span class="small">“${esc(h)}”</span>`).join('<br>');
+  const blend = draftBlend();
+  const check = checkPerfume(blend, currentRank().wearableParts, brief.budget);
+  const missing = order.exam ? [] : missingFor(save.sourcing!, blend).map(entryName);
+  const ready = sellable(check) && missing.length === 0;
   const page = brief.page ? pageById(brief.page) : undefined;
+  const why = [...blockers(check), ...(missing.length ? [`Not enough ${missing.join(', ')} in stock: order, harvest or dilute more in the back room.`] : [])];
   return `<div class="order">
-    <p class="small"><strong>For ${esc(visit.name)}:</strong> “${esc(brief.memory)}”</p>
+    <p class="small"><strong>${order.exam ? 'Exam' : `For ${esc(order.name)}`}:</strong> “${esc(brief.memory)}”</p>
     ${hints ? `<p class="muted">${hints}</p>` : ''}
+    ${brief.budget !== undefined ? `<p class="small">Budget: <strong>€${brief.budget}</strong> per 100 g of concentrate · this costs €${check.cost.toFixed(2)}</p>` : ''}
     ${page ? `<details class="small"><summary>Her page</summary><ul class="list cards">${pageCard(page, save.story!, false)}</ul></details>` : ''}
-    ${full ? '' : `<p class="small muted">${total} of ${content.model.wearableParts} parts: a perfume needs exactly ${content.model.wearableParts}.</p>`}
-    ${missing.length ? `<p class="small warn-text">Not enough ${esc(missing.join(', '))} in stock: order or harvest more in the back room.</p>` : ''}
+    ${why.map((w) => `<p class="small warn-text">${esc(w)}</p>`).join('')}
     <div class="row-between">
       <button class="link" data-action="drop-order">Not now</button>
-      <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>Hand over to ${esc(visit.name)}</button>
+      <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>${order.exam ? 'Hand in to the examiners' : `Hand over to ${esc(order.name)}`}</button>
     </div>
   </div>`;
 }
@@ -76,12 +97,16 @@ function trainingButton(): string {
     <button class="chip" data-action="nav" data-to="training">${done ? 'Review' : 'Train'}</button></div>`;
 }
 
-/** How full the formula is: wearables must total exactly the wearable parts. */
+/** How full the formula is: a perfume totals exactly one of the totals your rank allows. */
 function partsMeter(): string {
-  const total = totalParts(state.save.draft);
-  const max = content.model.wearableParts;
-  const note = total === max ? 'A full formula, ready to wear.' : total > max ? `Too many: take ${total - max} out.` : `${max - total} more to go. Each tap adds one part.`;
-  return `<div class="row-between"><span class="muted small">${note}</span><strong>${formatParts(total)} of ${max} parts</strong></div>`;
+  const total = partsTotal(draftBlend());
+  const allowed = currentRank().wearableParts;
+  const target = allowed.find((t) => t >= total) ?? allowed[allowed.length - 1];
+  const note = allowed.includes(total) ? 'A full formula, ready to wear.' : total > target ? `Too many: take ${formatParts(total - target)} out.` : `${formatParts(target - total)} more to go for ${target} parts.`;
+  const steps = allowed[allowed.length - 1] > 10
+    ? `<div class="row-between"><span class="muted small">Parts per tap</span><div class="chips">${STEPS.map((n) => `<button class="chip ${state.ui.step === n ? 'on' : ''}" data-action="step" data-step="${n}">${n}</button>`).join('')}</div></div>`
+    : '';
+  return `<div class="row-between"><span class="muted small">${note}</span><strong>${formatParts(total)} of ${allowed.join(' or ')} parts</strong></div>${steps}`;
 }
 
 function materialsTab(): string {
@@ -106,7 +131,26 @@ function materialsTab(): string {
     .filter((g) => g.items.length > 0)
     .map((g) => `<h2>${esc(g.title)}</h2><ul class="list">${g.items.sort(byName).map(materialRow).join('')}</ul>`)
     .join('');
-  return `${trainingButton()}<div class="row-between">${toggle}</div>${partsMeter()}${list}${upcoming}`;
+  return `${trainingButton()}<div class="row-between">${toggle}</div>${partsMeter()}${basesList()}${list}${upcoming}`;
+}
+
+/** Your saved accords, each usable as one ingredient. */
+function basesList(): string {
+  const bases = state.save.bases ?? [];
+  if (!currentRank().bases || bases.length === 0) return '';
+  const rows = bases
+    .map((b) => {
+      const parts = state.save.draft[baseKey(b.id)];
+      return `<li class="material">
+        <button class="material-add" data-action="add" data-id="${esc(baseKey(b.id))}">
+          <span class="material-name">${esc(b.name)}</span>
+          <span class="muted small">Base · ${esc(Object.keys(b.parts).map((id) => materialsById.get(id)?.name ?? id).join(', '))}</span>
+        </button>
+        ${parts ? `<span class="count">${formatParts(parts)}</span>` : ''}
+      </li>`;
+    })
+    .join('');
+  return `<h2>My bases</h2><ul class="list">${rows}</ul>`;
 }
 
 function materialRow(m: Material): string {
@@ -124,9 +168,8 @@ function materialRow(m: Material): string {
 
 function stockLine(id: string): string {
   const s = state.save.sourcing!;
-  const grams = stockOf(s, id);
-  if (grams <= 0) return 'None in stock: order or harvest it in the back room.';
-  return `In stock: ${formatGrams(grams)} · ${qualityWord(stockQuality(s, id, nowGame()))} quality`;
+  const lines = DILUTIONS.filter((d) => stockOf(s, id, d) > 0).map((d) => `${formatGrams(stockOf(s, id, d))}${d < 100 ? ` at ${d}%` : ' neat'} (${qualityWord(stockQuality(s, id, nowGame(), d))})`);
+  return lines.length ? `In stock: ${lines.join(', ')}` : 'None in stock: order or harvest it in the back room.';
 }
 
 function formatGrams(g: number): string {
@@ -143,40 +186,68 @@ function tags(m: Material): string {
 
 function formulaTab(): string {
   const { draft } = state.save;
-  const ids = Object.keys(draft);
-  if (ids.length === 0) {
+  const keys = Object.keys(draft);
+  if (keys.length === 0) {
     return `<p class="empty">Nothing on the organ yet. Open <strong>Materials</strong> and tap a material to add parts.</p>`;
   }
-  const pct = percentages(draft);
-  const rows = ids
+  const rank = currentRank();
+  const blend = draftBlend();
+  const total = partsTotal(blend);
+  const dilutions = state.save.draftDilutions ?? {};
+  const row = (key: string, name: string, sub: string, swatch: string, dilution: string) => `<li class="formula-row">
+        <span class="swatch fam-${esc(swatch)}"></span>
+        <span class="formula-name">${esc(name)}<span class="muted small"> ${esc(sub)}</span>${dilution}</span>
+        <span class="formula-pct muted small">${((draft[key] / total) * 100).toFixed(1)}%</span>
+        <button class="pm" data-action="dec" data-id="${esc(key)}" aria-label="Fewer parts">−</button>
+        <span class="formula-parts">${formatParts(draft[key])}</span>
+        <button class="pm" data-action="inc" data-id="${esc(key)}" aria-label="More parts">+</button>
+      </li>`;
+  const baseRows = keys
+    .filter(isBaseKey)
+    .map((key) => {
+      const base = state.save.bases?.find((b) => baseKey(b.id) === key);
+      return row(key, base?.name ?? 'A deleted base', 'Base', base ? (materialsById.get(Object.keys(base.parts)[0])?.family ?? '') : '', '');
+    })
+    .join('');
+  const materialRows = keys
+    .filter((k) => !isBaseKey(k))
     .map((id) => materialsById.get(id)!)
     .sort((a, b) => LAYERS.indexOf(a.layer) - LAYERS.indexOf(b.layer) || draft[b.id] - draft[a.id])
-    .map(
-      (m) => `<li class="formula-row">
-        <span class="swatch fam-${esc(m.family)}"></span>
-        <span class="formula-name">${esc(m.name)}<span class="muted small"> ${LAYER_NAMES[m.layer]}</span></span>
-        <span class="formula-pct muted small">${pct[m.id].toFixed(1)}%</span>
-        <button class="pm" data-action="dec" data-id="${esc(m.id)}" aria-label="Fewer parts">−</button>
-        <span class="formula-parts">${formatParts(draft[m.id])}</span>
-        <button class="pm" data-action="inc" data-id="${esc(m.id)}" aria-label="More parts">+</button>
-      </li>`,
-    )
+    .map((m) => {
+      const d = dilutions[m.id] ?? 100;
+      const chips = rank.dilutions
+        ? `<span class="chips dilution-chips">${DILUTIONS.map((x) => `<button class="chip ${x === d ? 'on' : ''}" data-action="set-dilution" data-id="${esc(m.id)}" data-value="${x}">${x}%</button>`).join('')}</span>`
+        : '';
+      return row(m.id, m.name, LAYER_NAMES[m.layer], m.family, chips);
+    })
     .join('');
-  const accords = recognizeAccords(draft, content.accords, materialsById);
+  const check = checkPerfume(blend, rank.wearableParts);
+  const warnings = [
+    ...check.harsh.map((id) => `${materialsById.get(id)!.name} is far too strong at this strength: it will smell harsh. Use less, or dilute it.`),
+    ...check.safety.map((x) => `${materialsById.get(x.material)!.name}: ${x.finishedPercent.toFixed(2)}% of the finished perfume, over its safety limit of ${x.limit}%. It can't be sold like this.`),
+  ];
+  const accords = recognizeAccords(written(blend), content.accords, materialsById);
   const accordLine = accords.length
     ? accords.map((a) => `<span class="chip on">${esc(a.name)}</span>`).join('')
     : '<span class="muted small">No accord recognized yet.</span>';
+  const scale = total === 10 && rank.wearableParts.includes(100) ? '<button class="link" data-action="scale-up">Scale to 100 parts</button>' : '';
   return `${partsMeter()}
-    <ul class="list">${rows}</ul>
+    <ul class="list">${baseRows}${materialRows}</ul>
+    ${scale}
+    ${rank.dilutions ? '' : '<p class="muted small">Junior perfumers can dilute materials to 10% or 1%: pass the exam (More → Your rank).</p>'}
+    <h2>Checks</h2>
+    ${warnings.map((w) => `<p class="small warn-text">${esc(w)}</p>`).join('') || '<p class="small">Within every safety limit, and nothing too strong.</p>'}
+    <p class="muted small">Costs about €${check.cost.toFixed(2)} per 100 g of concentrate. Finished perfume is ${content.model.wearableConcentration}% concentrate. Safety limits and costs are unconfirmed.</p>
     <h2>Accords</h2><div class="chips">${accordLine}</div>
     <h2>Drydown</h2>
     <p class="muted small">Who dominates at each stage. Bar length shows how loud it still is next to the opening.</p>
-    ${drydownGraph(drydown(draft, materialsById, content.model))}
+    ${drydownGraph(drydown(effective(blend), materialsById, content.model))}
     <h2>Save to formula book</h2>
     <div class="save-row">
       <input id="save-name" type="text" maxlength="40" placeholder="Formula ${state.save.formulas.length + 1}" />
       <button class="primary" data-action="save">Save</button>
     </div>
+    ${rank.bases ? '<button class="link" data-action="save-base">Save as a base (use it inside other formulas)</button>' : ''}
     <button class="link danger" data-action="clear">Clear the organ</button>`;
 }
 

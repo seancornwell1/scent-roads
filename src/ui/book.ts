@@ -4,7 +4,7 @@ import { content, materialsById } from '../game/content';
 import { sourcing } from '../game/sourcing';
 import { pageFormula, personById, requestForPage, story, type Page, type StoryState } from '../game/story';
 import { ownedMaterials } from '../game/world';
-import { state } from '../state';
+import { currentRank, state } from '../state';
 import type { Formula } from '../game/types';
 import { esc, formatDate, formatParts, header, starsText } from './html';
 import { compendiumList } from './compendium';
@@ -84,16 +84,26 @@ export function bookScreen(): string {
     .map((a) => {
       const found = save.discoveredAccords[a.id];
       const warn = a.verified ? '' : ' <span class="tag tag--warn">unverified</span>';
-      if (!found) {
-        const hint = a.course.mission ? `Taught in course mission ${esc(a.course.mission)}.` : '';
-        return `<li class="card"><div><strong>${esc(a.name)}</strong>${warn}</div><p class="muted small">Not discovered yet. ${hint}</p></li>`;
-      }
+      // Her lesson for each classic accord, with an example to try once you have its materials.
+      const owned = ownedMaterials(state.save);
+      const canTry = Object.keys(a.example.parts).every((id) => owned.has(id));
+      const diluted = Object.values(a.example.dilutions ?? {}).some((d) => d < 100);
+      const example = `<p class="small">Her example: ${esc(Object.entries(a.example.parts).map(([id, p]) => `${materialsById.get(id)?.name ?? id} ${p}${a.example.dilutions?.[id] ? ` (at ${a.example.dilutions[id]}%)` : ''}`).join(', '))}</p>
+        ${canTry && (!diluted || currentRank().dilutions) ? `<div class="row-between"><span></span><button class="link" data-action="load-example" data-id="${esc(a.id)}">Try it at the organ</button></div>` : `<p class="muted small">${canTry ? 'Needs dilutions (Junior perfumer).' : 'You don’t have all its materials yet.'}</p>`}`;
+      const status = found ? `Discovered ${formatDate(found.at)} in: ${esc(formulaText(found.formula))}` : `Not made yet.${a.course.mission ? ` Taught in course mission ${esc(a.course.mission)}.` : ''}`;
       return `<li class="card"><div><strong>${esc(a.name)}</strong>${warn}</div>
         <p>${esc(a.description)}</p>
-        <p class="muted small">Discovered ${formatDate(found.at)} in: ${esc(formulaText(found.formula))}</p></li>`;
+        <p class="small lesson">${esc(a.lesson)}</p>
+        ${example}
+        <p class="muted small">${status}</p></li>`;
     })
     .join('');
 
+  const bases = (save.bases ?? [])
+    .map((b) => `<li class="card"><div><strong>${esc(b.name)}</strong> <span class="muted small">base</span></div>
+      <p class="small">${esc(formulaText(b.parts))}</p>
+      <div class="row-between"><button class="link danger" data-action="delete-base" data-id="${esc(b.id)}">Delete</button><span></span></div></li>`)
+    .join('');
   const formulas = save.formulas.length
     ? save.formulas
         .slice()
@@ -134,7 +144,7 @@ export function bookScreen(): string {
         : tab === 'accords'
           ? `<ul class="list cards">${accords}</ul>`
           : tab === 'formulas'
-            ? `<ul class="list cards">${formulas}</ul>`
+            ? `<ul class="list cards">${formulas}</ul>${bases ? `<h2>My bases</h2><ul class="list cards">${bases}</ul>` : ''}`
             : `<ul class="list cards">${reviews || '<li class="muted">No reviews yet. Customers come back to tell you how their perfume wore.</li>'}</ul>`;
   return `${header('Formula book')}
     <nav class="tab-chips">${tabs}</nav>

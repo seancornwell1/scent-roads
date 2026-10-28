@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { dateAt, gameNow, newClock, realMsPerGameHour, setClockSpeed } from './clock';
 import { content } from './content';
 import {
+  DILUTION_BATCH_GRAMS,
   consume,
+  dilute,
   harvest,
   harvestQuality,
   inSeason,
@@ -21,6 +23,7 @@ import {
   cropOf,
 } from './sourcing';
 import { unlockedMaterialIds } from './unlocks';
+import { entriesOf } from './blend';
 
 const all = new Set(content.materials.map((m) => m.id));
 // Game hour 0 is 1 March. These are game-hour timestamps for days in other months.
@@ -127,9 +130,25 @@ describe('inventory', () => {
     order(s, { money: 100 }, 'vanillin', false, 0, ownedMaterials);
     order(s, { money: 100 }, 'labdanum', true, 0, ownedMaterials);
     for (const crate of tickSourcing(s, 100)) unpack(s, crate.id, 100);
-    expect(consume(s, { vanillin: 1, bergamot: 1 }, 100)).toBeNull();
-    const q = consume(s, { vanillin: 1, labdanum: 1 }, 100);
+    expect(consume(s, entriesOf({ parts: { vanillin: 1, bergamot: 1 } }), 100)).toBeNull();
+    const q = consume(s, entriesOf({ parts: { vanillin: 1, labdanum: 1 } }), 100);
     expect(q).not.toBeNull();
     expect(stockOf(s, 'vanillin')).toBeCloseTo(9.5);
+  });
+});
+
+describe('dilutions in stock', () => {
+  it('are made from neat stock and used by diluted parts', () => {
+    const s = newSourcingState();
+    s.inventory.push({ id: 'l1', material: 'oakmoss', grams: 2, quality: 1, since: 0 });
+    expect(dilute(s, 'oakmoss', 10, 0)).toBeNull();
+    expect(stockOf(s, 'oakmoss', 100)).toBeCloseTo(1);
+    expect(stockOf(s, 'oakmoss', 10)).toBeCloseTo(DILUTION_BATCH_GRAMS);
+    expect(dilute(s, 'oakmoss', 10, 0)).toBeNull();
+    expect(dilute(s, 'oakmoss', 10, 0)).toMatch(/neat/);
+    s.inventory.push({ id: 'l2', material: 'bergamot', grams: 5, quality: 1, since: 0 });
+    const blend = entriesOf({ parts: { bergamot: 9, oakmoss: 1 }, dilutions: { oakmoss: 10 } });
+    expect(consume(s, blend, 0)).not.toBeNull();
+    expect(stockOf(s, 'oakmoss', 10)).toBeCloseTo(2 * DILUTION_BATCH_GRAMS - 0.1);
   });
 });

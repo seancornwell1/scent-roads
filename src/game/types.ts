@@ -68,6 +68,9 @@ export interface Accord {
   id: string;
   name: string;
   description: string;
+  /** The lesson in her book, and an example formula to try. */
+  lesson: string;
+  example: { parts: Formula; dilutions?: Record<string, 100 | 10 | 1> };
   course: { mission: string | null };
   verified: boolean;
   check: string[];
@@ -82,8 +85,12 @@ export interface Stage {
 }
 
 export interface Model {
-  /** Parts a wearable perfume must total (10 at first; 100 and 1000 come with later ranks). */
+  /** Parts a brief's target totals; your rank sets what your own perfumes may total. */
   wearableParts: number;
+  /** Percent of concentrate in a finished, wearable perfume (the rest is alcohol), for safety limits. */
+  wearableConcentration: number;
+  /** Materials usually worked at `dilution`% smell harsh above `maxPercent` of a formula; it costs `penalty` of the score. */
+  overdose: { dilution: number; maxPercent: number; penalty: number };
   stages: Stage[];
   strengthBase: number;
   strengthPivot: number;

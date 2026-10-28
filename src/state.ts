@@ -1,4 +1,6 @@
 import { recognizeAccords } from './game/accords';
+import { entriesOf, written, type Dilutions, type Entry } from './game/blend';
+import { rankById, type Rank } from './game/ranks';
 import { content, materialsById } from './game/content';
 import { gameNow, newClock } from './game/clock';
 import { newCustomerState } from './game/customers';
@@ -12,7 +14,7 @@ import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'exam' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -24,7 +26,7 @@ export interface UiState {
   newAccords: string[];
   /** The customer whose panel is open. */
   visitId: string | null;
-  /** The customer you're composing for at the organ. */
+  /** The customer you're composing for at the organ (or "exam" for a rank exam's accord). */
   orderId: string | null;
   /** Which tab of the back room is showing. */
   backroomTab: 'letters' | 'map' | 'harvests' | 'supplier' | 'stock';
@@ -34,6 +36,8 @@ export interface UiState {
   pickSpot: string | null;
   /** Which page of the character creator is showing (a slot id). */
   creatorTab: string;
+  /** Parts added per tap at the organ (1 at 10 parts; 1, 5 or 10 at 100 parts). */
+  step: number;
   /** Which tab of the formula book is showing, and which compendium page is open. */
   bookTab: 'pages' | 'compendium' | 'accords' | 'formulas' | 'reviews';
   compendiumId: string | null;
@@ -59,6 +63,11 @@ function initSave(): SaveData {
   save.story ??= newStoryState();
   save.routes ??= newRoutesState();
   save.learning ??= newLearningState();
+  save.rank ??= 'apprentice';
+  save.exam ??= null;
+  save.bases ??= [];
+  save.styleHistory ??= [];
+  save.draftDilutions ??= {};
   save.upgrades ??= newUpgradeState();
   save.display ??= newDisplayState();
   save.news ??= {};
@@ -70,7 +79,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
 };
 
 let render = () => {};
@@ -84,13 +93,26 @@ export function commit(): void {
   render();
 }
 
-/** Replaces the organ's formula and records any accord hit for the first time. */
-export function setDraft(formula: Formula): void {
+/** Your rank (apprentice until you pass an exam). */
+export function currentRank(): Rank {
+  return rankById(state.save.rank);
+}
+
+/** The formula on the organ, expanded: materials at their dilutions, bases opened up. */
+export function draftBlend(): Entry[] {
+  return entriesOf({ parts: state.save.draft, dilutions: state.save.draftDilutions }, state.save.bases);
+}
+
+/** Replaces the organ's formula (and optionally its dilutions) and records any accord hit for the first time. */
+export function setDraft(formula: Formula, dilutions?: Dilutions): void {
   state.save.draft = formula;
+  if (dilutions) state.save.draftDilutions = { ...dilutions };
+  for (const id of Object.keys(state.save.draftDilutions ?? {})) if (!(id in formula)) delete state.save.draftDilutions![id];
   const now = Date.now();
-  for (const accord of recognizeAccords(formula, content.accords, materialsById)) {
+  const asWritten = written(draftBlend());
+  for (const accord of recognizeAccords(asWritten, content.accords, materialsById)) {
     if (state.save.discoveredAccords[accord.id]) continue;
-    state.save.discoveredAccords[accord.id] = { at: now, formula: { ...formula } };
+    state.save.discoveredAccords[accord.id] = { at: now, formula: { ...asWritten } };
     state.ui.newAccords.push(accord.id);
   }
   commit();

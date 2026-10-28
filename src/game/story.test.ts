@@ -6,7 +6,7 @@ import { newSourcingState, stockOf } from './sourcing';
 import { afterReview, meet, newStoryState, pageFormula, story, storyTick, validateStory } from './story';
 
 const result = (stars: number): ScoreResult => ({
-  stages: [], strengthRatio: 1, strengthScore: 1, longevityHours: 8, targetLongevityHours: 8, longevityScore: 1, total: 0.8, stars, impression: 0.8, weakStage: null,
+  stages: [], strengthRatio: 1, strengthScore: 1, longevityHours: 8, targetLongevityHours: 8, longevityScore: 1, total: 0.8, stars, impression: 0.8, weakStage: null, harsh: [],
   directions: [{ kind: 'family', family: 'gourmand', stage: 'drydown', want: 'less', size: 0.2 }],
 });
 

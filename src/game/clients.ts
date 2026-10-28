@@ -4,9 +4,10 @@ import type { Formula } from './types';
 
 // Customers, their memory briefs and hidden targets. See src/data/README.md.
 
-/** The hidden target: a reference formula (in wearable parts) the customer has in mind. */
+/** The hidden target: a reference formula (in wearable parts) the customer has in mind, with any dilutions. */
 export interface Target {
   formula: Formula;
+  dilutions?: Record<string, 100 | 10 | 1>;
 }
 
 export interface Brief {
@@ -17,6 +18,8 @@ export interface Brief {
   pay: number;
   /** For story requests: the page of her formula book this recreates. */
   page?: string;
+  /** Most the customer will pay for materials: euros per 100 g of concentrate (needs the Perfumer rank). */
+  budget?: number;
 }
 
 export interface Regular {
@@ -27,6 +30,8 @@ export interface Regular {
   greeting: string;
   remember: { minStars: number; text: string }[];
   briefs: Brief[];
+  /** Only comes in when the shop's style leans this way: these families add up to at least `min`. */
+  comesWhen?: { families: string[]; min: number };
 }
 
 export interface Band {
@@ -52,6 +57,7 @@ export interface FeedbackLines {
   vague: string;
   specific: string[];
   strength: { more: string; less: string };
+  harsh: { less: string };
   longevity: { more: string; less: string };
   perfect: string;
   lastTime: string;
@@ -69,6 +75,7 @@ export interface ClientsData {
     maxRegularsInShop: number;
   };
   scoring: ScoringConfig;
+  style: { historySize: number; weight: number };
   /** Reputation for 1, 2 and 3 stars; 3 stars also pays a bonus share of the brief's pay. */
   economy: { reputationForStars: number[]; threeStarBonus: number };
   lines: {

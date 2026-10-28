@@ -1,4 +1,5 @@
-import { canAnswer, clients, findBrief, type Brief, type ClientsData } from './clients';
+import { canAnswer, clients, findBrief, type Brief, type ClientsData, type Regular } from './clients';
+import type { Entry } from './blend';
 import type { ScoreResult } from './scoring';
 import { gameHoursToMs, realMinutesToMs } from './time';
 import type { Formula } from './types';
@@ -21,7 +22,8 @@ export interface Visit {
   hintsAsked: number;
   status: VisitStatus;
   arrivedAt: number;
-  perfume?: { name: string; parts: Formula; handedAt: number; paid: number; bonus?: number };
+  /** What you handed over: the formula as written, and (Phase D) the blend it expands to. */
+  perfume?: { name: string; parts: Formula; entries?: Entry[]; handedAt: number; paid: number; bonus?: number };
   /** From the shop's appeal when they arrived: better shops draw better-paying, more demanding customers. */
   payMultiplier?: number;
   strictness?: number;
@@ -58,23 +60,27 @@ export function newCustomerState(now: number): CustomerState {
 
 const inShop = (s: CustomerState) => s.visits.filter((v) => v.status !== 'away').length;
 
-function regularDue(s: CustomerState, now: number, owned: Set<string>, random: () => number, data: ClientsData) {
+function regularDue(s: CustomerState, now: number, owned: Set<string>, random: () => number, data: ClientsData, c: ArrivalConditions) {
   const regularsIn = s.visits.filter((v) => v.regularId && v.status !== 'away').length;
   if (regularsIn >= data.timing.maxRegularsInShop || random() >= data.timing.regularChance) return undefined;
   return data.regulars.find((r) => {
     if (s.visits.some((v) => v.regularId === r.id)) return false;
     const progress = s.regulars[r.id] ?? { nextBrief: 0, nextVisitAt: 0, history: [] };
     const brief = r.briefs[progress.nextBrief];
-    return brief !== undefined && canAnswer(brief, owned) && progress.nextVisitAt <= now;
+    return brief !== undefined && canAnswer(brief, owned) && (c.canTake?.(brief) ?? true) && (c.welcomes?.(r) ?? true) && progress.nextVisitAt <= now;
   });
 }
 
-function pickWalkInBrief(s: CustomerState, owned: Set<string>, random: () => number, data: ClientsData): Brief | undefined {
-  const open = data.briefs.filter((b) => canAnswer(b, owned));
+function pickWalkInBrief(s: CustomerState, owned: Set<string>, random: () => number, data: ClientsData, c: ArrivalConditions): Brief | undefined {
+  const open = data.briefs.filter((b) => canAnswer(b, owned) && (c.canTake?.(b) ?? true));
   if (open.length === 0) return undefined;
   const fresh = open.filter((b) => !s.visits.some((v) => v.briefId === b.id));
   const pool = fresh.length > 0 ? fresh : open;
-  return pool[Math.floor(random() * pool.length)];
+  // The shop's style tips the odds towards briefs like what you've been making.
+  const weights = pool.map((b) => c.weightOf?.(b) ?? 1);
+  let pick = random() * weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < pool.length; i++) if ((pick -= weights[i]) < 0) return pool[i];
+  return pool[pool.length - 1];
 }
 
 /**
@@ -86,6 +92,12 @@ export interface ArrivalConditions {
   arrivalMultiplier: number;
   payMultiplier: number;
   strictness: number;
+  /** Briefs your rank lets you take (dilutions, budgets); all by default. */
+  canTake?: (b: Brief) => boolean;
+  /** How strongly each brief is drawn by the shop's style (1 = no pull); 1 by default. */
+  weightOf?: (b: Brief) => number;
+  /** Whether a regular comes in at all (some only visit a shop that leans their way). */
+  welcomes?: (r: Regular) => boolean;
 }
 
 const NORMAL: ArrivalConditions = { arrivalMultiplier: 1, payMultiplier: 1, strictness: 0 };
@@ -113,14 +125,14 @@ export function tick(
       s.nextArrivalAt = now + interval;
       break;
     }
-    const regular = regularDue(s, now, owned, random, data);
+    const regular = regularDue(s, now, owned, random, data, conditions);
     const id = `v${s.nextArrivalAt.toString(36)}${Math.floor(random() * 1e6).toString(36)}`;
     if (regular) {
       const progress = s.regulars[regular.id] ?? { nextBrief: 0, nextVisitAt: 0, history: [] };
       s.regulars[regular.id] = progress;
       s.visits.push({ id, regularId: regular.id, name: regular.name, lookSeed: 0, briefId: regular.briefs[progress.nextBrief].id, hintsAsked: 0, status: 'waiting', arrivedAt: s.nextArrivalAt, ...extra });
     } else {
-      const brief = pickWalkInBrief(s, owned, random, data);
+      const brief = pickWalkInBrief(s, owned, random, data, conditions);
       if (!brief) {
         s.nextArrivalAt = now + interval;
         break;
@@ -135,7 +147,7 @@ export function tick(
 }
 
 /** Gives a waiting customer their perfume: they pay now and come back later with a review. */
-export function handOver(s: CustomerState, visitId: string, perfume: { name: string; parts: Formula }, result: ScoreResult, now: number, data: ClientsData = clients): number {
+export function handOver(s: CustomerState, visitId: string, perfume: { name: string; parts: Formula; entries?: Entry[] }, result: ScoreResult, now: number, data: ClientsData = clients): number {
   const v = s.visits.find((x) => x.id === visitId);
   const brief = v && findBrief(v.briefId, data);
   if (!v || !brief || v.status !== 'waiting') return 0;

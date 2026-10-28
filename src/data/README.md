@@ -53,6 +53,8 @@ An accord is recognized when the formula meets every one of its `requires` condi
 | `id`, `name`, `description` | string | |
 | `course.mission` | string \| null | Course mission that teaches it |
 | `verified`, `check` | | See above. The structure (which materials) is the fact; the percentages are tuning. |
+| `lesson` | string | Her lesson on the accord, shown in the book |
+| `example` | object | An example to try at the organ: `parts`, and `dilutions` for materials that must be diluted (to stay within safety limits) |
 | `requires` | condition[] | All must hold |
 
 A condition selects exactly one of `materials` (list of material ids, any of which count), `family` (family id) or `layer`. It then bounds their combined share of the formula's total parts, in percent, with `min` and/or `max`.
@@ -71,7 +73,9 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 
 | Field | Meaning |
 | ----- | ------- |
-| `wearableParts` | Parts a wearable perfume must total, exactly (10 at first; 100 and 1000 come with later ranks). Hand-over and bottling need it; every brief's target uses it. |
+| `wearableParts` | Parts every brief's target totals (10). What your own perfumes may total comes from your rank (`ranks.json`). |
+| `wearableConcentration` | Percent of concentrate in a finished, wearable perfume (the rest is alcohol): 10, from the course. Safety limits are checked against the finished perfume. |
+| `overdose` | Materials usually worked at `dilution`% (1, the very strong ones) smell harsh above `maxPercent` of a formula, which costs `penalty` of the score and draws a "harsh" remark. Dilute them. |
 | `stages` | The moments a perfume is judged: `id`, `name`, `hours` after application, `label`. Increasing hours. They mirror the course's blotter checks at 5 minutes, 1 hour and later. |
 | `strengthBase`, `strengthPivot` | How strength turns into impact. With 2 and 5, strength 5 is ×1 and each step up doubles it. |
 | `loudness` | Labels for how loud a stage is relative to the opening, highest `min` first |
@@ -171,7 +175,8 @@ A brief:
 | `id` | Stable id |
 | `memory` | What the customer asks for, as a memory |
 | `hints` | Revealed one at a time when you ask about it |
-| `target` | Hidden: `formula`, a reference formula in whole parts totalling `wearableParts`. The customer judges your perfume by how close it smells to this one at each stage, how strong it is and how long it lasts. They only bring it in once you have every material in it. |
+| `target` | Hidden: `formula`, a reference formula in whole parts totalling `wearableParts`, and `dilutions` (material → 10 or 1) for any it uses diluted. The customer judges your perfume by how close it smells to this one at each stage, how strong it is and how long it lasts. They only bring it in once you have every material in it, and (if it uses dilutions) once your rank lets you dilute. A test checks every target is within safety limits and not harsh. |
+| `budget` | Optional: most they'll pay for materials, in euros per 100 g of concentrate. A perfume over budget can't be handed over. Budget briefs come once you're a Perfumer. |
 | `pay` | Coins paid on hand-over (times the shop's pay multiplier) |
 | `page` | Story requests only: the page of her book it recreates |
 
@@ -188,7 +193,9 @@ A brief:
 | `perfect` | When there's nothing to change |
 | `lastTime` | Introduces what a customer said last time, when they come back |
 
-A regular: `id`, `name`, `about`, a fixed `look` (same shape as the player's saved look), a `greeting`, `remember` lines (highest `minStars` first; `{perfume}` and `{stage}` fill in from their last review) and their own `briefs`, which they bring in order.
+A regular: `id`, `name`, `about`, a fixed `look` (same shape as the player's saved look), a `greeting`, `remember` lines (highest `minStars` first; `{perfume}` and `{stage}` fill in from their last review) and their own `briefs`, which they bring in order. `comesWhen` (optional): they only come to a shop whose style has these `families` adding up to at least `min` (Céleste for florals, Gaspard for woods and smoke).
+
+`style`: the shop's style is the average family profile (about an hour in) of the last `historySize` perfumes handed over; each walk-in brief's chance is multiplied by 1 + `weight` × how much its own target overlaps that style (`src/game/style.ts`).
 
 ## `time.json`
 
@@ -334,3 +341,17 @@ Nose training and the compendium (`src/game/learning.ts`).
 | `reveal` | When parts of a compendium page fill in: `behaviour` (how it behaves in a blend, and its origin), `reference` (tenacity, dilution, era) and `safety` (IFRA limit and cost), each after `uses` perfumes or that much `mastery` |
 
 Training days are real calendar days, so the streak means coming back each day. Uses count perfumes handed over, bottled or saved.
+
+## `ranks.json`
+
+Ranks and their exams (`src/game/ranks.ts`), in order. You start as the first.
+
+| Field | Meaning |
+| ----- | ------- |
+| `id`, `name`, `about` | |
+| `wearableParts` | Totals your perfumes may have, exactly (10; then 10 or 100; 1000 comes later) |
+| `dilutions` | Whether you can use materials at 10% and 1% (and make dilutions in the stock room) |
+| `bases` | Whether you can save accords as bases and use them inside formulas |
+| `budgets` | Whether customers with budgets come to you |
+| `payMultiplier` | Customers pay this much more |
+| `exam` | To reach this rank: `reputation` and `mastered` (`count` materials at mastery `level`) to sit it; `identify` (`questions`, and how many right to `pass`) for blind identification; `accord`, a brief (as in `clients.json`) to build at the organ to three stars |

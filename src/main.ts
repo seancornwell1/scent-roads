@@ -3,13 +3,13 @@ import { recognizeAccords } from './game/accords';
 import { content, materialsById, validateContent } from './game/content';
 import { addParts, totalParts } from './game/formula';
 import { characterOptions, defaultCharacter, randomCharacter, type CharacterConfig } from './game/character';
-import { clients, findBrief } from './game/clients';
+import { clients } from './game/clients';
 import { completeReview, handOver, tick, type Visit } from './game/customers';
 import { afterReview, meet, pageById, pageFormula, storyTick } from './game/story';
 import { seededRandom } from './game/random';
 import { applyQuality, scorePerfume } from './game/scoring';
 import { setClockSpeed } from './game/clock';
-import { consume, contractStage, harvest, missingFor, order, qualityWord, signContract, sourcing, tickSourcing, unpack, type Crate } from './game/sourcing';
+import { DILUTION_BATCH_GRAMS, consume, contractStage, dilute, harvest, missingFor, order, qualityWord, signContract, sourcing, tickSourcing, unpack, type Crate } from './game/sourcing';
 import { listPerfume, removeListing, settleSales } from './game/display';
 import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
 import { parseSave, writeSave } from './game/save';
@@ -22,7 +22,7 @@ import { shop, validateShop } from './game/shop';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
-import { commit, nowGame, onChange, setDraft, state, type Screen } from './state';
+import { commit, currentRank, draftBlend, nowGame, onChange, setDraft, state, type Screen } from './state';
 import { backroomScreen } from './ui/backroom';
 import { newsScreen } from './ui/news';
 import { optionsScreen } from './ui/options';
@@ -31,11 +31,17 @@ import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, lookOf, reactionScreen, unlockScreen } from './ui/customer';
 import { chapterScreen } from './ui/chapter';
+import { examBlockers, examStage, nextRank, rankById, startExam } from './game/ranks';
+import { currentOrder } from './ui/organ';
+import { entriesOf, isBaseKey, written, type Dilution } from './game/blend';
+import { blockers, checkPerfume, sellable } from './game/checks';
+import { blendProfile, recordStyle } from './game/style';
 import { trainingScreen } from './ui/training';
 import { answerQuestion, dayNumber, recordUse, startToday } from './game/learning';
 import { introScreen } from './ui/intro';
 import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
+import { examScreen } from './ui/exam';
 
 const hudRoot = document.querySelector<HTMLDivElement>('#hud')!;
 const panelRoot = document.querySelector<HTMLDivElement>('#panel-root')!;
@@ -294,6 +300,8 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return chapterScreen();
     case 'training':
       return trainingScreen();
+    case 'exam':
+      return examScreen();
     case 'unlock':
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
     case 'backroom':
@@ -395,24 +403,33 @@ document.body.addEventListener('click', (event) => {
       break;
     case 'hand-over': {
       const c = save.customers!;
-      const visit = c.visits.find((v) => v.id === ui.orderId);
-      const brief = visit && findBrief(visit.briefId);
-      if (!visit || !brief) return;
-      if (totalParts(save.draft) !== content.model.wearableParts) {
-        ui.toast = `A perfume needs exactly ${content.model.wearableParts} parts.`;
+      const order = currentOrder();
+      if (!order) return;
+      const blend = draftBlend();
+      const check = checkPerfume(blend, currentRank().wearableParts, order.brief.budget);
+      if (!sellable(check)) {
+        ui.toast = blockers(check)[0];
         break;
       }
-      const missing = missingFor(save.sourcing!, save.draft);
+      if (order.exam) {
+        // The examiners judge it straight away, with their own materials.
+        save.exam!.accord = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
+        ui.orderId = null;
+        return openPanel('exam');
+      }
+      const visit = c.visits.find((v) => v.id === ui.orderId)!;
+      const missing = missingFor(save.sourcing!, blend);
       if (missing.length > 0) {
-        ui.toast = `Not enough ${missing.map((m) => materialsById.get(m)?.name ?? m).join(', ')}. Order or harvest more in the back room.`;
+        ui.toast = 'Not enough of every material in stock. Order, harvest or dilute more in the back room.';
         break;
       }
-      const quality = consume(save.sourcing!, save.draft, nowGame())!;
-      const raw = scorePerfume(save.draft, brief.target, materialsById, content.model, clients.scoring);
+      const quality = consume(save.sourcing!, blend, nowGame())!;
+      const raw = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
       const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring, visit.strictness ?? 0);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
-      handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: { ...save.draft } }, result, Date.now());
-      recordUse(save.learning!, save.draft);
+      handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: written(blend), entries: blend }, result, Date.now());
+      recordUse(save.learning!, written(blend));
+      recordStyle(save.styleHistory!, blendProfile(blend, materialsById, content.model));
       ui.orderId = null;
       ui.visitId = visit.id;
       sounds.play('pouring');
@@ -455,6 +472,44 @@ document.body.addEventListener('click', (event) => {
       sounds.play(right ? 'glass' : 'paper');
       break;
     }
+    case 'start-exam': {
+      const next = nextRank(save.rank);
+      if (!next) return;
+      const owned = content.materials.filter((m) => ownedMaterials(save).has(m.id));
+      const why = examBlockers(next, save.customers!.reputation, save.learning!, owned);
+      if (why.length) {
+        ui.toast = why[0];
+        break;
+      }
+      save.exam = startExam(next, owned, content.families, Math.random);
+      return openPanel('exam');
+    }
+    case 'exam-answer': {
+      const e = save.exam;
+      const index = Number(target.dataset.index);
+      if (!e || e.answers[index] !== null) return;
+      e.answers[index] = Number(target.dataset.value);
+      sounds.play('paper');
+      break;
+    }
+    case 'exam-compose':
+      ui.orderId = 'exam';
+      ui.organTab = 'materials';
+      return openPanel('organ');
+    case 'exam-retry-accord':
+      if (save.exam) delete save.exam.accord;
+      ui.orderId = 'exam';
+      ui.organTab = 'formula';
+      return openPanel('organ');
+    case 'exam-finish': {
+      const e = save.exam;
+      if (!e || examStage(e) !== 'passed') return;
+      save.rank = e.rank;
+      save.exam = null;
+      ui.screen = 'shop';
+      ui.toast = `You are now a ${rankById(e.rank).name.toLowerCase()}. Your new abilities are at the organ.`;
+      break;
+    }
     case 'train-next':
       ui.trainingFeedback = null;
       break;
@@ -470,7 +525,7 @@ document.body.addEventListener('click', (event) => {
       ui.screen = 'organ';
       ui.organTab = 'formula';
       scrollToTop = true;
-      return setDraft({ ...parts });
+      return setDraft({ ...parts }, {});
     }
     case 'backroom-tab':
       // Letters count as read once you've looked at them and moved on.
@@ -546,15 +601,17 @@ document.body.addEventListener('click', (event) => {
     case 'list': {
       const formula = save.formulas.find((f) => f.id === id);
       if (!formula) return;
-      if (totalParts(formula.parts) !== content.model.wearableParts) {
-        ui.toast = `Only a formula of exactly ${content.model.wearableParts} parts can be bottled.`;
+      const blend = entriesOf(formula, save.bases);
+      const check = checkPerfume(blend, currentRank().wearableParts);
+      if (!sellable(check)) {
+        ui.toast = `It can't be bottled: ${blockers(check)[0]}`;
         break;
       }
-      const why = listPerfume(save.display!, save.sourcing!, formula, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
+      const why = listPerfume(save.display!, save.sourcing!, { name: formula.name, entries: blend }, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
       ui.toast = why ?? `“${formula.name}” is on display.`;
       if (!why) {
         sounds.play('pouring');
-        recordUse(save.learning!, formula.parts);
+        recordUse(save.learning!, written(blend));
       }
       break;
     }
@@ -616,15 +673,60 @@ document.body.addEventListener('click', (event) => {
       ui.browseBy = target.dataset.by as typeof ui.browseBy;
       break;
     case 'add':
-    case 'inc':
-      if (totalParts(save.draft) >= content.model.wearableParts) {
-        ui.toast = `That's ${content.model.wearableParts} parts, a full formula. Take a part out to add another.`;
+    case 'inc': {
+      const max = Math.max(...currentRank().wearableParts);
+      const step = max > 10 ? ui.step : 1;
+      if (totalParts(save.draft) + step > max) {
+        ui.toast = `That would be over ${max} parts, a full formula. Take some out to add more.`;
         break;
       }
       sounds.play('glass');
-      return setDraft(addParts(save.draft, id!, 1));
+      return setDraft(addParts(save.draft, id!, step));
+    }
     case 'dec':
-      return setDraft(addParts(save.draft, id!, -1));
+      return setDraft(addParts(save.draft, id!, -(Math.max(...currentRank().wearableParts) > 10 ? ui.step : 1)));
+    case 'step':
+      ui.step = Number(target.dataset.step);
+      break;
+    case 'set-dilution': {
+      const dilution = Number(target.dataset.value) as Dilution;
+      const next = { ...save.draftDilutions };
+      if (dilution === 100) delete next[id!];
+      else next[id!] = dilution;
+      return setDraft(save.draft, next);
+    }
+    case 'scale-up':
+      return setDraft(Object.fromEntries(Object.entries(save.draft).map(([k, v]) => [k, v * 10])));
+    case 'dilute': {
+      const why = dilute(save.sourcing!, id!, Number(target.dataset.value) as 10 | 1, nowGame());
+      ui.toast = why ?? `Made ${DILUTION_BATCH_GRAMS} g of ${materialsById.get(id!)?.name} at ${target.dataset.value}%.`;
+      break;
+    }
+    case 'load-example': {
+      const accord = content.accords.find((a) => a.id === id);
+      if (!accord) return;
+      ui.screen = 'organ';
+      ui.organTab = 'formula';
+      scrollToTop = true;
+      return setDraft({ ...accord.example.parts }, accord.example.dilutions ?? {});
+    }
+    case 'save-base': {
+      if (totalParts(save.draft) === 0) return;
+      if (Object.keys(save.draft).some(isBaseKey)) {
+        ui.toast = 'A base can only hold materials, not other bases.';
+        break;
+      }
+      const input = document.querySelector<HTMLInputElement>('#save-name');
+      const name = input?.value.trim() || `Base ${save.bases!.length + 1}`;
+      save.bases!.push({ id: `b${Date.now()}`, name, parts: { ...save.draft }, dilutions: { ...save.draftDilutions }, createdAt: Date.now() });
+      ui.toast = `Saved “${name}” as a base: find it under My bases at the top of Materials.`;
+      break;
+    }
+    case 'delete-base': {
+      const base = save.bases!.find((b) => b.id === id);
+      if (base && confirm(`Delete the base "${base.name}"? Formulas that use it will lose it.`)) save.bases = save.bases!.filter((b) => b.id !== id);
+      break;
+    }
     case 'detail':
       ui.detail = id!;
       break;
@@ -642,12 +744,13 @@ document.body.addEventListener('click', (event) => {
       const input = document.querySelector<HTMLInputElement>('#save-name');
       const name = input?.value.trim() || `Formula ${save.formulas.length + 1}`;
       const now = Date.now();
-      recordUse(save.learning!, save.draft);
+      recordUse(save.learning!, written(draftBlend()));
       save.formulas.push({
         id: `f${now}`,
         name,
         parts: { ...save.draft },
-        accords: recognizeAccords(save.draft, content.accords, materialsById).map((a) => a.id),
+        dilutions: { ...save.draftDilutions },
+        accords: recognizeAccords(written(draftBlend()), content.accords, materialsById).map((a) => a.id),
         createdAt: now,
       });
       return openPanel('book');
@@ -658,7 +761,7 @@ document.body.addEventListener('click', (event) => {
       ui.screen = 'organ';
       ui.organTab = 'formula';
       scrollToTop = true;
-      return setDraft({ ...formula.parts });
+      return setDraft({ ...formula.parts }, formula.dilutions ?? {});
     }
     case 'delete-formula': {
       const formula = save.formulas.find((f) => f.id === id);

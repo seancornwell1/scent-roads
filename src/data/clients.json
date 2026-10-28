@@ -36,6 +36,10 @@
     "longevityFadeAt": 0.2,
     "longevityMaxHours": 48
   },
+  "style": {
+    "historySize": 8,
+    "weight": 3
+  },
   "economy": {
     "reputationForStars": [
       0,
@@ -182,7 +186,10 @@
         "less": "It clung on far longer than I wanted."
       },
       "perfect": "I wouldn't change a thing.",
-      "lastTime": "Last time, you said:"
+      "lastTime": "Last time, you said:",
+      "harsh": {
+        "less": "Something in it is far too strong: it smells harsh, almost chemical."
+      }
     }
   },
   "walkInNames": [
@@ -344,6 +351,10 @@
           "cis-3-hexenol": 1,
           "gamma-octalactone": 4,
           "cedarwood-virginia": 3
+        },
+        "dilutions": {
+          "stemone": 10,
+          "cis-3-hexenol": 10
         }
       },
       "pay": 45
@@ -394,6 +405,10 @@
           "patchouli": 1,
           "stemone": 1,
           "iso-e-super": 2
+        },
+        "dilutions": {
+          "oakmoss": 1,
+          "stemone": 10
         }
       },
       "pay": 55
@@ -411,6 +426,9 @@
           "hedione": 1,
           "oakmoss": 1,
           "labdanum": 2
+        },
+        "dilutions": {
+          "oakmoss": 10
         }
       },
       "pay": 55
@@ -429,6 +447,10 @@
           "oakmoss": 1,
           "cedarwood-virginia": 1,
           "bergamot": 2
+        },
+        "dilutions": {
+          "coumarin": 10,
+          "oakmoss": 10
         }
       },
       "pay": 60
@@ -447,9 +469,13 @@
           "black-tea": 3,
           "labdanum": 2,
           "cedarwood-virginia": 1
+        },
+        "dilutions": {
+          "beta-damascone": 1
         }
       },
-      "pay": 65
+      "pay": 65,
+      "budget": 82
     },
     {
       "id": "clean-sheets",
@@ -463,6 +489,9 @@
           "ethylene-brassylate": 6,
           "aldehyde-c11": 1,
           "hedione": 3
+        },
+        "dilutions": {
+          "aldehyde-c11": 10
         }
       },
       "pay": 70
@@ -497,6 +526,9 @@
           "bergamot": 3,
           "rosemary": 2,
           "lavender": 2
+        },
+        "dilutions": {
+          "lemon": 10
         }
       },
       "pay": 30
@@ -532,6 +564,9 @@
           "clove": 1,
           "labdanum": 2,
           "bergamot": 1
+        },
+        "dilutions": {
+          "clove": 10
         }
       },
       "pay": 40
@@ -551,7 +586,8 @@
           "sweet-orange": 2
         }
       },
-      "pay": 40
+      "pay": 40,
+      "budget": 113
     },
     {
       "id": "winter-kitchen",
@@ -566,6 +602,9 @@
           "vanillin": 4,
           "mandarin": 2,
           "labdanum": 2
+        },
+        "dilutions": {
+          "clove": 10
         }
       },
       "pay": 40
@@ -603,7 +642,8 @@
           "sandalwood": 1
         }
       },
-      "pay": 45
+      "pay": 45,
+      "budget": 1567
     },
     {
       "id": "violet-sweets",
@@ -657,9 +697,14 @@
           "orris": 1,
           "sandalwood": 2,
           "vanillin": 1
+        },
+        "dilutions": {
+          "aldehyde-c12-lauric": 10,
+          "aldehyde-c11": 10
         }
       },
-      "pay": 55
+      "pay": 55,
+      "budget": 976
     },
     {
       "id": "peach-wall",
@@ -675,6 +720,9 @@
           "oakmoss": 2,
           "labdanum": 2,
           "jasmine": 1
+        },
+        "dilutions": {
+          "oakmoss": 1
         }
       },
       "pay": 55
@@ -835,6 +883,9 @@
               "cedarwood-virginia": 6,
               "cis-3-hexenol": 2,
               "bergamot": 2
+            },
+            "dilutions": {
+              "cis-3-hexenol": 10
             }
           },
           "pay": 50
@@ -852,6 +903,9 @@
               "patchouli": 2,
               "gamma-decalactone": 3,
               "cedarwood-virginia": 2
+            },
+            "dilutions": {
+              "oakmoss": 1
             }
           },
           "pay": 60
@@ -925,6 +979,10 @@
               "stemone": 2,
               "gamma-octalactone": 3,
               "bergamot": 2
+            },
+            "dilutions": {
+              "cis-3-hexenol": 10,
+              "stemone": 10
             }
           },
           "pay": 50
@@ -941,9 +999,225 @@
               "oakmoss": 4,
               "patchouli": 3,
               "phenylethyl-alcohol": 3
+            },
+            "dilutions": {
+              "oakmoss": 1
             }
           },
           "pay": 60
+        }
+      ]
+    },
+    {
+      "id": "celeste",
+      "name": "Céleste",
+      "about": "A wedding planner. She only comes to shops that know their flowers.",
+      "look": {
+        "fit": "slim",
+        "parts": {
+          "head": "head_sunny",
+          "hair": "hair_long",
+          "top": "top_robe",
+          "bottom": "bottom_skirt",
+          "shoes": "shoes_curly",
+          "handL": "handL_flower"
+        },
+        "colors": {
+          "skin": "#F3C9A8",
+          "hair": "#3B2A24",
+          "eyes": "#5B7A4A",
+          "top": "#F2E6F0",
+          "bottom": "#B6A4E0"
+        }
+      },
+      "greeting": "Your shop smells of flowers from the door. I have brides who'd love it.",
+      "remember": [
+        {
+          "minStars": 3,
+          "text": "My bride wore {perfume} all day. She cried when she smelled it."
+        },
+        {
+          "minStars": 2,
+          "text": "{perfume} was pretty, but {stage} wasn't quite the bouquet."
+        },
+        {
+          "minStars": 0,
+          "text": "{perfume} didn't suit the wedding. Let's try another."
+        }
+      ],
+      "comesWhen": {
+        "families": [
+          "floral"
+        ],
+        "min": 0.3
+      },
+      "briefs": [
+        {
+          "id": "celeste-orangery",
+          "memory": "A spring wedding in an orangery.",
+          "hints": [
+            "Orange blossom everywhere, and the leaves too.",
+            "Something soft and sweet at the end, for the dancing."
+          ],
+          "target": {
+            "formula": {
+              "neroli": 2,
+              "orange-blossom": 2,
+              "petitgrain": 2,
+              "bergamot": 2,
+              "benzoin": 2
+            }
+          },
+          "pay": 50,
+          "budget": 238
+        },
+        {
+          "id": "celeste-rose-wedding",
+          "memory": "A June wedding in a rose garden.",
+          "hints": [
+            "Roses, both kinds, fresh and deep.",
+            "A creamy wood underneath, like the old benches."
+          ],
+          "target": {
+            "formula": {
+              "rose-damascena": 3,
+              "rose-centifolia": 2,
+              "geranium": 2,
+              "sandalwood": 2,
+              "bergamot": 1
+            }
+          },
+          "pay": 60
+        },
+        {
+          "id": "celeste-bouquet",
+          "memory": "The bridal bouquet: jasmine and tuberose.",
+          "hints": [
+            "Heady white flowers, almost too much.",
+            "Sweet and creamy, then a soft wood."
+          ],
+          "target": {
+            "formula": {
+              "jasmine": 3,
+              "tuberose": 1,
+              "orange-blossom": 2,
+              "ylang-ylang": 2,
+              "sandalwood": 2
+            },
+            "dilutions": {
+              "tuberose": 10
+            }
+          },
+          "pay": 70,
+          "budget": 364
+        }
+      ]
+    },
+    {
+      "id": "gaspard",
+      "name": "Gaspard",
+      "about": "A cabinetmaker. He likes shops that smell of wood and smoke.",
+      "look": {
+        "fit": "chubby",
+        "parts": {
+          "head": "head_scamp",
+          "hair": "hair_tousled",
+          "face": "face_beard",
+          "top": "top_tunic",
+          "bottom": "bottom_cargo",
+          "shoes": "shoes_boots"
+        },
+        "colors": {
+          "skin": "#C68A63",
+          "hair": "#6B4A33",
+          "eyes": "#3B2A24",
+          "top": "#8C5A3C",
+          "bottom": "#4B4B55"
+        }
+      },
+      "greeting": "Smells like a workshop in here. I mean that kindly.",
+      "remember": [
+        {
+          "minStars": 3,
+          "text": "I wear {perfume} to the workshop. The wood doesn't mind."
+        },
+        {
+          "minStars": 2,
+          "text": "{perfume} was good, but {stage} went soft on me."
+        },
+        {
+          "minStars": 0,
+          "text": "{perfume} wasn't me. Let's have another go."
+        }
+      ],
+      "comesWhen": {
+        "families": [
+          "woody",
+          "amber"
+        ],
+        "min": 0.4
+      },
+      "briefs": [
+        {
+          "id": "gaspard-stove",
+          "memory": "My workshop stove on a winter morning.",
+          "hints": [
+            "Cedar shavings in the fire.",
+            "A little smoke, and something warm and dark."
+          ],
+          "target": {
+            "formula": {
+              "cedarwood-virginia": 4,
+              "birch-tar": 1,
+              "labdanum": 3,
+              "vetiver": 2
+            },
+            "dilutions": {
+              "birch-tar": 10
+            }
+          },
+          "pay": 50
+        },
+        {
+          "id": "gaspard-apron",
+          "memory": "My father's leather apron.",
+          "hints": [
+            "Leather, of course, worn soft.",
+            "Sawdust and a herb from the garden."
+          ],
+          "target": {
+            "formula": {
+              "birch-tar": 1,
+              "isobutyl-quinoline": 1,
+              "labdanum": 3,
+              "sandalwood": 3,
+              "clary-sage": 2
+            },
+            "dilutions": {
+              "birch-tar": 10,
+              "isobutyl-quinoline": 10
+            }
+          },
+          "pay": 60,
+          "budget": 104
+        },
+        {
+          "id": "gaspard-bonfire",
+          "memory": "Burning leaves in the forest in autumn.",
+          "hints": [
+            "Smoke and wet wood.",
+            "Resin from the pines."
+          ],
+          "target": {
+            "formula": {
+              "guaiacwood": 3,
+              "vetiver": 3,
+              "cypress": 2,
+              "frankincense": 2
+            }
+          },
+          "pay": 70,
+          "budget": 21
         }
       ]
     }

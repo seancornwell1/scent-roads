@@ -460,6 +460,33 @@ How it was built (Oct 28, 2026):
   - A right answer raises that material's mastery (0–5) and spaces it out; a wrong one sends it back to the start.
   - Training days are real calendar days, with a streak for consecutive days.
 
+### Prompt 11: Direction change #2, Phase D
+
+```
+Next
+```
+
+Phase D from **Direction change #2**: ranks and exams, 100 parts, dilutions, safety limits, cost, saved accords, shop style shaping customers.
+
+How it was built (Oct 28, 2026):
+
+- **Ranks:** Apprentice (10 parts), Junior perfumer (10 or 100 parts, dilutions, saved bases), Perfumer (budget briefs, pay ×1.5) and Master (pay ×2; 1000 parts come in Phase F).
+  - Each exam needs some reputation and a number of materials mastered in nose training.
+  - Part one is blind identification: name the material from its description alone.
+  - Part two is building a classic accord (amber, then chypre, then fougère) at the organ to three stars, judged at once.
+  - Your rank and the next exam are under More.
+- **100 parts:** with Junior perfumer, a perfume totals exactly 10 or 100 parts. The organ adds 1, 5 or 10 parts a tap, and can scale a 10-part formula to 100. Customers judge proportions, so both work.
+- **Dilutions:** each material in a formula can be used at 100%, 10% or 1%. A diluted part counts as one part but smells, costs and counts for safety as a tenth or a hundredth of it.
+  - Dilutions are made in the stock room from neat stock: 10 g at 10% takes 1 g.
+  - Strong materials (those usually worked at 1%) smell harsh above 5% of a formula. Customers say so, and it costs stars.
+- **Safety limits:** each material's IFRA limit is checked against the finished perfume at 10% concentrate (the course's figure). A formula over a limit can't be handed over or bottled, and the organ explains why.
+  - Every brief target was checked to be safe. Where a target needs a material diluted (oakmoss, coumarin, the green and fruity powerhouses), that brief only comes once you can dilute.
+- **Cost:** the organ shows each formula's cost per 100 g of concentrate. Some later briefs set a budget, and a perfume over it can't be handed over.
+- **Accords as lessons:** the Book's Accords tab now teaches each classic accord with an example to try at the organ. Junior perfumers can save any formula as a base and add it as one ingredient to larger formulas.
+  - The accord descriptions no longer name real perfumes or houses.
+- **Shop style:** the families of the last eight perfumes you've handed over make the shop's style, shown in the Shop panel. Walk-in briefs like your style come more often.
+  - Two new regulars only come to a shop that leans their way: Céleste, a wedding planner, for florals; Gaspard, a cabinetmaker, for woods and smoke.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

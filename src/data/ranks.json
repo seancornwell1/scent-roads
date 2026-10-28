@@ -1,0 +1,147 @@
+{
+  "ranks": [
+    {
+      "id": "apprentice",
+      "name": "Apprentice",
+      "about": "You work in whole parts of ten, with materials as they come in the bottle.",
+      "wearableParts": [
+        10
+      ],
+      "dilutions": false,
+      "bases": false,
+      "budgets": false,
+      "payMultiplier": 1
+    },
+    {
+      "id": "junior",
+      "name": "Junior perfumer",
+      "about": "Formulas in 100 parts, materials diluted to 10% or 1%, and your own accords saved as bases.",
+      "wearableParts": [
+        10,
+        100
+      ],
+      "dilutions": true,
+      "bases": true,
+      "budgets": false,
+      "payMultiplier": 1.2,
+      "exam": {
+        "reputation": 6,
+        "mastered": {
+          "count": 4,
+          "level": 1
+        },
+        "identify": {
+          "questions": 5,
+          "pass": 4
+        },
+        "accord": {
+          "id": "exam-amber",
+          "memory": "The examiners ask for the classic amber accord: dark resin and vanilla, a touch of citrus on top.",
+          "hints": [
+            "Resin first, sweetness close behind.",
+            "Only a little citrus."
+          ],
+          "target": {
+            "formula": {
+              "labdanum": 5,
+              "vanillin": 4,
+              "bergamot": 1
+            }
+          },
+          "pay": 0
+        }
+      }
+    },
+    {
+      "id": "perfumer",
+      "name": "Perfumer",
+      "about": "Customers trust you with budgets, and pay better for your work.",
+      "wearableParts": [
+        10,
+        100
+      ],
+      "dilutions": true,
+      "bases": true,
+      "budgets": true,
+      "payMultiplier": 1.5,
+      "exam": {
+        "reputation": 24,
+        "mastered": {
+          "count": 10,
+          "level": 2
+        },
+        "identify": {
+          "questions": 6,
+          "pass": 5
+        },
+        "accord": {
+          "id": "exam-chypre",
+          "memory": "The examiners ask for a chypre: bergamot over labdanum, oakmoss and patchouli, with a little rose. Keep it within the safety limits.",
+          "hints": [
+            "Oakmoss is strictly limited: dilute it and use only a little.",
+            "Bright on top, dark and mossy underneath."
+          ],
+          "target": {
+            "formula": {
+              "bergamot": 4,
+              "labdanum": 2,
+              "oakmoss": 1,
+              "patchouli": 2,
+              "rose-damascena": 1
+            },
+            "dilutions": {
+              "oakmoss": 10
+            }
+          },
+          "pay": 0
+        }
+      }
+    },
+    {
+      "id": "master",
+      "name": "Master perfumer",
+      "about": "The town's perfumer, as she was. (Formulas in 1000 parts come later.)",
+      "wearableParts": [
+        10,
+        100
+      ],
+      "dilutions": true,
+      "bases": true,
+      "budgets": true,
+      "payMultiplier": 2,
+      "exam": {
+        "reputation": 45,
+        "mastered": {
+          "count": 20,
+          "level": 3
+        },
+        "identify": {
+          "questions": 8,
+          "pass": 7
+        },
+        "accord": {
+          "id": "exam-fougere",
+          "memory": "The examiners ask for a fougère: lavender over coumarin and oakmoss, bergamot on top, with geranium and a dry wood. Mind the limits.",
+          "hints": [
+            "Coumarin is powerful: a few parts at most.",
+            "Oakmoss diluted, and only a little."
+          ],
+          "target": {
+            "formula": {
+              "lavender": 4,
+              "coumarin": 1,
+              "oakmoss": 1,
+              "bergamot": 2,
+              "geranium": 1,
+              "cedarwood-virginia": 1
+            },
+            "dilutions": {
+              "oakmoss": 10
+            }
+          },
+          "pay": 0
+        }
+      }
+    }
+  ]
+}

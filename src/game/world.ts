@@ -1,4 +1,8 @@
-import { materialsById } from './content';
+import { entriesOf } from './blend';
+import type { Brief } from './clients';
+import { content, materialsById } from './content';
+import { rankById } from './ranks';
+import { blendProfile, briefWeight, regularWelcome, shopStyle } from './style';
 import { arrivalMultiplier, generateWeek, weekOf, type NewsItem } from './events';
 import type { SaveData } from './save';
 import { regions } from './sourcing';
@@ -37,12 +41,34 @@ export function shopAppeal(save: SaveData): { appeal: number; level: AppealLevel
   return { appeal, level: appealLevel(appeal) };
 }
 
-/** How customers arrive right now: the shop's appeal, plus any fair in the news. */
+/** A brief's own family profile, for matching it to the shop's style. */
+const leans = new Map<string, Record<string, number>>();
+export function briefLean(b: Brief): Record<string, number> {
+  let lean = leans.get(b.id);
+  if (!lean) {
+    lean = blendProfile(entriesOf({ parts: b.target.formula, dilutions: b.target.dilutions }), materialsById, content.model);
+    leans.set(b.id, lean);
+  }
+  return lean;
+}
+
+/** Whether your rank lets you take a brief: diluted materials and budgets come with rank. */
+export function rankAllows(save: SaveData, b: Brief): boolean {
+  const rank = rankById(save.rank);
+  const diluted = Object.values(b.target.dilutions ?? {}).some((d) => d < 100);
+  return (!diluted || rank.dilutions) && (b.budget === undefined || rank.budgets);
+}
+
+/** How customers arrive right now: the shop's appeal and style, your rank, and any fair in the news. */
 export function arrivalConditions(save: SaveData, gameHours: number) {
   const { level } = shopAppeal(save);
+  const style = shopStyle(save.styleHistory ?? []);
   return {
     arrivalMultiplier: level.arrivalMultiplier * arrivalMultiplier(newsFor(save, gameHours)),
-    payMultiplier: level.payMultiplier,
+    payMultiplier: level.payMultiplier * rankById(save.rank).payMultiplier,
     strictness: level.strictness,
+    canTake: (b: Brief) => rankAllows(save, b),
+    weightOf: (b: Brief) => briefWeight(briefLean(b), style),
+    welcomes: (r: Parameters<typeof regularWelcome>[0]) => regularWelcome(r, style),
   };
 }

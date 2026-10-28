@@ -1,9 +1,12 @@
 import { realMsUntil } from '../game/clock';
+import { entriesOf } from '../game/blend';
 import { bottlePrice } from '../game/display';
 import { shop } from '../game/shop';
 import { processes } from '../game/sourcing';
 import { displayCapacity, furniture, inStorage, itemById, nextAppealLevel, processLevel, processStats } from '../game/upgrades';
 import { shopAppeal } from '../game/world';
+import { shopStyle } from '../game/style';
+import { familiesById } from '../game/content';
 import { state } from '../state';
 import { esc } from './html';
 
@@ -47,6 +50,7 @@ export function upgradesScreen(): string {
     </header>
     <p class="small"><strong>Appeal ${appeal} · ${esc(level.name)}.</strong> Customers pay ×${level.payMultiplier}${level.strictness ? ' and expect a little more' : ''}.${next ? ` <span class="muted">${esc(next.name)} at ${next.min}.</span>` : ''}</p>
     <p class="muted small">${state.save.customers!.money} coins · reputation ${state.save.customers!.reputation}</p>
+    <p class="small">${styleLine()}</p>
     <nav class="tab-chips">${tabs}</nav>
     <main class="backroom">${body}</main>`;
 }
@@ -116,7 +120,7 @@ function displayTab(): string {
     .join('');
   const formulas = save.formulas
     .map((f) => {
-      const price = bottlePrice(f.parts, 1, level.payMultiplier);
+      const price = bottlePrice(entriesOf(f, save.bases), 1, level.payMultiplier);
       const buttons = furniture.display.bottleOptions
         .map((n) => `<button class="chip" data-action="list" data-id="${f.id}" data-bottles="${n}" ${d.listings.length >= capacity ? 'disabled' : ''}>Bottle ${n}</button>`)
         .join('');
@@ -152,3 +156,12 @@ function processingTab(): string {
   return `<p class="muted small">Buy new processing methods and upgrade the ones you have: each upgrade gives better quality, faster.</p><ul class="list cards">${rows}</ul>`;
 }
 
+/** What the shop is known for: the families of the perfumes you've handed over lately. */
+function styleLine(): string {
+  const style = Object.entries(shopStyle(state.save.styleHistory ?? []))
+    .sort((a, b) => b[1] - a[1])
+    .filter(([, v]) => v >= 0.1)
+    .slice(0, 3);
+  if (style.length === 0) return '<span class="muted">Your shop has no style yet: it grows from the perfumes you hand over.</span>';
+  return `<strong>Your shop leans</strong> ${esc(style.map(([f, v]) => `${familiesById.get(f)?.name.toLowerCase() ?? f} (${Math.round(v * 100)}%)`).join(', '))}. Customers who love that come more often, and some regulars only come to a shop like yours.`;
+}

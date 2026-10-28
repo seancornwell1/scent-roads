@@ -78,7 +78,7 @@ function shuffle<T>(items: T[], random: () => number): T[] {
   return out;
 }
 
-function makeQuestion(m: Material, kind: QuestionKind, owned: Material[], families: Family[], random: () => number): Question {
+export function makeQuestion(m: Material, kind: QuestionKind, owned: Material[], families: Family[], random: () => number): Question {
   let correct: string;
   let others: string[];
   if (kind === 'identify') {

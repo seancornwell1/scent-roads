@@ -20,7 +20,9 @@ import { unlocks } from '../game/unlocks';
 import { processStats } from '../game/upgrades';
 import { CHEMIST, chapterInfo, inTransit, routeById, routeOpen, unreadLetters, type Letter } from '../game/routes';
 import { newsFor, ownedMaterials } from '../game/world';
-import { nowGame, state } from '../state';
+import { DILUTIONS } from '../game/blend';
+import { DILUTION_BATCH_GRAMS } from '../game/sourcing';
+import { currentRank, nowGame, state } from '../state';
 import { esc } from './html';
 
 // The back room: crates that have arrived, letters from her supply network, the sourcing
@@ -289,13 +291,26 @@ function stockTab(now: number): string {
   const s = state.save.sourcing!;
   const materials = [...new Set(s.inventory.map((l) => l.material))].sort((a, b) => name(a).localeCompare(name(b)));
   if (materials.length === 0) return '<p class="muted">The shelves are bare. Unpack crates to fill them.</p>';
+  const canDilute = currentRank().dilutions;
+  const g = (x: number) => `${x >= 10 ? Math.round(x) : x.toFixed(1)} g`;
   const rows = materials
     .map((id) => {
       const ages = sourcing.aging[id] ? ' · improving with age' : '';
-      const grams = stockOf(s, id);
-      return `<li class="card"><div class="row-between"><strong>${esc(name(id))}</strong><span>${grams >= 10 ? Math.round(grams) : grams.toFixed(1)} g</span></div>
-        <p class="muted small">${qualityWord(stockQuality(s, id, now))} quality${ages}</p></li>`;
+      const lots = DILUTIONS.filter((d) => stockOf(s, id, d) > 0)
+        .map((d) => `${g(stockOf(s, id, d))} ${d === 100 ? 'neat' : `at ${d}%`} · ${qualityWord(stockQuality(s, id, now, d))} quality`)
+        .join('<br>');
+      const neat = stockOf(s, id, 100);
+      const dilute = canDilute
+        ? `<div class="chips">${([10, 1] as const)
+            .map((d) => `<button class="chip" data-action="dilute" data-id="${esc(id)}" data-value="${d}" ${neat + 1e-9 < (DILUTION_BATCH_GRAMS * d) / 100 ? 'disabled' : ''}>Make ${DILUTION_BATCH_GRAMS} g at ${d}%</button>`)
+            .join('')}</div>`
+        : '';
+      return `<li class="card"><div><strong>${esc(name(id))}</strong></div>
+        <p class="muted small">${lots}${ages}</p>${dilute}</li>`;
     })
     .join('');
-  return `<p class="muted small">Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula.</p><ul class="list cards">${rows}</ul>`;
+  const help = canDilute
+    ? `Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula. A dilution is made with odourless solvent: ${DILUTION_BATCH_GRAMS} g at 10% takes 1 g of the neat material, at 1% only a tenth of a gram.`
+    : `Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula. Junior perfumers can make dilutions here.`;
+  return `<p class="muted small">${help}</p><ul class="list cards">${rows}</ul>`;
 }

@@ -1,5 +1,11 @@
 {
   "wearableParts": 10,
+  "wearableConcentration": 10,
+  "overdose": {
+    "dilution": 1,
+    "maxPercent": 5,
+    "penalty": 0.15
+  },
   "stages": [
     {
       "id": "opening",

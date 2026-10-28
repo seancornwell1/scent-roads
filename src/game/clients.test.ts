@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { clients, findBrief, validateClients } from './clients';
 import { content, materialsById } from './content';
 import { feedbackLines } from './feedback';
+import { entriesOf, overdosed, safetyIssues } from './blend';
 import { applyQuality, scorePerfume } from './scoring';
 import { story } from './story';
 import { unlocks, unlockedMaterialIds, validateUnlocks, tierIndex, nextTier } from './unlocks';
@@ -10,7 +11,8 @@ import type { Formula } from './types';
 const materialIds = new Set(content.materials.map((m) => m.id));
 const families = new Set(content.families.map((f) => f.id));
 const storyMaterials = new Set(story.requests.flatMap((r) => (r.gives ?? []).map((g) => g.material)));
-const score = (formula: Formula, briefId: string) => scorePerfume(formula, findBrief(briefId)!.target, materialsById, content.model, clients.scoring);
+const score = (formula: Formula, briefId: string, dilutions?: Record<string, 100 | 10 | 1>) =>
+  scorePerfume(entriesOf({ parts: formula, dilutions }), findBrief(briefId)!.target, materialsById, content.model, clients.scoring);
 
 describe('unlocks', () => {
   it('unlock every material exactly once (or through the story), in increasing reputation', () => {
@@ -48,7 +50,7 @@ describe('clients data', () => {
 describe('scoring', () => {
   it('scores the hidden formula itself as a perfect match, with nothing to change', () => {
     for (const b of clients.briefs) {
-      const r = score(b.target.formula, b.id);
+      const r = score(b.target.formula, b.id, b.target.dilutions);
       expect(r.total).toBeCloseTo(1, 5);
       expect(r.stars).toBe(3);
       expect(r.directions).toEqual([]);
@@ -60,6 +62,19 @@ describe('scoring', () => {
     expect(score({ labdanum: 5, vanillin: 3, lavender: 2 }, 'henri-amber').stars).toBe(2);
   });
 
+  it('marks a strong material used neat as harsh, and diluting it fixes that', () => {
+    const neat = score({ 'beta-damascone': 1, 'gamma-decalactone': 3, 'black-tea': 3, labdanum: 2, 'cedarwood-virginia': 1 }, 'autumn-orchard');
+    expect(neat.harsh).toEqual(['beta-damascone']);
+    expect(feedbackLines(neat, 2)[0]).toBe(clients.lines.feedback.harsh.less);
+    const diluted = score({ 'beta-damascone': 1, 'gamma-decalactone': 3, 'black-tea': 3, labdanum: 2, 'cedarwood-virginia': 1 }, 'autumn-orchard', { 'beta-damascone': 1 });
+    expect(diluted.harsh).toEqual([]);
+    expect(diluted.stars).toBe(3);
+  });
+
+  it('judges proportions, so 100 parts score like 10', () => {
+    expect(score({ bergamot: 60, lavender: 30, labdanum: 10 }, 'agathe-wedding').total).toBeCloseTo(1, 5);
+  });
+
   it('gives 1 star to something nothing like it', () => {
     expect(score({ labdanum: 5, vanillin: 5 }, 'sicilian-balcony').stars).toBe(1);
   });
@@ -68,6 +83,30 @@ describe('scoring', () => {
     const r = score({ labdanum: 4, vanillin: 4, bergamot: 2 }, 'library-fire');
     expect(applyQuality(r, 1.25, 0.25, clients.scoring).total).toBeGreaterThan(r.total);
     expect(applyQuality(r, 0.6, 0.25, clients.scoring).total).toBeLessThan(r.total);
+  });
+});
+
+describe('targets', () => {
+  it('are all sellable: within every safety limit, with no strong material used too strong', async () => {
+    const { story } = await import('./story');
+    const { ranks } = await import('./ranks');
+    const all = [
+      ...clients.briefs,
+      ...clients.regulars.flatMap((r) => r.briefs),
+      ...story.requests.map((r) => r.brief),
+      ...ranks.flatMap((r) => (r.exam ? [r.exam.accord] : [])),
+    ];
+    for (const b of all) {
+      const blend = entriesOf({ parts: b.target.formula, dilutions: b.target.dilutions });
+      expect({ id: b.id, safety: safetyIssues(blend, materialsById, content.model), harsh: overdosed(blend, materialsById, content.model) }).toEqual({ id: b.id, safety: [], harsh: [] });
+    }
+  });
+
+  it('with a budget, cost less than it', async () => {
+    const { blendCost } = await import('./blend');
+    for (const b of [...clients.briefs, ...clients.regulars.flatMap((r) => r.briefs)].filter((x) => x.budget !== undefined)) {
+      expect(blendCost(entriesOf({ parts: b.target.formula, dilutions: b.target.dilutions }), materialsById)).toBeLessThan(b.budget!);
+    }
   });
 });
 

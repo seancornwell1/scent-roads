@@ -1,8 +1,8 @@
 import processesJson from '../data/processes.json';
 import regionsJson from '../data/regions.json';
 import sourcingJson from '../data/sourcing.json';
+import { needs, type Dilution, type Entry } from './blend';
 import { dateAt } from './clock';
-import type { Formula } from './types';
 
 // The idle side: harvest contracts that ripen on game time, processing, shipping,
 // crates in the back room, and an inventory whose resins and roots improve with age.
@@ -82,6 +82,8 @@ export interface Lot extends Item {
   id: string;
   /** When it went into stock, for aging. */
   since: number;
+  /** Strength in the bottle: 100 (neat, the default), 10 or 1 percent. */
+  dilution?: Dilution;
 }
 
 export interface Contract {
@@ -315,47 +317,65 @@ export function lotQuality(lot: Lot, now: number, data: SourcingData = sourcing)
   return lot.quality + Math.min(aging.max, aging.perGameDay * days);
 }
 
-export function stockOf(s: SourcingState, material: string): number {
-  return s.inventory.filter((l) => l.material === material).reduce((sum, l) => sum + l.grams, 0);
+export function stockOf(s: SourcingState, material: string, dilution: Dilution = 100): number {
+  return s.inventory.filter((l) => l.material === material && (l.dilution ?? 100) === dilution).reduce((sum, l) => sum + l.grams, 0);
 }
 
-/** Average quality of a material in stock, weighted by grams (0 if none). */
-export function stockQuality(s: SourcingState, material: string, now: number): number {
-  const lots = s.inventory.filter((l) => l.material === material);
+/** Average quality of a material in stock (at a dilution), weighted by grams (0 if none). */
+export function stockQuality(s: SourcingState, material: string, now: number, dilution: Dilution = 100): number {
+  const lots = s.inventory.filter((l) => l.material === material && (l.dilution ?? 100) === dilution);
   const grams = lots.reduce((sum, l) => sum + l.grams, 0);
   return grams > 0 ? lots.reduce((sum, l) => sum + l.grams * lotQuality(l, now), 0) / grams : 0;
 }
 
-/** Grams of each material a perfume of this formula needs. */
-export function gramsNeeded(formula: Formula, data: SourcingData = sourcing): Record<string, number> {
-  const total = Object.values(formula).reduce((a, b) => a + b, 0);
-  return Object.fromEntries(Object.entries(formula).map(([m, parts]) => [m, total > 0 ? (parts / total) * data.perfumeGrams : 0]));
+/** What a perfume of this blend needs that isn't in stock, as entries (grams at a dilution). */
+export function missingFor(s: SourcingState, blend: Entry[], data: SourcingData = sourcing): Entry[] {
+  return needs(blend, data.perfumeGrams).filter((e) => stockOf(s, e.material, e.dilution) + 1e-9 < e.parts);
 }
 
-export function missingFor(s: SourcingState, formula: Formula, data: SourcingData = sourcing): string[] {
-  return Object.entries(gramsNeeded(formula, data))
-    .filter(([m, g]) => stockOf(s, m) + 1e-9 < g)
-    .map(([m]) => m);
+function take(s: SourcingState, material: string, dilution: Dilution, grams: number, now: number, data: SourcingData): { quality: number; grams: number } {
+  let left = grams;
+  let qualitySum = 0;
+  let taken = 0;
+  const lots = s.inventory.filter((l) => l.material === material && (l.dilution ?? 100) === dilution).sort((a, b) => a.since - b.since);
+  for (const lot of lots) {
+    if (left <= 0) break;
+    const t = Math.min(lot.grams, left);
+    qualitySum += t * lotQuality(lot, now, data);
+    taken += t;
+    lot.grams = Math.round((lot.grams - t) * 1000) / 1000;
+    left -= t;
+  }
+  s.inventory = s.inventory.filter((l) => l.grams > 0.0005);
+  return { quality: taken > 0 ? qualitySum / taken : 1, grams: taken };
 }
 
 /** Uses up the materials for one perfume, oldest lots first. Returns their average quality, or null if short. */
-export function consume(s: SourcingState, formula: Formula, now: number, data: SourcingData = sourcing): number | null {
-  if (missingFor(s, formula, data).length > 0) return null;
+export function consume(s: SourcingState, blend: Entry[], now: number, data: SourcingData = sourcing): number | null {
+  if (missingFor(s, blend, data).length > 0) return null;
   let qualitySum = 0;
   let gramsSum = 0;
-  for (const [material, needed] of Object.entries(gramsNeeded(formula, data))) {
-    let left = needed;
-    for (const lot of s.inventory.filter((l) => l.material === material).sort((a, b) => a.since - b.since)) {
-      if (left <= 0) break;
-      const take = Math.min(lot.grams, left);
-      qualitySum += take * lotQuality(lot, now, data);
-      gramsSum += take;
-      lot.grams = Math.round((lot.grams - take) * 1000) / 1000;
-      left -= take;
-    }
+  for (const e of needs(blend, data.perfumeGrams)) {
+    const got = take(s, e.material, e.dilution, e.parts, now, data);
+    qualitySum += got.quality * got.grams;
+    gramsSum += got.grams;
   }
-  s.inventory = s.inventory.filter((l) => l.grams > 0.0005);
   return gramsSum > 0 ? qualitySum / gramsSum : 1;
+}
+
+/** Grams of diluted stock one dilution makes. */
+export const DILUTION_BATCH_GRAMS = 10;
+
+/**
+ * Makes 10 g of a dilution (10% or 1%) from neat stock and odourless solvent: 1 g of neat
+ * material for 10%, 0.1 g for 1%. Returns why not, or null.
+ */
+export function dilute(s: SourcingState, material: string, to: 10 | 1, now: number, data: SourcingData = sourcing): string | null {
+  const neat = (DILUTION_BATCH_GRAMS * to) / 100;
+  if (stockOf(s, material, 100) + 1e-9 < neat) return `You need ${neat} g of it neat to make a ${to}% dilution.`;
+  const got = take(s, material, 100, neat, now, data);
+  s.inventory.push({ id: id(s, 'l'), material, grams: DILUTION_BATCH_GRAMS, quality: Math.round(got.quality * 100) / 100, since: now, dilution: to });
+  return null;
 }
 
 export function qualityWord(q: number, data: SourcingData = sourcing): string {

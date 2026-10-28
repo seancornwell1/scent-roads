@@ -15,7 +15,7 @@ function cap(text: string): string {
 
 export function phrase(d: Direction, specificity: Specificity, variant = 0, data: ClientsData = clients): string {
   const f = data.lines.feedback;
-  if (d.kind !== 'family') return f[d.kind][d.want];
+  if (d.kind !== 'family') return (f[d.kind] as Record<string, string>)[d.want];
   const word = f.families[d.family]?.[d.want] ?? (d.want === 'more' ? `more ${d.family}` : `less ${d.family}`);
   const stage = f.stages[d.stage] ?? d.stage;
   if (specificity === 1) return fillTemplate(f.vague, { Word: cap(word), stage });

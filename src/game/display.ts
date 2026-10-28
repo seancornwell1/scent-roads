@@ -1,10 +1,10 @@
 import { recognizeAccords } from './accords';
+import { effective, written, type Entry } from './blend';
 import { content, materialsById } from './content';
 import { longevityOf } from './scoring';
 import { clients } from './clients';
 import { consume, type SourcingState } from './sourcing';
 import { furniture, type FurnitureData } from './upgrades';
-import type { Formula } from './types';
 
 // The display case: bottles of your signature perfumes that sell while you're away.
 // Sales are worked out from timestamps (game hours), so they happen offline too.
@@ -12,7 +12,7 @@ import type { Formula } from './types';
 export interface Listing {
   id: string;
   name: string;
-  parts: Formula;
+  entries: Entry[];
   bottles: number;
   /** Coins per bottle, fixed when listed. */
   price: number;
@@ -31,12 +31,12 @@ export function newDisplayState(): DisplayState {
   return { listings: [], nextId: 1, unseen: { bottles: 0, coins: 0 } };
 }
 
-/** What a bottle of this formula is worth on the shelf: richer, longer, well-built perfumes sell for more. */
-export function bottlePrice(formula: Formula, quality: number, payMultiplier: number, data: FurnitureData = furniture): number {
+/** What a bottle of this blend is worth on the shelf: richer, longer, well-built perfumes sell for more. */
+export function bottlePrice(blend: Entry[], quality: number, payMultiplier: number, data: FurnitureData = furniture): number {
   const d = data.display;
-  const accords = recognizeAccords(formula, content.accords, materialsById).length;
-  const layers = new Set(Object.keys(formula).map((id) => materialsById.get(id)?.layer)).size;
-  const hours = longevityOf(formula, materialsById, content.model, clients.scoring);
+  const accords = recognizeAccords(written(blend), content.accords, materialsById).length;
+  const layers = new Set(blend.map((e) => materialsById.get(e.material)?.layer)).size;
+  const hours = longevityOf(effective(blend), materialsById, content.model, clients.scoring);
   const raw = d.basePrice + accords * d.pricePerAccord + layers * d.pricePerLayer + hours * d.pricePerLongevityHour;
   return Math.round(Math.min(d.maxPrice, raw * quality) * payMultiplier);
 }
@@ -45,7 +45,7 @@ export function bottlePrice(formula: Formula, quality: number, payMultiplier: nu
 export function listPerfume(
   d: DisplayState,
   stock: SourcingState,
-  formula: { name: string; parts: Formula },
+  formula: { name: string; entries: Entry[] },
   bottles: number,
   capacity: number,
   now: number,
@@ -54,7 +54,7 @@ export function listPerfume(
   if (d.listings.length >= capacity) return capacity === 0 ? 'Place a display case first (Shop → Furniture).' : 'The display cases are full.';
   let quality = 0;
   for (let i = 0; i < bottles; i++) {
-    const q = consume(stock, formula.parts, now);
+    const q = consume(stock, formula.entries, now);
     if (q === null) {
       if (i === 0) return 'Not enough materials in stock to bottle it.';
       bottles = i;
@@ -63,7 +63,7 @@ export function listPerfume(
     quality += q;
   }
   quality /= bottles;
-  d.listings.push({ id: `p${d.nextId++}`, name: formula.name, parts: { ...formula.parts }, bottles, price: bottlePrice(formula.parts, quality, payMultiplier), lastSaleAt: now });
+  d.listings.push({ id: `p${d.nextId++}`, name: formula.name, entries: formula.entries, bottles, price: bottlePrice(formula.entries, quality, payMultiplier), lastSaleAt: now });
   return null;
 }
 

@@ -4,7 +4,9 @@ import type { CustomerState } from './customers';
 import type { DisplayState } from './display';
 import type { NewsItem } from './events';
 import type { SourcingState } from './sourcing';
+import type { Base, Dilutions, Entry } from './blend';
 import type { LearningState } from './learning';
+import type { ExamState } from './ranks';
 import type { RoutesState } from './routes';
 import type { StoryState } from './story';
 import type { UpgradeState } from './upgrades';
@@ -20,6 +22,8 @@ export interface SavedFormula {
   id: string;
   name: string;
   parts: Formula;
+  /** Dilution of each material, if not neat (Phase D). */
+  dilutions?: Dilutions;
   accords: string[];
   createdAt: number;
 }
@@ -27,8 +31,9 @@ export interface SavedFormula {
 export interface SaveData {
   version: number;
   createdAt: number;
-  /** The formula currently on the organ. */
+  /** The formula currently on the organ, and the dilution of each material in it. */
   draft: Formula;
+  draftDilutions?: Dilutions;
   formulas: SavedFormula[];
   /** Accord id → when and in which formula it was first hit. */
   discoveredAccords: Record<string, { at: number; formula: Formula }>;
@@ -60,7 +65,17 @@ export interface SaveData {
   routes?: RoutesState;
   /** Material uses, your own notes and nose training (Phase C; filled in on load). */
   learning?: LearningState;
+  /** Your rank (Phase D): apprentice until you pass an exam. */
+  rank?: string;
+  /** An exam in progress. */
+  exam?: ExamState | null;
+  /** Your saved accords, usable as bases in larger formulas. */
+  bases?: Base[];
+  /** Family profiles of recent perfumes handed over: the shop's style. */
+  styleHistory?: Record<string, number>[];
 }
+
+export type { Entry };
 
 /** Checks that text looks like a save from this game before importing it. */
 export function parseSave(text: string): SaveData | null {

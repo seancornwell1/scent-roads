@@ -1,3 +1,4 @@
+import { effective, entriesOf, overdosed, partsTotal, type Entry } from './blend';
 import { drydown, intensity } from './evaporation';
 import type { ScoringConfig, Target } from './clients';
 import type { Formula, Material, Model } from './types';
@@ -19,7 +20,9 @@ export interface StageScore {
 /** One thing the customer would change. `want` is what they'd like more or less of. */
 export type Direction =
   | { kind: 'family'; family: string; stage: string; want: 'more' | 'less'; size: number }
-  | { kind: 'strength' | 'longevity'; want: 'more' | 'less'; size: number };
+  | { kind: 'strength' | 'longevity'; want: 'more' | 'less'; size: number }
+  /** A strong material used too strong: it smells harsh. */
+  | { kind: 'harsh'; want: 'less'; size: number };
 
 export interface ScoreResult {
   stages: StageScore[];
@@ -39,6 +42,8 @@ export interface ScoreResult {
   weakStage: string | null;
   /** What to change, most important first. */
   directions: Direction[];
+  /** Strong materials used too strong (they smell harsh, and cost score). */
+  harsh: string[];
   /** Average quality of the materials used (1 = good), if known. */
   quality?: number;
 }
@@ -60,6 +65,14 @@ export function overlap(a: Record<string, number>, b: Record<string, number>): n
   let sum = 0;
   for (const [k, v] of Object.entries(a)) sum += Math.min(v, b[k] ?? 0);
   return sum;
+}
+
+/** Average impact per part of a blend, solvent included: diluting a formula makes it quieter. */
+export function blendImpact(entries: Entry[], materials: Map<string, Material>, model: Model): number {
+  const eff = effective(entries);
+  const total = partsTotal(entries);
+  const effTotal = Object.values(eff).reduce((a, b) => a + b, 0);
+  return total > 0 ? (impactOf(eff, materials, model) * effTotal) / total : 0;
 }
 
 /** Average impact per part: how loud the formula smells, before it evaporates. */
@@ -97,24 +110,30 @@ export function starsFor(total: number, config: ScoringConfig, strictness = 0): 
   return 1 + config.difficulties[config.difficulty].stars.filter((t) => total >= t + strictness).length;
 }
 
-export function scorePerfume(formula: Formula, target: Target, materials: Map<string, Material>, model: Model, config: ScoringConfig): ScoreResult {
+/** Scores a perfume (as blend entries) against a brief's target. */
+export function scorePerfume(blend: Entry[], target: Target, materials: Map<string, Material>, model: Model, config: ScoringConfig): ScoreResult {
+  const targetBlend = entriesOf({ parts: target.formula, dilutions: target.dilutions });
+  const formula = effective(blend);
+  const targetFormula = effective(targetBlend);
   const mine = drydown(formula, materials, model);
-  const theirs = drydown(target.formula, materials, model);
+  const theirs = drydown(targetFormula, materials, model);
   const stages = mine.map((p, i) => {
     const fam = stageFamilies(p.shares, materials);
     const want = stageFamilies(theirs[i].shares, materials);
     return { stage: p.stage.id, score: overlap(want, fam), families: fam, target: want };
   });
 
-  const strengthRatio = impactOf(formula, materials, model) / (impactOf(target.formula, materials, model) || 1);
+  const strengthRatio = blendImpact(blend, materials, model) / (blendImpact(targetBlend, materials, model) || 1);
   const strengthScore = ratioScore(strengthRatio, 2);
   const longevityHours = longevityOf(formula, materials, model, config);
-  const targetLongevityHours = longevityOf(target.formula, materials, model, config);
+  const targetLongevityHours = longevityOf(targetFormula, materials, model, config);
   const longevityScore = ratioScore(longevityHours / (targetLongevityHours || 1), 2);
 
   const w = config.weights;
   const stageAverage = stages.reduce((a, s) => a + s.score, 0) / (stages.length || 1);
-  const total = w.stages * stageAverage + w.strength * strengthScore + w.longevity * longevityScore;
+  // Strong materials used undiluted smell wrong, however well balanced the rest is.
+  const harsh = overdosed(blend, materials, model);
+  const total = Math.max(0, w.stages * stageAverage + w.strength * strengthScore + w.longevity * longevityScore - Math.min(2, harsh.length) * model.overdose.penalty);
   const impression = 0.7 * (stages[0]?.score ?? 0) + 0.3 * strengthScore;
 
   const worst = stages.reduce<StageScore | null>((low, s) => (!low || s.score < low.score ? s : low), null);
@@ -131,7 +150,11 @@ export function scorePerfume(formula: Formula, target: Target, materials: Map<st
     stars: starsFor(total, config),
     impression,
     weakStage,
-    directions: directionsFor(stages, strengthRatio, longevityHours / (targetLongevityHours || 1), config),
+    directions: [
+      ...(harsh.length ? [{ kind: 'harsh' as const, want: 'less' as const, size: 1 }] : []),
+      ...directionsFor(stages, strengthRatio, longevityHours / (targetLongevityHours || 1), config),
+    ],
+    harsh,
   };
 }
 

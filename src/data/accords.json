@@ -2,52 +2,156 @@
   {
     "id": "amber",
     "name": "Amber",
-    "description": "Labdanum and vanilla, bergamot on top: the accord under Shalimar, Emeraude and a century of oriental perfumery.",
-    "course": { "mission": "01" },
+    "description": "Labdanum and vanilla, bergamot on top: the warm, sweet, resinous accord under a century of oriental perfumery.",
+    "course": {
+      "mission": "01"
+    },
     "verified": true,
     "check": [],
     "requires": [
-      { "materials": ["labdanum"], "min": 15 },
-      { "materials": ["vanillin"], "min": 15 }
-    ]
+      {
+        "materials": [
+          "labdanum"
+        ],
+        "min": 15
+      },
+      {
+        "materials": [
+          "vanillin"
+        ],
+        "min": 15
+      }
+    ],
+    "lesson": "An amber is built on a dark resin (labdanum) and vanilla sweetness (vanillin), often with a citrus top to lift it. Balance the two: too much labdanum turns leathery and dry, too much vanillin turns sugary.",
+    "example": {
+      "parts": {
+        "labdanum": 5,
+        "vanillin": 4,
+        "bergamot": 1
+      }
+    }
   },
   {
     "id": "chypre",
     "name": "Chypre",
-    "description": "Coty's 1917 skeleton: bergamot, labdanum, oakmoss, patchouli.",
-    "course": { "mission": "03" },
+    "description": "The chypre skeleton, made famous in 1917: bergamot over a base of labdanum, oakmoss and patchouli.",
+    "course": {
+      "mission": "03"
+    },
     "verified": true,
     "check": [],
     "requires": [
-      { "materials": ["bergamot"], "min": 5 },
-      { "materials": ["labdanum"], "min": 3 },
-      { "materials": ["oakmoss"], "min": 2 }
-    ]
+      {
+        "materials": [
+          "bergamot"
+        ],
+        "min": 5
+      },
+      {
+        "materials": [
+          "labdanum"
+        ],
+        "min": 3
+      },
+      {
+        "materials": [
+          "oakmoss"
+        ],
+        "min": 2
+      }
+    ],
+    "lesson": "A chypre contrasts a bright citrus top with a dark, mossy, resinous base. Oakmoss is strictly limited for safety, so work it diluted and use only a little.",
+    "example": {
+      "parts": {
+        "bergamot": 4,
+        "labdanum": 2,
+        "oakmoss": 1,
+        "patchouli": 2,
+        "rose-damascena": 1
+      },
+      "dilutions": {
+        "oakmoss": 10
+      }
+    }
   },
   {
     "id": "fougere",
     "name": "Fougère",
-    "description": "Houbigant's Fougère Royale, 1882: lavender, coumarin, oakmoss, bergamot. Fougères run coumarin at a few parts.",
-    "course": { "mission": "04" },
+    "description": "The fougère ('fern'), born in 1882 with the first perfume built on synthetic coumarin: lavender, coumarin, oakmoss and bergamot.",
+    "course": {
+      "mission": "04"
+    },
     "verified": true,
     "check": [],
     "requires": [
-      { "materials": ["lavender"], "min": 5 },
-      { "materials": ["coumarin"], "min": 1 },
-      { "materials": ["oakmoss"], "min": 1 }
-    ]
+      {
+        "materials": [
+          "lavender"
+        ],
+        "min": 5
+      },
+      {
+        "materials": [
+          "coumarin"
+        ],
+        "min": 1
+      },
+      {
+        "materials": [
+          "oakmoss"
+        ],
+        "min": 1
+      }
+    ],
+    "lesson": "A fougère sets fresh lavender over the sweet hay of coumarin and a mossy base. Coumarin is powerful and limited for safety: a few parts is plenty.",
+    "example": {
+      "parts": {
+        "lavender": 4,
+        "coumarin": 1,
+        "oakmoss": 1,
+        "bergamot": 2,
+        "geranium": 1,
+        "cedarwood-virginia": 1
+      },
+      "dilutions": {
+        "oakmoss": 10
+      }
+    }
   },
   {
     "id": "cologne",
     "name": "Cologne",
     "description": "Mostly citrus with aromatic herbs and very little base: fresh, bright and short-lived.",
-    "course": { "mission": null },
+    "course": {
+      "mission": null
+    },
     "verified": false,
-    "check": ["definition"],
+    "check": [
+      "definition"
+    ],
     "requires": [
-      { "family": "citrus", "min": 40 },
-      { "family": "aromatic", "min": 5 },
-      { "layer": "base", "max": 15 }
-    ]
+      {
+        "family": "citrus",
+        "min": 40
+      },
+      {
+        "family": "aromatic",
+        "min": 5
+      },
+      {
+        "layer": "base",
+        "max": 15
+      }
+    ],
+    "lesson": "An eau de cologne is mostly citrus with a few herbs and almost no base: fresh, generous and gone within a couple of hours.",
+    "example": {
+      "parts": {
+        "bergamot": 5,
+        "lemon": 2,
+        "neroli": 1,
+        "rosemary": 1,
+        "lavender": 1
+      }
+    }
   }
 ]

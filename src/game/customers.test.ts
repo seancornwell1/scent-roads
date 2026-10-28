@@ -8,7 +8,7 @@ import { unlockedMaterialIds } from './unlocks';
 
 const bench = unlockedMaterialIds(0);
 const result = (stars: number): ScoreResult => ({
-  stages: [], strengthRatio: 1, strengthScore: 1, longevityHours: 8, targetLongevityHours: 8, longevityScore: 1, total: 0.8, stars, impression: 0.8, weakStage: null, directions: [],
+  stages: [], strengthRatio: 1, strengthScore: 1, longevityHours: 8, targetLongevityHours: 8, longevityScore: 1, total: 0.8, stars, impression: 0.8, weakStage: null, directions: [], harsh: [],
 });
 
 describe('customer visits', () => {
