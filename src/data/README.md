@@ -355,3 +355,29 @@ Ranks and their exams (`src/game/ranks.ts`), in order. You start as the first.
 | `budgets` | Whether customers with budgets come to you |
 | `payMultiplier` | Customers pay this much more |
 | `exam` | To reach this rank: `reputation` and `mastered` (`count` materials at mastery `level`) to sit it; `identify` (`questions`, and how many right to `pass`) for blind identification; `accord`, a brief (as in `clients.json`) to build at the organ to three stars |
+
+## `signature.json`
+
+Her signature perfume, the ending (`src/game/signature.ts`).
+
+| Field | Meaning |
+| ----- | ------- |
+| `title` | Her last page's title |
+| `needed` | Clues that unlock the final brief, from any mix of paths (about two-thirds) |
+| `jar` | The aged material: `material` and `grams` taken neat from stock to start it, `gameDays` it must age, `name` and `about` |
+| `brief` | The final brief (as in `clients.json`); judged at once, like an exam, and needs the jar ready. Three stars recovers her last page and opens the epilogue. |
+| `clues` | Each: `id`, `path` (`town`, `routes` or `craft`), `when` (one of: `request` done, `route` open, `page` recovered, `rank` reached, `reviews` heard), `from` and `text` |
+| `epilogue` | `title`, `opening` paragraphs, a paragraph `byPath` for the path that gave the most clues, then `pages` (`{pages}`), `style` (`{style}`), `rank` (`{rank}`) and `closing` |
+
+## `awards.json`
+
+The Town Perfume Awards (`src/game/awards.ts`): an open brief once a year.
+
+| Field | Meaning |
+| ----- | ------- |
+| `name` | |
+| `openDays` | Entries open for the last this-many days of December; results come when the year turns |
+| `themes` | A theme per year, in turn |
+| `weights` | How the four judges' scores add up: `structure` (top, heart and base present; a recognisable accord), `balance` (no one material drowning a stage, nothing harsh, lasts the day), `originality` (unlike every brief and lesson, and not too simple), `cost` |
+| `costScale` | Euros per 100 g at which the cost score reaches zero |
+| `prizes` | Highest `min` reached wins: `name`, `coins`, `reputation` |

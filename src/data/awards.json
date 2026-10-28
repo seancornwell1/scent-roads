@@ -1,0 +1,19 @@
+{
+  "name": "The Town Perfume Awards",
+  "openDays": 21,
+  "themes": [
+    "The first warm day of the year",
+    "A walk by the sea",
+    "A winter night indoors",
+    "The garden after rain",
+    "A celebration"
+  ],
+  "weights": { "structure": 0.3, "balance": 0.3, "originality": 0.25, "cost": 0.15 },
+  "costScale": 150,
+  "prizes": [
+    { "min": 0.8, "name": "Gold", "coins": 300, "reputation": 8 },
+    { "min": 0.65, "name": "Silver", "coins": 150, "reputation": 5 },
+    { "min": 0.5, "name": "Bronze", "coins": 80, "reputation": 3 },
+    { "min": 0, "name": "Commended", "coins": 20, "reputation": 1 }
+  ]
+}

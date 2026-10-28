@@ -8,6 +8,8 @@ import { currentRank, state } from '../state';
 import type { Formula } from '../game/types';
 import { esc, formatDate, formatParts, header, starsText } from './html';
 import { compendiumList } from './compendium';
+import { cluesFound, signature } from '../game/signature';
+import { clueContext } from '../game/world';
 
 const TABS = [
   { id: 'pages', label: 'Her pages' },
@@ -40,7 +42,11 @@ export function pageCard(page: Page, s: StoryState, actions = true): string {
   const recovered = s.pages[page.id];
   const head = `<div><strong>${esc(page.title)}</strong>${page.dated ? ` <span class="muted small">${esc(page.dated)}</span>` : ''}</div>`;
   if (page.signature) {
-    return `<li class="card page page--blank">${head}<p class="muted small"><em>${esc(page.margin)}</em></p></li>`;
+    const found = cluesFound(clueContext(state.save)).length;
+    const done = state.save.signature?.completedAt;
+    return `<li class="card page page--blank">${head}<p class="muted small"><em>${esc(done ? 'Whole again, in your hand.' : page.margin)}</em></p>
+      <p class="small">${found} of ${signature.clues.length} clues to her own perfume.</p>
+      ${actions ? '<div class="row-between"><span></span><button class="primary" data-action="nav" data-to="signature">Open her last page</button></div>' : ''}</li>`;
   }
   const formula = pageFormula(page.id) ?? {};
   const owned = ownedMaterials(state.save);

@@ -9,12 +9,14 @@ import { newSourcingState, sourcing } from './game/sourcing';
 import { newStoryState, story } from './game/story';
 import { newRoutesState } from './game/routes';
 import { newLearningState } from './game/learning';
+import { newSignatureState } from './game/signature';
+import { newAwardsState } from './game/awards';
 import { newUpgradeState } from './game/upgrades';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'exam' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -68,6 +70,8 @@ function initSave(): SaveData {
   save.bases ??= [];
   save.styleHistory ??= [];
   save.draftDilutions ??= {};
+  save.signature ??= newSignatureState();
+  save.awards ??= newAwardsState();
   save.upgrades ??= newUpgradeState();
   save.display ??= newDisplayState();
   save.news ??= {};

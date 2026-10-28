@@ -487,6 +487,32 @@ How it was built (Oct 28, 2026):
 - **Shop style:** the families of the last eight perfumes you've handed over make the shop's style, shown in the Shop panel. Walk-in briefs like your style come more often.
   - Two new regulars only come to a shop that leans their way: Céleste, a wedding planner, for florals; Gaspard, a cabinetmaker, for woods and smoke.
 
+### Prompt 12: Direction change #2, Phase E
+
+```
+Next, continue through remaining steps without pause
+```
+
+Phase E from **Direction change #2**: clues across the three paths, the aged material, the signature ending and epilogue, annual awards.
+
+How it was built (Oct 28, 2026):
+
+- **Clues:** twelve clues to her own perfume, four on each path.
+  - **The town:** Agathe, Henri and Lucien once their requests are done, and a customer's remark after many reviews.
+  - **Her growers:** opening the routes to Bulgaria, Andalusia, Provence and the chemist.
+  - **The craft:** recovering her three pages, and passing the first exam.
+  - Each new clue is announced, and all of them are collected on her last page (Book → Her pages → Open her last page).
+- **The final brief:** eight clues, from any mix of paths, unlock it.
+- **The aged material:** it also needs labdanum from her jar.
+  - You start the jar on her last page with 5 g of neat labdanum, and it ages 60 game days (about nine real days) in real time.
+  - Her letter in the intro now tells you to start it early.
+- **The ending:** her perfume is judged at once against her formula. Three stars recovers her last page and opens the epilogue.
+  - The epilogue reflects the path that gave you the most clues, how many pages you recovered, your shop's style and your rank.
+  - The game carries on afterwards.
+- **Annual awards:** The Town Perfume Awards, with a theme each year.
+  - Entries open in the last three weeks of December; enter any saved perfume within the safety limits from the newspaper.
+  - At the turn of the year the judges score structure, balance, originality (against every brief and lesson) and cost. They give their remarks in words and award Gold, Silver, Bronze or Commended, with coins and reputation.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

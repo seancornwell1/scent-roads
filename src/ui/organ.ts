@@ -5,6 +5,7 @@ import { content, materialsById } from '../game/content';
 import { drydown } from '../game/evaporation';
 import { findBrief, type Brief } from '../game/clients';
 import { rankById } from '../game/ranks';
+import { signature } from '../game/signature';
 import { LAYERS, type Material } from '../game/types';
 import { missingFor, qualityWord, stockOf, stockQuality } from '../game/sourcing';
 import { nextTier } from '../game/unlocks';
@@ -38,6 +39,7 @@ export function organScreen(): string {
 /** What you're composing for: a waiting customer, or a rank exam's accord. */
 export function currentOrder(): { name: string; brief: Brief; exam: boolean } | null {
   const { ui, save } = state;
+  if (ui.orderId === 'signature') return { name: 'her', brief: signature.brief, exam: true };
   if (ui.orderId === 'exam') {
     const brief = save.exam ? rankById(save.exam.rank).exam?.accord : undefined;
     return brief ? { name: 'the examiners', brief, exam: true } : null;
@@ -66,14 +68,14 @@ function orderBanner(): string {
   const page = brief.page ? pageById(brief.page) : undefined;
   const why = [...blockers(check), ...(missing.length ? [`Not enough ${missing.join(', ')} in stock: order, harvest or dilute more in the back room.`] : [])];
   return `<div class="order">
-    <p class="small"><strong>${order.exam ? 'Exam' : `For ${esc(order.name)}`}:</strong> “${esc(brief.memory)}”</p>
+    <p class="small"><strong>${ui.orderId === 'signature' ? 'Her perfume' : order.exam ? 'Exam' : `For ${esc(order.name)}`}:</strong> “${esc(brief.memory)}”</p>
     ${hints ? `<p class="muted">${hints}</p>` : ''}
     ${brief.budget !== undefined ? `<p class="small">Budget: <strong>€${brief.budget}</strong> per 100 g of concentrate · this costs €${check.cost.toFixed(2)}</p>` : ''}
     ${page ? `<details class="small"><summary>Her page</summary><ul class="list cards">${pageCard(page, save.story!, false)}</ul></details>` : ''}
     ${why.map((w) => `<p class="small warn-text">${esc(w)}</p>`).join('')}
     <div class="row-between">
       <button class="link" data-action="drop-order">Not now</button>
-      <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>${order.exam ? 'Hand in to the examiners' : `Hand over to ${esc(order.name)}`}</button>
+      <button class="primary" data-action="hand-over" ${ready ? '' : 'disabled'}>${ui.orderId === 'signature' ? 'This is hers' : order.exam ? 'Hand in to the examiners' : `Hand over to ${esc(order.name)}`}</button>
     </div>
   </div>`;
 }

@@ -333,7 +333,7 @@ export function missingFor(s: SourcingState, blend: Entry[], data: SourcingData 
   return needs(blend, data.perfumeGrams).filter((e) => stockOf(s, e.material, e.dilution) + 1e-9 < e.parts);
 }
 
-function take(s: SourcingState, material: string, dilution: Dilution, grams: number, now: number, data: SourcingData): { quality: number; grams: number } {
+export function takeStock(s: SourcingState, material: string, dilution: Dilution, grams: number, now: number, data: SourcingData = sourcing): { quality: number; grams: number } {
   let left = grams;
   let qualitySum = 0;
   let taken = 0;
@@ -356,7 +356,7 @@ export function consume(s: SourcingState, blend: Entry[], now: number, data: Sou
   let qualitySum = 0;
   let gramsSum = 0;
   for (const e of needs(blend, data.perfumeGrams)) {
-    const got = take(s, e.material, e.dilution, e.parts, now, data);
+    const got = takeStock(s, e.material, e.dilution, e.parts, now, data);
     qualitySum += got.quality * got.grams;
     gramsSum += got.grams;
   }
@@ -373,7 +373,7 @@ export const DILUTION_BATCH_GRAMS = 10;
 export function dilute(s: SourcingState, material: string, to: 10 | 1, now: number, data: SourcingData = sourcing): string | null {
   const neat = (DILUTION_BATCH_GRAMS * to) / 100;
   if (stockOf(s, material, 100) + 1e-9 < neat) return `You need ${neat} g of it neat to make a ${to}% dilution.`;
-  const got = take(s, material, 100, neat, now, data);
+  const got = takeStock(s, material, 100, neat, now, data);
   s.inventory.push({ id: id(s, 'l'), material, grams: DILUTION_BATCH_GRAMS, quality: Math.round(got.quality * 100) / 100, since: now, dilution: to });
   return null;
 }

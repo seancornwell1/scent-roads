@@ -15,7 +15,7 @@ import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/
 import { parseSave, writeSave } from './game/save';
 import { buyItem, buyProcess, displayCapacity, furniture, itemById, place, processStats, unplace } from './game/upgrades';
 import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOpen, routesTick } from './game/routes';
-import { arrivalConditions, newsFor, ownedMaterials, shopAppeal } from './game/world';
+import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal } from './game/world';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { shop, validateShop } from './game/shop';
@@ -31,6 +31,9 @@ import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
 import { customerScreen, lookOf, reactionScreen, unlockScreen } from './ui/customer';
 import { chapterScreen } from './ui/chapter';
+import { epilogueScreen, signatureScreen } from './ui/signature';
+import { cluesFound, jarReady, signature, startJar } from './game/signature';
+import { awards, entriesOpen, settleAwards, yearAt } from './game/awards';
 import { examBlockers, examStage, nextRank, rankById, startExam } from './game/ranks';
 import { currentOrder } from './ui/organ';
 import { entriesOf, isBaseKey, written, type Dilution } from './game/blend';
@@ -160,6 +163,29 @@ function runPost(crates: Crate[]): boolean {
   return chapter !== null || opened.length > 0 || crates.some((k) => k.route);
 }
 
+/** New clues to her signature, and the awards when the year turns. Returns whether anything happened. */
+function runStoryProgress(): boolean {
+  const { save, ui } = state;
+  const sig = save.signature!;
+  let happened = false;
+  for (const clue of cluesFound(clueContext(save))) {
+    if (sig.cluesSeen.includes(clue.id)) continue;
+    sig.cluesSeen.push(clue.id);
+    ui.toast = `A clue to her own perfume, from ${clue.from}. It's on her last page in the book.`;
+    happened = true;
+  }
+  const settled = settleAwards(save.awards!, nowGame(), sourcing.calendarStart, knownTargets());
+  if (settled) {
+    const { prize } = settled.result;
+    save.customers!.money += prize.coins;
+    save.customers!.reputation += prize.reputation;
+    ui.toast = `${awards.name}, year ${settled.year}: “${settled.result.name}” wins ${prize.name}! +${prize.coins} coins, reputation +${prize.reputation}.`;
+    notify(awards.name, `${prize.name} for “${settled.result.name}”.`);
+    happened = true;
+  }
+  return happened;
+}
+
 function runTick(): void {
   const { save } = state;
   const c = save.customers!;
@@ -168,6 +194,7 @@ function runTick(): void {
   const crates = tickSourcing(save.sourcing!, now, stormDelay);
   const sold = runSales();
   const post = runPost(crates);
+  const story = runStoryProgress();
   if (crates.length > 0) {
     const note = crates.some((k) => k.route) ? ' There’s a letter in it.' : '';
     state.ui.toast = (crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`) + note;
@@ -189,7 +216,7 @@ function runTick(): void {
   if (returning.length > 0) notify('A customer is back', `${returning.map((v) => v.name).join(', ')} came back to tell you how their perfume wore.`);
   if (changed.length > 0) syncCrowd();
   // Keep countdowns fresh in panels that show them.
-  if (changed.length > 0 || crates.length > 0 || sold.bottles > 0 || post || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
+  if (changed.length > 0 || crates.length > 0 || sold.bottles > 0 || post || story || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
 }
 
 /** Puts placed furniture in the scene. */
@@ -302,6 +329,10 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return trainingScreen();
     case 'exam':
       return examScreen();
+    case 'signature':
+      return signatureScreen();
+    case 'epilogue':
+      return epilogueScreen();
     case 'unlock':
       return unlockScreen(unlocks.tiers[state.save.announcedTier ?? 0]);
     case 'backroom':
@@ -411,6 +442,23 @@ document.body.addEventListener('click', (event) => {
         ui.toast = blockers(check)[0];
         break;
       }
+      if (ui.orderId === 'signature') {
+        // Her perfume: judged against her last page, using the aged labdanum from her jar.
+        const sig = save.signature!;
+        if (!jarReady(sig, nowGame())) {
+          ui.toast = 'Her labdanum jar is not ready yet.';
+          break;
+        }
+        sig.result = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
+        ui.orderId = null;
+        if (sig.result.stars >= 3) {
+          sig.completedAt = nowGame();
+          save.story!.pages[signature.brief.page ?? 'her-signature'] = { at: nowGame(), for: 'the shop' };
+          sounds.play('pouring');
+          return openPanel('epilogue');
+        }
+        return openPanel('signature');
+      }
       if (order.exam) {
         // The examiners judge it straight away, with their own materials.
         save.exam!.accord = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
@@ -490,6 +538,29 @@ document.body.addEventListener('click', (event) => {
       if (!e || e.answers[index] !== null) return;
       e.answers[index] = Number(target.dataset.value);
       sounds.play('paper');
+      break;
+    }
+    case 'start-jar': {
+      const why = startJar(save.signature!, save.sourcing!, nowGame());
+      ui.toast = why ?? 'You start her jar. Now it needs time.';
+      break;
+    }
+    case 'signature-compose':
+      ui.orderId = 'signature';
+      ui.organTab = 'materials';
+      return openPanel('organ');
+    case 'enter-awards': {
+      const formula = save.formulas.find((f) => f.id === id);
+      const now = nowGame();
+      if (!formula || !entriesOpen(now, sourcing.calendarStart)) return;
+      const blend = entriesOf(formula, save.bases);
+      const check = checkPerfume(blend, currentRank().wearableParts);
+      if (!sellable(check)) {
+        ui.toast = `The judges won't accept it: ${blockers(check)[0]}`;
+        break;
+      }
+      save.awards!.entries[yearAt(now, sourcing.calendarStart)] = { name: formula.name, entries: blend };
+      ui.toast = `“${formula.name}” is entered. The judges announce the results when the year turns.`;
       break;
     }
     case 'exam-compose':

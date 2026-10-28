@@ -1,7 +1,9 @@
 import { entriesOf } from './blend';
-import type { Brief } from './clients';
+import { clients, type Brief, type Target } from './clients';
 import { content, materialsById } from './content';
-import { rankById } from './ranks';
+import { rankById, ranks } from './ranks';
+import type { ClueContext } from './signature';
+import { story } from './story';
 import { blendProfile, briefWeight, regularWelcome, shopStyle } from './style';
 import { arrivalMultiplier, generateWeek, weekOf, type NewsItem } from './events';
 import type { SaveData } from './save';
@@ -71,4 +73,26 @@ export function arrivalConditions(save: SaveData, gameHours: number) {
     weightOf: (b: Brief) => briefWeight(briefLean(b), style),
     welcomes: (r: Parameters<typeof regularWelcome>[0]) => regularWelcome(r, style),
   };
+}
+
+/** Your progress, for her signature's clues. */
+export function clueContext(save: SaveData): ClueContext {
+  const rankIndex = ranks.indexOf(rankById(save.rank));
+  return {
+    requestsDone: new Set(Object.entries(save.story!.requests).filter(([, r]) => r.status === 'done').map(([id]) => id)),
+    routesOpen: new Set(Object.entries(save.routes!.routes).filter(([, r]) => r.status === 'open').map(([id]) => id)),
+    pages: new Set(Object.keys(save.story!.pages)),
+    ranks: new Set(ranks.slice(0, rankIndex + 1).map((r) => r.id)),
+    reviews: save.customers!.reviews.length,
+  };
+}
+
+/** Every perfume the award judges already know: briefs, her pages and the accord lessons. */
+export function knownTargets(): Target[] {
+  return [
+    ...clients.briefs.map((b) => b.target),
+    ...clients.regulars.flatMap((r) => r.briefs.map((b) => b.target)),
+    ...story.requests.map((r) => r.brief.target),
+    ...content.accords.map((a) => ({ formula: a.example.parts, dilutions: a.example.dilutions })),
+  ];
 }

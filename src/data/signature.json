@@ -1,0 +1,51 @@
+{
+  "title": "For the shop",
+  "needed": 8,
+  "jar": {
+    "name": "Her labdanum jar",
+    "material": "labdanum",
+    "grams": 5,
+    "gameDays": 60,
+    "about": "Labdanum softens and deepens as it rests. Start a jar now: it has to age for 60 game days (about nine real days) before it's ready."
+  },
+  "brief": {
+    "id": "her-signature",
+    "memory": "Her own perfume, the one she never sold. The last page of her book, nearly blank. Everything the town, her growers and her book have told you comes together here.",
+    "hints": [
+      "Bright for a moment, then soft.",
+      "Roses kept in a powder box, over an old resin and a little sweetness."
+    ],
+    "target": { "formula": { "bergamot": 2, "lavender": 1, "rose-damascena": 2, "orris": 1, "labdanum": 2, "vanillin": 2 } },
+    "pay": 0
+  },
+  "clues": [
+    { "id": "agathe", "path": "town", "when": { "request": "agathe-wedding" }, "from": "Agathe", "text": "She wore something of her own on Sundays. Bergamot first, like my cologne, but it never stayed bright for long." },
+    { "id": "henri", "path": "town", "when": { "request": "henri-amber" }, "from": "Henri", "text": "Under hers was the same warm resin she gave my wife, only softer and sweeter." },
+    { "id": "lucien", "path": "town", "when": { "request": "lucien-sunday" }, "from": "Lucien", "text": "Forty years of her letters, and every envelope smelled faintly of lavender. Just a whisper." },
+    { "id": "reviews", "path": "town", "when": { "reviews": 12 }, "from": "A customer", "text": "My mother always said Mireille smelled like roses kept in a powder box." },
+    { "id": "stoyan", "path": "routes", "when": { "route": "bulgaria" }, "from": "Stoyan Petrov", "text": "She bought a few grams of our rose every year and never sold a drop. 'For the shop,' she wrote." },
+    { "id": "pilar", "path": "routes", "when": { "route": "andalusia" }, "from": "Pilar Navarro", "text": "She asked for the oldest gum we had, and kept it in a jar for a long time before she used it." },
+    { "id": "elise", "path": "routes", "when": { "route": "provence" }, "from": "Élise Arnaud", "text": "Only ever a little of our lavender for herself, she said. Never the main thing." },
+    { "id": "paul", "path": "routes", "when": { "route": "chemist" }, "from": "Paul Varenne", "text": "Her own order never changed: vanillin in the brown bottle, a little at a time." },
+    { "id": "page-cologne", "path": "craft", "when": { "page": "wedding-cologne" }, "from": "Her book", "text": "On the back of the wedding page, in pencil: 'Mine starts like this one, then turns to the garden.'" },
+    { "id": "page-amber", "path": "craft", "when": { "page": "winter-amber" }, "from": "Her book", "text": "A note beside the winter amber: 'Same resin in mine, but aged. Never fresh.'" },
+    { "id": "page-sunday", "path": "craft", "when": { "page": "sunday-lavender" }, "from": "Her book", "text": "Under Lucien's formula: 'The roundness is the vanilla, as in mine. Equal to the resin.'" },
+    { "id": "exam", "path": "craft", "when": { "rank": "junior" }, "from": "The examiners' register", "text": "An old entry: 'Mireille, passed. Brought an accord built on Florentine iris; asked to keep the recipe.'" }
+  ],
+  "epilogue": {
+    "title": "The last page",
+    "opening": [
+      "You write it down at last, in your own hand, under her title: For the shop.",
+      "The town comes by over the next weeks, one by one, to smell it. Some of them cry. Most of them just smile and say, 'There she is.'"
+    ],
+    "byPath": {
+      "town": "You found her through the people who loved her: their weddings, their winters, their Sundays. The shop was always theirs as much as hers.",
+      "routes": "You found her through the growers: the groves, the fields and the hills that sent her their best for fifty years. Their letters still come, and now they're addressed to you.",
+      "craft": "You found her through the work itself: her pages, her margins, the exams she sat before you. You learned her trade the way she did, one material at a time."
+    },
+    "pages": "{pages} of her pages are whole again, and the rest are waiting.",
+    "style": "Your shop has its own character now: it leans {style}, and the customers who love that keep coming back.",
+    "rank": "You're a {rank} now.",
+    "closing": "The book isn't finished. It never was. You turn to a clean page and start your own."
+  }
+}

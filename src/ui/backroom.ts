@@ -77,6 +77,7 @@ export function timeLeft(gameHours: number): string {
   if (ms < 60_000) return `${Math.max(1, Math.ceil(ms / 1000))} s`;
   if (minutes < 60) return `${minutes} min`;
   const h = Math.floor(minutes / 60);
+  if (h >= 48) return `${Math.floor(h / 24)} days${h % 24 ? ` ${h % 24} h` : ''}`;
   return `${h} h${minutes % 60 ? ` ${minutes % 60} min` : ''}`;
 }
 

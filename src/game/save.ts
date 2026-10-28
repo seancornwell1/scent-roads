@@ -7,7 +7,9 @@ import type { SourcingState } from './sourcing';
 import type { Base, Dilutions, Entry } from './blend';
 import type { LearningState } from './learning';
 import type { ExamState } from './ranks';
+import type { AwardsState } from './awards';
 import type { RoutesState } from './routes';
+import type { SignatureState } from './signature';
 import type { StoryState } from './story';
 import type { UpgradeState } from './upgrades';
 import type { Formula } from './types';
@@ -73,6 +75,10 @@ export interface SaveData {
   bases?: Base[];
   /** Family profiles of recent perfumes handed over: the shop's style. */
   styleHistory?: Record<string, number>[];
+  /** Her signature perfume: clues seen, her jar, your attempts (Phase E). */
+  signature?: SignatureState;
+  /** The yearly awards: your entries and the judges' verdicts. */
+  awards?: AwardsState;
 }
 
 export type { Entry };
