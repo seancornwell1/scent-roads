@@ -542,6 +542,15 @@ How it was built (Oct 28, 2026):
 - **Import:** paste one of your real formulas into the Book (My formulas), one material a line ("Bergamot, 30", "Oakmoss 2 at 10%", or a sheet's own lines). It opens on the organ with its simulated drydown, and anything it can't match is listed.
 - Tapping any button now ends typing in a text box, so panels update straight away on a phone.
 
+### Prompt 14: hand-ins use stock
+
+"Make hand-ins consume stock."
+
+How it was built (Oct 28, 2026):
+
+- Her signature perfume, lab reconstructions and award entries are now weighed out of your stock like a customer's perfume: 1 g in total, shared by the formula, oldest lots first. The organ says what's short before you hand it in.
+- Rank exams still don't use stock: the examiners judge it with their own materials.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

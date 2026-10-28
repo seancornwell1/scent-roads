@@ -453,6 +453,15 @@ document.body.addEventListener('click', (event) => {
         ui.toast = blockers(check)[0];
         break;
       }
+      if (ui.orderId === 'signature' && !jarReady(save.signature!, nowGame())) {
+        ui.toast = 'Her labdanum jar is not ready yet.';
+        break;
+      }
+      if (order.fromStock && missingFor(save.sourcing!, blend).length > 0) {
+        ui.toast = 'Not enough of every material in stock. Order, harvest or dilute more in the back room.';
+        break;
+      }
+      const quality = order.fromStock ? consume(save.sourcing!, blend, nowGame())! : 1;
       if (ui.orderId?.startsWith('challenge:')) {
         // A reconstruction: compared with the sample at once.
         const challengeId = ui.orderId.slice('challenge:'.length);
@@ -471,10 +480,6 @@ document.body.addEventListener('click', (event) => {
       if (ui.orderId === 'signature') {
         // Her perfume: judged against her last page, using the aged labdanum from her jar.
         const sig = save.signature!;
-        if (!jarReady(sig, nowGame())) {
-          ui.toast = 'Her labdanum jar is not ready yet.';
-          break;
-        }
         sig.result = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
         ui.orderId = null;
         if (sig.result.stars >= 3) {
@@ -492,12 +497,6 @@ document.body.addEventListener('click', (event) => {
         return openPanel('exam');
       }
       const visit = c.visits.find((v) => v.id === ui.orderId)!;
-      const missing = missingFor(save.sourcing!, blend);
-      if (missing.length > 0) {
-        ui.toast = 'Not enough of every material in stock. Order, harvest or dilute more in the back room.';
-        break;
-      }
-      const quality = consume(save.sourcing!, blend, nowGame())!;
       const raw = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
       const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring, visit.strictness ?? 0);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
@@ -585,6 +584,11 @@ document.body.addEventListener('click', (event) => {
         ui.toast = `The judges won't accept it: ${blockers(check)[0]}`;
         break;
       }
+      if (missingFor(save.sourcing!, blend).length > 0) {
+        ui.toast = 'Not enough of every material in stock to make the bottle for the judges.';
+        break;
+      }
+      consume(save.sourcing!, blend, now);
       save.awards!.entries[yearAt(now, sourcing.calendarStart)] = { name: formula.name, entries: blend };
       ui.toast = `“${formula.name}” is entered. The judges announce the results when the year turns.`;
       break;

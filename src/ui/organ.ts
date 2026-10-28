@@ -40,21 +40,25 @@ export function organScreen(): string {
     ${ui.detail ? detailSheet(materialsById.get(ui.detail)!) : ''}`;
 }
 
-/** What you're composing for: a waiting customer, or a rank exam's accord. */
-export function currentOrder(): { name: string; brief: Brief; exam: boolean } | null {
+/**
+ * What you're composing for: a waiting customer, her perfume, a lab reconstruction, or a rank
+ * exam's accord. `exam` shows every hint up front; `fromStock` weighs it out of your stock
+ * (everything but an exam, where the examiners use their own materials).
+ */
+export function currentOrder(): { name: string; brief: Brief; exam: boolean; fromStock: boolean } | null {
   const { ui, save } = state;
-  if (ui.orderId === 'signature') return { name: 'her', brief: signature.brief, exam: true };
+  if (ui.orderId === 'signature') return { name: 'her', brief: signature.brief, exam: true, fromStock: true };
   if (ui.orderId?.startsWith('challenge:')) {
     const c = lab.challenges.find((x) => `challenge:${x.id}` === ui.orderId);
-    return c ? { name: c.name, brief: challengeBrief(c), exam: true } : null;
+    return c ? { name: c.name, brief: challengeBrief(c), exam: true, fromStock: true } : null;
   }
   if (ui.orderId === 'exam') {
     const brief = save.exam ? rankById(save.exam.rank).exam?.accord : undefined;
-    return brief ? { name: 'the examiners', brief, exam: true } : null;
+    return brief ? { name: 'the examiners', brief, exam: true, fromStock: false } : null;
   }
   const visit = save.customers?.visits.find((v) => v.id === ui.orderId && v.status === 'waiting');
   const brief = visit && findBrief(visit.briefId);
-  return visit && brief ? { name: visit.name, brief, exam: false } : null;
+  return visit && brief ? { name: visit.name, brief, exam: false, fromStock: true } : null;
 }
 
 function entryName(e: Entry): string {
@@ -71,7 +75,7 @@ function orderBanner(): string {
   const hints = brief.hints.slice(0, order.exam ? brief.hints.length : visit?.hintsAsked ?? 0).map((h) => `<span class="small">“${esc(h)}”</span>`).join('<br>');
   const blend = draftBlend();
   const check = checkPerfume(blend, currentRank().wearableParts, brief.budget);
-  const missing = order.exam ? [] : missingFor(save.sourcing!, blend).map(entryName);
+  const missing = !order.fromStock ? [] : missingFor(save.sourcing!, blend).map(entryName);
   const ready = sellable(check) && missing.length === 0;
   const page = brief.page ? pageById(brief.page) : undefined;
   const why = [...blockers(check), ...(missing.length ? [`Not enough ${missing.join(', ')} in stock: order, harvest or dilute more in the back room.`] : [])];
