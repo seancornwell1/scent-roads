@@ -10,3 +10,4 @@ Every placeholder or stand-in waiting for a real asset. Remove a line once the a
 | Glass display case | Display cases for signature perfumes | Grab3D has none; the potion shelf and bookshelf stand in. |
 | Newspaper masthead and illustrations | News panel | Text only for now. Nothing in the approved packs. |
 | Sitting animation | Customers on seating | The character kit has idle, walk, run, wave and jump only, so customers don't sit yet. |
+| Her formula book and letter (paper, handwriting font) | Book panel, story intro, page cards | Text only for now: smudged amounts are plain italic words, not drawn effects. A handwriting font (OFL) and paper texture would suit it. |

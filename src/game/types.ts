@@ -64,6 +64,8 @@ export interface Stage {
 }
 
 export interface Model {
+  /** Parts a wearable perfume must total (10 at first; 100 and 1000 come with later ranks). */
+  wearableParts: number;
   stages: Stage[];
   strengthBase: number;
   strengthPivot: number;

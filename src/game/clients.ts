@@ -1,25 +1,22 @@
 import clientsJson from '../data/clients.json';
 import type { CharacterConfig } from './character';
+import type { Formula } from './types';
 
 // Customers, their memory briefs and hidden targets. See src/data/README.md.
 
+/** The hidden target: a reference formula (in wearable parts) the customer has in mind. */
 export interface Target {
-  /** Family id → weight; normalised when scored. */
-  families: Record<string, number>;
-  moods: string[];
-  /** 1 (a whisper) to 5 (very strong). */
-  strength: number;
-  longevityHours: number;
+  formula: Formula;
 }
 
 export interface Brief {
   id: string;
-  /** Unlock tier index needed before this brief can come up. */
-  tier: number;
   memory: string;
   hints: string[];
   target: Target;
   pay: number;
+  /** For story requests: the page of her formula book this recreates. */
+  page?: string;
 }
 
 export interface Regular {
@@ -39,12 +36,25 @@ export interface Band {
 
 export interface ScoringConfig {
   difficulty: string;
-  difficulties: Record<string, { stars: number[]; moodFullAt: number }>;
-  weights: { stages: number; mood: number; strength: number; longevity: number };
-  strengthBands: number[];
-  strengthWords: string[];
+  /** Closeness needed for 2 and 3 stars. */
+  difficulties: Record<string, { stars: number[] }>;
+  weights: { stages: number; strength: number; longevity: number };
+  /** Family-share differences smaller than this aren't worth mentioning. */
+  tolerance: number;
   longevityFadeAt: number;
   longevityMaxHours: number;
+}
+
+export interface FeedbackLines {
+  stages: Record<string, string>;
+  amounts: Band[];
+  families: Record<string, { more: string; less: string }>;
+  vague: string;
+  specific: string[];
+  strength: { more: string; less: string };
+  longevity: { more: string; less: string };
+  perfect: string;
+  lastTime: string;
 }
 
 export interface ClientsData {
@@ -59,17 +69,16 @@ export interface ClientsData {
     maxRegularsInShop: number;
   };
   scoring: ScoringConfig;
-  economy: { payShareAtWorstImpression: number; reputationForStars: number[] };
+  /** Reputation for 1, 2 and 3 stars; 3 stars also pays a bonus share of the brief's pay. */
+  economy: { reputationForStars: number[]; threeStarBonus: number };
   lines: {
     impression: Band[];
     stageWords: Band[];
     stageNames: Record<string, string>;
     letDown: string;
     allGood: string;
-    tooWeak: string;
-    strengthOff: string;
-    moodOff: string;
     chatter: string[];
+    feedback: FeedbackLines;
   };
   walkInNames: string[];
   briefs: Brief[];
@@ -86,23 +95,39 @@ export function fillTemplate(text: string, values: Record<string, string>): stri
   return text.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? '');
 }
 
-export function findBrief(id: string, data: ClientsData = clients): Brief | undefined {
-  return data.briefs.find((b) => b.id === id) ?? data.regulars.flatMap((r) => r.briefs).find((b) => b.id === id);
+/** Every brief the game knows: walk-ins and regulars here, plus any extra (story requests). */
+let extraBriefs: Brief[] = [];
+export function registerBriefs(briefs: Brief[]): void {
+  extraBriefs = briefs;
 }
 
-export function validateClients(data: ClientsData, familyIds: Set<string>, moods: Set<string>, tierCount: number): string[] {
+export function findBrief(id: string, data: ClientsData = clients): Brief | undefined {
+  return data.briefs.find((b) => b.id === id) ?? data.regulars.flatMap((r) => r.briefs).find((b) => b.id === id) ?? extraBriefs.find((b) => b.id === id);
+}
+
+/** True when every material in the brief's target is one you have. */
+export function canAnswer(brief: Brief, owned: Set<string>): boolean {
+  return Object.keys(brief.target.formula).every((id) => owned.has(id));
+}
+
+export function validateBriefs(briefs: Brief[], materialIds: Set<string>, wearableParts: number, familyIds: Set<string>, data: ClientsData = clients): string[] {
   const errors: string[] = [];
   const ids = new Set<string>();
-  const all = [...data.briefs, ...data.regulars.flatMap((r) => r.briefs)];
-  for (const b of all) {
+  for (const b of briefs) {
     if (ids.has(b.id)) errors.push(`brief "${b.id}": duplicate id`);
     ids.add(b.id);
-    if (b.tier < 0 || b.tier >= tierCount) errors.push(`brief "${b.id}": tier out of range`);
-    for (const f of Object.keys(b.target.families)) if (!familyIds.has(f)) errors.push(`brief "${b.id}": unknown family "${f}"`);
-    for (const m of b.target.moods) if (!moods.has(m)) errors.push(`brief "${b.id}": unknown mood "${m}"`);
-    if (b.target.strength < 1 || b.target.strength > 5) errors.push(`brief "${b.id}": strength must be 1–5`);
+    const parts = Object.values(b.target.formula);
+    for (const m of Object.keys(b.target.formula)) if (!materialIds.has(m)) errors.push(`brief "${b.id}": unknown material "${m}"`);
+    if (parts.reduce((a, p) => a + p, 0) !== wearableParts) errors.push(`brief "${b.id}": target must total ${wearableParts} parts`);
+    if (parts.some((p) => !Number.isInteger(p) || p <= 0)) errors.push(`brief "${b.id}": target parts must be whole numbers`);
   }
+  for (const f of familyIds) if (!data.lines.feedback.families[f]) errors.push(`feedback: no words for family "${f}"`);
+  return errors;
+}
+
+export function validateClients(data: ClientsData, materialIds: Set<string>, wearableParts: number, familyIds: Set<string>): string[] {
+  const errors = validateBriefs([...data.briefs, ...data.regulars.flatMap((r) => r.briefs)], materialIds, wearableParts, familyIds, data);
   if (!data.scoring.difficulties[data.scoring.difficulty]) errors.push(`scoring: unknown difficulty "${data.scoring.difficulty}"`);
-  if (data.economy.reputationForStars.length !== 5) errors.push('economy.reputationForStars needs five entries');
+  if (data.economy.reputationForStars.length !== 3) errors.push('economy.reputationForStars needs three entries');
   return errors;
 }

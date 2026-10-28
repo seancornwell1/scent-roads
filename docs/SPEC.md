@@ -8,6 +8,89 @@ Oct 26, 2026 · @Sean Cornwell
 
 > **Shop and customers — Oct 27, 2026.** The shop is long (now 10 × 18 m) with room for customers to hang around and for upgrades and furniture. There is no suggestion booth: customers stand around the shop (and sit, once seating upgrades exist) and can engage me in conversation. Sometimes a conversation gives a hint towards the final product they'll like. Art comes from Grab3D (CC0, one cozy pastel style, approved Oct 27, 2026); I'm happy to credit artists, so CC BY assets that fit the style are fine too.
 
+## Direction change #2 — Oct 28, 2026: progression, story and education
+
+This section overrides anything below that conflicts with it. Older sections have been edited to match; where an older line still disagrees, this section wins.
+
+### Goals
+
+- The game must be both addictive and genuinely educational. By late game I should be writing formulas comparable to real finished perfumes.
+- All perfumery facts must be real. Keep the `verified` flag and `docs/FACT_CHECK.md` for anything uncertain.
+- Never use real perfume brand or product names in the game; use invented names.
+
+### Time
+
+- 1 real day = 1 game week, so one game year is about 52 real days.
+- Seasons drive harvests, letters and story chapters.
+
+### The story
+
+I inherited the shop from my grandmother, the town's perfumer.
+
+- **Her formula book:** smudged pages with missing amounts. Townspeople ask for "the one she made for my wedding", and I recreate it from their memories. Each recovered formula fills a page.
+- **Her supply network:** growers around the world who went quiet when she died. Reopening a route means answering a grower's letter, and I choose which letter to answer next. Shipments arrive with short letters (memories of her, harvest news), delivered in the back room.
+- **A chemist's supply house:** her old synthetics supplier, a second route for aroma chemicals.
+- **The ending:** her signature perfume, the final, nearly blank page.
+  - Its makeup is revealed by clues from three paths: the town (customer memories), the routes (grower letters) and the craft (book pages, margin notes).
+  - About two-thirds of the clues, from any mix, unlock the final brief.
+  - It also needs a material aged in real time that I started long before.
+  - The epilogue reflects my path.
+- **Eras:** her book spans eras, so materials and accords unlock roughly in the historical order they appeared in perfumery.
+
+### Composing
+
+- **Formula resolution by rank:** wearables must total exactly 10 parts at first, then 100 parts, then 1000 parts at master rank.
+- **Dilutions:** materials can be stocked at 100%, 10% or 1%. One part of a dilution counts as one part but contributes proportionally. Using strong materials undiluted should smell wrong.
+- **Safety limits:** real per-material maximums. A formula over a limit can't be sold.
+- **Cost:** each material has a cost per kilo, and later briefs set budgets.
+- **Accords:** learn classic accords as lessons from the book, then save any accord as a reusable base inside larger formulas.
+
+### Customers and scoring
+
+- Each brief has a hidden target balance. Score = closeness, shown as 1 to 3 stars, with tolerance. Only 3 stars earns the bonus.
+- Feedback is directional and in perfumer's language, never numbers ("a little too sweet," "gone by lunchtime," "brighter at the start"). Returning customers give more specific hints.
+- My shop's style shapes who visits: lean floral and I get wedding requests; lean woody and smoky and I get different regulars.
+
+### Materials and learning
+
+- Grow the database to several hundred materials over time (naturals, isolates, aroma chemicals). Each one has:
+  - family and subfamily
+  - layer
+  - strength
+  - tenacity in hours
+  - typical dilution
+  - safety limit
+  - cost
+  - plain-language character notes
+
+  Draft them from public references and mark anything uncertain as unverified.
+- **Starting set:** bergamot, lavender, labdanum. Vanillin arrives in the first game week with a customer who wants something sweeter.
+- **Compendium:** a page per material that fills in as I use it, with a space for MY OWN smelling notes, which the game never fills in.
+- **Daily nose training at the organ:** a short spaced-repetition quiz (identify a material from its description, family or layer).
+  - A streak counter tracks consecutive days.
+  - Correct answers raise in-game mastery of that material.
+- **Ranks:** apprentice, junior perfumer, perfumer, master.
+  - Each rank ends in an exam: blind identification, plus building an accord to a brief.
+  - Ranks unlock formula resolution and features.
+
+### Late game
+
+- **Annual perfume awards** at each year's end: an open brief judged by structure, balance, originality and cost. It encourages experimenting.
+- **Analysis lab** (inspired by gas chromatography): running a sample reveals some of its main components; higher levels reveal more.
+- **Reconstruction challenges:** well-known perfume styles described by their public structure, under invented names.
+- **Formula export** as a real formula sheet (grams and percentages, dilutions noted) that I can weigh out at home. **Import** of my real formulas to see their simulated drydown.
+
+### Build phases
+
+Each phase gets its own session, started when I say "Next phase."
+
+- **A.** Time scale; 10-part wearables; starting materials and vanillin arrival; directional feedback and star scoring; story intro and the formula book with her first recoverable formulas. Also fix the shop camera to frame the whole room with no cropped labels.
+- **B.** Grower letters, route choice, seasons as chapters, the chemist's supply house.
+- **C.** Materials database expansion, compendium with my notes, daily nose training with streaks.
+- **D.** Ranks and exams, 100 parts, dilutions, safety limits, cost, saved accords, shop style shaping customers.
+- **E.** Clues across the three paths, the aged material, the signature ending and epilogue, annual awards.
+- **F.** Analysis lab, reconstruction challenges, 1000 parts, formula export and import.
+
 A cozy phone game about running a small perfume house. While I'm away, harvests ripen and shipments travel real sourcing routes; when I open the game, I compose perfumes for clients who come in with memories instead of orders. Every material, region and technique is real, so playing reinforces the perfumery course. Working title.
 
 ## The two loops
@@ -41,7 +124,7 @@ The region list is a starting draft. Claude Code should check every fact here ag
 
 ### How it runs
 
-- Game time runs on real time. Default: 1 real hour = 1 game day, so a game year is about 15 real days and every season comes around regularly. Tunable.
+- Game time runs on real time: 1 real day = 1 game week, so a game year is about 52 real days (Direction change #2). Tunable.
 - **Harvest contracts:** pay to start a harvest in a region during its season. It ripens over real time. Collecting inside the ideal window gives top quality; collecting late gives less.
 - **Processing:** each material lists which methods apply, with real trade-offs.
   - Steam distillation: fast, gives an essential oil.
@@ -63,34 +146,34 @@ Clients describe a memory, not a product. I translate it into a formula, and the
 
 - Customers stand around the shop (sitting once seating is upgraded) and can be talked to. Conversations are where briefs come from, and sometimes they drop a hint about what the customer will like in the final perfume.
 - Each brings a short brief: "My grandfather's workshop," "The first cold day of the year," "A wedding in a lemon grove."
-- Behind each brief is a hidden target: the olfactive families it wants, its mood, how strong it should be and how long it should last.
+- Behind each brief is a hidden target balance: what it should smell like at each stage, how strong it should be and how long it should last. Score = closeness, shown as 1 to 3 stars with tolerance; only 3 stars earns the bonus (Direction change #2).
 - A few regulars return over time with new requests and remember what I made them before.
 
 ### Composing
 
 - An organ (the perfumer's desk) shows my materials, sorted by family and by layer: top, heart and base.
-- I add materials in parts, like drops, and the formula updates live.
+- I add materials in whole parts, like drops, and the formula updates live. A wearable perfume must total exactly 10 parts at first, then 100, then 1000 at master rank (Direction change #2).
 - Each material has real properties: family, volatility, strength and character notes, written in plain language.
-- Recognized accords are named when I hit them (chypre, fougère, amber, cologne) and added to a formula book.
+- Recognized accords are named when I hit them (chypre, fougère, amber, cologne) and added to the formula book, which is my grandmother's book (see **The story** above).
 
 ### Drydown and reviews
 
 - Each material evaporates at its own rate, so the perfume's character changes over time.
 - The perfume is scored at three moments: the opening, about an hour in, and the drydown hours later.
-- The client gives a first impression right away, then returns later in game time with a review of how it wore. A great opening with a weak base gets a mixed review, and the review says which stage let it down.
+- The client gives a first impression right away, then returns later in game time with a review of how it wore. Feedback is directional and in perfumer's language, never numbers ("a little too sweet," "gone by lunchtime," "brighter at the start"). The review is more specific than the first impression, and customers who come back again are more specific still.
 - A small drydown graph shows which notes dominate at each stage, which makes it a learning tool.
 - My own creations can be saved, named and put on the shop shelf for passive sales.
 
 ## Materials and how they unlock
 
-_Added Oct 27, 2026._ The player starts with very few materials and gains more as their reputation grows. Each step is small and themed, and each material comes from one of two places that the idle side of the game will model:
+_Added Oct 27, 2026; revised Oct 28, 2026 by Direction change #2: the starting set is bergamot, lavender and labdanum, and vanillin arrives in the first game week with a customer who wants something sweeter. From Phase C, materials unlock roughly in the historical order they appeared in perfumery; the table below holds until then._ The player starts with very few materials and gains more as their reputation grows. Each step is small and themed, and each material comes from one of two places that the idle side of the game will model:
 
 - **Grown (naturals):** each grows in a real region. They'll be sourced on the world map in the back room through harvest contracts.
 - **Catalogue (synthetics):** aroma chemicals ordered from a supplier's catalogue, shipped to the shop.
 
 | Reputation | Unlock | New materials | Teaches |
 | ---------- | ------ | ------------- | ------- |
-| 0 | Your first bench | Bergamot, lavender, labdanum, vanillin | One per layer plus a herb: an amber and a cologne |
+| 0 | Her bench | Bergamot, lavender, labdanum (vanillin arrives with a customer in week 1) | One per layer: a cologne, then an amber once vanillin arrives |
 | 5 | Lift and glow | Hedione, Iso E Super, Ambroxan, pink pepper | Modern helpers that make a blend bigger and longer; a first spice |
 | 12 | Green and creamy | Stemone, cis-3-hexenol, gamma-octalactone, gamma-decalactone, cedarwood | The fig: leaves, grass, lactones, a dry wood |
 | 22 | Moss and earth | Oakmoss, patchouli, phenylethyl alcohol, coumarin | The chypre |
@@ -140,8 +223,9 @@ Original rules, still in force where they don't conflict:
 Answers to the open questions, Oct 27, 2026.
 
 - **Name.** Field & Flacon. (The repo and URL stay `scent-roads`.)
-- **Time speed.** 1 real hour = 1 game day, for now. Keep it a single tunable setting.
+- **Time speed.** 1 real day = 1 game week (changed Oct 28, 2026 from 1 real hour = 1 game day). Keep it a single tunable setting.
 - **Difficulty.** Mostly easy for now, but build towards a harder, realistic mode later. Scoring takes a strictness setting from the start, so a realistic mode is a new setting value rather than a rewrite.
+- **Story.** I inherited the shop from my grandmother (Direction change #2, Oct 28, 2026).
 - **Course link.** Yes. Materials and accords follow the order of my perfumery course. Revised Oct 27, 2026: the player starts with a small bench of four rather than my real inventory, and unlocks the rest by reputation (see **Materials and how they unlock**). My notes are reference only.
 
 ## Claude Code prompts
@@ -247,7 +331,7 @@ Add a debug option to speed up time. Deploy and give me the link.
 
 How it was built (Oct 28, 2026):
 
-- **Calendar:** a new game starts on 1 March (spring); 1 real hour = 1 game day, so seasons come round about every 15 real days.
+- **Calendar:** a new game starts on 1 March (spring); originally 1 real hour = 1 game day; since Direction change #2, 1 real day = 1 game week, so a year takes about 52 real days.
 - **Regions:** the spec's seven regions plus the places the other naturals grow (Haute-Provence, Andalusia, Réunion, Virginia, the Balkans, the Pacific Northwest, Assam). Seven new naturals came with them: jasmine, rose de mai, tuberose, Bulgarian rose, vetiver, vanilla absolute and frankincense, placed in two new unlock groups ("Roots and resins" at 42, "The great flowers" at 60).
 - **Harvests:** sign a contract in season → it ripens → collect in the best window for full quality, later for less → pick a processing method → it ships, with time based on distance → a crate appears by the back-room door → unpack it into stock.
 - **Supplier (added so a new shop is never stuck between seasons):** aroma chemicals from a catalogue, and naturals from a broker all year at a premium and of only fair quality. Harvesting yourself is cheaper and better, but seasonal and slower.
@@ -295,6 +379,36 @@ How it was built (Oct 28, 2026):
 - **Fetching sounds:** `npm run sounds` searches Freesound for CC0 sounds only, saves the high-quality MP3 previews to `assets/sounds/`, fills in `sounds.json` and logs each in `CREDITS.md`. Not run yet: this environment's network can't reach freesound.org and has no `FREESOUND_API_KEY`. Until then the game is silent.
 - **From the approved packs:** the Grab3D wooden floor tile now covers the floor, the Grab3D door stands open in the front doorway, and the app icon is a render of the Grab3D potion bottle (CC0).
 - **Still waiting** (nothing in the approved packs): perfume bottles, a painted world map, a glass display case, a newspaper masthead and a sitting animation. See `ASSETS_NEEDED.md`.
+
+### Prompt 8: Direction change #2, Phase A
+
+```
+DIRECTION CHANGE #2: progression, story and education overhaul.
+Before building, update docs/SPEC.md with everything below under a
+dated "Direction change" heading, and replace anything it conflicts
+with. Then build PHASE A ONLY and stop. Each later phase gets its
+own session when I say "Next phase."
+```
+
+The full direction is recorded under **Direction change #2** at the top of this spec.
+
+How it was built (Oct 28, 2026):
+
+- **Time:** 1 real day = 1 game week (`time.json`). The HUD shows the date, season and week. A customer's review comes back after the 8-hour drydown, about an hour of real time.
+- **Story intro:** a new game opens on Mireille's shop and her letter, then the character creator. Saves from before this change start a new game (save version 2).
+- **Her bench:** you start with 10 g each of bergamot, lavender and labdanum, plus coins for the supplier. Vanillin comes back with Josette, the baker, after your first review or by day two at the latest.
+- **10-part wearables:** each tap adds one whole part. A perfume must total exactly 10 parts to hand over or bottle.
+- **Scoring:** every brief's hidden target is a reference formula in 10 parts. Your perfume is judged on how close it smells to it at each stage, plus its strength and how long it lasts. That closeness becomes 1–3 stars with some tolerance: about a part either way still earns 3 stars, but a swapped material doesn't. Customers pay on hand-over; only 3 stars adds a bonus (half the pay) when the review comes in.
+- **Feedback:** directional, in perfumer's words, never numbers.
+  - On the wrist, customers say one thing about the opening ("Brighter at the start, I think.").
+  - Their review gives up to two, with how much ("I'd like it a little less sweet as it dries down.", "It was gone by lunchtime.").
+  - Someone coming back to try a page again repeats up to three things they noticed last time.
+- **Her formula book:** her pages come first in the Book.
+  - Each page lists her materials with the amounts smudged; some names have run too.
+  - The margin note is a clue.
+  - Agathe, Henri and Lucien ask for the perfumes she made them. A 3-star match recovers the page, revealing her amounts and a short lesson; fewer stars brings them back later.
+  - The last page, her signature, is nearly blank.
+- **Camera:** zoom 1 frames the whole room below the HUD and stays put; pinch to zoom in and pan. Labels never go under the HUD or off screen, overlapping labels stack, and tapping a name label counts as tapping that person or fixture. Upgrade-spot labels show only when zoomed in.
 
 ### Prompt 3 (original): clients and reviews
 

@@ -1,0 +1,194 @@
+{
+  "grandmother": "Mireille",
+  "retryAfterGameHours": 6,
+  "intro": {
+    "title": "Mireille's shop",
+    "paragraphs": [
+      "Your grandmother Mireille was the town's perfumer for fifty years.",
+      "She left you her shop on the square: the organ, her shelves, three bottles still half full, and her formula book.",
+      "The book is a mess of coffee rings and smudged ink, and most of the amounts have run into nothing. But the town remembers what she made."
+    ],
+    "letter": {
+      "heading": "Tucked inside the cover of her book",
+      "body": [
+        "My dear,",
+        "If you're reading this, the shop is yours. Don't be frightened of the organ. Smell everything twice, write everything down, and let people talk: they'll tell you what they want if you listen.",
+        "The pages that matter most are the ones people still wear. Ask them."
+      ],
+      "signoff": "Mireille"
+    },
+    "start": "Open the shop"
+  },
+  "bench": [
+    { "material": "bergamot", "grams": 10 },
+    { "material": "lavender", "grams": 10 },
+    { "material": "labdanum", "grams": 10 }
+  ],
+  "people": [
+    {
+      "id": "agathe",
+      "name": "Agathe",
+      "about": "She was married in the town church, and Mireille made her wedding cologne.",
+      "look": {
+        "fit": "slim",
+        "parts": { "head": "head_dreamy", "hair": "hair_bob", "top": "top_sweater", "bottom": "bottom_skirt", "shoes": "shoes_curly", "handL": "handL_flower" },
+        "colors": { "skin": "#F3C9A8", "hair": "#E6E1DA", "eyes": "#5B7A4A", "top": "#E9A7B5", "bottom": "#7A6A9C" }
+      }
+    },
+    {
+      "id": "josette",
+      "name": "Josette",
+      "about": "The baker from across the square, flour still on her sleeves.",
+      "look": {
+        "fit": "chubby",
+        "parts": { "head": "head_sunny", "hair": "hair_curly", "hat": "hat_chef", "top": "top_chef", "bottom": "bottom_pants", "shoes": "shoes_sneakers" },
+        "colors": { "skin": "#C68A63", "hair": "#3B2A24", "eyes": "#3B2A24", "top": "#F5EFE6", "bottom": "#5E6C8C" }
+      }
+    },
+    {
+      "id": "henri",
+      "name": "Henri",
+      "about": "The clockmaker. His late wife wore one of Mireille's ambers every winter.",
+      "look": {
+        "fit": "classic",
+        "parts": { "head": "head_scamp", "hair": "hair_tousled", "face": "face_mustache", "top": "top_tunic", "bottom": "bottom_pants", "shoes": "shoes_boots", "handL": "handL_book" },
+        "colors": { "skin": "#E8B48F", "hair": "#B9B4AE", "eyes": "#2F4F86", "top": "#8C5A3C", "bottom": "#4B4B55" }
+      }
+    },
+    {
+      "id": "lucien",
+      "name": "Lucien",
+      "about": "The retired postman, who knew every house in town and every one of Mireille's perfumes.",
+      "look": {
+        "fit": "chubby",
+        "parts": { "head": "head_cheeky", "hair": "hair_spiky", "face": "face_glasses", "hat": "hat_beanie", "top": "top_sweater", "bottom": "bottom_cargo", "shoes": "shoes_boots" },
+        "colors": { "skin": "#A56B48", "hair": "#26222A", "eyes": "#3B2A24", "top": "#4E7FA8", "bottom": "#5E6B4A" }
+      }
+    }
+  ],
+  "requests": [
+    {
+      "id": "agathe-wedding",
+      "person": "agathe",
+      "after": { "gameHours": 0 },
+      "greeting": "So you're Mireille's grandchild. You have her hands.",
+      "retryGreeting": "Shall we try my wedding cologne again? I've been thinking about it all week.",
+      "thanks": "That's it. That's exactly it. She'd be so proud of you.",
+      "brief": {
+        "id": "agathe-wedding",
+        "page": "wedding-cologne",
+        "memory": "Your grandmother made the cologne I wore at my wedding. Bright as lemons when I walked up the aisle, and lavender all through the dancing. My granddaughter is getting married. Could you make it again?",
+        "hints": [
+          "It wasn't sweet at all. Clean, like washing on the line.",
+          "Right at the very end there was something warm, just a whisper of it."
+        ],
+        "target": { "formula": { "bergamot": 6, "lavender": 3, "labdanum": 1 } },
+        "pay": 30
+      }
+    },
+    {
+      "id": "josette-sweeter",
+      "person": "josette",
+      "after": { "reviews": 1 },
+      "latestGameHours": 48,
+      "greeting": "Bonjour! I've owed your grandmother something for years.",
+      "gives": [{ "material": "vanillin", "grams": 10 }],
+      "giveText": "Mireille lent me this for my custards and I never gave it back. Vanillin: it's what makes vanilla smell like vanilla. Everything on your shelves is so serious. I'd like something sweeter.",
+      "thanks": "Oh, that's the bakery. That's my whole life in a bottle.",
+      "brief": {
+        "id": "josette-sweeter",
+        "memory": "The bakery at five in the morning, before anyone else in town is awake.",
+        "hints": [
+          "Sweeter than anything you've made so far, I'd guess.",
+          "A little lemon zest in the dough, and a dark crust."
+        ],
+        "target": { "formula": { "vanillin": 5, "bergamot": 3, "labdanum": 2 } },
+        "pay": 30
+      }
+    },
+    {
+      "id": "henri-amber",
+      "person": "henri",
+      "after": { "done": ["josette-sweeter"], "hoursAfter": 4 },
+      "greeting": "Josette says you have Mireille's vanilla back. Then perhaps you can help me.",
+      "retryGreeting": "I'd like to try the amber again, if you'll humour an old man.",
+      "thanks": "Ah. Winter evenings. Thank you.",
+      "brief": {
+        "id": "henri-amber",
+        "page": "winter-amber",
+        "memory": "Every winter Mireille made my wife an amber. Warm as the stove in my workshop, and sweet as the cake she always burned a little.",
+        "hints": [
+          "A bright moment at the very start, like opening the door to the cold.",
+          "Mostly that dark, warm resin, with the sweetness underneath."
+        ],
+        "target": { "formula": { "labdanum": 5, "vanillin": 3, "bergamot": 2 } },
+        "pay": 35
+      }
+    },
+    {
+      "id": "lucien-sunday",
+      "person": "lucien",
+      "after": { "done": ["henri-amber"], "hoursAfter": 6 },
+      "greeting": "Henri's been showing everyone his wrist. My turn.",
+      "retryGreeting": "Back for my Sunday best. Third time lucky?",
+      "thanks": "My Sunday best. I'll wear it to lunch.",
+      "brief": {
+        "id": "lucien-sunday",
+        "page": "sunday-lavender",
+        "memory": "My Sunday best. Mireille made it the year I retired: lavender, but softer, and it lasted right through lunch.",
+        "hints": [
+          "Mostly lavender, but not like soap. Rounder.",
+          "Sweet and warm underneath, like the bottom of a biscuit tin."
+        ],
+        "target": { "formula": { "lavender": 5, "vanillin": 2, "labdanum": 2, "bergamot": 1 } },
+        "pay": 35
+      }
+    }
+  ],
+  "pages": [
+    {
+      "id": "wedding-cologne",
+      "title": "Cologne for Agathe's wedding",
+      "dated": "June 1979",
+      "hiddenNames": [],
+      "margin": "Bright for the vows, soft for the dancing. Only a drop of the resin, or it turns heavy.",
+      "lesson": {
+        "text": "An eau de cologne is a light splash led by citrus oils such as bergamot, with herbs like lavender, worn generously and gone within a couple of hours. The style takes its name from the city of Cologne, where it was sold from the early 1700s.",
+        "verified": true,
+        "check": []
+      }
+    },
+    {
+      "id": "winter-amber",
+      "title": "Winter amber, for Henri's wife",
+      "dated": "December 1986",
+      "hiddenNames": ["vanillin"],
+      "margin": "Half the bottle is resin. The sweet one stays longest; keep it under the labdanum.",
+      "lesson": {
+        "text": "An amber accord pairs a dark, leathery resin like labdanum with vanilla sweetness. Vanillin, the molecule that gives vanilla most of its smell, was first made in a laboratory in 1874, and warm ambers built on it became popular in the early 1900s.",
+        "verified": false,
+        "check": ["lesson: the early-1900s date for ambers built on vanillin"]
+      }
+    },
+    {
+      "id": "sunday-lavender",
+      "title": "Lucien's Sunday best",
+      "dated": "May 1998",
+      "hiddenNames": ["vanillin"],
+      "margin": "Lavender first and most. A little of the sweet and the resin to round it, one drop of bergamot to wake it up.",
+      "lesson": {
+        "text": "Lavender is a heart note: it opens herbal and fresh and fades within a few hours. A sweet, resinous base under it makes it rounder and helps it last.",
+        "verified": true,
+        "check": []
+      }
+    },
+    {
+      "id": "her-signature",
+      "title": "For the shop",
+      "dated": "",
+      "signature": true,
+      "hiddenNames": [],
+      "margin": "Nearly blank. Just a title, in her best handwriting, and nothing underneath."
+    }
+  ]
+}

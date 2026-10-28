@@ -30,6 +30,9 @@ const DECEMBER = 24 * (31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 5);
 const JULY = 24 * (31 + 30 + 31 + 30 + 5);
 const owned = { owned: true, quality: 1.05, gameHours: 6 };
 
+/** Her bench, plus the vanillin Josette brings back in week 1. */
+const ownedMaterials = new Set([...unlockedMaterialIds(0), 'vanillin']);
+
 describe('sourcing data', () => {
   it('is valid: every natural grows somewhere and everything has a price', () => {
     expect(validateSourcing(all, naturals)).toEqual([]);
@@ -65,14 +68,14 @@ describe('harvest contracts', () => {
     expect(inSeason(bergamot, JULY)).toBe(false);
     const s = newSourcingState();
     const wallet = { money: 100 };
-    expect(signContract(s, wallet, 'calabria', 'bergamot', JULY, unlockedMaterialIds(0))).toBe('Out of season.');
-    expect(signContract(s, wallet, 'calabria', 'bergamot', DECEMBER, unlockedMaterialIds(0))).toBeNull();
+    expect(signContract(s, wallet, 'calabria', 'bergamot', JULY, ownedMaterials)).toBe('Out of season.');
+    expect(signContract(s, wallet, 'calabria', 'bergamot', DECEMBER, ownedMaterials)).toBeNull();
     expect(wallet.money).toBe(100 - bergamot.cost);
   });
 
   it('give top quality inside the best window and less when picked late', () => {
     const s = newSourcingState();
-    signContract(s, { money: 100 }, 'calabria', 'bergamot', MARCH, unlockedMaterialIds(0));
+    signContract(s, { money: 100 }, 'calabria', 'bergamot', MARCH, ownedMaterials);
     const c = s.contracts[0];
     expect(harvestQuality(c, c.ripeAt)).toBe(1);
     expect(harvestQuality(c, c.bestUntil + 1)).toBeLessThan(1);
@@ -82,7 +85,7 @@ describe('harvest contracts', () => {
   it("can't be harvested before they ripen, and only with a suitable method", () => {
     const s = newSourcingState();
     const wallet = { money: 100 };
-    signContract(s, wallet, 'calabria', 'bergamot', MARCH, unlockedMaterialIds(0));
+    signContract(s, wallet, 'calabria', 'bergamot', MARCH, ownedMaterials);
     const c = s.contracts[0];
     expect(harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt - 1, owned)).toBe('Not ripe yet.');
     expect(harvest(s, wallet, c.id, 'steam-distillation', c.ripeAt, owned)).toMatch(/doesn't suit/);
@@ -92,7 +95,7 @@ describe('harvest contracts', () => {
   it('process, ship by distance, and arrive as a crate that unpacks into stock', () => {
     const s = newSourcingState();
     const wallet = { money: 100 };
-    signContract(s, wallet, 'calabria', 'bergamot', MARCH, unlockedMaterialIds(0));
+    signContract(s, wallet, 'calabria', 'bergamot', MARCH, ownedMaterials);
     const c = s.contracts[0];
     harvest(s, wallet, c.id, 'cold-pressing', c.ripeAt, owned);
     const readyAt = s.batches[0].readyAt;
@@ -122,8 +125,8 @@ describe('inventory', () => {
 
   it('uses up materials for a perfume, oldest first, and refuses when short', () => {
     const s = newSourcingState();
-    order(s, { money: 100 }, 'vanillin', false, 0, unlockedMaterialIds(0));
-    order(s, { money: 100 }, 'labdanum', true, 0, unlockedMaterialIds(0));
+    order(s, { money: 100 }, 'vanillin', false, 0, ownedMaterials);
+    order(s, { money: 100 }, 'labdanum', true, 0, ownedMaterials);
     for (const crate of tickSourcing(s, 100)) unpack(s, crate.id, 100);
     expect(consume(s, { vanillin: 1, bergamot: 1 }, 100)).toBeNull();
     const q = consume(s, { vanillin: 1, labdanum: 1 }, 100);

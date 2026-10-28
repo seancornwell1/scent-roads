@@ -5,12 +5,14 @@ import { percentages, totalParts } from '../game/formula';
 import { findBrief } from '../game/clients';
 import { LAYERS, type Material } from '../game/types';
 import { missingFor, qualityWord, stockOf, stockQuality } from '../game/sourcing';
-import { nextTier, unlockedMaterialIds } from '../game/unlocks';
+import { nextTier } from '../game/unlocks';
+import { ownedMaterials } from '../game/world';
+import { pageById } from '../game/story';
 import { nowGame, state } from '../state';
+import { pageCard } from './book';
 import { drydownGraph, familyName } from './graph';
 import { esc, formatParts, header } from './html';
 
-const STEPS = [0.5, 1, 5];
 const LAYER_NAMES = { top: 'Top', heart: 'Heart', base: 'Base' } as const;
 
 export function organScreen(): string {
@@ -23,7 +25,7 @@ export function organScreen(): string {
     <main class="organ">${body}</main>
     <nav class="tabs">
       <button class="${ui.organTab === 'materials' ? 'on' : ''}" data-action="tab" data-tab="materials">Materials</button>
-      <button class="${ui.organTab === 'formula' ? 'on' : ''}" data-action="tab" data-tab="formula">Formula · ${formatParts(total)} parts</button>
+      <button class="${ui.organTab === 'formula' ? 'on' : ''}" data-action="tab" data-tab="formula">Formula · ${formatParts(total)} of ${content.model.wearableParts} parts</button>
     </nav>
     ${ui.detail ? detailSheet(materialsById.get(ui.detail)!) : ''}`;
 }
@@ -36,10 +38,15 @@ function orderBanner(): string {
   const brief = findBrief(visit.briefId)!;
   const hints = brief.hints.slice(0, visit.hintsAsked).map((h) => `<span class="small">“${esc(h)}”</span>`).join('<br>');
   const missing = missingFor(save.sourcing!, save.draft).map((id) => materialsById.get(id)?.name ?? id);
-  const ready = totalParts(save.draft) > 0 && missing.length === 0;
+  const total = totalParts(save.draft);
+  const full = total === content.model.wearableParts;
+  const ready = full && missing.length === 0;
+  const page = brief.page ? pageById(brief.page) : undefined;
   return `<div class="order">
     <p class="small"><strong>For ${esc(visit.name)}:</strong> “${esc(brief.memory)}”</p>
     ${hints ? `<p class="muted">${hints}</p>` : ''}
+    ${page ? `<details class="small"><summary>Her page</summary><ul class="list cards">${pageCard(page, save.story!, false)}</ul></details>` : ''}
+    ${full ? '' : `<p class="small muted">${total} of ${content.model.wearableParts} parts: a perfume needs exactly ${content.model.wearableParts}.</p>`}
     ${missing.length ? `<p class="small warn-text">Not enough ${esc(missing.join(', '))} in stock: order or harvest more in the back room.</p>` : ''}
     <div class="row-between">
       <button class="link" data-action="drop-order">Not now</button>
@@ -57,11 +64,12 @@ function accordBanner(): string {
   </div>`;
 }
 
-function stepPicker(): string {
-  const chips = STEPS.map(
-    (s) => `<button class="chip ${state.ui.step === s ? 'on' : ''}" data-action="step" data-step="${s}">${formatParts(s)}</button>`,
-  ).join('');
-  return `<div class="row-between"><span class="muted small">Parts per tap</span><div class="chips">${chips}</div></div>`;
+/** How full the formula is: wearables must total exactly the wearable parts. */
+function partsMeter(): string {
+  const total = totalParts(state.save.draft);
+  const max = content.model.wearableParts;
+  const note = total === max ? 'A full formula, ready to wear.' : total > max ? `Too many: take ${total - max} out.` : `${max - total} more to go. Each tap adds one part.`;
+  return `<div class="row-between"><span class="muted small">${note}</span><strong>${formatParts(total)} of ${max} parts</strong></div>`;
 }
 
 function materialsTab(): string {
@@ -72,7 +80,7 @@ function materialsTab(): string {
   </div>`;
   const byName = (a: Material, b: Material) => a.name.localeCompare(b.name);
   const reputation = state.save.customers?.reputation ?? 0;
-  const unlocked = unlockedMaterialIds(reputation);
+  const unlocked = ownedMaterials(state.save);
   const owned = content.materials.filter((m) => unlocked.has(m.id));
   const groups =
     browseBy === 'layer'
@@ -86,7 +94,7 @@ function materialsTab(): string {
     .filter((g) => g.items.length > 0)
     .map((g) => `<h2>${esc(g.title)}</h2><ul class="list">${g.items.sort(byName).map(materialRow).join('')}</ul>`)
     .join('');
-  return `<div class="row-between">${toggle}</div>${stepPicker()}${list}${upcoming}`;
+  return `<div class="row-between">${toggle}</div>${partsMeter()}${list}${upcoming}`;
 }
 
 function materialRow(m: Material): string {
@@ -146,9 +154,8 @@ function formulaTab(): string {
   const accordLine = accords.length
     ? accords.map((a) => `<span class="chip on">${esc(a.name)}</span>`).join('')
     : '<span class="muted small">No accord recognized yet.</span>';
-  return `${stepPicker()}
+  return `${partsMeter()}
     <ul class="list">${rows}</ul>
-    <div class="row-between"><span class="muted small">Total</span><strong>${formatParts(totalParts(draft))} parts</strong></div>
     <h2>Accords</h2><div class="chips">${accordLine}</div>
     <h2>Drydown</h2>
     <p class="muted small">Who dominates at each stage. Bar length shows how loud it still is next to the opening.</p>
@@ -181,7 +188,7 @@ function detailSheet(m: Material): string {
     <p class="muted small">${stockLine(m.id)}</p>
     <div class="row-between">
       <button class="link" data-action="close-detail">Close</button>
-      <button class="primary" data-action="add" data-id="${esc(m.id)}">Add ${formatParts(state.ui.step)} part${state.ui.step === 1 ? '' : 's'}</button>
+      <button class="primary" data-action="add" data-id="${esc(m.id)}">Add 1 part</button>
     </div>
   </section>`;
 }

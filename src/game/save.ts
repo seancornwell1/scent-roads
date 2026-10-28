@@ -4,12 +4,14 @@ import type { CustomerState } from './customers';
 import type { DisplayState } from './display';
 import type { NewsItem } from './events';
 import type { SourcingState } from './sourcing';
+import type { StoryState } from './story';
 import type { UpgradeState } from './upgrades';
 import type { Formula } from './types';
 
 // Saves live in this phone's browser storage. Times are real timestamps (ms since epoch).
 
-export const SAVE_VERSION = 1;
+/** Version 2 (Direction change #2: the story, 10-part formulas, 1–3 stars) starts a new game. */
+export const SAVE_VERSION = 2;
 const STORAGE_KEY = 'field-and-flacon/save';
 
 export interface SavedFormula {
@@ -50,6 +52,8 @@ export interface SaveData {
   notify?: boolean;
   /** Sound volume, 0 (off) to 1; 0.8 when unset. */
   sound?: number;
+  /** The story: her book's recovered pages, townspeople's requests (filled in on load). */
+  story?: StoryState;
 }
 
 /** Checks that text looks like a save from this game before importing it. */

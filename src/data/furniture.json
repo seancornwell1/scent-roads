@@ -2,9 +2,9 @@
   "appeal": {
     "levels": [
       { "min": 0, "name": "Humble", "payMultiplier": 1, "strictness": 0, "arrivalMultiplier": 1 },
-      { "min": 8, "name": "Charming", "payMultiplier": 1.25, "strictness": 0.03, "arrivalMultiplier": 0.9 },
-      { "min": 20, "name": "Elegant", "payMultiplier": 1.5, "strictness": 0.06, "arrivalMultiplier": 0.8 },
-      { "min": 35, "name": "Renowned", "payMultiplier": 2, "strictness": 0.1, "arrivalMultiplier": 0.7 }
+      { "min": 8, "name": "Charming", "payMultiplier": 1.25, "strictness": 0.02, "arrivalMultiplier": 0.9 },
+      { "min": 20, "name": "Elegant", "payMultiplier": 1.5, "strictness": 0.04, "arrivalMultiplier": 0.8 },
+      { "min": 35, "name": "Renowned", "payMultiplier": 2, "strictness": 0.06, "arrivalMultiplier": 0.7 }
     ]
   },
   "kinds": {

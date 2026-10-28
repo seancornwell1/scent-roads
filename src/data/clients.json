@@ -2,7 +2,7 @@
   "timing": {
     "arrivalEveryRealMinutes": 4,
     "maxInShop": 3,
-    "reviewAfterGameHours": 10,
+    "reviewAfterGameHours": 8,
     "regularReturnsAfterGameHours": 20,
     "browseSeconds": [
       5,
@@ -16,67 +16,46 @@
     "difficulties": {
       "cozy": {
         "stars": [
-          0.25,
-          0.4,
-          0.55,
-          0.7
-        ],
-        "moodFullAt": 0.35
+          0.65,
+          0.9
+        ]
       },
       "realistic": {
         "stars": [
-          0.4,
-          0.55,
-          0.7,
-          0.85
-        ],
-        "moodFullAt": 0.6
+          0.75,
+          0.95
+        ]
       }
     },
     "weights": {
-      "stages": 0.5,
-      "mood": 0.2,
-      "strength": 0.15,
-      "longevity": 0.15
+      "stages": 0.6,
+      "strength": 0.2,
+      "longevity": 0.2
     },
-    "strengthBands": [
-      0.75,
-      1.5,
-      3,
-      6
-    ],
-    "strengthWords": [
-      "a whisper",
-      "soft",
-      "moderate",
-      "strong",
-      "very strong"
-    ],
+    "tolerance": 0.06,
     "longevityFadeAt": 0.2,
     "longevityMaxHours": 48
   },
   "economy": {
-    "payShareAtWorstImpression": 0.6,
     "reputationForStars": [
-      -1,
       0,
       1,
-      2,
       3
-    ]
+    ],
+    "threeStarBonus": 0.5
   },
   "lines": {
     "impression": [
       {
-        "min": 0.6,
+        "min": 0.93,
         "text": "Oh! That's it. That's exactly the feeling."
       },
       {
-        "min": 0.4,
+        "min": 0.85,
         "text": "Mm, lovely. I can see where you're going with this."
       },
       {
-        "min": 0.2,
+        "min": 0.7,
         "text": "Interesting... not quite what I pictured, but I'll wear it."
       },
       {
@@ -86,15 +65,15 @@
     ],
     "stageWords": [
       {
-        "min": 0.6,
+        "min": 0.93,
         "text": "just right"
       },
       {
-        "min": 0.4,
+        "min": 0.85,
         "text": "close"
       },
       {
-        "min": 0.2,
+        "min": 0.7,
         "text": "a bit off"
       },
       {
@@ -109,14 +88,102 @@
     },
     "letDown": "If I'm honest, {stage} let me down: it didn't feel like my memory.",
     "allGood": "It held my memory from the first spray to the end of the day.",
-    "tooWeak": "It faded faster than I'd hoped.",
-    "strengthOff": "It was {actual}, and I'd pictured something {target}.",
-    "moodOff": "I wanted it to feel more {moods}.",
     "chatter": [
       "It's such a cozy little shop.",
       "I've walked past a hundred times and never come in.",
       "Do you make all of these yourself?"
-    ]
+    ],
+    "feedback": {
+      "stages": {
+        "opening": "at the start",
+        "heart": "after an hour",
+        "drydown": "as it dries down"
+      },
+      "amounts": [
+        {
+          "min": 0.25,
+          "text": "much"
+        },
+        {
+          "min": 0.12,
+          "text": "a little"
+        },
+        {
+          "min": 0,
+          "text": "a touch"
+        }
+      ],
+      "families": {
+        "citrus": {
+          "more": "brighter",
+          "less": "less sharp"
+        },
+        "aromatic": {
+          "more": "more herbal",
+          "less": "less herbal"
+        },
+        "green": {
+          "more": "greener",
+          "less": "less leafy"
+        },
+        "floral": {
+          "more": "more flowery",
+          "less": "less flowery"
+        },
+        "fruity": {
+          "more": "fruitier",
+          "less": "less fruity"
+        },
+        "lactonic": {
+          "more": "creamier",
+          "less": "less milky"
+        },
+        "spicy": {
+          "more": "spicier",
+          "less": "less peppery"
+        },
+        "aldehydic": {
+          "more": "more sparkling",
+          "less": "less soapy"
+        },
+        "woody": {
+          "more": "woodier",
+          "less": "less woody"
+        },
+        "amber": {
+          "more": "warmer",
+          "less": "less heavy"
+        },
+        "gourmand": {
+          "more": "sweeter",
+          "less": "less sweet"
+        },
+        "musk": {
+          "more": "softer and closer to the skin",
+          "less": "less musky"
+        },
+        "mossy": {
+          "more": "earthier",
+          "less": "less damp and mossy"
+        }
+      },
+      "vague": "{Word} {stage}, I think.",
+      "specific": [
+        "I'd like it {amount} {word} {stage}.",
+        "{Amount} {word} {stage}, if you can.",
+        "Maybe {amount} {word} {stage}."
+      ],
+      "strength": {
+        "more": "It's so soft I can barely smell it.",
+        "less": "It's a bit loud. I'd like it quieter."
+      },
+      "longevity": {
+        "more": "It was gone by lunchtime.",
+        "less": "It clung on far longer than I wanted."
+      },
+      "perfect": "I wouldn't change a thing.",
+      "lastTime": "Last time, you said:"
+    }
   },
   "walkInNames": [
     "Ines",
@@ -139,347 +206,264 @@
   "briefs": [
     {
       "id": "first-cold-day",
-      "tier": 0,
       "memory": "The first cold day of the year, when you finally pull the wool coat out of the cupboard.",
       "hints": [
         "There was a hot drink waiting at home, something sweet.",
         "The air outside was sharp, but inside everything glowed."
       ],
       "target": {
-        "families": {
-          "amber": 0.5,
-          "gourmand": 0.3,
-          "citrus": 0.2
-        },
-        "moods": [
-          "warm",
-          "cozy"
-        ],
-        "strength": 3,
-        "longevityHours": 8
+        "formula": {
+          "labdanum": 4,
+          "vanillin": 3,
+          "bergamot": 3
+        }
       },
       "pay": 30
     },
     {
+      "id": "evening-walk",
+      "memory": "Walking home along the lavender hedges at dusk.",
+      "hints": [
+        "The hedges were in full bloom.",
+        "Somebody had lit a fire, warm and resinous."
+      ],
+      "target": {
+        "formula": {
+          "lavender": 5,
+          "labdanum": 4,
+          "bergamot": 1
+        }
+      },
+      "pay": 25
+    },
+    {
       "id": "sicilian-balcony",
-      "tier": 0,
       "memory": "Breakfast on a balcony in Sicily, the morning before the heat.",
       "hints": [
         "Someone was peeling fruit, something more bitter than an orange.",
         "It doesn't need to last. It was a morning, not a whole day."
       ],
       "target": {
-        "families": {
-          "citrus": 0.6,
-          "aromatic": 0.3,
-          "gourmand": 0.1
-        },
-        "moods": [
-          "bright",
-          "fresh"
-        ],
-        "strength": 2,
-        "longevityHours": 2
+        "formula": {
+          "bergamot": 8,
+          "lavender": 2
+        }
       },
       "pay": 25
     },
     {
       "id": "linen-cupboard",
-      "tier": 0,
       "memory": "My grandmother's linen cupboard: folded sheets and little cloth sachets.",
       "hints": [
         "The sachets were full of dried purple flowers.",
         "Underneath it all, something soft and sweet."
       ],
       "target": {
-        "families": {
-          "aromatic": 0.6,
-          "gourmand": 0.2,
-          "amber": 0.2
-        },
-        "moods": [
-          "clean",
-          "cozy"
-        ],
-        "strength": 2,
-        "longevityHours": 6
+        "formula": {
+          "lavender": 6,
+          "vanillin": 2,
+          "labdanum": 2
+        }
       },
       "pay": 25
     },
     {
       "id": "library-fire",
-      "tier": 0,
       "memory": "An old library on a winter evening, with a fire going and deep leather chairs.",
       "hints": [
         "It was dark in there, all honey-coloured shadows.",
         "I'd love it to stay with me all evening."
       ],
       "target": {
-        "families": {
-          "amber": 0.6,
-          "gourmand": 0.25,
-          "aromatic": 0.15
-        },
-        "moods": [
-          "warm",
-          "dark"
-        ],
-        "strength": 4,
-        "longevityHours": 12
+        "formula": {
+          "labdanum": 6,
+          "vanillin": 2,
+          "lavender": 2
+        }
       },
       "pay": 35
     },
     {
       "id": "lemon-grove-wedding",
-      "tier": 1,
       "memory": "A wedding in a lemon grove.",
       "hints": [
         "The bride carried white flowers, very airy.",
         "It was a long, happy afternoon."
       ],
       "target": {
-        "families": {
-          "citrus": 0.4,
-          "floral": 0.4,
-          "amber": 0.2
-        },
-        "moods": [
-          "bright",
-          "romantic"
-        ],
-        "strength": 3,
-        "longevityHours": 6
+        "formula": {
+          "bergamot": 4,
+          "hedione": 4,
+          "labdanum": 2
+        }
       },
       "pay": 40
     },
     {
       "id": "spice-market",
-      "tier": 1,
       "memory": "Walking through a spice market at dusk.",
       "hints": [
         "Pepper, I remember pepper, but a rosy kind.",
         "The stones were still warm from the sun."
       ],
       "target": {
-        "families": {
-          "spicy": 0.3,
-          "amber": 0.4,
-          "gourmand": 0.3
-        },
-        "moods": [
-          "warm",
-          "bold"
-        ],
-        "strength": 4,
-        "longevityHours": 10
+        "formula": {
+          "pink-pepper": 3,
+          "labdanum": 4,
+          "vanillin": 3
+        }
       },
       "pay": 40
     },
     {
       "id": "sunlit-studio",
-      "tier": 1,
       "memory": "A painter's studio full of light, every window open.",
       "hints": [
         "Clean wooden floors, and the air felt bigger than the room.",
         "Something floral, but transparent, like light itself."
       ],
       "target": {
-        "families": {
-          "floral": 0.35,
-          "woody": 0.35,
-          "citrus": 0.3
-        },
-        "moods": [
-          "bright",
-          "calm"
-        ],
-        "strength": 2,
-        "longevityHours": 6
+        "formula": {
+          "hedione": 4,
+          "iso-e-super": 3,
+          "bergamot": 3
+        }
       },
       "pay": 40
     },
     {
       "id": "fig-tree",
-      "tier": 2,
       "memory": "Lying under the fig tree in my aunt's garden.",
       "hints": [
         "The leaves smelled green, almost like cut grass.",
         "The figs were soft and milky when you broke them open."
       ],
       "target": {
-        "families": {
-          "green": 0.4,
-          "lactonic": 0.35,
-          "woody": 0.25
-        },
-        "moods": [
-          "natural",
-          "calm"
-        ],
-        "strength": 3,
-        "longevityHours": 6
+        "formula": {
+          "stemone": 2,
+          "cis-3-hexenol": 1,
+          "gamma-octalactone": 4,
+          "cedarwood-virginia": 3
+        }
       },
       "pay": 45
     },
     {
       "id": "grandfathers-workshop",
-      "tier": 2,
       "memory": "My grandfather's workshop.",
       "hints": [
         "Pencil shavings everywhere.",
         "Dry and dusty, but warm, never cold."
       ],
       "target": {
-        "families": {
-          "woody": 0.6,
-          "amber": 0.25,
-          "aromatic": 0.15
-        },
-        "moods": [
-          "dry",
-          "calm"
-        ],
-        "strength": 3,
-        "longevityHours": 12
+        "formula": {
+          "cedarwood-virginia": 6,
+          "labdanum": 2,
+          "lavender": 2
+        }
       },
       "pay": 45
     },
     {
       "id": "seaside-summer",
-      "tier": 2,
       "memory": "A summer at the seaside: sun cream and ice lollies.",
       "hints": [
         "Coconut, definitely coconut.",
         "Peaches from a paper bag on the walk home."
       ],
       "target": {
-        "families": {
-          "lactonic": 0.5,
-          "citrus": 0.3,
-          "floral": 0.2
-        },
-        "moods": [
-          "sweet",
-          "playful"
-        ],
-        "strength": 3,
-        "longevityHours": 5
+        "formula": {
+          "gamma-octalactone": 5,
+          "gamma-decalactone": 3,
+          "bergamot": 2
+        }
       },
       "pay": 45
     },
     {
       "id": "forest-after-rain",
-      "tier": 3,
       "memory": "A forest path just after the rain stops.",
       "hints": [
         "The ground was dark and soft underfoot.",
         "Moss on every stone."
       ],
       "target": {
-        "families": {
-          "mossy": 0.4,
-          "woody": 0.4,
-          "green": 0.2
-        },
-        "moods": [
-          "earthy",
-          "dark"
-        ],
-        "strength": 3,
-        "longevityHours": 12
+        "formula": {
+          "oakmoss": 3,
+          "cedarwood-virginia": 3,
+          "patchouli": 1,
+          "stemone": 1,
+          "iso-e-super": 2
+        }
       },
       "pay": 55
     },
     {
       "id": "rose-garden-evening",
-      "tier": 3,
       "memory": "A rose garden in the evening, when the paths are still warm.",
       "hints": [
         "Roses, of course, but soft ones, like petals in a book.",
         "Something earthy underneath from the flowerbeds."
       ],
       "target": {
-        "families": {
-          "floral": 0.6,
-          "mossy": 0.2,
-          "amber": 0.2
-        },
-        "moods": [
-          "romantic",
-          "soft"
-        ],
-        "strength": 3,
-        "longevityHours": 10
+        "formula": {
+          "phenylethyl-alcohol": 6,
+          "hedione": 1,
+          "oakmoss": 1,
+          "labdanum": 2
+        }
       },
       "pay": 55
     },
     {
       "id": "barbershop",
-      "tier": 4,
       "memory": "Sitting in my father's barbershop chair as a boy.",
       "hints": [
         "Lavender, and something sweet like hay.",
         "Very clean, very crisp."
       ],
       "target": {
-        "families": {
-          "aromatic": 0.4,
-          "gourmand": 0.3,
-          "mossy": 0.15,
-          "woody": 0.15
-        },
-        "moods": [
-          "clean",
-          "bold"
-        ],
-        "strength": 4,
-        "longevityHours": 10
+        "formula": {
+          "lavender": 4,
+          "coumarin": 2,
+          "oakmoss": 1,
+          "cedarwood-virginia": 1,
+          "bergamot": 2
+        }
       },
       "pay": 60
     },
     {
       "id": "autumn-orchard",
-      "tier": 6,
       "memory": "Picking plums in an orchard in late autumn.",
       "hints": [
         "The fruit was so ripe it was almost jam.",
         "Afterwards, black tea by the stove."
       ],
       "target": {
-        "families": {
-          "fruity": 0.5,
-          "woody": 0.3,
-          "amber": 0.2
-        },
-        "moods": [
-          "cozy",
-          "playful"
-        ],
-        "strength": 3,
-        "longevityHours": 10
+        "formula": {
+          "beta-damascone": 1,
+          "gamma-decalactone": 3,
+          "black-tea": 3,
+          "labdanum": 2,
+          "cedarwood-virginia": 1
+        }
       },
       "pay": 65
     },
     {
       "id": "clean-sheets",
-      "tier": 8,
       "memory": "Climbing into fresh sheets that dried in the sun.",
       "hints": [
         "Soft and powdery, like skin after a bath.",
         "A little sparkle, like starch."
       ],
       "target": {
-        "families": {
-          "musk": 0.5,
-          "aldehydic": 0.3,
-          "floral": 0.2
-        },
-        "moods": [
-          "clean",
-          "soft"
-        ],
-        "strength": 2,
-        "longevityHours": 12
+        "formula": {
+          "ethylene-brassylate": 6,
+          "aldehyde-c11": 1,
+          "hedione": 3
+        }
       },
       "pay": 70
     }
@@ -510,7 +494,7 @@
       "greeting": "Hello again, dear.",
       "remember": [
         {
-          "minStars": 4,
+          "minStars": 3,
           "text": "I still wear {perfume} every Sunday. You have a gift."
         },
         {
@@ -525,70 +509,49 @@
       "briefs": [
         {
           "id": "odile-classroom",
-          "tier": 0,
           "memory": "My classroom on the last day before the summer holidays.",
           "hints": [
             "Windows open, and somebody always had an orange in their lunch.",
             "Chalk dust, and lavender from my own handbag."
           ],
           "target": {
-            "families": {
-              "citrus": 0.45,
-              "aromatic": 0.4,
-              "gourmand": 0.15
-            },
-            "moods": [
-              "bright",
-              "clean"
-            ],
-            "strength": 2,
-            "longevityHours": 4
+            "formula": {
+              "lavender": 6,
+              "bergamot": 3,
+              "labdanum": 1
+            }
           },
           "pay": 30
         },
         {
           "id": "odile-garden-party",
-          "tier": 1,
           "memory": "A garden party where my late husband proposed.",
           "hints": [
             "Jasmine on the trellis, very faint.",
             "He wore something warm and woody."
           ],
           "target": {
-            "families": {
-              "floral": 0.45,
-              "woody": 0.3,
-              "amber": 0.25
-            },
-            "moods": [
-              "romantic",
-              "warm"
-            ],
-            "strength": 3,
-            "longevityHours": 10
+            "formula": {
+              "hedione": 5,
+              "iso-e-super": 3,
+              "labdanum": 2
+            }
           },
           "pay": 45
         },
         {
           "id": "odile-rose-letters",
-          "tier": 3,
           "memory": "Old love letters, pressed with roses, in a cedar box.",
           "hints": [
             "The petals had gone dry and papery.",
             "The box itself smelled of pencils."
           ],
           "target": {
-            "families": {
-              "floral": 0.5,
-              "woody": 0.35,
-              "gourmand": 0.15
-            },
-            "moods": [
-              "romantic",
-              "soft"
-            ],
-            "strength": 2,
-            "longevityHours": 12
+            "formula": {
+              "phenylethyl-alcohol": 5,
+              "cedarwood-virginia": 4,
+              "vanillin": 1
+            }
           },
           "pay": 60
         }
@@ -619,7 +582,7 @@
       "greeting": "Afternoon.",
       "remember": [
         {
-          "minStars": 4,
+          "minStars": 3,
           "text": "{perfume}. People keep asking what it is. I don't tell them."
         },
         {
@@ -634,70 +597,50 @@
       "briefs": [
         {
           "id": "bram-bindery",
-          "tier": 0,
           "memory": "My bindery late at night, with the lamp on and the glue pot warm.",
           "hints": [
             "Old leather covers, darker than you'd think.",
             "There was always something sweet, like the vanilla in old paper."
           ],
           "target": {
-            "families": {
-              "amber": 0.55,
-              "gourmand": 0.35,
-              "aromatic": 0.1
-            },
-            "moods": [
-              "dark",
-              "warm"
-            ],
-            "strength": 3,
-            "longevityHours": 12
+            "formula": {
+              "labdanum": 5,
+              "vanillin": 4,
+              "lavender": 1
+            }
           },
           "pay": 35
         },
         {
           "id": "bram-pencil",
-          "tier": 2,
           "memory": "Sharpening pencils at my father's drafting table.",
           "hints": [
             "Cedar shavings.",
             "And the grass outside the open window."
           ],
           "target": {
-            "families": {
-              "woody": 0.6,
-              "green": 0.25,
-              "citrus": 0.15
-            },
-            "moods": [
-              "dry",
-              "fresh"
-            ],
-            "strength": 3,
-            "longevityHours": 10
+            "formula": {
+              "cedarwood-virginia": 6,
+              "cis-3-hexenol": 2,
+              "bergamot": 2
+            }
           },
           "pay": 50
         },
         {
           "id": "bram-cellar",
-          "tier": 3,
           "memory": "The cellar where we kept the apples over winter.",
           "hints": [
             "Damp stone, a bit earthy.",
             "The apples were going sweet and soft."
           ],
           "target": {
-            "families": {
-              "mossy": 0.4,
-              "woody": 0.35,
-              "gourmand": 0.25
-            },
-            "moods": [
-              "earthy",
-              "cozy"
-            ],
-            "strength": 3,
-            "longevityHours": 12
+            "formula": {
+              "oakmoss": 3,
+              "patchouli": 2,
+              "gamma-decalactone": 3,
+              "cedarwood-virginia": 2
+            }
           },
           "pay": 60
         }
@@ -729,7 +672,7 @@
       "greeting": "Hiya! Mind the mud.",
       "remember": [
         {
-          "minStars": 4,
+          "minStars": 3,
           "text": "{perfume} is my favourite thing in the world right now!"
         },
         {
@@ -744,70 +687,49 @@
       "briefs": [
         {
           "id": "nell-herb-bed",
-          "tier": 0,
           "memory": "Weeding the herb bed on a hot afternoon.",
           "hints": [
             "Crushed lavender all over my hands.",
             "And a lemon drink waiting on the step."
           ],
           "target": {
-            "families": {
-              "aromatic": 0.55,
-              "citrus": 0.35,
-              "amber": 0.1
-            },
-            "moods": [
-              "fresh",
-              "clean"
-            ],
-            "strength": 3,
-            "longevityHours": 4
+            "formula": {
+              "lavender": 7,
+              "bergamot": 3
+            }
           },
           "pay": 30
         },
         {
           "id": "nell-greenhouse",
-          "tier": 2,
           "memory": "My greenhouse first thing in the morning.",
           "hints": [
             "Tomato leaves, so green it's almost sharp.",
             "Warm, damp, and a bit milky from the fig cuttings."
           ],
           "target": {
-            "families": {
-              "green": 0.55,
-              "lactonic": 0.25,
-              "citrus": 0.2
-            },
-            "moods": [
-              "natural",
-              "fresh"
-            ],
-            "strength": 3,
-            "longevityHours": 5
+            "formula": {
+              "cis-3-hexenol": 3,
+              "stemone": 2,
+              "gamma-octalactone": 3,
+              "bergamot": 2
+            }
           },
           "pay": 50
         },
         {
           "id": "nell-compost",
-          "tier": 3,
           "memory": "Turning the soil in spring. Honestly, I love it.",
           "hints": [
             "Earthy, mossy, nearly dark.",
             "With a bit of rose from next door's fence."
           ],
           "target": {
-            "families": {
-              "mossy": 0.45,
-              "woody": 0.3,
-              "floral": 0.25
-            },
-            "moods": [
-              "earthy",
-              "natural"
-            ],
-            "strength": 3,
-            "longevityHours": 10
+            "formula": {
+              "oakmoss": 4,
+              "patchouli": 3,
+              "phenylethyl-alcohol": 3
+            }
           },
           "pay": 60
         }

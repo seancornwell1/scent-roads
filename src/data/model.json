@@ -1,4 +1,5 @@
 {
+  "wearableParts": 10,
   "stages": [
     {
       "id": "opening",

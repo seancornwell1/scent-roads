@@ -4,19 +4,18 @@ import { gameNow, newClock } from './game/clock';
 import { newCustomerState } from './game/customers';
 import { newDisplayState } from './game/display';
 import { newSourcingState, sourcing } from './game/sourcing';
+import { newStoryState, story } from './game/story';
 import { newUpgradeState } from './game/upgrades';
 import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'intro' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
   organTab: 'materials' | 'formula';
   browseBy: 'layer' | 'family';
-  /** Parts added per tap. */
-  step: number;
   /** Material whose details sheet is open. */
   detail: string | null;
   /** Accords hit since the banner was last dismissed. */
@@ -45,10 +44,12 @@ function initSave(): SaveData {
   save.announcedTier ??= 0;
   save.clock ??= newClock(now);
   if (!save.sourcing) {
-    // Step 5 removed the free sample stock: everyone starts with coins to buy their first materials.
+    // A new game: her bench (a few bottles left on the organ) and some coins to buy more.
     save.sourcing = newSourcingState();
+    for (const b of story.bench) save.sourcing.inventory.push({ id: `l${save.sourcing.nextId++}`, material: b.material, grams: b.grams, quality: 1, since: 0 });
     save.customers.money += sourcing.startingCoins;
   }
+  save.story ??= newStoryState();
   save.upgrades ??= newUpgradeState();
   save.display ??= newDisplayState();
   save.news ??= {};
@@ -60,7 +61,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'map', upgradesTab: 'furniture', pickSpot: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'map', upgradesTab: 'furniture', pickSpot: null },
 };
 
 let render = () => {};

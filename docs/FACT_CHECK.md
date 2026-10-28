@@ -47,6 +47,14 @@ Not facts: each material's `model.strength` and `model.halfLifeHours` are game t
 
 The minimum percentages in every accord's requirements (e.g. labdanum and vanillin at least 15% each for amber) are game tuning, not course facts.
 
+## Story pages — `src/data/story.json`
+
+The lesson shown when a page of Mireille's book is recovered. Her formulas themselves are invented game content, not facts.
+
+| Page | To confirm | Notes |
+| ---- | ---------- | ----- |
+| `winter-amber` | **lesson**: that warm ambers built on vanillin became popular in the early 1900s | Vanillin's first synthesis in 1874 is well documented; the era of the amber style is Claude's general knowledge. |
+
 ## Regions and seasons — `src/data/regions.json`
 
 Seasons are the months a harvest contract can be signed. Grow times, quality windows, yields and costs are game tuning, not facts.

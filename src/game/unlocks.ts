@@ -35,7 +35,8 @@ export function nextTier(reputation: number, data: Unlocks = unlocks): Tier | nu
   return data.tiers[tierIndex(reputation, data) + 1] ?? null;
 }
 
-export function validateUnlocks(data: Unlocks, materialIds: Set<string>): string[] {
+/** `storyMaterials` are given by the story instead of unlocked by reputation. */
+export function validateUnlocks(data: Unlocks, materialIds: Set<string>, storyMaterials: Set<string> = new Set()): string[] {
   const errors: string[] = [];
   const seen = new Set<string>();
   data.tiers.forEach((t, i) => {
@@ -46,6 +47,6 @@ export function validateUnlocks(data: Unlocks, materialIds: Set<string>): string
       seen.add(id);
     }
   });
-  for (const id of materialIds) if (!seen.has(id)) errors.push(`material "${id}" is never unlocked`);
+  for (const id of materialIds) if (!seen.has(id) && !storyMaterials.has(id)) errors.push(`material "${id}" is never unlocked`);
   return errors;
 }

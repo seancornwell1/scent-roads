@@ -7,7 +7,7 @@ Facts here come from Sean's own course notes, so they count as course-confirmed.
 ## Where Sean is now (Oct 27, 2026)
 
 - Mission 01 (amber) done; Mission 02 (fig) in progress, paused for Christmas gift drafts.
-- The game starts with a small bench of four and unlocks the rest in course order as reputation grows (see "Materials and how they unlock" in `docs/SPEC.md`). The inventory below is reference only.
+- The game starts with her bench of three (bergamot, lavender, labdanum); vanillin comes back in the first game week with a customer (Direction change #2, Oct 28, 2026). The rest unlock in course order as reputation grows, until Phase C moves to roughly historical order (see "Materials and how they unlock" in `docs/SPEC.md`). The inventory below is reference only.
 
 ## Course methods worth modelling
 

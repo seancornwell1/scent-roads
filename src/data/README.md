@@ -20,7 +20,7 @@ The olfactive families materials are sorted by on the organ, in display order.
 | `id` | string | Stable id, referenced by materials and accords |
 | `name` | string | Display name |
 | `description` | string | One plain-language line |
-| `moods` | string[] | Moods the family lends a perfume, used to score it against a customer's brief |
+| `moods` | string[] | Moods the family lends a perfume. Not used in scoring since Direction change #2; kept for writing briefs and hints |
 
 ## `materials.json`
 
@@ -67,6 +67,7 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 
 | Field | Meaning |
 | ----- | ------- |
+| `wearableParts` | Parts a wearable perfume must total, exactly (10 at first; 100 and 1000 come with later ranks). Hand-over and bottling need it; every brief's target uses it. |
 | `stages` | The moments a perfume is judged: `id`, `name`, `hours` after application, `label`. Increasing hours. They mirror the course's blotter checks at 5 minutes, 1 hour and later. |
 | `strengthBase`, `strengthPivot` | How strength turns into impact. With 2 and 5, strength 5 is ×1 and each step up doubles it. |
 | `loudness` | Labels for how loud a stage is relative to the opening, highest `min` first |
@@ -141,7 +142,9 @@ How the player gains materials. `src/game/unlocks.ts`; a test checks every mater
 | Field | Meaning |
 | ----- | ------- |
 | `sources` | `natural` and `synthetic`: a name and a plain explanation of where they'll come from (grown on the map, or ordered from the catalogue) |
-| `tiers` | In order: `id`, `name`, `reputation` needed, `teaches` (one line), `materials` (ids). Tier 0 is the starting bench. |
+| `tiers` | In order: `id`, `name`, `reputation` needed, `teaches` (one line), `materials` (ids). Tier 0 is her bench. |
+
+A material may instead be given by the story (`gives` in `story.json`, like vanillin in week 1); the test counts those as unlocked.
 
 ## `clients.json`
 
@@ -150,9 +153,9 @@ Customers, briefs and how perfumes are judged. Logic in `src/game/customers.ts` 
 | Field | Meaning |
 | ----- | ------- |
 | `timing` | `arrivalEveryRealMinutes`, `maxInShop`, `reviewAfterGameHours` (how long a perfume is worn before the review), `regularReturnsAfterGameHours`, `browseSeconds` `[min, max]`, `regularChance` (that an arrival is a regular who's due), `maxRegularsInShop` |
-| `scoring` | `difficulty` (`cozy` now; `realistic` later) and per-difficulty `stars` thresholds (total score for 2–5 stars) and `moodFullAt`; `weights` of stages, mood, strength and longevity in the total; `strengthBands` (average impact per part for strengths 2–5) and `strengthWords`; `longevityFadeAt` (fraction of the opening's intensity that counts as faded) and `longevityMaxHours` |
-| `economy` | `payShareAtWorstImpression` (share of the brief's pay given for the worst first impression; the best pays in full) and `reputationForStars` (change for 1–5 stars) |
-| `lines` | What customers say: `impression` and `stageWords` bands (`min` score → text), `stageNames`, and templates for reviews (`{stage}`, `{actual}`, `{target}`, `{moods}`), plus `chatter` |
+| `scoring` | `difficulty` (`cozy` now; `realistic` later) and per-difficulty `stars`: the closeness needed for 2 and 3 stars. `weights` of the stages, strength and longevity in the closeness. `tolerance`: family-share differences smaller than this aren't mentioned. `longevityFadeAt` (fraction of the opening's intensity that counts as faded) and `longevityMaxHours` |
+| `economy` | `reputationForStars` (change for 1, 2 and 3 stars) and `threeStarBonus` (share of the brief's pay added when a 3-star review comes in; only 3 stars earns it) |
+| `lines` | What customers say: `impression` and `stageWords` bands (`min` closeness → text), `stageNames`, `letDown`/`allGood`, `chatter`, and `feedback` (below) |
 | `walkInNames` | Names for walk-in customers |
 | `briefs` | The walk-in pool, below |
 | `regulars` | Two or three people who come back, below |
@@ -162,17 +165,30 @@ A brief:
 | Field | Meaning |
 | ----- | ------- |
 | `id` | Stable id |
-| `tier` | Unlock tier needed before it can come up; a test checks the tier's materials cover every family in the target |
 | `memory` | What the customer asks for, as a memory |
 | `hints` | Revealed one at a time when you ask about it |
-| `target` | Hidden: `families` (family → weight), `moods`, `strength` (1–5), `longevityHours` |
-| `pay` | Coins for a perfect first impression |
+| `target` | Hidden: `formula`, a reference formula in whole parts totalling `wearableParts`. The customer judges your perfume by how close it smells to this one at each stage, how strong it is and how long it lasts. They only bring it in once you have every material in it. |
+| `pay` | Coins paid on hand-over (times the shop's pay multiplier) |
+| `page` | Story requests only: the page of her book it recreates |
+
+`lines.feedback` turns the score's directions into perfumer's language, never numbers (`src/game/feedback.ts`):
+
+| Field | Meaning |
+| ----- | ------- |
+| `stages` | Stage id → phrase (`at the start`, `after an hour`, `as it dries down`) |
+| `amounts` | Bands of how far off (`min` → `much`, `a little`, `a touch`) |
+| `families` | Family id → `more` and `less` words (`brighter` / `less sharp` for citrus, `sweeter` / `less sweet` for gourmand) |
+| `vague` | The first impression on the wrist: one remark, no amount (`{Word}`, `{stage}`) |
+| `specific` | Templates for the review and later visits (`{amount}`/`{Amount}`, `{word}`, `{stage}`), used in turn |
+| `strength`, `longevity` | `more` and `less` lines (`It was gone by lunchtime.`) |
+| `perfect` | When there's nothing to change |
+| `lastTime` | Introduces what a customer said last time, when they come back |
 
 A regular: `id`, `name`, `about`, a fixed `look` (same shape as the player's saved look), a `greeting`, `remember` lines (highest `minStars` first; `{perfume}` and `{stage}` fill in from their last review) and their own `briefs`, which they bring in order.
 
 ## `time.json`
 
-`realMinutesPerGameDay`: how fast game time runs (60 = one real hour per game day). The game clock (`src/game/clock.ts`, saved as `clock`) counts game hours from real timestamps; the debug speed (back room, or `?speed=N` in the URL) re-anchors it so changing speed never jumps.
+`gameDaysPerRealDay`: how fast game time runs (7 = one real day per game week, so a game year takes about 52 real days). `seasons`: each season's `name` and calendar `months` (1–12, northern hemisphere), shown in the HUD. The game clock (`src/game/clock.ts`, saved as `clock`) counts game hours from real timestamps; the debug speed (back room, or `?speed=N` in the URL) re-anchors it so changing speed never jumps.
 
 ## `regions.json`
 
@@ -260,3 +276,30 @@ Sound cues the game plays. Files are recorded sounds under `assets/` (fetched by
 | `cues.<id>.duration` | `[min, max]` seconds the fetch script accepts |
 
 Cue ids are fixed in code (`src/scene/audio.ts`): `door-chime`, `footsteps`, `glass`, `pouring`, `paper`, `crate`, `ambience`.
+
+## `story.json`
+
+Mireille's shop, her formula book and the townspeople who remember her perfumes. Logic in `src/game/story.ts`; story times are game hours.
+
+| Field | Meaning |
+| ----- | ------- |
+| `grandmother` | Her name |
+| `retryAfterGameHours` | How long before someone comes back to try a page again after fewer than 3 stars |
+| `intro` | The opening panel: `title`, `paragraphs`, her `letter` (`heading`, `body`, `signoff`) and the `start` button |
+| `bench` | Her bottles left on the organ: `material` and `grams` you start with |
+| `people` | Townspeople: `id`, `name`, `about`, a fixed `look` (same shape as the player's) |
+| `requests` | Story visits, below |
+| `pages` | Her book's pages, below |
+
+A request:
+
+| Field | Meaning |
+| ----- | ------- |
+| `id`, `person` | Stable id and who brings it |
+| `after` | When it comes in; all must hold: `gameHours` since the start, `reviews` heard, requests `done`, and `hoursAfter` the last of those |
+| `latestGameHours` | Comes in by then even if `after` hasn't happened (Josette brings vanillin within the first week either way) |
+| `greeting`, `retryGreeting`, `thanks` | What they say first, when they come back to try again, and at 3 stars |
+| `gives`, `giveText` | Materials (`material`, `grams`) they hand over the first time you talk to them, and what they say |
+| `brief` | A brief as in `clients.json`. With `page`, its target is her formula for that page: 3 stars recovers the page, fewer brings them back with more specific hints. |
+
+A page: `id`, `title`, `dated`, `hiddenNames` (materials whose names have run as well as their amounts, until it's recovered), `margin` (her note, a clue), `signature` (the last, nearly blank page), and a `lesson` shown once it's recovered (`text`, with `verified` and `check` like materials; unverified lessons are listed in `docs/FACT_CHECK.md`). Her formula is the target of the request that recreates the page.

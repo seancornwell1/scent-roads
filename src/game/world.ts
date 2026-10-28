@@ -7,12 +7,19 @@ import { appealLevel, appealOf, regionOpen, type AppealLevel } from './upgrades'
 
 // Glue between the systems: this week's newspaper and the shop's appeal, read from the save.
 
+/** Materials you have: unlocked by reputation, plus any the story has given you. */
+export function ownedMaterials(save: SaveData): Set<string> {
+  const owned = unlockedMaterialIds(save.customers!.reputation);
+  for (const id of save.story?.materials ?? []) owned.add(id);
+  return owned;
+}
+
 /** This week's paper, printing it (and remembering it) the first time it's asked for. */
 export function newsFor(save: SaveData, gameHours: number): NewsItem[] {
   const week = weekOf(gameHours);
   const news = save.news!;
   if (!news[week]) {
-    const unlocked = unlockedMaterialIds(save.customers!.reputation);
+    const unlocked = ownedMaterials(save);
     const crops = regions
       .filter((r) => regionOpen(save.upgrades!, r.id))
       .flatMap((r) => r.crops.filter((c) => unlocked.has(c.material)).map((c) => ({ region: r.id, regionName: r.name, material: c.material, materialName: materialsById.get(c.material)?.name ?? c.material })));

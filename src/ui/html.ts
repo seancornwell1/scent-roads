@@ -19,3 +19,8 @@ export function header(title: string): string {
     <span></span>
   </header>`;
 }
+
+/** 1–3 stars, as filled and empty stars. */
+export function starsText(n: number, max = 3): string {
+  return '★'.repeat(n) + '☆'.repeat(Math.max(0, max - n));
+}

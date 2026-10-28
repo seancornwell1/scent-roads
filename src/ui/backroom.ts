@@ -16,9 +16,9 @@ import {
   type Region,
 } from '../game/sourcing';
 import { priceMultiplier, shippingDelay, yieldMultiplier } from '../game/events';
-import { unlockedMaterialIds, unlocks } from '../game/unlocks';
+import { unlocks } from '../game/unlocks';
 import { processStats, regionOpen } from '../game/upgrades';
-import { newsFor } from '../game/world';
+import { newsFor, ownedMaterials } from '../game/world';
 import { nowGame, state } from '../state';
 import { esc } from './html';
 
@@ -110,7 +110,7 @@ function nextSeasonMonth(crop: Crop, now: number): string {
 }
 
 function mapTab(now: number): string {
-  const unlocked = unlockedMaterialIds(state.save.customers!.reputation);
+  const unlocked = ownedMaterials(state.save);
   const cards = regions.map((r) => regionCard(r, now, unlocked)).join('');
   return `<div class="placeholder placeholder--map">Placeholder: painted world map</div>
     <p class="muted small">Sign a harvest contract while a crop is in season. It ripens over real time; collect it inside its best window for top quality.</p>
@@ -201,7 +201,7 @@ function harvestsTab(now: number): string {
 }
 
 function supplierTab(): string {
-  const unlocked = unlockedMaterialIds(state.save.customers!.reputation);
+  const unlocked = ownedMaterials(state.save);
   const money = state.save.customers!.money;
   const sup = sourcing.supplier;
   const rows = [...unlocked]

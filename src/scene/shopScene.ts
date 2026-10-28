@@ -78,6 +78,8 @@ export class ShopScene {
   private readonly focus = new Vector3();
   private zoom: number;
   private savedView: { focus: Vector3; zoom: number; position: Vector3 } | null = null;
+  /** Screen pixels at the top covered by the HUD: the room is framed below them. */
+  private topInset = 0;
   private readonly pointers = new Map<number, { x: number; y: number }>();
   private gesture: { moved: boolean; grab: Vector3 | null; pinchDist: number; pinchZoom: number } | null = null;
   private interactive = true;
@@ -326,7 +328,14 @@ export class ShopScene {
     this.placeCamera();
   }
 
-  /** Zoom 1 fits the whole room across the screen; the camera keeps its isometric angle. */
+  /** Frames the room below the HUD, which covers `px` screen pixels at the top. */
+  setTopInset(px: number): void {
+    if (Math.abs(px - this.topInset) < 1) return;
+    this.topInset = px;
+    this.resize();
+  }
+
+  /** Zoom 1 fits the whole room in the screen below the HUD; the camera keeps its isometric angle. */
   private resize(): void {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
@@ -341,19 +350,27 @@ export class ShopScene {
     probe.updateMatrixWorld();
     const view = box.applyMatrix4(probe.matrixWorldInverse);
     const margin = 0.6;
+    const below = Math.max(h - this.topInset, h * 0.4); // the part of the screen the HUD leaves free
     let halfW = (view.max.x - view.min.x) / 2 + margin;
     let halfH = (view.max.y - view.min.y) / 2 + margin;
-    const aspect = w / h;
+    const aspect = w / below;
     if (halfW / halfH > aspect) halfH = halfW / aspect;
     else halfW = halfH * aspect;
-    Object.assign(this.camera, { left: -halfW, right: halfW, top: halfH, bottom: -halfH, near: -50, far: 100 });
+    // Centre the room in that free part: the frustum reaches up behind the HUD.
+    const unitsPerPx = (2 * halfH) / below;
+    const viewCentre = (view.max.y + view.min.y) / 2;
+    Object.assign(this.camera, { left: -halfW, right: halfW, top: viewCentre + halfH + (h - below) * unitsPerPx, bottom: viewCentre - halfH, near: -50, far: 100 });
     this.placeCamera();
   }
 
   private placeCamera(): void {
     const { width, depth } = this.layout.room;
-    this.focus.x = Math.min(Math.max(this.focus.x, -width / 2), width / 2);
-    this.focus.z = Math.min(Math.max(this.focus.z, -depth / 2), depth / 2);
+    // At zoom 1 the whole room is in view and the camera stays put; zoomed in, it can pan
+    // only as far as keeps the room on screen.
+    const reach = Math.max(0, 1 - 1 / this.zoom);
+    this.focus.x = Math.min(Math.max(this.focus.x, (-width / 2) * reach), (width / 2) * reach);
+    this.focus.z = Math.min(Math.max(this.focus.z, (-depth / 2) * reach), (depth / 2) * reach);
+    this.labelLayer.classList.toggle('scene-labels--far', this.zoom < 1.8);
     this.camera.zoom = this.zoom;
     this.camera.position.copy(this.focus).add(CAMERA_OFFSET);
     this.camera.lookAt(this.focus);
@@ -422,8 +439,14 @@ export class ShopScene {
     if (!this.interactive || !wasTap) return;
     this.raycaster.setFromCamera(this.ndc(e.clientX, e.clientY), this.camera);
 
-    // Whatever is nearest the camera under the finger wins: a customer or an interactive fixture.
-    const hit = this.raycaster.intersectObjects([...this.crowd.hitBoxes(), ...this.hitBoxes.keys()])[0];
+    // A name label counts as its customer or fixture: with the whole room in view, people
+    // are small and their labels are the easier thing to tap.
+    const label = this.labels.find((l) => {
+      const r = l.el.getBoundingClientRect();
+      return r.width > 0 && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    });
+    // Otherwise whatever is nearest the camera under the finger wins: a customer or an interactive fixture.
+    const hit = label ? { object: label.target } : this.raycaster.intersectObjects([...this.crowd.hitBoxes(), ...this.hitBoxes.keys()])[0];
     const customerId = hit ? this.crowd.idOf(hit.object) : null;
     if (customerId) {
       this.events.customer(customerId);
@@ -511,6 +534,7 @@ export class ShopScene {
 
   /** Eases the camera towards the walking player when they near the screen's edge. */
   private follow(dt: number): void {
+    if (this.zoom <= 1.05) return; // the whole room is in view
     const p = this.playerRoot.position.clone().project(this.camera);
     if (Math.abs(p.x) < FOLLOW_MARGIN && Math.abs(p.y) < FOLLOW_MARGIN) return;
     const t = Math.min(dt * 3, 1);
@@ -523,11 +547,33 @@ export class ShopScene {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
     const v = new Vector3();
-    for (const { el, target, height } of this.labels) {
+    const top = this.topInset;
+    // Where each label wants to sit (bottom centre), kept whole and out from under the HUD.
+    const spots = this.labels.map(({ el, target, height }) => {
       target.getWorldPosition(v);
       v.y += height;
       v.project(this.camera);
-      el.style.transform = `translate(-50%, -100%) translate(${((v.x + 1) / 2) * w}px, ${((1 - v.y) / 2) * h}px)`;
+      const width = el.offsetWidth;
+      const tall = el.offsetHeight;
+      const x = Math.min(Math.max(((v.x + 1) / 2) * w, width / 2 + 4), w - width / 2 - 4);
+      const y = Math.min(Math.max(((1 - v.y) / 2) * h, top + tall + 2), h - 4);
+      return { el, x, y, width, tall, shown: width > 0 };
+    });
+    // Labels nearer the bottom of the screen are in front; ones behind them that would
+    // overlap are lifted just above, so none is covered.
+    const placed: { left: number; right: number; top: number; bottom: number }[] = [];
+    for (const s of spots.filter((x) => x.shown).sort((a, b) => b.y - a.y)) {
+      let y = s.y;
+      for (let guard = 0; guard < 12; guard++) {
+        const hit = placed.find((r) => s.x - s.width / 2 < r.right && s.x + s.width / 2 > r.left && y - s.tall < r.bottom && y > r.top);
+        if (!hit) break;
+        y = hit.top - 1;
+      }
+      y = Math.max(y, top + s.tall + 2);
+      s.y = y;
+      placed.push({ left: s.x - s.width / 2, right: s.x + s.width / 2, top: y - s.tall, bottom: y });
     }
+    for (const s of spots) s.el.style.transform = `translate(-50%, -100%) translate(${s.x}px, ${s.y}px)`;
   }
+
 }

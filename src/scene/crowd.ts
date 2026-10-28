@@ -189,7 +189,7 @@ export class Crowd {
   }
 
   idOf(hitBox: Object3D): string | null {
-    for (const m of this.members.values()) if (m.hitBox === hitBox) return m.id;
+    for (const m of this.members.values()) if (m.phase !== 'leaving' && (m.hitBox === hitBox || m.character.root === hitBox)) return m.id;
     return null;
   }
 

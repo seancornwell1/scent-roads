@@ -1,8 +1,14 @@
+import { MONTH_NAMES, dateAt } from '../game/clock';
 import { clients } from '../game/clients';
 import { content, materialsById } from '../game/content';
+import { sourcing } from '../game/sourcing';
+import { pageFormula, personById, requestForPage, story, type Page, type StoryState } from '../game/story';
+import { ownedMaterials } from '../game/world';
 import { state } from '../state';
 import type { Formula } from '../game/types';
-import { esc, formatDate, formatParts, header } from './html';
+import { esc, formatDate, formatParts, header, starsText } from './html';
+
+// The formula book: Mireille's pages first, then accords, my own formulas and reviews.
 
 function formulaText(formula: Formula): string {
   return Object.entries(formula)
@@ -11,8 +17,59 @@ function formulaText(formula: Formula): string {
     .join(', ');
 }
 
+function gameDate(gameHours: number): string {
+  const d = dateAt(gameHours, sourcing.calendarStart);
+  return `${d.day} ${MONTH_NAMES[d.month - 1]}`;
+}
+
+/**
+ * One page of her book. Until it's recovered every amount is smudged, and the names of
+ * materials you don't have yet have run too.
+ */
+export function pageCard(page: Page, s: StoryState, actions = true): string {
+  const recovered = s.pages[page.id];
+  const head = `<div><strong>${esc(page.title)}</strong>${page.dated ? ` <span class="muted small">${esc(page.dated)}</span>` : ''}</div>`;
+  if (page.signature) {
+    return `<li class="card page page--blank">${head}<p class="muted small"><em>${esc(page.margin)}</em></p></li>`;
+  }
+  const formula = pageFormula(page.id) ?? {};
+  const owned = ownedMaterials(state.save);
+  const rows = Object.entries(formula)
+    .sort((a, b) => b[1] - a[1])
+    .map(([id, parts]) => {
+      const named = recovered || (!page.hiddenNames.includes(id) && owned.has(id));
+      const name = named ? esc(materialsById.get(id)?.name ?? id) : '<span class="smudge">the ink has run</span>';
+      const amount = recovered ? `${formatParts(parts)} parts` : '<span class="smudge">smudged</span>';
+      return `<li><span>${name}</span><span>${amount}</span></li>`;
+    })
+    .join('');
+  const request = requestForPage(page.id);
+  const person = request ? personById(request.person) : undefined;
+  const rs = request ? s.requests[request.id] : undefined;
+  const status = recovered
+    ? `Recovered for ${esc(recovered.for)}, ${gameDate(recovered.at)}.`
+    : rs && person
+      ? `${esc(person.name)} remembers this one.`
+      : 'Nobody has asked for this one yet.';
+  const lesson = recovered && page.lesson
+    ? `<p class="small lesson">${esc(page.lesson.text)}${page.lesson.verified ? '' : ' <span class="tag tag--warn">unverified</span>'}</p>`
+    : '';
+  const load = actions && recovered ? `<div class="row-between"><span></span><button class="primary" data-action="load-page" data-id="${esc(page.id)}">Open on the organ</button></div>` : '';
+  return `<li class="card page">${head}
+    <ul class="plain page-lines">${rows}</ul>
+    <p class="small margin-note"><em>In the margin: “${esc(page.margin)}”</em></p>
+    ${lesson}
+    <p class="muted small">${status}</p>
+    ${load}
+  </li>`;
+}
+
 export function bookScreen(): string {
   const { save } = state;
+  const s = save.story!;
+  const recoveredCount = story.pages.filter((p) => s.pages[p.id]).length;
+  const pages = story.pages.map((p) => pageCard(p, s)).join('');
+
   const accords = content.accords
     .map((a) => {
       const found = save.discoveredAccords[a.id];
@@ -51,7 +108,7 @@ export function bookScreen(): string {
     .map(
       (r) => `<li class="card">
         <div><strong>${esc(r.name)}</strong> <span class="muted small">${formatDate(r.at)}</span></div>
-        <p class="small">“${esc(r.perfume)}” · ${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)} · reputation ${r.reputation >= 0 ? '+' : ''}${r.reputation}</p>
+        <p class="small">“${esc(r.perfume)}” · ${starsText(r.stars)} · reputation ${r.reputation >= 0 ? '+' : ''}${r.reputation}</p>
         ${r.weakStage ? `<p class="muted small">Let down by ${esc(clients.lines.stageNames[r.weakStage] ?? r.weakStage)}.</p>` : ''}
       </li>`,
     )
@@ -59,6 +116,9 @@ export function bookScreen(): string {
 
   return `${header('Formula book')}
     <main class="book">
+      <h2>${esc(story.grandmother)}'s pages</h2>
+      <p class="muted small">${recoveredCount} of ${story.pages.filter((p) => !p.signature).length} recovered so far. When someone remembers one of her perfumes, recreate it for them: a three-star match fills in her page.</p>
+      <ul class="list cards">${pages}</ul>
       <h2>Accords</h2><ul class="list cards">${accords}</ul>
       <h2>My formulas</h2><ul class="list cards">${formulas}</ul>
       <h2>Reviews</h2><ul class="list cards">${reviews || '<li class="muted">No reviews yet. Customers come back to tell you how their perfume wore.</li>'}</ul>

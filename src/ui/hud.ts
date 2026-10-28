@@ -1,4 +1,5 @@
-import { MONTH_NAMES, dateAt } from '../game/clock';
+import { MONTH_NAMES, dateAt, seasonOf } from '../game/clock';
+import { weekOf } from '../game/events';
 import { sourcing } from '../game/sourcing';
 import { shopAppeal } from '../game/world';
 import { nowGame, state } from '../state';
@@ -22,7 +23,7 @@ export function hud(): string {
         <button class="chip" data-action="nav" data-to="options">More</button>
       </span>
     </div>
-    <p class="hud-stats">${date.day} ${MONTH_NAMES[date.month - 1]} · <strong>${c?.money ?? 0}</strong> coins · reputation <strong>${c?.reputation ?? 0}</strong> · ${esc(level.name)} (${appeal})${crates ? ` · ${crates} crate${crates === 1 ? '' : 's'} to unpack` : ''}${away ? ` · ${away} out being worn` : ''}</p>
+    <p class="hud-stats">${date.day} ${MONTH_NAMES[date.month - 1]} · ${seasonOf(date.month)}, week ${weekOf(nowGame()) + 1} · <strong>${c?.money ?? 0}</strong> coins · reputation <strong>${c?.reputation ?? 0}</strong> · ${esc(level.name)} (${appeal})${crates ? ` · ${crates} crate${crates === 1 ? '' : 's'} to unpack` : ''}${away ? ` · ${away} out being worn` : ''}</p>
     <p class="hud-hint">Tap a customer to chat · tap the organ to compose</p>
     ${toast ? `<div class="toast" role="status"><span>${esc(toast)}</span><button class="link" data-action="dismiss-toast">OK</button></div>` : ''}`;
 }

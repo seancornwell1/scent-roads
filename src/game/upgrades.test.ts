@@ -20,6 +20,9 @@ import {
   unplace,
 } from './upgrades';
 
+/** Her bench, plus the vanillin Josette brings back in week 1. */
+const owned = new Set([...unlockedMaterialIds(0), 'vanillin']);
+
 describe('furniture data', () => {
   it('every model is downloaded and every kind is named', () => {
     for (const item of furniture.items) {
@@ -84,7 +87,7 @@ describe('regions and processing', () => {
 describe('display case', () => {
   const stocked = () => {
     const s = newSourcingState();
-    for (const m of ['vanillin', 'labdanum', 'bergamot']) order(s, { money: 999 }, m, m !== 'vanillin', 0, unlockedMaterialIds(0));
+    for (const m of ['vanillin', 'labdanum', 'bergamot']) order(s, { money: 999 }, m, m !== 'vanillin', 0, owned);
     for (const c of tickSourcing(s, 100)) unpack(s, c.id, 100);
     return s;
   };

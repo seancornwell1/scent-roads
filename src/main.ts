@@ -5,16 +5,16 @@ import { addParts, totalParts } from './game/formula';
 import { characterOptions, defaultCharacter, randomCharacter, type CharacterConfig } from './game/character';
 import { clients, findBrief } from './game/clients';
 import { completeReview, handOver, tick, type Visit } from './game/customers';
+import { afterReview, meet, pageById, pageFormula, storyTick } from './game/story';
 import { seededRandom } from './game/random';
 import { applyQuality, scorePerfume } from './game/scoring';
 import { setClockSpeed } from './game/clock';
 import { consume, harvest, missingFor, order, signContract, sourcing, tickSourcing, unpack } from './game/sourcing';
-import { unlockedMaterialIds } from './game/unlocks';
 import { listPerfume, removeListing, settleSales } from './game/display';
 import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
 import { parseSave, writeSave } from './game/save';
 import { buyItem, buyProcess, displayCapacity, furniture, itemById, openRegion, place, processStats, regionOpen, unplace } from './game/upgrades';
-import { arrivalConditions, newsFor, shopAppeal } from './game/world';
+import { arrivalConditions, newsFor, ownedMaterials, shopAppeal } from './game/world';
 import { contractStage } from './game/sourcing';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
@@ -29,7 +29,8 @@ import { optionsScreen } from './ui/options';
 import { allSpots, upgradesScreen } from './ui/upgradesPanel';
 import { bookScreen } from './ui/book';
 import { creatorScreen } from './ui/creator';
-import { customerScreen, reactionScreen, regularOf, unlockScreen } from './ui/customer';
+import { customerScreen, lookOf, reactionScreen, unlockScreen } from './ui/customer';
+import { introScreen } from './ui/intro';
 import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
 
@@ -61,6 +62,8 @@ const scene = new ShopScene(
     customer: (id) => {
       scene.waveCustomer(id);
       state.ui.visitId = id;
+      const visit = state.save.customers!.visits.find((v) => v.id === id);
+      if (visit && meet(state.save.story!, visit, state.save.sourcing!, nowGame()).length > 0) sounds.play('glass');
       openPanel('customer');
     },
     walking: (on) => sounds.loop('footsteps', on),
@@ -92,7 +95,7 @@ function syncCrowd(): void {
   firstSync = false;
   const entries = visits.map((v) => ({
     id: v.id,
-    look: regularOf(v)?.look ?? randomCharacter(kit!.style, characterOptions, seededRandom(v.lookSeed)),
+    look: lookOf(v) ?? randomCharacter(kit!.style, characterOptions, seededRandom(v.lookSeed)),
     label: v.status === 'returning' ? `${v.name} · review` : v.name,
     instant,
   }));
@@ -125,7 +128,7 @@ function runTick(): void {
   const { save } = state;
   const c = save.customers!;
   const now = nowGame();
-  const changed = tick(c, Date.now(), tierIndex(c.reputation), Math.random, arrivalConditions(save, now));
+  const changed = [...storyTick(save.story!, c, now, Date.now()), ...tick(c, Date.now(), ownedMaterials(save), Math.random, arrivalConditions(save, now))];
   const crates = tickSourcing(save.sourcing!, now, stormDelay);
   const sold = runSales();
   if (crates.length > 0) {
@@ -173,7 +176,8 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
   .then((loaded) => {
     kit = loaded;
     refreshPlayer();
-    tick(state.save.customers!, Date.now(), tierIndex(state.save.customers!.reputation), Math.random, arrivalConditions(state.save, nowGame()));
+    storyTick(state.save.story!, state.save.customers!, nowGame(), Date.now());
+    tick(state.save.customers!, Date.now(), ownedMaterials(state.save), Math.random, arrivalConditions(state.save, nowGame()));
     tickSourcing(state.save.sourcing!, nowGame(), stormDelay);
     runSales();
     const away = state.save.display!.unseen;
@@ -187,7 +191,8 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     commit();
     window.setInterval(runTick, 5000);
     document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && runTick());
-    if (!state.save.character) openPanel('creator');
+    if (!state.save.story!.introSeen) openPanel('intro');
+    else if (!state.save.character) openPanel('creator');
   })
   .catch((e) => {
     console.error(e);
@@ -208,6 +213,9 @@ function openPanel(screen: Screen): void {
 function render(): void {
   const { screen } = state.ui;
   hudRoot.innerHTML = hud();
+  // Frame the room below the HUD's buttons and stats (the toast sits at the bottom, over the floor).
+  const stats = hudRoot.querySelector<HTMLElement>('.hud-hint') ?? hudRoot;
+  scene.setTopInset(stats.getBoundingClientRect().bottom + 8);
   scene.enabled = screen === 'shop';
   scene.focusOnPlayer(screen === 'creator');
 
@@ -229,7 +237,8 @@ function render(): void {
     // No backdrop: the player stays visible above the panel while you change their look.
     panelRoot.innerHTML = `<section class="panel panel--creator">${creatorScreen(kit.style, currentLook(), state.ui.creatorTab)}</section>`;
   } else {
-    panelRoot.innerHTML = `<div class="panel-backdrop" data-action="close-panel"></div>
+    // The intro can't be dismissed by tapping outside it: the story starts from its button.
+    panelRoot.innerHTML = `<div class="panel-backdrop" ${screen === 'intro' ? '' : 'data-action="close-panel"'}></div>
     <section class="panel">${panelContent(screen, visit)}</section>`;
   }
   panelRoot.querySelector<HTMLElement>('.panel')!.scrollTop = scroll;
@@ -239,8 +248,10 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
   switch (screen) {
     case 'organ':
       return organScreen();
+    case 'intro':
+      return introScreen();
     case 'customer':
-      return customerScreen(visit!, state.save.customers!);
+      return customerScreen(visit!, state.save.customers!, state.save.story!);
     case 'reaction':
       return reactionScreen(visit!);
     case 'unlock':
@@ -331,14 +342,18 @@ document.body.addEventListener('click', (event) => {
       const c = save.customers!;
       const visit = c.visits.find((v) => v.id === ui.orderId);
       const brief = visit && findBrief(visit.briefId);
-      if (!visit || !brief || totalParts(save.draft) === 0) return;
+      if (!visit || !brief) return;
+      if (totalParts(save.draft) !== content.model.wearableParts) {
+        ui.toast = `A perfume needs exactly ${content.model.wearableParts} parts.`;
+        break;
+      }
       const missing = missingFor(save.sourcing!, save.draft);
       if (missing.length > 0) {
         ui.toast = `Not enough ${missing.map((m) => materialsById.get(m)?.name ?? m).join(', ')}. Order or harvest more in the back room.`;
         break;
       }
       const quality = consume(save.sourcing!, save.draft, nowGame())!;
-      const raw = scorePerfume(save.draft, brief.target, materialsById, content.families, content.model, clients.scoring);
+      const raw = scorePerfume(save.draft, brief.target, materialsById, content.model, clients.scoring);
       const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring, visit.strictness ?? 0);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
       handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: { ...save.draft } }, result, Date.now());
@@ -350,6 +365,8 @@ document.body.addEventListener('click', (event) => {
     }
     case 'complete-review': {
       const c = save.customers!;
+      const reviewed = c.visits.find((v) => v.id === ui.visitId);
+      const page = reviewed ? afterReview(save.story!, reviewed, nowGame()) : null;
       const change = completeReview(c, ui.visitId!, Date.now());
       ui.visitId = null;
       syncCrowd();
@@ -359,8 +376,22 @@ document.body.addEventListener('click', (event) => {
         return openPanel('unlock');
       }
       ui.screen = 'shop';
-      ui.toast = `Reputation ${change >= 0 ? '+' : ''}${change}.`;
+      ui.toast = page ? `A page of her book is whole again: “${pageById(page)?.title}”.` : `Reputation ${change >= 0 ? '+' : ''}${change}.`;
       break;
+    }
+    case 'start-story': {
+      save.story!.introSeen = true;
+      if (!save.character) return openPanel('creator');
+      ui.screen = 'shop';
+      break;
+    }
+    case 'load-page': {
+      const parts = pageFormula(id!);
+      if (!parts) return;
+      ui.screen = 'organ';
+      ui.organTab = 'formula';
+      scrollToTop = true;
+      return setDraft({ ...parts });
     }
     case 'backroom-tab':
       ui.backroomTab = target.dataset.value as typeof ui.backroomTab;
@@ -369,7 +400,7 @@ document.body.addEventListener('click', (event) => {
     case 'sign': {
       const region = target.dataset.region!;
       const material = target.dataset.material!;
-      const why = signContract(save.sourcing!, save.customers!, region, material, nowGame(), unlockedMaterialIds(save.customers!.reputation), {
+      const why = signContract(save.sourcing!, save.customers!, region, material, nowGame(), ownedMaterials(save), {
         regionOpen: regionOpen(save.upgrades!, region),
         yieldMultiplier: yieldMultiplier(newsFor(save, nowGame()), region, material),
       });
@@ -386,7 +417,7 @@ document.body.addEventListener('click', (event) => {
       const material = target.dataset.material!;
       const natural = materialsById.get(material)?.type === 'natural';
       const multiplier = priceMultiplier(newsFor(save, nowGame()), material);
-      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), unlockedMaterialIds(save.customers!.reputation), multiplier);
+      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), ownedMaterials(save), multiplier);
       ui.toast = why ?? `Ordered ${materialsById.get(material)?.name}. It's on its way.`;
       break;
     }
@@ -425,6 +456,10 @@ document.body.addEventListener('click', (event) => {
     case 'list': {
       const formula = save.formulas.find((f) => f.id === id);
       if (!formula) return;
+      if (totalParts(formula.parts) !== content.model.wearableParts) {
+        ui.toast = `Only a formula of exactly ${content.model.wearableParts} parts can be bottled.`;
+        break;
+      }
       const why = listPerfume(save.display!, save.sourcing!, formula, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
       ui.toast = why ?? `“${formula.name}” is on display.`;
       if (!why) sounds.play('pouring');
@@ -492,15 +527,16 @@ document.body.addEventListener('click', (event) => {
     case 'browse':
       ui.browseBy = target.dataset.by as typeof ui.browseBy;
       break;
-    case 'step':
-      ui.step = Number(target.dataset.step);
-      break;
     case 'add':
     case 'inc':
+      if (totalParts(save.draft) >= content.model.wearableParts) {
+        ui.toast = `That's ${content.model.wearableParts} parts, a full formula. Take a part out to add another.`;
+        break;
+      }
       sounds.play('glass');
-      return setDraft(addParts(save.draft, id!, ui.step));
+      return setDraft(addParts(save.draft, id!, 1));
     case 'dec':
-      return setDraft(addParts(save.draft, id!, -ui.step));
+      return setDraft(addParts(save.draft, id!, -1));
     case 'detail':
       ui.detail = id!;
       break;

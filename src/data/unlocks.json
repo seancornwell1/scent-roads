@@ -11,15 +11,14 @@
   },
   "tiers": [
     {
-      "id": "first-bench",
-      "name": "Your first bench",
+      "id": "her-bench",
+      "name": "Her bench",
       "reputation": 0,
-      "teaches": "One material for each layer, plus a herb: enough for an amber and a cologne.",
+      "teaches": "Three of her bottles, one for each layer: enough for a cologne. Vanillin comes back to the shop in your first week.",
       "materials": [
         "bergamot",
         "lavender",
-        "labdanum",
-        "vanillin"
+        "labdanum"
       ]
     },
     {
@@ -63,7 +62,7 @@
       "id": "the-barbershop",
       "name": "The barbershop",
       "reputation": 35,
-      "teaches": "Fresh foug\u00e8res and the forest: clean, bright and resinous.",
+      "teaches": "Fresh fougères and the forest: clean, bright and resinous.",
       "materials": [
         "dihydromyrcenol",
         "cashmeran",
