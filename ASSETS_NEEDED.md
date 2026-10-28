@@ -11,3 +11,4 @@ Every placeholder or stand-in waiting for a real asset. Remove a line once the a
 | Newspaper masthead and illustrations | News panel | Text only for now. Nothing in the approved packs. |
 | Sitting animation | Customers on seating | The character kit has idle, walk, run, wave and jump only, so customers don't sit yet. |
 | Her formula book and letter (paper, handwriting font) | Book panel, story intro, page cards | Text only for now: smudged amounts are plain italic words, not drawn effects. A handwriting font (OFL) and paper texture would suit it. |
+| On-screen joystick (base and knob) | Bottom right of the shop | A plain labelled box for now. Candidate: Kenney's "Onscreen Controls" pack (CC0, https://kenney.nl/assets/onscreen-controls), waiting for Sean's OK. |

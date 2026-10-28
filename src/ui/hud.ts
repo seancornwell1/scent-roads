@@ -27,6 +27,6 @@ export function hud(): string {
       </span>
     </div>
     <p class="hud-stats">${date.day} ${MONTH_NAMES[date.month - 1]} · Chapter ${chapter} · ${seasonOf(date.month)}, week ${weekOf(nowGame()) + 1} · <strong>${c?.money ?? 0}</strong> coins · reputation <strong>${c?.reputation ?? 0}</strong> · ${esc(level.name)} (${appeal})${letters ? ` · <strong>${letters} letter${letters === 1 ? '' : 's'}</strong> in the back room` : ''}${crates ? ` · ${crates} crate${crates === 1 ? '' : 's'} to unpack` : ''}${away ? ` · ${away} out being worn` : ''}</p>
-    <p class="hud-hint">Tap a customer to chat · tap the organ to compose</p>
+    <p class="hud-hint">Move with the stick · tap a customer to chat · tap the organ to compose</p>
     ${toast ? `<div class="toast" role="status"><span>${esc(toast)}</span><button class="link" data-action="dismiss-toast">OK</button></div>` : ''}`;
 }

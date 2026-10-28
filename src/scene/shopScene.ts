@@ -23,7 +23,7 @@ import {
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { CharacterConfig } from '../game/character';
 import { findPath } from '../game/pathfinding';
-import { WALL_PANEL_WIDTH, type Fixture, type Point, type ShopLayout } from '../game/shop';
+import { WALL_PANEL_WIDTH, isWalkable, type Fixture, type Point, type ShopLayout } from '../game/shop';
 import { loadGltf } from './assets';
 import type { Character, CharacterKit } from './characters';
 import { Crowd, type CrowdEntry, type Label } from './crowd';
@@ -36,8 +36,8 @@ const UPGRADE_SPOT_COLOR = 0xdcc5a6;
 const TAP_SLOP_PX = 10;
 /** Isometric viewing direction: the camera sits this far from its focus point. */
 const CAMERA_OFFSET = new Vector3(10, 10, 10);
-/** When the walking player leaves this part of the screen (in -1..1 units), the camera follows. */
-const FOLLOW_MARGIN = 0.5;
+/** When the walking player leaves this share of the view around its middle, the camera follows. */
+const FOLLOW_MARGIN = 0.4;
 /** Idle animations run at a gentle frame rate to save battery; movement runs at full rate. */
 const IDLE_FPS = 24;
 
@@ -83,6 +83,10 @@ export class ShopScene {
   private readonly pointers = new Map<number, { x: number; y: number }>();
   private gesture: { moved: boolean; grab: Vector3 | null; pinchDist: number; pinchZoom: number } | null = null;
   private interactive = true;
+  /** The on-screen joystick: where it's pushed (screen units, -1..1, up is +y), while held. */
+  private stick: { x: number; y: number } | null = null;
+  private readonly stickBase: HTMLElement;
+  private readonly stickKnob: HTMLElement;
   /** Whether the view has been centred on the player since the screen first had a size. */
   private centred = false;
 
@@ -99,6 +103,18 @@ export class ShopScene {
     this.labelLayer = document.createElement('div');
     this.labelLayer.className = 'scene-labels';
     container.appendChild(this.labelLayer);
+    // The joystick, bottom right: a plain placeholder until its art arrives (ASSETS_NEEDED.md).
+    this.stickBase = document.createElement('div');
+    this.stickBase.className = 'joystick';
+    this.stickKnob = document.createElement('div');
+    this.stickKnob.className = 'joystick-knob';
+    this.stickKnob.textContent = 'Move';
+    this.stickBase.appendChild(this.stickKnob);
+    container.appendChild(this.stickBase);
+    this.stickBase.addEventListener('pointerdown', (e) => this.onStick(e, true));
+    this.stickBase.addEventListener('pointermove', (e) => this.onStick(e, false));
+    this.stickBase.addEventListener('pointerup', () => this.releaseStick());
+    this.stickBase.addEventListener('pointercancel', () => this.releaseStick());
 
     // Soft studio-style lighting for the kit's PBR materials (lighting only, nothing drawn).
     const pmrem = new PMREMGenerator(this.renderer);
@@ -167,7 +183,64 @@ export class ShopScene {
   /** When false (a panel is open), taps and idle animation pause; the scene stays drawn. */
   set enabled(value: boolean) {
     this.interactive = value;
+    this.stickBase.hidden = !value;
+    if (!value) this.releaseStick();
     if (value) this.requestFrame();
+  }
+
+  /** Pushing the joystick walks the player that way, sliding along anything in the way. */
+  private onStick(e: PointerEvent, down: boolean): void {
+    if (!this.interactive) return;
+    if (down) {
+      this.stickBase.setPointerCapture(e.pointerId);
+      this.path = []; // the stick takes over from any walk to a fixture
+      this.pendingFixture = null;
+    } else if (!this.stick) return;
+    const r = this.stickBase.getBoundingClientRect();
+    const radius = r.width / 2;
+    let x = (e.clientX - (r.left + radius)) / radius;
+    let y = -(e.clientY - (r.top + radius)) / radius;
+    const len = Math.hypot(x, y);
+    if (len > 1) {
+      x /= len;
+      y /= len;
+    }
+    const was = this.stick;
+    this.stick = { x, y };
+    this.stickKnob.style.transform = `translate(${x * radius * 0.6}px, ${-y * radius * 0.6}px)`;
+    if (!was) {
+      this.player?.play('walk');
+      this.events.walking(true);
+    }
+    this.requestFrame();
+  }
+
+  private releaseStick(): void {
+    if (!this.stick) return;
+    this.stick = null;
+    this.stickKnob.style.transform = '';
+    this.player?.play('idle');
+    this.events.walking(false);
+    this.requestFrame();
+  }
+
+  /** Moves the player by the joystick: screen directions turned into floor directions. */
+  private steer(dt: number): void {
+    const { x, y } = this.stick!;
+    const amount = Math.hypot(x, y);
+    if (amount < 0.15) return; // a dead zone in the middle
+    const right = new Vector3().setFromMatrixColumn(this.camera.matrixWorld, 0).setY(0).normalize();
+    const up = new Vector3().setFromMatrixColumn(this.camera.matrixWorld, 1).setY(0).normalize();
+    const dir = right.multiplyScalar(x).add(up.multiplyScalar(y)).normalize();
+    const travel = this.layout.walkSpeed * Math.min(1, amount) * dt;
+    const p = this.playerRoot.position;
+    this.playerRoot.rotation.y = Math.atan2(dir.x, dir.z);
+    const nx = p.x + dir.x * travel;
+    const nz = p.z + dir.z * travel;
+    // Slide along walls and furniture: try the whole step, then each axis alone.
+    if (isWalkable(this.layout, [nx, nz])) p.set(nx, 0, nz);
+    else if (isWalkable(this.layout, [nx, p.z])) p.x = nx;
+    else if (isWalkable(this.layout, [p.x, nz])) p.z = nz;
   }
 
   private async addModel(path: string, [x, z]: Point, rotation: number, y = 0): Promise<Object3D> {
@@ -472,12 +545,8 @@ export class ShopScene {
       return;
     }
     const fixture = hit && this.hitBoxes.get(hit.object);
-    if (fixture?.interact) {
-      this.walkTo(fixture.interact.standAt, fixture);
-      return;
-    }
-    const floor = this.floorPointAt(e.clientX, e.clientY);
-    if (floor) this.walkTo([floor.x, floor.z], null);
+    if (fixture?.interact) this.walkTo(fixture.interact.standAt, fixture);
+    // Tapping the floor does nothing: the joystick moves you.
   }
 
   private walkTo(target: Point, fixture: Fixture | null): void {
@@ -504,15 +573,16 @@ export class ShopScene {
     const dt = this.lastFrame ? Math.min((time - this.lastFrame) / 1000, 0.1) : 1 / 60;
     this.lastFrame = time;
 
-    if (this.path.length > 0) this.step(dt);
+    if (this.stick) this.steer(dt);
+    else if (this.path.length > 0) this.step(dt);
     this.player?.mixer.update(dt);
     const crowdMoving = this.crowd.update(dt);
-    if (this.path.length > 0) this.follow(dt);
+    if (this.path.length > 0 || this.stick) this.follow(dt);
 
     this.renderer.render(this.scene, this.camera);
     this.placeLabels();
 
-    if (this.path.length > 0 || (crowdMoving && this.interactive)) this.requestFrame();
+    if (this.path.length > 0 || this.stick || (crowdMoving && this.interactive)) this.requestFrame();
     else if ((this.interactive || this.savedView) && (this.player || this.crowd.size > 0)) {
       this.idleTimer = window.setTimeout(() => this.requestFrame(), 1000 / IDLE_FPS);
     } else this.lastFrame = 0;
@@ -551,14 +621,22 @@ export class ShopScene {
     }
   }
 
-  /** Eases the camera towards the walking player when they near the screen's edge. */
+  /** Eases the camera towards the walking player when they leave the middle of the view. */
   private follow(dt: number): void {
     if (this.zoom <= 1.05) return; // the whole room is in view
+    const rect = this.renderer.domElement.getBoundingClientRect();
     const p = this.playerRoot.position.clone().project(this.camera);
-    if (Math.abs(p.x) < FOLLOW_MARGIN && Math.abs(p.y) < FOLLOW_MARGIN) return;
-    const t = Math.min(dt * 3, 1);
-    this.focus.x += (this.playerRoot.position.x - this.focus.x) * t;
-    this.focus.z += (this.playerRoot.position.z - this.focus.z) * t;
+    const sx = ((p.x + 1) / 2) * rect.width;
+    const sy = ((1 - p.y) / 2) * rect.height;
+    // The middle of the part of the screen below the HUD, and how far the player may stray from it.
+    const midY = (this.topInset + rect.height) / 2;
+    const slackX = rect.width * FOLLOW_MARGIN * 0.5;
+    const slackY = (rect.height - this.topInset) * FOLLOW_MARGIN * 0.5;
+    if (Math.abs(sx - rect.width / 2) < slackX && Math.abs(sy - midY) < slackY) return;
+    const at = this.floorPointAt(rect.left + sx, rect.top + sy);
+    const mid = this.floorPointAt(rect.left + rect.width / 2, rect.top + midY);
+    if (!at || !mid) return;
+    this.focus.addScaledVector(at.sub(mid), Math.min(dt * 3, 1));
     this.placeCamera();
   }
 
