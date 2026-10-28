@@ -2,6 +2,7 @@ import ranksJson from '../data/ranks.json';
 import type { Brief } from './clients';
 import { makeQuestion, type LearningState, mastery, type Question } from './learning';
 import type { ScoreResult } from './scoring';
+import type { ScoringConfig } from './clients';
 import type { Family, Material } from './types';
 
 // Ranks: apprentice, junior perfumer, perfumer, master. Each step up is an exam: blind
@@ -23,6 +24,10 @@ export interface Rank {
   about: string;
   /** Totals a perfume may have, exactly. */
   wearableParts: number[];
+  /** Totals a customer's perfume must have: from junior, 100 parts, so proportions matter. */
+  orderParts: number[];
+  /** Closeness needed for two and three stars: stricter as you rise. */
+  stars: [number, number];
   dilutions: boolean;
   bases: boolean;
   budgets: boolean;
@@ -32,6 +37,11 @@ export interface Rank {
 }
 
 export const ranks = (ranksJson as unknown as { ranks: Rank[] }).ranks;
+
+/** The scoring settings for a rank: the same closeness, judged against the rank's star thresholds. */
+export function scoringFor(rank: Rank, base: ScoringConfig): ScoringConfig {
+  return { ...base, difficulty: rank.id, difficulties: { ...base.difficulties, [rank.id]: { stars: rank.stars } } };
+}
 
 export function rankById(id: string | undefined): Rank {
   return ranks.find((r) => r.id === id) ?? ranks[0];

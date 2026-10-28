@@ -467,7 +467,7 @@ document.body.addEventListener('click', (event) => {
       const order = currentOrder();
       if (!order) return;
       const blend = draftBlend();
-      const check = checkPerfume(blend, currentRank().wearableParts, order.brief.budget);
+      const check = checkPerfume(blend, order.parts, order.brief.budget);
       if (!sellable(check)) {
         ui.toast = blockers(check)[0];
         break;
@@ -484,7 +484,7 @@ document.body.addEventListener('click', (event) => {
       if (ui.orderId?.startsWith('challenge:')) {
         // A reconstruction: compared with the sample at once.
         const challengeId = ui.orderId.slice('challenge:'.length);
-        const result = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
+        const result = scorePerfume(blend, order.brief.target, materialsById, content.model, order.scoring);
         const reward = recordChallenge(save.lab!, challengeId, result.stars);
         if (reward) {
           save.customers!.money += reward.coins;
@@ -499,7 +499,7 @@ document.body.addEventListener('click', (event) => {
       if (ui.orderId === 'signature') {
         // Her perfume: judged against her last page, using the aged labdanum from her jar.
         const sig = save.signature!;
-        sig.result = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
+        sig.result = scorePerfume(blend, order.brief.target, materialsById, content.model, order.scoring);
         ui.orderId = null;
         if (sig.result.stars >= 3) {
           sig.completedAt = nowGame();
@@ -511,13 +511,13 @@ document.body.addEventListener('click', (event) => {
       }
       if (order.exam) {
         // The examiners judge it straight away, with their own materials.
-        save.exam!.accord = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
+        save.exam!.accord = scorePerfume(blend, order.brief.target, materialsById, content.model, order.scoring);
         ui.orderId = null;
         return openPanel('exam');
       }
       const visit = c.visits.find((v) => v.id === ui.orderId)!;
-      const raw = scorePerfume(blend, order.brief.target, materialsById, content.model, clients.scoring);
-      const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, clients.scoring, visit.strictness ?? 0);
+      const raw = scorePerfume(blend, order.brief.target, materialsById, content.model, order.scoring);
+      const result = applyQuality(raw, quality, sourcing.quality.scoreEffect, order.scoring, visit.strictness ?? 0);
       const typed = document.querySelector<HTMLInputElement>('#save-name')?.value.trim();
       handOver(c, visit.id, { name: typed || `${visit.name}'s perfume`, parts: written(blend), entries: blend }, result, Date.now());
       recordUse(save.learning!, written(blend));

@@ -73,7 +73,7 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 
 | Field | Meaning |
 | ----- | ------- |
-| `wearableParts` | Parts every brief's target totals (10). What your own perfumes may total comes from your rank (`ranks.json`). |
+| `wearableParts` | Parts an early brief's target totals (10); later briefs total ten times that (100). What your own perfumes may total comes from your rank (`ranks.json`). |
 | `wearableConcentration` | Percent of concentrate in a finished, wearable perfume (the rest is alcohol): 10, from the course. Safety limits are checked against the finished perfume. |
 | `overdose` | Materials usually worked at `dilution`% (1, the very strong ones) smell harsh above `maxPercent` of a formula, which costs `penalty` of the score and draws a "harsh" remark. Dilute them. |
 | `stages` | The moments a perfume is judged: `id`, `name`, `hours` after application, `label`. Increasing hours. They mirror the course's blotter checks at 5 minutes, 1 hour and later. |
@@ -175,7 +175,7 @@ A brief:
 | `id` | Stable id |
 | `memory` | What the customer asks for, as a memory |
 | `hints` | Revealed one at a time when you ask about it |
-| `target` | Hidden: `formula`, a reference formula in whole parts totalling `wearableParts`, and `dilutions` (material → 10 or 1) for any it uses diluted. The customer judges your perfume by how close it smells to this one at each stage, how strong it is and how long it lasts. They only bring it in once you have every material in it, and (if it uses dilutions) once your rank lets you dilute. A test checks every target is within safety limits and not harsh. |
+| `target` | Hidden: `formula`, a reference formula in whole parts totalling `wearableParts` (10) or, for briefs that need materials from later tiers, 100, and `dilutions` (material → 10 or 1) for any it uses diluted. The customer judges your perfume by how close it smells to this one at each stage, how strong it is and how long it lasts. They only bring it in once you have every material in it, and once your rank allows it: dilutions, budgets, and a target in 100 parts need a rank whose `orderParts` reach 100. A test checks every target is within safety limits and not harsh. |
 | `budget` | Optional: most they'll pay for materials, in euros per 100 g of concentrate. A perfume over budget can't be handed over. Budget briefs come once you're a Perfumer. |
 | `pay` | Coins paid on hand-over (times the shop's pay multiplier) |
 | `page` | Story requests only: the page of her book it recreates |
@@ -350,6 +350,8 @@ Ranks and their exams (`src/game/ranks.ts`), in order. You start as the first.
 | ----- | ------- |
 | `id`, `name`, `about` | |
 | `wearableParts` | Totals your perfumes may have, exactly (10; then 10 or 100; 1000 comes later) |
+| `orderParts` | Totals a perfume for a customer, her signature or a reconstruction must have: 10 for an apprentice, then 100 (a master may also use 1000) |
+| `stars` | Closeness needed for two and three stars, `[two, three]`, stricter at each rank. An exam is judged by the thresholds of the rank being sat for. |
 | `dilutions` | Whether you can use materials at 10% and 1% (and make dilutions in the stock room) |
 | `bases` | Whether you can save accords as bases and use them inside formulas |
 | `budgets` | Whether customers with budgets come to you |

@@ -299,9 +299,9 @@
       ],
       "target": {
         "formula": {
-          "bergamot": 4,
-          "hedione": 4,
-          "labdanum": 2
+          "bergamot": 43,
+          "hedione": 37,
+          "labdanum": 20
         }
       },
       "pay": 40
@@ -315,9 +315,9 @@
       ],
       "target": {
         "formula": {
-          "pink-pepper": 3,
-          "labdanum": 4,
-          "vanillin": 3
+          "pink-pepper": 33,
+          "labdanum": 40,
+          "vanillin": 27
         }
       },
       "pay": 40
@@ -331,9 +331,9 @@
       ],
       "target": {
         "formula": {
-          "hedione": 4,
-          "iso-e-super": 3,
-          "bergamot": 3
+          "hedione": 40,
+          "iso-e-super": 33,
+          "bergamot": 27
         }
       },
       "pay": 40
@@ -347,10 +347,10 @@
       ],
       "target": {
         "formula": {
-          "stemone": 2,
-          "cis-3-hexenol": 1,
-          "gamma-octalactone": 4,
-          "cedarwood-virginia": 3
+          "stemone": 20,
+          "cis-3-hexenol": 10,
+          "gamma-octalactone": 40,
+          "cedarwood-virginia": 30
         },
         "dilutions": {
           "stemone": 10,
@@ -368,9 +368,9 @@
       ],
       "target": {
         "formula": {
-          "cedarwood-virginia": 6,
-          "labdanum": 2,
-          "lavender": 2
+          "cedarwood-virginia": 60,
+          "labdanum": 23,
+          "lavender": 17
         }
       },
       "pay": 45
@@ -384,9 +384,9 @@
       ],
       "target": {
         "formula": {
-          "gamma-octalactone": 5,
-          "gamma-decalactone": 3,
-          "bergamot": 2
+          "gamma-octalactone": 50,
+          "gamma-decalactone": 30,
+          "bergamot": 20
         }
       },
       "pay": 45
@@ -400,11 +400,11 @@
       ],
       "target": {
         "formula": {
-          "oakmoss": 3,
-          "cedarwood-virginia": 3,
-          "patchouli": 1,
-          "stemone": 1,
-          "iso-e-super": 2
+          "oakmoss": 33,
+          "cedarwood-virginia": 27,
+          "patchouli": 12,
+          "stemone": 8,
+          "iso-e-super": 20
         },
         "dilutions": {
           "oakmoss": 1,
@@ -422,10 +422,10 @@
       ],
       "target": {
         "formula": {
-          "phenylethyl-alcohol": 6,
-          "hedione": 1,
-          "oakmoss": 1,
-          "labdanum": 2
+          "phenylethyl-alcohol": 60,
+          "hedione": 12,
+          "oakmoss": 8,
+          "labdanum": 20
         },
         "dilutions": {
           "oakmoss": 10
@@ -442,11 +442,11 @@
       ],
       "target": {
         "formula": {
-          "lavender": 4,
-          "coumarin": 2,
-          "oakmoss": 1,
-          "cedarwood-virginia": 1,
-          "bergamot": 2
+          "lavender": 40,
+          "coumarin": 23,
+          "oakmoss": 8,
+          "cedarwood-virginia": 12,
+          "bergamot": 17
         },
         "dilutions": {
           "coumarin": 10,
@@ -464,11 +464,11 @@
       ],
       "target": {
         "formula": {
-          "beta-damascone": 1,
-          "gamma-decalactone": 3,
-          "black-tea": 3,
-          "labdanum": 2,
-          "cedarwood-virginia": 1
+          "beta-damascone": 12,
+          "gamma-decalactone": 33,
+          "black-tea": 27,
+          "labdanum": 20,
+          "cedarwood-virginia": 8
         },
         "dilutions": {
           "beta-damascone": 1
@@ -486,9 +486,9 @@
       ],
       "target": {
         "formula": {
-          "ethylene-brassylate": 6,
-          "aldehyde-c11": 1,
-          "hedione": 3
+          "ethylene-brassylate": 60,
+          "aldehyde-c11": 10,
+          "hedione": 30
         },
         "dilutions": {
           "aldehyde-c11": 10
@@ -559,11 +559,11 @@
       ],
       "target": {
         "formula": {
-          "rose-damascena": 4,
-          "geranium": 2,
-          "clove": 1,
-          "labdanum": 2,
-          "bergamot": 1
+          "rose-damascena": 40,
+          "geranium": 23,
+          "clove": 12,
+          "labdanum": 17,
+          "bergamot": 8
         },
         "dilutions": {
           "clove": 10
@@ -580,10 +580,10 @@
       ],
       "target": {
         "formula": {
-          "ylang-ylang": 4,
-          "jasmine": 2,
-          "vanillin": 2,
-          "sweet-orange": 2
+          "ylang-ylang": 40,
+          "jasmine": 23,
+          "vanillin": 20,
+          "sweet-orange": 17
         }
       },
       "pay": 40,
@@ -598,10 +598,10 @@
       ],
       "target": {
         "formula": {
-          "clove": 2,
-          "vanillin": 4,
-          "mandarin": 2,
-          "labdanum": 2
+          "clove": 23,
+          "vanillin": 40,
+          "mandarin": 20,
+          "labdanum": 17
         },
         "dilutions": {
           "clove": 10
@@ -618,10 +618,10 @@
       ],
       "target": {
         "formula": {
-          "sandalwood": 5,
-          "frankincense": 2,
-          "vetiver": 2,
-          "cedarwood-virginia": 1
+          "sandalwood": 50,
+          "frankincense": 23,
+          "vetiver": 17,
+          "cedarwood-virginia": 10
         }
       },
       "pay": 45
@@ -635,11 +635,11 @@
       ],
       "target": {
         "formula": {
-          "orris": 2,
-          "tonka-bean": 3,
-          "vanilla": 2,
-          "rose-centifolia": 2,
-          "sandalwood": 1
+          "orris": 23,
+          "tonka-bean": 30,
+          "vanilla": 20,
+          "rose-centifolia": 17,
+          "sandalwood": 10
         }
       },
       "pay": 45,
@@ -654,11 +654,11 @@
       ],
       "target": {
         "formula": {
-          "beta-ionone": 4,
-          "heliotropin": 2,
-          "vanillin": 2,
-          "benzyl-acetate": 1,
-          "bergamot": 1
+          "beta-ionone": 40,
+          "heliotropin": 23,
+          "vanillin": 17,
+          "benzyl-acetate": 12,
+          "bergamot": 8
         }
       },
       "pay": 50
@@ -672,11 +672,11 @@
       ],
       "target": {
         "formula": {
-          "heliotropin": 3,
-          "benzaldehyde": 1,
-          "ethyl-vanillin": 2,
-          "sweet-orange": 2,
-          "tonka-bean": 2
+          "heliotropin": 30,
+          "benzaldehyde": 10,
+          "ethyl-vanillin": 23,
+          "sweet-orange": 20,
+          "tonka-bean": 17
         }
       },
       "pay": 50
@@ -690,13 +690,13 @@
       ],
       "target": {
         "formula": {
-          "aldehyde-c12-lauric": 1,
-          "aldehyde-c11": 1,
-          "jasmine": 2,
-          "rose-centifolia": 2,
-          "orris": 1,
-          "sandalwood": 2,
-          "vanillin": 1
+          "aldehyde-c12-lauric": 12,
+          "aldehyde-c11": 10,
+          "jasmine": 23,
+          "rose-centifolia": 20,
+          "orris": 10,
+          "sandalwood": 17,
+          "vanillin": 8
         },
         "dilutions": {
           "aldehyde-c12-lauric": 10,
@@ -715,11 +715,11 @@
       ],
       "target": {
         "formula": {
-          "aldehyde-c14": 3,
-          "bergamot": 2,
-          "oakmoss": 2,
-          "labdanum": 2,
-          "jasmine": 1
+          "aldehyde-c14": 30,
+          "bergamot": 23,
+          "oakmoss": 20,
+          "labdanum": 17,
+          "jasmine": 10
         },
         "dilutions": {
           "oakmoss": 1
@@ -792,9 +792,9 @@
           ],
           "target": {
             "formula": {
-              "hedione": 5,
-              "iso-e-super": 3,
-              "labdanum": 2
+              "hedione": 50,
+              "iso-e-super": 30,
+              "labdanum": 20
             }
           },
           "pay": 45
@@ -808,9 +808,9 @@
           ],
           "target": {
             "formula": {
-              "phenylethyl-alcohol": 5,
-              "cedarwood-virginia": 4,
-              "vanillin": 1
+              "phenylethyl-alcohol": 50,
+              "cedarwood-virginia": 40,
+              "vanillin": 10
             }
           },
           "pay": 60
@@ -880,9 +880,9 @@
           ],
           "target": {
             "formula": {
-              "cedarwood-virginia": 6,
-              "cis-3-hexenol": 2,
-              "bergamot": 2
+              "cedarwood-virginia": 60,
+              "cis-3-hexenol": 23,
+              "bergamot": 17
             },
             "dilutions": {
               "cis-3-hexenol": 10
@@ -899,10 +899,10 @@
           ],
           "target": {
             "formula": {
-              "oakmoss": 3,
-              "patchouli": 2,
-              "gamma-decalactone": 3,
-              "cedarwood-virginia": 2
+              "oakmoss": 33,
+              "patchouli": 23,
+              "gamma-decalactone": 27,
+              "cedarwood-virginia": 17
             },
             "dilutions": {
               "oakmoss": 1
@@ -975,10 +975,10 @@
           ],
           "target": {
             "formula": {
-              "cis-3-hexenol": 3,
-              "stemone": 2,
-              "gamma-octalactone": 3,
-              "bergamot": 2
+              "cis-3-hexenol": 33,
+              "stemone": 23,
+              "gamma-octalactone": 27,
+              "bergamot": 17
             },
             "dilutions": {
               "cis-3-hexenol": 10,
@@ -996,9 +996,9 @@
           ],
           "target": {
             "formula": {
-              "oakmoss": 4,
-              "patchouli": 3,
-              "phenylethyl-alcohol": 3
+              "oakmoss": 40,
+              "patchouli": 33,
+              "phenylethyl-alcohol": 27
             },
             "dilutions": {
               "oakmoss": 1
@@ -1061,11 +1061,11 @@
           ],
           "target": {
             "formula": {
-              "neroli": 2,
-              "orange-blossom": 2,
-              "petitgrain": 2,
-              "bergamot": 2,
-              "benzoin": 2
+              "neroli": 23,
+              "orange-blossom": 20,
+              "petitgrain": 20,
+              "bergamot": 20,
+              "benzoin": 17
             }
           },
           "pay": 50,
@@ -1080,11 +1080,11 @@
           ],
           "target": {
             "formula": {
-              "rose-damascena": 3,
-              "rose-centifolia": 2,
-              "geranium": 2,
-              "sandalwood": 2,
-              "bergamot": 1
+              "rose-damascena": 30,
+              "rose-centifolia": 23,
+              "geranium": 20,
+              "sandalwood": 17,
+              "bergamot": 10
             }
           },
           "pay": 60
@@ -1098,11 +1098,11 @@
           ],
           "target": {
             "formula": {
-              "jasmine": 3,
-              "tuberose": 1,
-              "orange-blossom": 2,
-              "ylang-ylang": 2,
-              "sandalwood": 2
+              "jasmine": 30,
+              "tuberose": 10,
+              "orange-blossom": 23,
+              "ylang-ylang": 20,
+              "sandalwood": 17
             },
             "dilutions": {
               "tuberose": 10
@@ -1167,10 +1167,10 @@
           ],
           "target": {
             "formula": {
-              "cedarwood-virginia": 4,
-              "birch-tar": 1,
-              "labdanum": 3,
-              "vetiver": 2
+              "cedarwood-virginia": 40,
+              "birch-tar": 10,
+              "labdanum": 30,
+              "vetiver": 20
             },
             "dilutions": {
               "birch-tar": 10
@@ -1187,11 +1187,11 @@
           ],
           "target": {
             "formula": {
-              "birch-tar": 1,
-              "isobutyl-quinoline": 1,
-              "labdanum": 3,
-              "sandalwood": 3,
-              "clary-sage": 2
+              "birch-tar": 12,
+              "isobutyl-quinoline": 8,
+              "labdanum": 33,
+              "sandalwood": 27,
+              "clary-sage": 20
             },
             "dilutions": {
               "birch-tar": 10,
@@ -1210,10 +1210,10 @@
           ],
           "target": {
             "formula": {
-              "guaiacwood": 3,
-              "vetiver": 3,
-              "cypress": 2,
-              "frankincense": 2
+              "guaiacwood": 33,
+              "vetiver": 27,
+              "cypress": 23,
+              "frankincense": 17
             }
           },
           "pay": 70,

@@ -3,8 +3,8 @@ import { DILUTIONS, baseKey, effective, isBaseKey, partsTotal, written, type Ent
 import { blockers, checkPerfume, sellable } from '../game/checks';
 import { content, materialsById } from '../game/content';
 import { drydown } from '../game/evaporation';
-import { findBrief, type Brief } from '../game/clients';
-import { rankById } from '../game/ranks';
+import { clients, findBrief, type Brief, type ScoringConfig } from '../game/clients';
+import { rankById, scoringFor } from '../game/ranks';
 import { signature } from '../game/signature';
 import { challengeBrief, lab } from '../game/lab';
 import { LAYERS, type Material } from '../game/types';
@@ -45,20 +45,34 @@ export function organScreen(): string {
  * exam's accord. `exam` shows every hint up front; `fromStock` weighs it out of your stock
  * (everything but an exam, where the examiners use their own materials).
  */
-export function currentOrder(): { name: string; brief: Brief; exam: boolean; fromStock: boolean } | null {
+export interface Order {
+  name: string;
+  brief: Brief;
+  exam: boolean;
+  fromStock: boolean;
+  /** Totals the perfume must have: a rank's order parts, or for an exam, its usual parts. */
+  parts: number[];
+  /** How it's judged: the rank's star thresholds (an exam, the rank being sat for). */
+  scoring: ScoringConfig;
+}
+
+export function currentOrder(): Order | null {
   const { ui, save } = state;
-  if (ui.orderId === 'signature') return { name: 'her', brief: signature.brief, exam: true, fromStock: true };
+  const rank = currentRank();
+  const mine = { parts: rank.orderParts, scoring: scoringFor(rank, clients.scoring) };
+  if (ui.orderId === 'signature') return { name: 'her', brief: signature.brief, exam: true, fromStock: true, ...mine };
   if (ui.orderId?.startsWith('challenge:')) {
     const c = lab.challenges.find((x) => `challenge:${x.id}` === ui.orderId);
-    return c ? { name: c.name, brief: challengeBrief(c), exam: true, fromStock: true } : null;
+    return c ? { name: c.name, brief: challengeBrief(c), exam: true, fromStock: true, ...mine } : null;
   }
   if (ui.orderId === 'exam') {
-    const brief = save.exam ? rankById(save.exam.rank).exam?.accord : undefined;
-    return brief ? { name: 'the examiners', brief, exam: true, fromStock: false } : null;
+    const sitting = save.exam ? rankById(save.exam.rank) : undefined;
+    const brief = sitting?.exam?.accord;
+    return sitting && brief ? { name: 'the examiners', brief, exam: true, fromStock: false, parts: rank.wearableParts, scoring: scoringFor(sitting, clients.scoring) } : null;
   }
   const visit = save.customers?.visits.find((v) => v.id === ui.orderId && v.status === 'waiting');
   const brief = visit && findBrief(visit.briefId);
-  return visit && brief ? { name: visit.name, brief, exam: false, fromStock: true } : null;
+  return visit && brief ? { name: visit.name, brief, exam: false, fromStock: true, ...mine } : null;
 }
 
 function entryName(e: Entry): string {
@@ -74,7 +88,7 @@ function orderBanner(): string {
   const visit = save.customers?.visits.find((v) => v.id === ui.orderId);
   const hints = brief.hints.slice(0, order.exam ? brief.hints.length : visit?.hintsAsked ?? 0).map((h) => `<span class="small">“${esc(h)}”</span>`).join('<br>');
   const blend = draftBlend();
-  const check = checkPerfume(blend, currentRank().wearableParts, brief.budget);
+  const check = checkPerfume(blend, order.parts, brief.budget);
   const missing = !order.fromStock ? [] : missingFor(save.sourcing!, blend).map(entryName);
   const ready = sellable(check) && missing.length === 0;
   const page = brief.page ? pageById(brief.page) : undefined;
@@ -114,7 +128,7 @@ function trainingButton(): string {
 /** How full the formula is: a perfume totals exactly one of the totals your rank allows. */
 function partsMeter(): string {
   const total = partsTotal(draftBlend());
-  const allowed = currentRank().wearableParts;
+  const allowed = currentOrder()?.parts ?? currentRank().wearableParts;
   const target = allowed.find((t) => t >= total) ?? allowed[allowed.length - 1];
   const note = allowed.includes(total) ? 'A full formula, ready to wear.' : total > target ? `Too many: take ${formatParts(total - target)} out.` : `${formatParts(target - total)} more to go for ${target} parts.`;
   const options = stepsFor(allowed[allowed.length - 1]);

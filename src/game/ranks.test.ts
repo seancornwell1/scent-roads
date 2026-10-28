@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { content, materialsById } from './content';
 import { newLearningState } from './learning';
-import { examBlockers, examStage, identifyScore, nextRank, rankById, ranks, startExam, validateRanks } from './ranks';
+import { examBlockers, examStage, identifyScore, nextRank, rankById, ranks, scoringFor, startExam, validateRanks } from './ranks';
+import { scorePerfume } from './scoring';
+import { rankAllows } from './world';
+import type { SaveData } from './save';
 import { seededRandom } from './random';
 import type { ScoreResult } from './scoring';
 import { blendProfile, briefWeight, recordStyle, regularWelcome, shopStyle } from './style';
@@ -65,5 +68,34 @@ describe('shop style', () => {
     expect(regularWelcome(celeste, {})).toBe(false);
     expect(regularWelcome(celeste, { floral: 0.5 })).toBe(true);
     expect(regularWelcome(clients.regulars.find((r) => r.id === 'odile')!, {})).toBe(true);
+  });
+});
+
+describe('stricter judging with rank', () => {
+  it('raises the star thresholds at every rank, and from junior asks for 100 parts', () => {
+    for (let i = 1; i < ranks.length; i++) {
+      expect(ranks[i].stars[1]).toBeGreaterThan(ranks[i - 1].stars[1]);
+      expect(ranks[i].orderParts).toContain(100);
+    }
+    expect(rankById('apprentice').orderParts).toEqual([10]);
+  });
+
+  it('a nearly right perfume earns three stars from an apprentice but not from a master', () => {
+    const brief = clients.briefs.find((b) => b.id === 'temple-garden')!;
+    const f = { ...brief.target.formula };
+    const [a, b] = Object.keys(f);
+    f[a] -= 8;
+    f[b] += 8;
+    const blend = entriesOf({ parts: f, dilutions: brief.target.dilutions });
+    const stars = (id: string) => scorePerfume(blend, brief.target, materialsById, content.model, scoringFor(rankById(id), clients.scoring)).stars;
+    expect(stars('apprentice')).toBe(3);
+    expect(stars('master')).toBeLessThan(3);
+  });
+
+  it('keeps briefs written in 100 parts for ranks that work in 100 parts', () => {
+    const late = clients.briefs.find((b) => Object.values(b.target.formula).reduce((x, y) => x + y, 0) === 100 && !b.target.dilutions && b.budget === undefined)!;
+    const save = { rank: 'apprentice' } as SaveData;
+    expect(rankAllows(save, late)).toBe(false);
+    expect(rankAllows({ ...save, rank: 'junior' }, late)).toBe(true);
   });
 });

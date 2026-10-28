@@ -125,7 +125,9 @@ export function validateBriefs(briefs: Brief[], materialIds: Set<string>, wearab
     ids.add(b.id);
     const parts = Object.values(b.target.formula);
     for (const m of Object.keys(b.target.formula)) if (!materialIds.has(m)) errors.push(`brief "${b.id}": unknown material "${m}"`);
-    if (parts.reduce((a, p) => a + p, 0) !== wearableParts) errors.push(`brief "${b.id}": target must total ${wearableParts} parts`);
+    // Early briefs are written in whole parts of ten; later ones (for junior perfumers on) in 100.
+    const total = parts.reduce((a, p) => a + p, 0);
+    if (total !== wearableParts && total !== wearableParts * 10) errors.push(`brief "${b.id}": target must total ${wearableParts} or ${wearableParts * 10} parts`);
     if (parts.some((p) => !Number.isInteger(p) || p <= 0)) errors.push(`brief "${b.id}": target parts must be whole numbers`);
   }
   for (const f of familyIds) if (!data.lines.feedback.families[f]) errors.push(`feedback: no words for family "${f}"`);

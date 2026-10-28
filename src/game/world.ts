@@ -54,11 +54,13 @@ export function briefLean(b: Brief): Record<string, number> {
   return lean;
 }
 
-/** Whether your rank lets you take a brief: diluted materials and budgets come with rank. */
+/** Whether your rank lets you take a brief: diluted materials, budgets and 100-part briefs come with rank. */
 export function rankAllows(save: SaveData, b: Brief): boolean {
   const rank = rankById(save.rank);
   const diluted = Object.values(b.target.dilutions ?? {}).some((d) => d < 100);
-  return (!diluted || rank.dilutions) && (b.budget === undefined || rank.budgets);
+  // A target written in 100 parts needs a rank that works in 100 parts.
+  const total = Object.values(b.target.formula).reduce((x, y) => x + y, 0);
+  return (!diluted || rank.dilutions) && (b.budget === undefined || rank.budgets) && total <= Math.max(...rank.orderParts);
 }
 
 /** How customers arrive right now: the shop's appeal and style, your rank, and any fair in the news. */

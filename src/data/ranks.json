@@ -7,6 +7,13 @@
       "wearableParts": [
         10
       ],
+      "orderParts": [
+        10
+      ],
+      "stars": [
+        0.65,
+        0.9
+      ],
       "dilutions": false,
       "bases": false,
       "budgets": false,
@@ -15,10 +22,17 @@
     {
       "id": "junior",
       "name": "Junior perfumer",
-      "about": "Formulas in 100 parts, materials diluted to 10% or 1%, and your own accords saved as bases.",
+      "about": "Customers' perfumes in 100 parts, judged more strictly; materials diluted to 10% or 1%, and your own accords saved as bases.",
       "wearableParts": [
         10,
         100
+      ],
+      "orderParts": [
+        100
+      ],
+      "stars": [
+        0.75,
+        0.96
       ],
       "dilutions": true,
       "bases": true,
@@ -59,6 +73,13 @@
       "wearableParts": [
         10,
         100
+      ],
+      "orderParts": [
+        100
+      ],
+      "stars": [
+        0.78,
+        0.965
       ],
       "dilutions": true,
       "bases": true,
@@ -105,6 +126,14 @@
         10,
         100,
         1000
+      ],
+      "orderParts": [
+        100,
+        1000
+      ],
+      "stars": [
+        0.8,
+        0.97
       ],
       "dilutions": true,
       "bases": true,
