@@ -10,10 +10,10 @@ import { seededRandom } from './game/random';
 import { applyQuality, scorePerfume } from './game/scoring';
 import { setClockSpeed } from './game/clock';
 import { DILUTION_BATCH_GRAMS, consume, contractStage, dilute, harvest, missingFor, order, qualityWord, signContract, sourcing, tickSourcing, unpack, type Crate } from './game/sourcing';
-import { listPerfume, removeListing, settleSales } from './game/display';
+import { addCustomLabel, addHousePerfume, fairPrice, house, rateHouse, restock, setTier, settleHouse, suggestName, takeDown, unlockBlockers } from './game/house';
 import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
-import { parseSave, writeSave } from './game/save';
-import { buyItem, buyProcess, displayCapacity, furniture, itemById, place, processStats, unplace } from './game/upgrades';
+import { parseSave, writeSave, type SavedFormula } from './game/save';
+import { buyItem, buyProcess, itemById, place, processStats, unplace } from './game/upgrades';
 import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOpen, routesTick } from './game/routes';
 import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal } from './game/world';
 import { setTimeSpeed } from './game/time';
@@ -49,6 +49,7 @@ import { introScreen } from './ui/intro';
 import { hud } from './ui/hud';
 import { organScreen } from './ui/organ';
 import { examScreen } from './ui/exam';
+import { houseNewScreen, houseUnlocked, reportScreen, slotsNow } from './ui/house';
 
 const hudRoot = document.querySelector<HTMLDivElement>('#hud')!;
 const panelRoot = document.querySelector<HTMLDivElement>('#panel-root')!;
@@ -142,14 +143,64 @@ function composeFor(orderId: string): void {
   openPanel('organ');
 }
 
-/** Game hours between display-case sales: a more appealing shop sells faster. */
-const saleInterval = () => furniture.display.saleEveryGameHours * shopAppeal(state.save).level.arrivalMultiplier;
+/** Saves the organ's formula to the book. */
+function saveDraftFormula(name: string): SavedFormula {
+  const { save } = state;
+  const now = Date.now();
+  recordUse(save.learning!, written(draftBlend()));
+  const formula: SavedFormula = {
+    id: `f${now}`,
+    name,
+    parts: { ...save.draft },
+    dilutions: { ...save.draftDilutions },
+    accords: recognizeAccords(written(draftBlend()), content.accords, materialsById).map((a) => a.id),
+    createdAt: now,
+  };
+  save.formulas.push(formula);
+  return formula;
+}
 
-/** Sells from the display case; returns what sold. */
-function runSales(): { bottles: number; coins: number } {
-  const sold = settleSales(state.save.display!, nowGame(), saleInterval());
-  state.save.customers!.money += sold.coins;
-  return sold;
+/**
+ * House perfumes: unlocks them once you have the reputation and enough materials in stock to
+ * compose freely, and settles the shelves' sales for every game day that has ended. A more
+ * appealing shop draws more people. Returns whether anything happened.
+ */
+function runHouse(): boolean {
+  const { save, ui } = state;
+  const h = save.house!;
+  let happened = false;
+  if (h.unlockedAt === undefined && unlockBlockers(save.customers!.reputation, save.sourcing!).length === 0) {
+    h.unlockedAt = nowGame();
+    ui.toast = 'You have enough materials to compose freely: make house perfumes to sell from the shelves (Shop → House perfumes).';
+    happened = true;
+  }
+  const { level } = shopAppeal(save);
+  const reports = settleHouse(h, nowGame(), 1 / level.arrivalMultiplier, (p) => fairPrice(p.rating, level.payMultiplier));
+  if (reports.length > 0) {
+    save.customers!.money += reports.reduce((a, r) => a + r.coins, 0);
+    happened = true;
+  }
+  return happened;
+}
+
+/** Shows the end-of-day report over the shop when one is waiting. */
+function showReport(): void {
+  if (state.save.house!.unseen > 0 && state.ui.screen === 'shop') {
+    state.ui.reportDay = null;
+    openPanel('report');
+  }
+}
+
+/** The old display case's bottles become house perfumes on the shelves (once, for older saves). */
+function migrateDisplay(): void {
+  const { save } = state;
+  const d = save.display;
+  if (!d) return;
+  for (const l of d.listings) {
+    const rating = rateHouse(l.entries, knownTargets());
+    save.house!.perfumes.push({ id: `h${save.house!.nextId++}`, name: l.name, entries: l.entries, label: { generic: 'plain' }, rating, price: l.price, tier: 'fair', bottles: l.bottles, sold: 0, coins: 0, listedAt: nowGame() });
+  }
+  delete save.display;
 }
 
 // Notifications: only for things that newly happen while the app is in the background.
@@ -220,7 +271,7 @@ function runTick(): void {
   const now = nowGame();
   const changed = [...storyTick(save.story!, c, now, Date.now()), ...tick(c, Date.now(), ownedMaterials(save), Math.random, arrivalConditions(save, now))];
   const crates = tickSourcing(save.sourcing!, now, stormDelay);
-  const sold = runSales();
+  const sold = runHouse();
   const post = runPost(crates);
   const story = runStoryProgress();
   if (crates.length > 0) {
@@ -230,10 +281,7 @@ function runTick(): void {
     sounds.play('crate');
     notify('A crate has arrived', `From ${crates.map((k) => k.from).join(', ')}.`);
   }
-  if (sold.bottles > 0) {
-    state.ui.toast = `Sold ${sold.bottles} bottle${sold.bottles === 1 ? '' : 's'} from the display case: +${sold.coins} coins.`;
-    save.display!.unseen = { bottles: 0, coins: 0 };
-  }
+  if (sold) showReport();
   for (const k of save.sourcing!.contracts) {
     if (contractStage(k, now) === 'best' && !ripeNotified.has(k.id)) {
       ripeNotified.add(k.id);
@@ -244,7 +292,7 @@ function runTick(): void {
   if (returning.length > 0) notify('A customer is back', `${returning.map((v) => v.name).join(', ')} came back to tell you how their perfume wore.`);
   if (changed.length > 0) syncCrowd();
   // Keep countdowns fresh in panels that show them.
-  if (changed.length > 0 || crates.length > 0 || sold.bottles > 0 || post || story || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
+  if (changed.length > 0 || crates.length > 0 || sold || post || story || ['backroom', 'upgrades'].includes(state.ui.screen)) commit();
 }
 
 /** Puts placed furniture in the scene. */
@@ -272,12 +320,8 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     storyTick(state.save.story!, state.save.customers!, nowGame(), Date.now());
     tick(state.save.customers!, Date.now(), ownedMaterials(state.save), Math.random, arrivalConditions(state.save, nowGame()));
     runPost(tickSourcing(state.save.sourcing!, nowGame(), stormDelay));
-    runSales();
-    const away = state.save.display!.unseen;
-    if (away.bottles > 0) {
-      state.ui.toast = `While you were away, ${away.bottles} bottle${away.bottles === 1 ? '' : 's'} sold from the display case: +${away.coins} coins.`;
-      state.save.display!.unseen = { bottles: 0, coins: 0 };
-    }
+    migrateDisplay();
+    runHouse();
     void scene.setCrates(state.save.sourcing!.crates.length);
     refreshFurniture();
     syncCrowd();
@@ -286,6 +330,7 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && runTick());
     if (!state.save.story!.introSeen) openPanel('intro');
     else if (!state.save.character) openPanel('creator');
+    else showReport();
   })
   .catch((e) => {
     console.error(e);
@@ -314,7 +359,7 @@ function render(): void {
 
   // Don't redraw a panel under someone typing (a note, a formula's name): it would lose
   // what they've typed. Their change is saved when they leave the box.
-  const typing = document.activeElement?.matches('textarea[data-note], #save-name, #formula-import, #import-text') && panelRoot.contains(document.activeElement);
+  const typing = document.activeElement?.matches('textarea[data-note], #save-name, #formula-import, #import-text, #house-name') && panelRoot.contains(document.activeElement);
   if (typing && screen !== 'shop') return;
   const panel = panelRoot.querySelector<HTMLElement>('.panel');
   const scroll = panel && !scrollToTop ? panel.scrollTop : 0;
@@ -373,12 +418,34 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return newsScreen();
     case 'options':
       return optionsScreen(optionsMessage);
+    case 'house-new':
+      return houseNewScreen();
+    case 'report':
+      return reportScreen();
     default:
       return bookScreen();
   }
 }
 
 let optionsMessage: string | null = null;
+
+/** Your own label: the picture you chose, scaled down to keep the save small. */
+async function uploadLabel(file: File): Promise<void> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const { sizePx, jpegQuality } = house.customLabels;
+    const scale = Math.min(1, sizePx / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const id = addCustomLabel(state.save.house!, canvas.toDataURL('image/jpeg', jpegQuality));
+    if (state.ui.houseNew) state.ui.houseNew.label = { custom: id };
+  } catch {
+    state.ui.toast = "That picture couldn't be opened.";
+  }
+  commit();
+}
 
 function importSave(text: string): void {
   const data = parseSave(text.trim());
@@ -403,6 +470,15 @@ document.body.addEventListener('change', (event) => {
     return;
   }
   const input = event.target as HTMLInputElement;
+  // A house perfume's name: kept as you type it, so redraws don't lose it.
+  if (input.id === 'house-name' && state.ui.houseNew) {
+    state.ui.houseNew.name = input.value;
+    return;
+  }
+  if (input.id === 'label-upload' && input.files?.[0]) {
+    void uploadLabel(input.files[0]);
+    return;
+  }
   if (input.id !== 'import-file' || !input.files?.[0]) return;
   void input.files[0].text().then(importSave);
 });
@@ -771,26 +847,96 @@ document.body.addEventListener('click', (event) => {
       ui.toast = why ?? `Bought ${itemById(id!)?.name}. Place it from the spots above.`;
       break;
     }
-    case 'list': {
-      const formula = save.formulas.find((f) => f.id === id);
+    case 'house-new':
+    case 'house-from-draft': {
+      if (!houseUnlocked()) return;
+      let formulaId = id;
+      if (action === 'house-from-draft') {
+        // Sell what's on the organ: save it first if it isn't in the book yet.
+        const blend = draftBlend();
+        const check = checkPerfume(blend, currentRank().wearableParts);
+        if (!sellable(check)) {
+          ui.toast = `It can't be bottled yet: ${blockers(check)[0]}`;
+          break;
+        }
+        const same = save.formulas.find((f) => JSON.stringify(f.parts) === JSON.stringify(save.draft) && JSON.stringify(f.dilutions ?? {}) === JSON.stringify(save.draftDilutions ?? {}));
+        formulaId = same?.id ?? saveDraftFormula(document.querySelector<HTMLInputElement>('#save-name')?.value.trim() || suggestName(blend, 1)).id;
+      }
+      const formula = save.formulas.find((f) => f.id === formulaId);
       if (!formula) return;
+      const blend = entriesOf(formula, save.bases);
+      const named = /^Formula \d+$/.test(formula.name) ? suggestName(blend, 1) : formula.name;
+      ui.houseNew = { formulaId: formula.id, name: named, seed: 1, label: { generic: house.labels[0].id }, tier: 'fair', bottles: house.bottleOptions[0] };
+      scrollToTop = true;
+      return openPanel('house-new');
+    }
+    case 'house-suggest': {
+      const n = ui.houseNew;
+      const formula = n && save.formulas.find((f) => f.id === n.formulaId);
+      if (!n || !formula) return;
+      n.seed += 1;
+      n.name = suggestName(entriesOf(formula, save.bases), n.seed);
+      break;
+    }
+    case 'house-label':
+      if (ui.houseNew) ui.houseNew.label = { generic: target.dataset.value! };
+      break;
+    case 'house-label-custom':
+      if (ui.houseNew) ui.houseNew.label = { custom: target.dataset.value! };
+      break;
+    case 'house-tier':
+      if (ui.houseNew) ui.houseNew.tier = target.dataset.value!;
+      break;
+    case 'house-bottles':
+      if (ui.houseNew) ui.houseNew.bottles = Number(target.dataset.value);
+      break;
+    case 'house-create': {
+      const n = ui.houseNew;
+      const formula = n && save.formulas.find((f) => f.id === n.formulaId);
+      if (!n || !formula) return;
       const blend = entriesOf(formula, save.bases);
       const check = checkPerfume(blend, currentRank().wearableParts);
       if (!sellable(check)) {
         ui.toast = `It can't be bottled: ${blockers(check)[0]}`;
         break;
       }
-      const why = listPerfume(save.display!, save.sourcing!, { name: formula.name, entries: blend }, Number(target.dataset.bottles), displayCapacity(save.upgrades!), nowGame(), shopAppeal(save).level.payMultiplier);
-      ui.toast = why ?? `“${formula.name}” is on display.`;
-      if (!why) {
-        sounds.play('pouring');
-        recordUse(save.learning!, written(blend));
+      const name = document.querySelector<HTMLInputElement>('#house-name')?.value.trim() || n.name;
+      const made = addHousePerfume(save.house!, save.sourcing!, { name, formulaId: formula.id, entries: blend, label: n.label, tier: n.tier, bottles: n.bottles }, slotsNow(), knownTargets(), shopAppeal(save).level.payMultiplier, nowGame());
+      if (typeof made === 'string') {
+        ui.toast = made;
+        break;
       }
+      sounds.play('pouring');
+      recordUse(save.learning!, written(blend));
+      ui.houseNew = null;
+      ui.toast = `“${made.name}” is on the shelf: ${made.bottles} bottle${made.bottles === 1 ? '' : 's'} at ${made.price} coins.`;
+      ui.upgradesTab = 'house';
+      return openPanel('upgrades');
+    }
+    case 'house-restock': {
+      const made = restock(save.house!, save.sourcing!, id!, Number(target.dataset.value), nowGame());
+      ui.toast = made > 0 ? `Made ${made} more bottle${made === 1 ? '' : 's'}.` : 'Not enough materials in stock to make another bottle.';
+      if (made > 0) sounds.play('pouring');
       break;
     }
-    case 'unlist':
-      removeListing(save.display!, id!);
+    case 'house-set-tier':
+      setTier(save.house!, id!, target.dataset.value!, shopAppeal(save).level.payMultiplier);
       break;
+    case 'house-take-down':
+      if (!confirm('Take it off the shelf? Any bottles left are given away to regulars.')) return;
+      takeDown(save.house!, id!);
+      break;
+    case 'open-report':
+      ui.reportDay = Number(target.dataset.value);
+      return openPanel('report');
+    case 'report-done':
+      save.house!.unseen = 0;
+      ui.screen = 'shop';
+      break;
+    case 'report-shelves':
+      save.house!.unseen = 0;
+      ui.upgradesTab = 'house';
+      return openPanel('upgrades');
     case 'buy-process': {
       const why = buyProcess(save.upgrades!, save.customers!, id!, save.customers!.reputation);
       ui.toast = why ?? 'Done: the new equipment is ready.';
@@ -915,17 +1061,7 @@ document.body.addEventListener('click', (event) => {
     case 'save': {
       if (totalParts(save.draft) === 0) return;
       const input = document.querySelector<HTMLInputElement>('#save-name');
-      const name = input?.value.trim() || `Formula ${save.formulas.length + 1}`;
-      const now = Date.now();
-      recordUse(save.learning!, written(draftBlend()));
-      save.formulas.push({
-        id: `f${now}`,
-        name,
-        parts: { ...save.draft },
-        dilutions: { ...save.draftDilutions },
-        accords: recognizeAccords(written(draftBlend()), content.accords, materialsById).map((a) => a.id),
-        createdAt: now,
-      });
+      saveDraftFormula(input?.value.trim() || `Formula ${save.formulas.length + 1}`);
       return openPanel('book');
     }
     case 'load-formula': {

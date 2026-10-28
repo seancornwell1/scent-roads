@@ -1,7 +1,7 @@
 import type { CharacterConfig } from './character';
 import type { Clock } from './clock';
 import type { CustomerState } from './customers';
-import type { DisplayState } from './display';
+import type { HouseState } from './house';
 import type { NewsItem } from './events';
 import type { SourcingState } from './sourcing';
 import type { Base, Dilutions, Entry } from './blend';
@@ -54,8 +54,10 @@ export interface SaveData {
   sourcing?: SourcingState;
   /** Furniture, opened regions and processing levels (step 6; filled in on load). */
   upgrades?: UpgradeState;
-  /** Signature perfumes on display (step 6). */
-  display?: DisplayState;
+  /** The old display case (step 6): moved into house perfumes on load, then removed. */
+  display?: { listings: { name: string; entries: Entry[]; bottles: number; price: number }[] };
+  /** House perfumes on the shelves, their sales and daily reports. */
+  house?: HouseState;
   /** Game week → that week's newspaper, fixed once printed. */
   news?: Record<number, NewsItem[]>;
   /** The latest week whose paper you've read. */

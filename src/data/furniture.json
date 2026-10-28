@@ -1,10 +1,34 @@
 {
   "appeal": {
     "levels": [
-      { "min": 0, "name": "Humble", "payMultiplier": 1, "strictness": 0, "arrivalMultiplier": 1 },
-      { "min": 8, "name": "Charming", "payMultiplier": 1.25, "strictness": 0.02, "arrivalMultiplier": 0.9 },
-      { "min": 20, "name": "Elegant", "payMultiplier": 1.5, "strictness": 0.04, "arrivalMultiplier": 0.8 },
-      { "min": 35, "name": "Renowned", "payMultiplier": 2, "strictness": 0.06, "arrivalMultiplier": 0.7 }
+      {
+        "min": 0,
+        "name": "Humble",
+        "payMultiplier": 1,
+        "strictness": 0,
+        "arrivalMultiplier": 1
+      },
+      {
+        "min": 8,
+        "name": "Charming",
+        "payMultiplier": 1.25,
+        "strictness": 0.02,
+        "arrivalMultiplier": 0.9
+      },
+      {
+        "min": 20,
+        "name": "Elegant",
+        "payMultiplier": 1.5,
+        "strictness": 0.04,
+        "arrivalMultiplier": 0.8
+      },
+      {
+        "min": 35,
+        "name": "Renowned",
+        "payMultiplier": 2,
+        "strictness": 0.06,
+        "arrivalMultiplier": 0.7
+      }
     ]
   },
   "kinds": {
@@ -15,32 +39,259 @@
     "display": "Display cases"
   },
   "items": [
-    { "id": "bench", "name": "Cushioned bench", "kind": "seating", "model": "grab3d/models/bench.glb", "placement": "floor", "price": 30, "appeal": 3, "reputation": 0, "size": [1.2, 0.36] },
-    { "id": "bar-stool", "name": "Bar stool", "kind": "seating", "model": "grab3d/models/bar-stool.glb", "placement": "floor", "price": 25, "appeal": 2, "reputation": 0, "size": [0.5, 0.5] },
-    { "id": "armchair", "name": "Butter-yellow armchair", "kind": "seating", "model": "grab3d/models/armchair.glb", "placement": "floor", "price": 60, "appeal": 5, "reputation": 5, "size": [0.8, 0.8] },
-    { "id": "rocking-chair", "name": "Rocking chair", "kind": "seating", "model": "grab3d/models/rocking-chair.glb", "placement": "floor", "price": 70, "appeal": 5, "reputation": 12, "size": [0.6, 0.93] },
-    { "id": "sofa", "name": "Sofa", "kind": "seating", "model": "grab3d/models/sofa.glb", "placement": "floor", "price": 120, "appeal": 8, "reputation": 22, "size": [1.6, 0.9] },
-    { "id": "snake-plant", "name": "Snake plant", "kind": "plant", "model": "grab3d/models/snake-plant.glb", "placement": "floor", "price": 20, "appeal": 2, "reputation": 0, "size": [0.3, 0.3] },
-    { "id": "fern", "name": "Fern", "kind": "plant", "model": "grab3d/models/fern.glb", "placement": "floor", "price": 25, "appeal": 3, "reputation": 0, "size": [1.2, 1.2] },
-    { "id": "monstera", "name": "Monstera", "kind": "plant", "model": "grab3d/models/monstera-plant.glb", "placement": "floor", "price": 40, "appeal": 4, "reputation": 5, "size": [1.1, 1.1] },
-    { "id": "floor-lamp", "name": "Floor lamp", "kind": "lighting", "model": "grab3d/models/floor-lamp.glb", "placement": "floor", "price": 35, "appeal": 3, "reputation": 0, "size": [0.5, 0.6] },
-    { "id": "table-lamp", "name": "Table lamp", "kind": "lighting", "model": "grab3d/models/table-lamp.glb", "placement": "surface", "price": 20, "appeal": 2, "reputation": 0, "size": [0.35, 0.6] },
-    { "id": "candle-cluster", "name": "Candles", "kind": "lighting", "model": "grab3d/models/candle-cluster.glb", "placement": "surface", "price": 15, "appeal": 2, "reputation": 0, "size": [0.45, 0.3] },
-    { "id": "star-lantern", "name": "Star lantern", "kind": "lighting", "model": "grab3d/models/star-lantern.glb", "placement": "surface", "price": 18, "appeal": 2, "reputation": 5, "size": [0.37, 0.15] },
-    { "id": "vase", "name": "Vase", "kind": "decor", "model": "grab3d/models/vase.glb", "placement": "surface", "price": 15, "appeal": 2, "reputation": 0, "size": [0.25, 0.22] },
-    { "id": "globe", "name": "Globe", "kind": "decor", "model": "grab3d/models/globe.glb", "placement": "surface", "price": 20, "appeal": 2, "reputation": 5, "size": [0.3, 0.27] },
-    { "id": "mirror", "name": "Full-length mirror", "kind": "decor", "model": "grab3d/models/full-length-mirror.glb", "placement": "floor", "price": 40, "appeal": 3, "reputation": 12, "size": [0.62, 0.62] },
-    { "id": "vanity-table", "name": "Vanity table", "kind": "decor", "model": "grab3d/models/vanity-table.glb", "placement": "floor", "price": 80, "appeal": 5, "reputation": 22, "size": [1, 0.46] },
-    { "id": "signature-shelf", "name": "Signature shelf", "kind": "display", "model": "grab3d/models/potion-shelf.glb", "placement": "floor", "price": 90, "appeal": 4, "reputation": 0, "size": [0.94, 0.32], "capacity": 3 },
-    { "id": "display-bookcase", "name": "Display bookcase", "kind": "display", "model": "grab3d/models/bookshelf.glb", "placement": "floor", "price": 150, "appeal": 6, "reputation": 22, "size": [0.82, 0.32], "capacity": 6 }
-  ],
-  "display": {
-    "saleEveryGameHours": 20,
-    "basePrice": 12,
-    "pricePerAccord": 6,
-    "pricePerLongevityHour": 0.5,
-    "pricePerLayer": 3,
-    "maxPrice": 90,
-    "bottleOptions": [1, 3, 5]
-  }
+    {
+      "id": "bench",
+      "name": "Cushioned bench",
+      "kind": "seating",
+      "model": "grab3d/models/bench.glb",
+      "placement": "floor",
+      "price": 30,
+      "appeal": 3,
+      "reputation": 0,
+      "size": [
+        1.2,
+        0.36
+      ]
+    },
+    {
+      "id": "bar-stool",
+      "name": "Bar stool",
+      "kind": "seating",
+      "model": "grab3d/models/bar-stool.glb",
+      "placement": "floor",
+      "price": 25,
+      "appeal": 2,
+      "reputation": 0,
+      "size": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "armchair",
+      "name": "Butter-yellow armchair",
+      "kind": "seating",
+      "model": "grab3d/models/armchair.glb",
+      "placement": "floor",
+      "price": 60,
+      "appeal": 5,
+      "reputation": 5,
+      "size": [
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "id": "rocking-chair",
+      "name": "Rocking chair",
+      "kind": "seating",
+      "model": "grab3d/models/rocking-chair.glb",
+      "placement": "floor",
+      "price": 70,
+      "appeal": 5,
+      "reputation": 12,
+      "size": [
+        0.6,
+        0.93
+      ]
+    },
+    {
+      "id": "sofa",
+      "name": "Sofa",
+      "kind": "seating",
+      "model": "grab3d/models/sofa.glb",
+      "placement": "floor",
+      "price": 120,
+      "appeal": 8,
+      "reputation": 22,
+      "size": [
+        1.6,
+        0.9
+      ]
+    },
+    {
+      "id": "snake-plant",
+      "name": "Snake plant",
+      "kind": "plant",
+      "model": "grab3d/models/snake-plant.glb",
+      "placement": "floor",
+      "price": 20,
+      "appeal": 2,
+      "reputation": 0,
+      "size": [
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "id": "fern",
+      "name": "Fern",
+      "kind": "plant",
+      "model": "grab3d/models/fern.glb",
+      "placement": "floor",
+      "price": 25,
+      "appeal": 3,
+      "reputation": 0,
+      "size": [
+        1.2,
+        1.2
+      ]
+    },
+    {
+      "id": "monstera",
+      "name": "Monstera",
+      "kind": "plant",
+      "model": "grab3d/models/monstera-plant.glb",
+      "placement": "floor",
+      "price": 40,
+      "appeal": 4,
+      "reputation": 5,
+      "size": [
+        1.1,
+        1.1
+      ]
+    },
+    {
+      "id": "floor-lamp",
+      "name": "Floor lamp",
+      "kind": "lighting",
+      "model": "grab3d/models/floor-lamp.glb",
+      "placement": "floor",
+      "price": 35,
+      "appeal": 3,
+      "reputation": 0,
+      "size": [
+        0.5,
+        0.6
+      ]
+    },
+    {
+      "id": "table-lamp",
+      "name": "Table lamp",
+      "kind": "lighting",
+      "model": "grab3d/models/table-lamp.glb",
+      "placement": "surface",
+      "price": 20,
+      "appeal": 2,
+      "reputation": 0,
+      "size": [
+        0.35,
+        0.6
+      ]
+    },
+    {
+      "id": "candle-cluster",
+      "name": "Candles",
+      "kind": "lighting",
+      "model": "grab3d/models/candle-cluster.glb",
+      "placement": "surface",
+      "price": 15,
+      "appeal": 2,
+      "reputation": 0,
+      "size": [
+        0.45,
+        0.3
+      ]
+    },
+    {
+      "id": "star-lantern",
+      "name": "Star lantern",
+      "kind": "lighting",
+      "model": "grab3d/models/star-lantern.glb",
+      "placement": "surface",
+      "price": 18,
+      "appeal": 2,
+      "reputation": 5,
+      "size": [
+        0.37,
+        0.15
+      ]
+    },
+    {
+      "id": "vase",
+      "name": "Vase",
+      "kind": "decor",
+      "model": "grab3d/models/vase.glb",
+      "placement": "surface",
+      "price": 15,
+      "appeal": 2,
+      "reputation": 0,
+      "size": [
+        0.25,
+        0.22
+      ]
+    },
+    {
+      "id": "globe",
+      "name": "Globe",
+      "kind": "decor",
+      "model": "grab3d/models/globe.glb",
+      "placement": "surface",
+      "price": 20,
+      "appeal": 2,
+      "reputation": 5,
+      "size": [
+        0.3,
+        0.27
+      ]
+    },
+    {
+      "id": "mirror",
+      "name": "Full-length mirror",
+      "kind": "decor",
+      "model": "grab3d/models/full-length-mirror.glb",
+      "placement": "floor",
+      "price": 40,
+      "appeal": 3,
+      "reputation": 12,
+      "size": [
+        0.62,
+        0.62
+      ]
+    },
+    {
+      "id": "vanity-table",
+      "name": "Vanity table",
+      "kind": "decor",
+      "model": "grab3d/models/vanity-table.glb",
+      "placement": "floor",
+      "price": 80,
+      "appeal": 5,
+      "reputation": 22,
+      "size": [
+        1,
+        0.46
+      ]
+    },
+    {
+      "id": "signature-shelf",
+      "name": "Signature shelf",
+      "kind": "display",
+      "model": "grab3d/models/potion-shelf.glb",
+      "placement": "floor",
+      "price": 90,
+      "appeal": 4,
+      "reputation": 0,
+      "size": [
+        0.94,
+        0.32
+      ],
+      "capacity": 3
+    },
+    {
+      "id": "display-bookcase",
+      "name": "Display bookcase",
+      "kind": "display",
+      "model": "grab3d/models/bookshelf.glb",
+      "placement": "floor",
+      "price": 150,
+      "appeal": 6,
+      "reputation": 22,
+      "size": [
+        0.82,
+        0.32
+      ],
+      "capacity": 6
+    }
+  ]
 }

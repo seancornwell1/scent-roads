@@ -645,18 +645,24 @@ export class ShopScene {
     const h = this.container.clientHeight;
     const v = new Vector3();
     const top = this.topInset;
-    // Where each label wants to sit (bottom centre), kept whole and out from under the HUD.
-    const spots = this.labels.map(({ el, target, height }) => {
+    // Where each label's anchor is on screen. Upgrade spots only matter where you can see
+    // them: off screen, their labels would crowd the edges, so they hide. (All class changes
+    // come before any measuring, so the page lays out once per frame, not once per label.)
+    const anchors = this.labels.map(({ el, target, height }) => {
       target.getWorldPosition(v);
       v.y += height;
       v.project(this.camera);
-      // Upgrade spots only matter where you can see them: off screen, their labels would crowd the edges.
-      const offScreen = Math.abs(v.x) > 1 || Math.abs(v.y) > 1;
-      el.classList.toggle('scene-label--hidden', offScreen && el.classList.contains('scene-label--zone'));
+      const hide = el.classList.contains('scene-label--zone') && (Math.abs(v.x) > 1 || Math.abs(v.y) > 1);
+      if (el.classList.contains('scene-label--hidden') !== hide) el.classList.toggle('scene-label--hidden', hide);
+      return { x: v.x, y: v.y };
+    });
+    // Where each label wants to sit (bottom centre), kept whole and out from under the HUD.
+    const spots = this.labels.map(({ el }, i) => {
+      const a = anchors[i];
       const width = el.offsetWidth;
       const tall = el.offsetHeight;
-      const x = Math.min(Math.max(((v.x + 1) / 2) * w, width / 2 + 4), w - width / 2 - 4);
-      const y = Math.min(Math.max(((1 - v.y) / 2) * h, top + tall + 2), h - 4);
+      const x = Math.min(Math.max(((a.x + 1) / 2) * w, width / 2 + 4), w - width / 2 - 4);
+      const y = Math.min(Math.max(((1 - a.y) / 2) * h, top + tall + 2), h - 4);
       return { el, x, y, width, tall, shown: width > 0 };
     });
     // Labels nearer the bottom of the screen are in front; ones behind them that would

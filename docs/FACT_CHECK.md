@@ -185,6 +185,10 @@ The minimum percentages in every accord's requirements (e.g. labdanum and vanill
 
 Growers' letters are story, not new facts. Where a letter mentions a harvest season or method (bergamot picked through the winter, jasmine picked at dawn, vanilla cured for months), it repeats that region's entry in `src/data/regions.json`, so confirming the region confirms the letter. The growers, the chemist Varenne & Fils and their memories of Mireille are invented.
 
+## House perfume ratings — `src/data/house.json`
+
+The rating's measures are game design, not perfumery facts: "lasts a working day" is set at 8 hours on skin, strength is judged against the median of the game's own briefs, and a top, heart and base each need 5% of the oil. Worth a look in case the course teaches different rules of thumb.
+
 ## Reconstruction challenges — `src/data/lab.json`
 
 The challenges describe well-known perfume styles by era and public structure, from general knowledge: the eau de cologne (18th century), the fougère (late 19th century), the chypre (1917), the amber (1920s), the aldehydic floral (1920s), the fresh musk (1990s) and the woody amber (2000s). Their names are invented, and their formulas are game content, not historical recipes. Please skim the eras and structures.

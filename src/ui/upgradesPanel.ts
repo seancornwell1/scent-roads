@@ -1,21 +1,19 @@
-import { realMsUntil } from '../game/clock';
-import { entriesOf } from '../game/blend';
-import { bottlePrice } from '../game/display';
 import { shop } from '../game/shop';
 import { processes } from '../game/sourcing';
-import { displayCapacity, furniture, inStorage, itemById, nextAppealLevel, processLevel, processStats } from '../game/upgrades';
+import { furniture, inStorage, itemById, nextAppealLevel, processLevel, processStats } from '../game/upgrades';
 import { shopAppeal } from '../game/world';
 import { shopStyle } from '../game/style';
 import { familiesById } from '../game/content';
 import { state } from '../state';
 import { esc } from './html';
+import { houseTab } from './house';
 
-// The Shop panel: furniture and decor, the display case and processing. (Routes to
+// The Shop panel: furniture and decor, house perfumes and processing. (Routes to
 // growers open through their letters in the back room.)
 
 const TABS = [
   { id: 'furniture', label: 'Furniture' },
-  { id: 'display', label: 'Display case' },
+  { id: 'house', label: 'House perfumes' },
   { id: 'processing', label: 'Processing' },
 ] as const;
 
@@ -31,18 +29,12 @@ export function allSpots(): Spot[] {
   return [...floor, ...surfaces];
 }
 
-function wait(gameHours: number): string {
-  const ms = realMsUntil(state.save.clock!, gameHours, Date.now());
-  const min = Math.ceil(ms / 60_000);
-  return min < 60 ? `${Math.max(1, min)} min` : `${Math.floor(min / 60)} h ${min % 60} min`;
-}
-
 export function upgradesScreen(): string {
   const tab = state.ui.upgradesTab;
   const { appeal, level } = shopAppeal(state.save);
   const next = nextAppealLevel(appeal);
   const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="upgrades-tab" data-value="${t.id}">${t.label}</button>`).join('');
-  const body = tab === 'furniture' ? furnitureTab() : tab === 'display' ? displayTab() : processingTab();
+  const body = tab === 'furniture' ? furnitureTab() : tab === 'house' ? houseTab() : processingTab();
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>
       <h1>Shop</h1>
@@ -103,35 +95,6 @@ function furnitureTab(): string {
     <h2>Your shop</h2><ul class="list cards">${spots}</ul>
     <p class="small"><strong>Storage:</strong> ${storage || '<span class="muted">empty</span>'}</p>
     <h2>Catalogue</h2>${catalogue}`;
-}
-
-function displayTab(): string {
-  const { save } = state;
-  const d = save.display!;
-  const capacity = displayCapacity(save.upgrades!);
-  const { level } = shopAppeal(save);
-  const interval = furniture.display.saleEveryGameHours * level.arrivalMultiplier;
-  const listings = d.listings
-    .map(
-      (l) => `<li class="card"><div class="row-between"><div><strong>${esc(l.name)}</strong><br>
-        <span class="muted small">${l.bottles} bottle${l.bottles === 1 ? '' : 's'} left · ${l.price} coins each · next sale in about ${wait(l.lastSaleAt + interval)}</span></div>
-        <button class="link" data-action="unlist" data-id="${l.id}">Take down</button></div></li>`,
-    )
-    .join('');
-  const formulas = save.formulas
-    .map((f) => {
-      const price = bottlePrice(entriesOf(f, save.bases), 1, level.payMultiplier);
-      const buttons = furniture.display.bottleOptions
-        .map((n) => `<button class="chip" data-action="list" data-id="${f.id}" data-bottles="${n}" ${d.listings.length >= capacity ? 'disabled' : ''}>Bottle ${n}</button>`)
-        .join('');
-      return `<li class="card"><div><strong>${esc(f.name)}</strong> <span class="muted small">about ${price} coins a bottle</span></div><div class="chips">${buttons}</div></li>`;
-    })
-    .join('');
-  return `<p class="muted small">Bottle your saved signature perfumes for the display case. Each bottle uses 1 g of materials from stock, and one sells about every ${Math.round(interval)} game hours, even while you're away. Richer, longer-lasting perfumes in good materials sell for more.</p>
-    <p class="small"><strong>${d.listings.length} of ${capacity}</strong> display places used${capacity === 0 ? ' · place a Signature shelf or Display bookcase first (Furniture)' : ''}</p>
-    ${listings ? `<ul class="list cards">${listings}</ul>` : ''}
-    <h2>Your signature perfumes</h2>
-    <ul class="list cards">${formulas || '<li class="muted">Save a formula from the organ first.</li>'}</ul>`;
 }
 
 function processingTab(): string {

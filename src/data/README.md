@@ -256,16 +256,15 @@ Processing methods. `about` is the fact to verify; the numbers are tuning.
 
 ## `furniture.json`
 
-Furniture and decor for the Shop panel (`src/game/upgrades.ts`), and the display case (`src/game/display.ts`).
+Furniture and decor for the Shop panel (`src/game/upgrades.ts`). Display pieces add places for house perfumes (`house.json`).
 
 | Field | Meaning |
 | ----- | ------- |
-| `appeal.levels` | Highest `min` reached wins: `name`, `payMultiplier` (customers' pay), `strictness` (added to every star threshold), `arrivalMultiplier` (time between customers and between display sales; below 1 is faster) |
+| `appeal.levels` | Highest `min` reached wins: `name`, `payMultiplier` (customers' pay), `strictness` (added to every star threshold), `arrivalMultiplier` (time between customers; below 1 is faster; house perfumes sell 1 / this as fast) |
 | `kinds` | Catalogue sections: kind id → heading |
 | `items` | Below |
-| `display` | `saleEveryGameHours` (before appeal), and pricing: `basePrice` + `pricePerAccord` × accords + `pricePerLayer` × layers + `pricePerLongevityHour` × hours, capped at `maxPrice`, times material quality and appeal pay; `bottleOptions` offered |
 
-Each item: `id`, `name`, `kind`, `model`, `placement` (`floor` spot or `surface` top), `price`, `appeal`, `reputation` (to buy), `size` `[width, depth]` (floor pieces become obstacles) and, for display cases, `capacity`.
+Each item: `id`, `name`, `kind`, `model`, `placement` (`floor` spot or `surface` top), `price`, `appeal`, `reputation` (to buy), `size` `[width, depth]` (floor pieces become obstacles) and, for display pieces, `capacity` (places they add for house perfumes).
 
 ## `events.json`
 
@@ -397,3 +396,21 @@ The analysis lab and reconstruction challenges (`src/game/lab.ts`).
 The lab shows materials, not molecules: a natural shows up as itself, which a real chromatograph wouldn't do.
 
 Formula sheets and import (`src/game/sheet.ts`) need no data: a sheet lists each material's dilution, parts, share and grams for a batch of concentrate, and import reads lines like "Bergamot, 30", "Oakmoss 2 at 10%" or a sheet's own lines.
+
+## `house.json`
+
+House perfumes: your own formulas, named and labelled, sold from the shelves (`src/game/house.ts`, screens in `src/ui/house.ts`). Saved as `house`.
+
+| Field | Meaning |
+| ----- | ------- |
+| `unlock` | When they open: `reputation`, and `materialsInStock` different materials with at least `gramsEach` g in stock (neat or diluted), so you can compose freely |
+| `slots` | Places on the shelves: `byRank` (rank id → places), plus each placed display piece's `capacity` (`furniture.json`) |
+| `bottleOptions` | How many bottles you can make at once; each uses `perfumeGrams` of stock (`sourcing.json`) |
+| `rating` | How good a perfume it is, 0–1 on each measure, weighted by `weights`, then 1–5 stars at the totals in `stars` (for 2, 3, 4 and 5). Measures: `structure` (top, heart and base each at least 5% of the oil, plus a recognisable accord), `balance` (no material over half of a stage; harsh materials cost), `longevity` (hours on skin over `idealLongevityHours`), `projection` (strength against the median brief's, falling to 0 at `projectionSpan` doublings away), `richness` (materials at 3% or more, full at `richnessMaterials`), `originality` (unlike every brief, page and accord lesson the town knows) and `quality` (of the stock used). `metrics` gives each a `name`, `about` and `good` / `fair` / `poor` words. |
+| `pricing` | A fair price: `min` + (`max` − `min`) × rating total ^ `power`, times the shop's appeal pay; `tiers` (`id`, `name`, `factor` on the fair price) the player picks from |
+| `sales` | Bottles sold per whole game day on average: `perDayByStars` (1–5 stars) × appeal (1 / `arrivalMultiplier`) × (fair ÷ price) ^ `priceElasticity` (kept between 0.15 and 2), drawn day by day from a seeded Poisson so it's the same every time. `reportsKept`, and `maxDaysSettled` after a long absence. |
+| `names` | Suggested names: `patterns` with `{Adj}` (from the family leading the opening), `{Noun}` (leading the drydown), `{Noun2}` (leading the heart) and `{Time}`; `adjectives` and `nouns` by family (a test checks every family has both), `times`. Invented, never real perfume names. |
+| `labels` | The generic labels: `id`, `name`, `image` (a path under `assets/`, or `null` while it's a placeholder box) |
+| `customLabels` | Uploaded labels: at most `max` kept (never one in use), scaled to `sizePx` and saved as JPEG at `jpegQuality` |
+| `comments` | Lines for the end-of-day report: `best` (a good day), `slow`, `soldOut` |
+

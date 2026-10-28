@@ -472,3 +472,17 @@ textarea {
 .sheet-table th, .sheet-table td { text-align: left; padding: 4px 2px; border-bottom: 1px solid var(--line); }
 .sheet-table .num { text-align: right; white-space: nowrap; }
 #formula-import { width: 100%; box-sizing: border-box; font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+
+/* House perfumes. A generic label is a plain labelled box until its art arrives (ASSETS_NEEDED.md). */
+.house-card { display: flex; gap: 12px; align-items: flex-start; }
+.house-card > div { flex: 1; min-width: 0; }
+.house-label { display: block; flex: none; border-radius: 6px; border: 1px solid var(--line); background: var(--card); object-fit: cover; }
+.house-label--small { width: 56px; height: 72px; }
+.house-label--large { width: 150px; height: 190px; margin: 0 auto 8px; }
+.house-label--placeholder { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6px; border-style: dashed; color: var(--ink); font-weight: 600; font-size: 0.7rem; overflow: hidden; }
+.house-label--large.house-label--placeholder { font-size: 1rem; }
+.house-label--placeholder small { font-weight: 400; color: var(--muted); font-size: 0.65rem; margin-top: 4px; }
+.house-preview { display: flex; justify-content: center; }
+.rating-list li { margin: 2px 0; }
+#house-name { flex: 1; }
+

@@ -4,7 +4,7 @@ import { rankById, type Rank } from './game/ranks';
 import { content, materialsById } from './game/content';
 import { gameNow, newClock } from './game/clock';
 import { newCustomerState } from './game/customers';
-import { newDisplayState } from './game/display';
+import { newHouseState, type HouseLabel } from './game/house';
 import { newSourcingState, sourcing } from './game/sourcing';
 import { newStoryState, story } from './game/story';
 import { newRoutesState } from './game/routes';
@@ -17,7 +17,7 @@ import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'house-new' | 'report' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -34,7 +34,11 @@ export interface UiState {
   /** Which tab of the back room is showing. */
   backroomTab: 'letters' | 'map' | 'harvests' | 'supplier' | 'stock' | 'lab';
   /** Which tab of the shop-upgrades panel is showing. */
-  upgradesTab: 'furniture' | 'display' | 'processing';
+  upgradesTab: 'furniture' | 'house' | 'processing';
+  /** A house perfume being set up: its formula, name, label, price tier and bottles. */
+  houseNew: { formulaId: string; name: string; seed: number; label: HouseLabel; tier: string; bottles: number } | null;
+  /** The day whose sales report is open (the latest if null). */
+  reportDay: number | null;
   /** A spot picked in the furniture tab, waiting for something to place on it. */
   pickSpot: string | null;
   /** Which page of the character creator is showing (a slot id). */
@@ -78,7 +82,7 @@ function initSave(): SaveData {
   save.awards ??= newAwardsState();
   save.lab ??= newLabState();
   save.upgrades ??= newUpgradeState();
-  save.display ??= newDisplayState();
+  save.house ??= newHouseState(gameNow(save.clock, now));
   save.news ??= {};
   save.newsSeenWeek ??= -1;
   save.notify ??= false;
@@ -88,7 +92,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, sheetId: null, sheetBatch: 10, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, sheetId: null, sheetBatch: 10, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null, houseNew: null, reportDay: null },
 };
 
 let render = () => {};

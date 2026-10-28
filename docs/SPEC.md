@@ -551,6 +551,28 @@ How it was built (Oct 28, 2026):
 - Her signature perfume, lab reconstructions and award entries are now weighed out of your stock like a customer's perfume: 1 g in total, shared by the formula, oldest lots first. The organ says what's short before you hand it in.
 - Rank exams still don't use stock: the examiners judge it with their own materials.
 
+### Prompt 15: playtest fixes, joystick and house perfumes
+
+"Do 1 and 2, 3 should be 'no money,' the cost in materials wasted. The game should default to the zoom shown in the screenshot. Also, the chubby option makes the characters stomach shoot out of his shirt. I think that's funny, so let's keep it. Instead of tap to move, let's get an onscreen joystick in the bottom right corner. The player should be able to construct their own formulations and sell them on the shelves. The game suggests a name based on the scent profile, but the player can change it. The game also generates a bottle label image, it can be a set of generic ones for now but the player can upload their own. The game needs a general rating to determine how good the formulation is, and then generate an end of day report on sales. You decide the metrics for determining how good it is. Eventually the player can have more and more house perfumes for sale at once. This feature should be unlocked relatively early, but only once the player has enough reagents to freestyle it."
+
+How it was built (Oct 28, 2026):
+
+- **A clean organ per order:** starting an order for a different brief clears the organ, so one customer's perfume can't go to the next by mistake. A retry, or a formula composed with no order open, stays.
+- **Stricter judging:** each rank has its own star thresholds (`ranks.json`): apprentices keep the gentle ones; junior, perfumer and master ask for closer and closer matches. From junior, customers' perfumes are made in 100 parts, and briefs that need later materials have hidden targets in 100 parts with finer proportions.
+- **No pay for one star:** a customer won't pay for a perfume that isn't what they came for; the materials are spent all the same.
+- **Zoom:** the shop opens close in (zoom 3.4), centred on the player, and follows them. Upgrade-spot labels hide while off screen.
+- **The chubby body's tummy peeking out of the shirt stays**, by request.
+- **Joystick:** an on-screen joystick (bottom right) moves the player, sliding along walls and furniture. Tapping people and fixtures still walks there; tapping the floor does nothing. It's a plain labelled box until its art is approved.
+- **House perfumes** (Shop → House perfumes, the organ's formula tab, or a formula in the Book):
+  - They unlock at reputation 4 once 8 different materials are in stock, enough to compose freely.
+  - A name is suggested from the scent profile (the opening's character and what it dries down to), and can be changed or re-suggested.
+  - Labels: six generic styles (placeholder boxes until their art exists) or your own uploaded picture.
+  - Rating, 1–5 stars, on seven measures: structure, balance, longevity, strength, richness, originality (unlike the perfumes the town knows) and the quality of your stock. Customers' briefs don't come into it.
+  - Price: bargain, fair or premium around a fair price set by the rating and the shop's appeal. Cheaper sells faster.
+  - Sales happen per game day from timestamps, so they continue while the app is closed; each finished day leaves an end-of-day report (perfumes sold, coins, what's left, a line from the shop floor), shown when you next open the shop.
+  - Places on the shelves grow with rank (1, 2, 3, then 5) and with every display piece you place.
+  - The old display case's bottles move onto the shelves as house perfumes.
+
 ### Prompt 3 (original): clients and reviews
 
 ```

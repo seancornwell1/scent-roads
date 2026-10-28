@@ -1,10 +1,6 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { bottlePrice, listPerfume, newDisplayState, settleSales } from './display';
 import { arrivalMultiplier, generateWeek, priceMultiplier, weekOf, yieldMultiplier, type NewsContext } from './events';
-import { newSourcingState, order, tickSourcing, unpack } from './sourcing';
-import { unlockedMaterialIds } from './unlocks';
-import { entriesOf } from './blend';
 import {
   appealLevel,
   appealOf,
@@ -18,9 +14,6 @@ import {
   processStats,
   unplace,
 } from './upgrades';
-
-/** Her bench, plus the vanillin Josette brings back in week 1. */
-const owned = new Set([...unlockedMaterialIds(0), 'vanillin']);
 
 describe('furniture data', () => {
   it('every model is downloaded and every kind is named', () => {
@@ -72,37 +65,13 @@ describe('processing', () => {
   });
 });
 
-describe('display case', () => {
-  const stocked = () => {
-    const s = newSourcingState();
-    for (const m of ['vanillin', 'labdanum', 'bergamot']) order(s, { money: 999 }, m, m !== 'vanillin', 0, owned);
-    for (const c of tickSourcing(s, 100)) unpack(s, c.id, 100);
-    return s;
-  };
-
-  it('needs a display case placed', () => {
+describe('display pieces', () => {
+  it('add places for house perfumes once placed', () => {
     const u = newUpgradeState();
     expect(displayCapacity(u)).toBe(0);
     buyItem(u, { money: 999 }, 'signature-shelf', 0);
     place(u, 'signature-shelf', 'spot-1', 'floor');
     expect(displayCapacity(u)).toBe(3);
-    expect(listPerfume(newDisplayState(), stocked(), { name: 'x', entries: entriesOf({ parts: { vanillin: 1 } }) }, 1, 0, 100, 1)).toMatch(/display case/);
-  });
-
-  it('bottles use stock, and sell while you are away', () => {
-    const d = newDisplayState();
-    const s = stocked();
-    expect(listPerfume(d, s, { name: 'Amber', entries: entriesOf({ parts: { vanillin: 35, labdanum: 35, bergamot: 30 } }) }, 3, 3, 100, 1)).toBeNull();
-    const price = d.listings[0].price;
-    expect(price).toBeGreaterThan(0);
-    expect(settleSales(d, 100 + 19, 20)).toEqual({ bottles: 0, coins: 0 });
-    expect(settleSales(d, 100 + 45, 20)).toEqual({ bottles: 2, coins: 2 * price });
-    expect(settleSales(d, 100 + 1000, 20)).toEqual({ bottles: 1, coins: price });
-    expect(d.listings).toHaveLength(0);
-  });
-
-  it('prices well-built perfumes higher', () => {
-    expect(bottlePrice(entriesOf({ parts: { vanillin: 35, labdanum: 35, bergamot: 30 } }), 1, 1)).toBeGreaterThan(bottlePrice(entriesOf({ parts: { bergamot: 1 } }), 1, 1));
   });
 });
 

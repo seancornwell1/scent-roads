@@ -14,6 +14,7 @@ import { ownedMaterials } from '../game/world';
 import { pageById } from '../game/story';
 import { currentRank, draftBlend, nowGame, state } from '../state';
 import { pageCard } from './book';
+import { houseUnlocked } from './house';
 import { compendiumEntry } from './compendium';
 import { currentStreak, dayNumber, nextQuestion } from '../game/learning';
 import { drydownGraph, familyName } from './graph';
@@ -277,6 +278,7 @@ function formulaTab(): string {
       <button class="primary" data-action="save">Save</button>
     </div>
     ${rank.bases ? '<button class="link" data-action="save-base">Save as a base (use it inside other formulas)</button>' : ''}
+    ${houseUnlocked() ? '<button class="link" data-action="house-from-draft">Sell it as a house perfume</button>' : ''}
     <button class="link danger" data-action="clear">Clear the organ</button>`;
 }
 

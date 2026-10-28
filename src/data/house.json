@@ -1,0 +1,358 @@
+{
+  "unlock": {
+    "reputation": 4,
+    "materialsInStock": 8,
+    "gramsEach": 1
+  },
+  "slots": {
+    "byRank": {
+      "apprentice": 1,
+      "junior": 2,
+      "perfumer": 3,
+      "master": 5
+    },
+    "about": "Display shelves and bookcases you place add more."
+  },
+  "bottleOptions": [
+    3,
+    5,
+    10
+  ],
+  "rating": {
+    "weights": {
+      "structure": 0.2,
+      "balance": 0.2,
+      "longevity": 0.15,
+      "projection": 0.1,
+      "richness": 0.1,
+      "originality": 0.15,
+      "quality": 0.1
+    },
+    "idealLongevityHours": 8,
+    "projectionSpan": 1.5,
+    "richnessMaterials": 7,
+    "stars": [
+      0.45,
+      0.6,
+      0.74,
+      0.86
+    ],
+    "metrics": {
+      "structure": {
+        "name": "Structure",
+        "about": "A top, a heart and a base, each there to smell, and a recognisable accord.",
+        "good": "Built top to base.",
+        "fair": "One layer is thin.",
+        "poor": "It needs a top, a heart and a base."
+      },
+      "balance": {
+        "name": "Balance",
+        "about": "No one material drowning a stage, and nothing harsh.",
+        "good": "Beautifully balanced.",
+        "fair": "Something takes over for a while.",
+        "poor": "One material drowns the rest, or something smells harsh."
+      },
+      "longevity": {
+        "name": "Longevity",
+        "about": "How long it lasts on skin, against a whole working day.",
+        "good": "Lasts the day.",
+        "fair": "Fades by the afternoon.",
+        "poor": "Gone within a couple of hours."
+      },
+      "projection": {
+        "name": "Strength",
+        "about": "How strongly it carries, against a typical perfume of the town's.",
+        "good": "Just the right strength.",
+        "fair": "A little loud, or a little quiet.",
+        "poor": "Far too loud, or too faint to notice."
+      },
+      "richness": {
+        "name": "Richness",
+        "about": "Enough materials to give it depth.",
+        "good": "Rich and layered.",
+        "fair": "Pleasant, if simple.",
+        "poor": "Thin: it needs more to it."
+      },
+      "originality": {
+        "name": "Originality",
+        "about": "Unlike the perfumes the town already knows.",
+        "good": "Nothing like it in town.",
+        "fair": "Its own voice, if a familiar one.",
+        "poor": "The town has smelled this before."
+      },
+      "quality": {
+        "name": "Materials",
+        "about": "The quality of the stock it's made from (fresh harvests in their best window are best).",
+        "good": "Fine materials.",
+        "fair": "Good enough materials.",
+        "poor": "Tired materials."
+      }
+    }
+  },
+  "pricing": {
+    "min": 5,
+    "max": 60,
+    "power": 2,
+    "tiers": [
+      {
+        "id": "bargain",
+        "name": "Bargain",
+        "factor": 0.7
+      },
+      {
+        "id": "fair",
+        "name": "Fair",
+        "factor": 1
+      },
+      {
+        "id": "premium",
+        "name": "Premium",
+        "factor": 1.4
+      }
+    ]
+  },
+  "sales": {
+    "perDayByStars": [
+      0.1,
+      0.3,
+      0.6,
+      1.0,
+      1.5
+    ],
+    "priceElasticity": 1.6,
+    "reportsKept": 28,
+    "maxDaysSettled": 120
+  },
+  "names": {
+    "patterns": [
+      "{Adj} {Noun}",
+      "{Noun} {Time}",
+      "{Adj} {Noun} {Time}",
+      "The {Adj} {Noun}",
+      "{Noun} and {Noun2}"
+    ],
+    "times": [
+      "at Dawn",
+      "at Dusk",
+      "after Rain",
+      "in Winter",
+      "in May",
+      "by Lamplight",
+      "on Sunday",
+      "at the Harbour",
+      "in the Square",
+      "after Midnight"
+    ],
+    "adjectives": {
+      "citrus": [
+        "Bright",
+        "Sunlit",
+        "Zesty",
+        "Golden"
+      ],
+      "aromatic": [
+        "Wild",
+        "Herbal",
+        "Clean",
+        "Hillside"
+      ],
+      "green": [
+        "Green",
+        "Dewy",
+        "Crushed",
+        "Young"
+      ],
+      "floral": [
+        "Blooming",
+        "Tender",
+        "Rosy",
+        "Gentle"
+      ],
+      "fruity": [
+        "Ripe",
+        "Juicy",
+        "Orchard",
+        "Sweet"
+      ],
+      "lactonic": [
+        "Creamy",
+        "Soft",
+        "Velvet",
+        "Milky"
+      ],
+      "spicy": [
+        "Spiced",
+        "Warm",
+        "Peppered",
+        "Fiery"
+      ],
+      "aldehydic": [
+        "Sparkling",
+        "Starched",
+        "Silver",
+        "Crisp"
+      ],
+      "woody": [
+        "Dry",
+        "Polished",
+        "Quiet",
+        "Deep"
+      ],
+      "amber": [
+        "Glowing",
+        "Honeyed",
+        "Burnished",
+        "Dark"
+      ],
+      "gourmand": [
+        "Sugared",
+        "Toasted",
+        "Baked",
+        "Sweet"
+      ],
+      "musk": [
+        "Soft",
+        "Hushed",
+        "Clean",
+        "Skin"
+      ],
+      "mossy": [
+        "Shaded",
+        "Mossy",
+        "Damp",
+        "Old"
+      ]
+    },
+    "nouns": {
+      "citrus": [
+        "Grove",
+        "Peel",
+        "Morning",
+        "Terrace"
+      ],
+      "aromatic": [
+        "Hedge",
+        "Meadow",
+        "Herb Garden",
+        "Hillside"
+      ],
+      "green": [
+        "Fern",
+        "Leaf",
+        "Greenhouse",
+        "Stem"
+      ],
+      "floral": [
+        "Bouquet",
+        "Garden",
+        "Petals",
+        "Blossom"
+      ],
+      "fruity": [
+        "Orchard",
+        "Fruit Bowl",
+        "Harvest",
+        "Jam"
+      ],
+      "lactonic": [
+        "Cream",
+        "Silk",
+        "Velvet",
+        "Milk"
+      ],
+      "spicy": [
+        "Spice Box",
+        "Market",
+        "Ember",
+        "Clove"
+      ],
+      "aldehydic": [
+        "Linen",
+        "Ballroom",
+        "Frost",
+        "Soap"
+      ],
+      "woody": [
+        "Cedar",
+        "Timber",
+        "Workshop",
+        "Forest"
+      ],
+      "amber": [
+        "Amber",
+        "Hearth",
+        "Resin",
+        "Lantern"
+      ],
+      "gourmand": [
+        "Pâtisserie",
+        "Caramel",
+        "Honey",
+        "Biscuit"
+      ],
+      "musk": [
+        "Skin",
+        "Linen",
+        "Cashmere",
+        "Pillow"
+      ],
+      "mossy": [
+        "Moss",
+        "Forest Floor",
+        "Stone",
+        "Undergrowth"
+      ]
+    }
+  },
+  "labels": [
+    {
+      "id": "plain",
+      "name": "Plain paper",
+      "image": null
+    },
+    {
+      "id": "botanical",
+      "name": "Botanical",
+      "image": null
+    },
+    {
+      "id": "apothecary",
+      "name": "Apothecary",
+      "image": null
+    },
+    {
+      "id": "art-deco",
+      "name": "Art deco",
+      "image": null
+    },
+    {
+      "id": "watercolour",
+      "name": "Watercolour",
+      "image": null
+    },
+    {
+      "id": "night",
+      "name": "Night sky",
+      "image": null
+    }
+  ],
+  "customLabels": {
+    "max": 12,
+    "sizePx": 320,
+    "jpegQuality": 0.82
+  },
+  "comments": {
+    "best": [
+      "A customer came back for a second bottle.",
+      "Someone asked whether it comes in a larger size.",
+      "A visitor from out of town bought one to take home.",
+      "Two friends shared a bottle between them."
+    ],
+    "slow": [
+      "People smelled it, but few bought.",
+      "It sat quietly on the shelf.",
+      "A customer said it wasn't quite for them."
+    ],
+    "soldOut": "Sold out: make more bottles at the shelf."
+  }
+}

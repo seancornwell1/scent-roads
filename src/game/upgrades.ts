@@ -33,15 +33,6 @@ export interface FurnitureData {
   appeal: { levels: AppealLevel[] };
   kinds: Record<string, string>;
   items: FurnitureItem[];
-  display: {
-    saleEveryGameHours: number;
-    basePrice: number;
-    pricePerAccord: number;
-    pricePerLongevityHour: number;
-    pricePerLayer: number;
-    maxPrice: number;
-    bottleOptions: number[];
-  };
 }
 
 export const furniture = furnitureJson as unknown as FurnitureData;

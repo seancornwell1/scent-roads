@@ -6,6 +6,7 @@ import { pageFormula, personById, requestForPage, story, type Page, type StorySt
 import { ownedMaterials } from '../game/world';
 import { currentRank, state } from '../state';
 import type { Formula } from '../game/types';
+import { houseUnlocked } from './house';
 import { esc, formatDate, formatParts, header, starsText } from './html';
 import { compendiumList } from './compendium';
 import { cluesFound, signature } from '../game/signature';
@@ -122,6 +123,7 @@ export function bookScreen(): string {
             <div class="row-between">
               <button class="link danger" data-action="delete-formula" data-id="${esc(f.id)}">Delete</button>
               <button class="link" data-action="open-sheet" data-id="${esc(f.id)}">Formula sheet</button>
+              ${houseUnlocked() ? `<button class="link" data-action="house-new" data-id="${esc(f.id)}">Sell in the shop</button>` : ''}
               <button class="primary" data-action="load-formula" data-id="${esc(f.id)}">Open on the organ</button>
             </div>
           </li>`,
