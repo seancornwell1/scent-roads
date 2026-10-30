@@ -584,7 +584,8 @@ Decided with Sean (Oct 29–30, 2026), from `docs/NARRATIVE_NOTES.md`; most are 
 - **Suppliers:** no restocking; materials never run out. Supplies expand over time in batches of about 5–6 new materials, chosen by the player. One laptop does all the supplier business; several suppliers remain for flavour and lore. The supplies rack is only for looks.
 - **Progression:** customers' requests move between accords and full perfumes, with honest gaps that the next materials fill (plan in the conversation of Oct 29). **No rank exams:** progression comes from competitions, which are hard but can be tried often. Reputation may be dropped.
 - **House perfumes are the passive, idle side of the game.**
-- **Later:** a street outside with shops (plant store, bookstore, bodega, café, bar, a cosmetics store run by an intimidating but secretly kind rival) where you meet townspeople; friendship and romance; regulars' backstories (on hold).
+- **Later:** a street outside with shops (plant store, bookstore, bodega, café, bar, a cosmetics store) where you meet townspeople; friendship and romance; regulars' backstories (on hold). The street keeps real hours: shops open and close with the time of day.
+- **The rival** runs the cosmetics store, which sells perfume too. They're the same gender as the player character, fiercely competitive, intimidating but secretly kind. By the end of the game they sell one of your perfumes in their shop, perhaps one you made specially for them.
 - The player character is "they".
 
 Built now (Oct 30, 2026):

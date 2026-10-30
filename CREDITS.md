@@ -49,3 +49,12 @@ Grab3D ([grab3d.com](https://grab3d.com)) releases every model under [CC0 1.0](h
 | File | What it is | Source | Author | License | URL |
 | ---- | ---------- | ------ | ------ | ------- | --- |
 | `assets/icons/icon-512.png`, `assets/icons/icon-192.png`, `assets/icons/apple-touch-icon.png` | Home Screen and manifest icons: a still render of the Grab3D Potion Bottle on the game's background colour, resized to 512, 192 and 180 px | Grab3D (derived) | Grab3D | CC0 1.0 | https://grab3d.com/models/props/potion-bottle/ |
+
+## Kenney (CC0)
+
+Kenney ([kenney.nl](https://kenney.nl)) releases its packs under [CC0 1.0](http://creativecommons.org/publicdomain/zero/1.0/); credit is voluntary and given here. The pack's licence file is kept beside the images.
+
+| File | Asset — where it's used | Source | Author | License | URL |
+| ---- | ----------------------- | ------ | ------ | ------- | --- |
+| `assets/kenney/mobile-controls/joystick_circle_pad_a.png` | Mobile Controls 1.0, Style B, circle pad (2×) — the joystick's base | Kenney | Kenney | CC0 1.0 | https://kenney.nl/assets/mobile-controls |
+| `assets/kenney/mobile-controls/joystick_circle_nub_a.png` | Mobile Controls 1.0, Style B, circle nub (2×) — the joystick's knob | Kenney | Kenney | CC0 1.0 | https://kenney.nl/assets/mobile-controls |

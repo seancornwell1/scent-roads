@@ -67,29 +67,23 @@ html, body { height: 100%; overflow: hidden; }
 .scene-label--hidden { display: none; }
 .scene-label--player { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
-/* The joystick: a plain labelled placeholder box until its art arrives (ASSETS_NEEDED.md). */
+/* The joystick: Kenney's Mobile Controls pad and nub (assets/kenney/mobile-controls). */
 .joystick {
   position: absolute;
   right: calc(16px + env(safe-area-inset-right));
   bottom: calc(24px + env(safe-area-inset-bottom));
-  width: 124px; height: 124px;
-  border-radius: 12px;
-  border: 1px dashed var(--line);
-  background: rgb(255 250 244 / 0.7);
+  width: 128px; height: 128px;
+  background: center / contain no-repeat;
+  opacity: 0.9;
   display: flex; align-items: center; justify-content: center;
   touch-action: none;
   user-select: none; -webkit-user-select: none;
 }
 .joystick[hidden] { display: none; }
 .joystick-knob {
-  width: 56px; height: 56px;
-  border-radius: 8px;
-  border: 1px solid var(--accent);
-  background: var(--card);
-  color: var(--accent);
-  font-size: 0.75rem; font-weight: 600;
-  display: flex; align-items: center; justify-content: center;
+  width: 60px; height: 60px;
   pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 #hud {

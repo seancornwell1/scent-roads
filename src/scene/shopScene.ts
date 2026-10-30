@@ -24,7 +24,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import type { CharacterConfig } from '../game/character';
 import { findPath } from '../game/pathfinding';
 import { WALL_PANEL_WIDTH, isWalkable, type BackRoomLayout, type Fixture, type Point, type RoomId, type RoomLayout, type ShopLayout } from '../game/shop';
-import { loadGltf } from './assets';
+import { assetUrl, loadGltf } from './assets';
 import type { Character, CharacterKit } from './characters';
 import { Crowd, type CrowdEntry, type Label } from './crowd';
 
@@ -44,6 +44,8 @@ const FOLLOW_MARGIN = 0.4;
 const IDLE_FPS = 24;
 /** How long the screen takes to fade out (and back in) when moving between rooms. */
 const FADE_MS = 280;
+const JOYSTICK_PAD = 'kenney/mobile-controls/joystick_circle_pad_a.png';
+const JOYSTICK_NUB = 'kenney/mobile-controls/joystick_circle_nub_a.png';
 
 export interface ShopSceneEvents {
   /** The player reached an interactive fixture they tapped. */
@@ -99,7 +101,7 @@ export class ShopScene {
   /** The on-screen joystick: where it's pushed (screen units, -1..1, up is +y), while held. */
   private stick: { x: number; y: number } | null = null;
   private readonly stickBase: HTMLElement;
-  private readonly stickKnob: HTMLElement;
+  private readonly stickKnob: HTMLImageElement;
   /** Whether the view has been centred on the player since the screen first had a size. */
   private centred = false;
 
@@ -120,12 +122,16 @@ export class ShopScene {
     this.fade = document.createElement('div');
     this.fade.className = 'scene-fade';
     container.appendChild(this.fade);
-    // The joystick, bottom right: a plain placeholder until its art arrives (ASSETS_NEEDED.md).
+    // The joystick, bottom right: Kenney's Mobile Controls pad and nub (CREDITS.md).
     this.stickBase = document.createElement('div');
     this.stickBase.className = 'joystick';
-    this.stickKnob = document.createElement('div');
+    this.stickBase.style.backgroundImage = `url("${assetUrl(JOYSTICK_PAD)}")`;
+    this.stickKnob = document.createElement('img');
     this.stickKnob.className = 'joystick-knob';
-    this.stickKnob.textContent = 'Move';
+    this.stickKnob.src = assetUrl(JOYSTICK_NUB);
+    this.stickKnob.alt = '';
+    this.stickKnob.draggable = false;
+    this.stickBase.setAttribute('aria-label', 'Move');
     this.stickBase.appendChild(this.stickKnob);
     container.appendChild(this.stickBase);
     this.stickBase.addEventListener('pointerdown', (e) => this.onStick(e, true));
