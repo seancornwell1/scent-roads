@@ -14,3 +14,6 @@ Every placeholder or stand-in waiting for a real asset. Remove a line once the a
 | On-screen joystick (base and knob) | Bottom right of the shop | A plain labelled box for now. Approved: Kenney's "Mobile Controls" pack (CC0, https://kenney.nl/assets/mobile-controls). Kenney only serves the zip through a browser download, so it needs adding by hand. |
 | Bottle labels: plain paper, botanical, apothecary, art deco, watercolour, night sky | House perfumes (`labels` in `src/data/house.json`) | Plain labelled boxes for now; set each label's `image` once its art is in `assets/`. Players can already upload their own. Needs a CC0 or CC BY source in one style. |
 | House perfume bottles on the shelves | The shop's shelves, showing what's for sale | Not shown in the scene yet; would use the perfume bottle models above. |
+| Desk, laptop and desk chair | Back room | Plain labelled boxes for now. Grab3D has none; candidates need Sean's OK (e.g. Kenney's CC0 Furniture Kit, if its style fits). |
+| A proper shop front (big display window, glazed door) | The shop's street wall | Three of Grab3D's small wall windows stand in between the two doors. |
+| An empty rack or shelf for supplies | Back room rack | Grab3D's shelf unit has books and baskets built in; supply bottles (potion bottles, standing in) sit at the front of each shelf and on top. |

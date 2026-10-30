@@ -1,11 +1,11 @@
-import { isWalkable, type Point, type ShopLayout } from './shop';
+import { isWalkable, type Point, type RoomLayout } from './shop';
 
 /**
  * Shortest walkable path from `from` to `to` on a grid over the floor (A*, 8 directions,
  * no corner cutting), simplified to the corners where it turns. Returns null if `to`
  * can't be reached. The result starts after `from` and ends exactly at `to`.
  */
-export function findPath(layout: ShopLayout, from: Point, to: Point): Point[] | null {
+export function findPath(layout: RoomLayout, from: Point, to: Point): Point[] | null {
   if (!isWalkable(layout, to)) return null;
   const step = layout.gridStep;
   const cols = Math.floor(layout.room.width / step) + 1;
@@ -72,7 +72,7 @@ export function findPath(layout: ShopLayout, from: Point, to: Point): Point[] | 
 }
 
 /** Drops waypoints that can be skipped with a straight, clear line. */
-function simplify(layout: ShopLayout, from: Point, points: Point[]): Point[] {
+function simplify(layout: RoomLayout, from: Point, points: Point[]): Point[] {
   const result: Point[] = [];
   let current = from;
   let i = 0;
@@ -91,7 +91,7 @@ function simplify(layout: ShopLayout, from: Point, points: Point[]): Point[] {
   return result;
 }
 
-function clearLine(layout: ShopLayout, a: Point, b: Point): boolean {
+function clearLine(layout: RoomLayout, a: Point, b: Point): boolean {
   const steps = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / (layout.gridStep / 2));
   for (let s = 1; s < steps; s++) {
     const t = s / steps;

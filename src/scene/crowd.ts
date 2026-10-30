@@ -1,4 +1,4 @@
-import { BoxGeometry, Mesh, MeshBasicMaterial, type Object3D, type Scene } from 'three';
+import { BoxGeometry, Mesh, MeshBasicMaterial, type Object3D } from 'three';
 import type { CharacterConfig } from '../game/character';
 import { findPath } from '../game/pathfinding';
 import type { Point, ShopLayout } from '../game/shop';
@@ -20,7 +20,7 @@ export interface Label {
 }
 
 export interface CrowdHost {
-  scene: Scene;
+  scene: Object3D;
   layout: ShopLayout;
   addLabel(text: string, target: Object3D, height: number, modifier: string): Label;
   removeLabel(label: Label): void;

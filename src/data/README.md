@@ -82,16 +82,16 @@ Tuning for the evaporation model in `src/game/evaporation.ts`:
 
 `src/game/evaporation.test.ts` encodes observations from Sean's formula log. Run `npm test` after changing any tuning.
 
-## `shop.json`
+## `shop.json` and `backroom.json`
 
-The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`src/game/pathfinding.ts`). Floor coordinates are `[x, z]` in metres, centred on the room. The camera looks in from the front-right corner, so the visible walls are the left wall (`x = -width/2`) and the back wall (`z = -depth/2`). Model paths are relative to `assets/`.
+The two rooms, the shop and its back room, for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`src/game/pathfinding.ts`). Both rooms share one scene; only the one you're in is shown, and walking through a door fades to the other. Floor coordinates are `[x, z]` in metres, centred on each room. The camera looks in from the front-right corner, so the visible walls are the left wall (`x = -width/2`) and the back wall (`z = -depth/2`). Model paths are relative to `assets/`.
 
 | Field | Meaning |
 | ----- | ------- |
 | `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
 | `floorColor` | Colour of the plane under the floor tiles (shows only past the tiles' edges) |
 | `floorTile` | Optional `{ model, size, height }`: a square floor model in metres, repeated across the room and sunk by `height` so its top is at floor level |
-| `camera` | `focus`: `[x, z]` the view starts on (the spawn point). `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; the game opens close in (3.4) and follows you; players pinch between min and max and drag to pan. |
+| `camera` | `focus`: `[x, z]` the view starts on (the spawn point). `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; the shop opens close in (3) and follows you; players pinch between min and max and drag to pan. |
 | `spawn` | Where the player starts, and where they stand while dressing in the character creator (keep it on open floor) |
 | `walkSpeed` | Metres per second |
 | `playerRadius` | How close the player may get to walls and fixtures |
@@ -100,9 +100,10 @@ The shop interior for the 3D scene (`src/scene/shopScene.ts`) and pathfinding (`
 | `fixtures` | Furniture you walk around or use, below |
 | `decor` | Models only for looks, below |
 | `zones` | Marked floor areas, below |
-| `customers` | `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
-| `crates` | Arrived crates: `model`, the `spots` they stand on by the back-room door, and `stackHeights` (to stack one on top) |
-| `surfaces` | Table and counter tops for small decor: `id`, `label`, `position`, `y` (height) |
+| `customers` | Shop only: `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
+| `surfaces` | Shop only: table and counter tops for small decor: `id`, `label`, `position`, `y` (height) |
+| `crates` | Back room only: arrived crates, `model`, the `spots` they stand on by the outside door, and `stackHeights` (to stack one on top) |
+| `rack` | Back room only: the rack showing what's on hand, one bottle (`bottle` model) per material: on fixture `fixture`, at shelf heights `levels` (filled in order), `perLevel` to a shelf, `spacing` apart and `forward` of its centre |
 
 Each fixture:
 
@@ -114,8 +115,9 @@ Each fixture:
 | `position` | `[x, z]` of its centre on the floor |
 | `rotation` | Degrees around the vertical axis |
 | `size` | World-space footprint `[width, height, depth]` in metres, for walking and tapping (swap width and depth when rotated 90°) |
+| `y` | Optional height it stands at (a placeholder box on a desk); 0 is the floor |
 | `blocks` | Whether the player has to walk around it |
-| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action` (`organ` opens the composing desk; `back-room` opens the back room) |
+| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action`: `organ` opens the composing desk; `back-room` and `shop` go through the door to that room (you arrive at the other room's door back); `laptop` opens ordering, letters and the lab; `rack` opens your stock; `outside` is the street door (not open yet). Tapping a crate opens it. |
 
 Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees.
 
@@ -127,7 +129,7 @@ Each zone:
 | `kind` | `customers`: an invisible area where customers stand around. `upgrade`: a floor spot where bought furniture can be placed. |
 | `rect` | `[centre x, centre z, width, depth]` |
 
-`validateShop` (run in the tests and at start-up) checks that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable.
+`validateShop` and `validateBackRoom` (run in the tests and at start-up) check that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable; a test also checks every fixture in the back room can be reached from its door.
 
 ## `character.json`
 

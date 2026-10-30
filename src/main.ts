@@ -18,7 +18,7 @@ import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOp
 import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal } from './game/world';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
-import { shop, validateShop } from './game/shop';
+import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
@@ -59,13 +59,28 @@ const urlSpeed = Number(new URLSearchParams(location.search).get('speed'));
 if (urlSpeed > 0) setClockSpeed(state.save.clock!, urlSpeed, Date.now());
 setTimeSpeed(state.save.clock!.speed);
 
-const problems = [...validateContent(content), ...validateShop(shop)];
+const problems = [...validateContent(content), ...validateShop(shop), ...validateBackRoom(backRoom)];
 if (problems.length > 0) console.error('Content problems:\n' + problems.join('\n'));
 
-// What tapping each interactive fixture does once the player reaches it (from shop.json).
+// What tapping each interactive fixture does once the player reaches it (shop.json, backroom.json).
+// A door's action names the room it leads to.
 const FIXTURE_ACTIONS: Record<string, () => void> = {
   organ: () => openPanel('organ'),
-  'back-room': () => openPanel('backroom'),
+  'back-room': () => void scene.travel('back'),
+  shop: () => void scene.travel('shop'),
+  laptop: () => openPanel('backroom'),
+  rack: () => {
+    state.ui.backroomTab = 'stock';
+    openPanel('backroom');
+  },
+  crates: () => {
+    state.ui.backroomTab = 'letters';
+    openPanel('backroom');
+  },
+  outside: () => {
+    state.ui.toast = "The street outside isn't open yet. Deliveries come in through this door.";
+    commit();
+  },
 };
 
 const sounds = new SoundBoard(state.save.sound ?? 0.8);
@@ -73,7 +88,7 @@ sounds.loop('ambience', true);
 
 const scene = new ShopScene(
   document.querySelector<HTMLDivElement>('#scene')!,
-  shop,
+  { shop, back: backRoom },
   {
     arrive: (fixture) => fixture.interact && FIXTURE_ACTIONS[fixture.interact.action]?.(),
     customer: (id) => {
@@ -276,7 +291,7 @@ function runTick(): void {
   const story = runStoryProgress();
   if (crates.length > 0) {
     const note = crates.some((k) => k.route) ? ' There’s a letter in it.' : '';
-    state.ui.toast = (crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back-room door.` : `${crates.length} crates have arrived. They're by the back-room door.`) + note;
+    state.ui.toast = (crates.length === 1 ? `A crate has arrived from ${crates[0].from}. It's by the back room's outside door.` : `${crates.length} crates have arrived. They're by the back room's outside door.`) + note;
     void scene.setCrates(save.sourcing!.crates.length);
     sounds.play('crate');
     notify('A crate has arrived', `From ${crates.map((k) => k.from).join(', ')}.`);
@@ -348,6 +363,11 @@ function openPanel(screen: Screen): void {
   commit();
 }
 
+/** Materials on hand (any dilution), in the order they were first stocked: what the back room's rack shows. */
+function onHand(): string[] {
+  return [...new Set(state.save.sourcing!.inventory.filter((l) => l.grams > 0).map((l) => l.material))];
+}
+
 function render(): void {
   const { screen } = state.ui;
   hudRoot.innerHTML = hud();
@@ -356,6 +376,7 @@ function render(): void {
   scene.setTopInset(stats.getBoundingClientRect().bottom + 8);
   scene.enabled = screen === 'shop';
   scene.focusOnPlayer(screen === 'creator');
+  void scene.setRack(onHand());
 
   // Don't redraw a panel under someone typing (a note, a formula's name): it would lose
   // what they've typed. Their change is saved when they leave the box.

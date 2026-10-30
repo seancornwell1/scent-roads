@@ -56,7 +56,7 @@ export function backroomScreen(): string {
   const speed = save.clock!.speed;
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>
-      <h1>Back room</h1>
+      <h1>Laptop</h1>
       <span></span>
     </header>
     <p class="muted small">${date.day} ${MONTH_NAMES[date.month - 1]}, year ${date.year} · ${save.customers!.money} coins</p>

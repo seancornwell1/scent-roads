@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { findPath } from './pathfinding';
-import { isWalkable, shop, validateShop, type Point } from './shop';
+import { backRoom, isWalkable, shop, validateBackRoom, validateShop, type Point } from './shop';
 
 const crossesCounter = (path: Point[], from: Point) => {
   const counter = shop.fixtures.find((f) => f.id === 'counter-left')!;
@@ -16,9 +16,14 @@ const crossesCounter = (path: Point[], from: Point) => {
   return false;
 };
 
-describe('shop layout', () => {
-  it('is valid', () => {
+describe('room layouts', () => {
+  it('the shop is valid', () => {
     expect(validateShop(shop)).toEqual([]);
+  });
+
+  it('the back room is valid, and every door and fixture in it can be reached from the shop door', () => {
+    expect(validateBackRoom(backRoom)).toEqual([]);
+    for (const f of backRoom.fixtures) if (f.interact) expect(findPath(backRoom, backRoom.spawn, f.interact.standAt)).not.toBeNull();
   });
 });
 

@@ -23,13 +23,15 @@ import {
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { CharacterConfig } from '../game/character';
 import { findPath } from '../game/pathfinding';
-import { WALL_PANEL_WIDTH, isWalkable, type Fixture, type Point, type ShopLayout } from '../game/shop';
+import { WALL_PANEL_WIDTH, isWalkable, type BackRoomLayout, type Fixture, type Point, type RoomId, type RoomLayout, type ShopLayout } from '../game/shop';
 import { loadGltf } from './assets';
 import type { Character, CharacterKit } from './characters';
 import { Crowd, type CrowdEntry, type Label } from './crowd';
 
-// The shop, seen from a fixed isometric camera. Models come from assets/ (see CREDITS.md);
-// anything without a model yet is a plain labelled box (see ASSETS_NEEDED.md).
+// The shop and its back room, seen from a fixed isometric camera. Both rooms live in one
+// scene, each in its own group; only the room you're in is shown, and a short fade covers
+// the move between them. Models come from assets/ (see CREDITS.md); anything without a
+// model yet is a plain labelled box (see ASSETS_NEEDED.md).
 
 const PLACEHOLDER_COLOR = 0xd3c2b1;
 const UPGRADE_SPOT_COLOR = 0xdcc5a6;
@@ -40,6 +42,8 @@ const CAMERA_OFFSET = new Vector3(10, 10, 10);
 const FOLLOW_MARGIN = 0.4;
 /** Idle animations run at a gentle frame rate to save battery; movement runs at full rate. */
 const IDLE_FPS = 24;
+/** How long the screen takes to fade out (and back in) when moving between rooms. */
+const FADE_MS = 280;
 
 export interface ShopSceneEvents {
   /** The player reached an interactive fixture they tapped. */
@@ -58,7 +62,10 @@ export class ShopScene {
   private readonly scene = new Scene();
   private readonly camera = new OrthographicCamera();
   private readonly raycaster = new Raycaster();
-  private readonly floor: Mesh;
+  /** The room you're in, and each room's group of models. */
+  private room: RoomId = 'shop';
+  private readonly groups: Record<RoomId, Group> = { shop: new Group(), back: new Group() };
+  /** Tappable fixtures (and crates), each with the room it's in. */
   private readonly hitBoxes = new Map<Object3D, Fixture>();
   private readonly playerRoot = new Group();
   private player: Character | null = null;
@@ -67,7 +74,13 @@ export class ShopScene {
   private readonly spotMarkers = new Map<string, { patch: Object3D; label: Label }>();
   private placed: Object3D[] = [];
   private placedKey = '';
-  private readonly labels: { el: HTMLElement; target: Object3D; height: number }[] = [];
+  /** Labels over things, each with the room it belongs to (null: whichever room you're in). */
+  private readonly labels: { el: HTMLElement; target: Object3D; height: number; room: RoomId | null }[] = [];
+  private rackBottles: Object3D[] = [];
+  private rackKey = '';
+  private rackLabel: HTMLElement | null = null;
+  private readonly fade: HTMLElement;
+  private travelling = false;
   private readonly labelLayer: HTMLElement;
 
   private path: Point[] = [];
@@ -92,7 +105,7 @@ export class ShopScene {
 
   constructor(
     private readonly container: HTMLElement,
-    private readonly layout: ShopLayout,
+    private readonly rooms: { shop: ShopLayout; back: BackRoomLayout },
     private readonly events: ShopSceneEvents,
     browseSeconds: [number, number],
   ) {
@@ -103,6 +116,10 @@ export class ShopScene {
     this.labelLayer = document.createElement('div');
     this.labelLayer.className = 'scene-labels';
     container.appendChild(this.labelLayer);
+    // A plain fade to the page colour while moving between rooms.
+    this.fade = document.createElement('div');
+    this.fade.className = 'scene-fade';
+    container.appendChild(this.fade);
     // The joystick, bottom right: a plain placeholder until its art arrives (ASSETS_NEEDED.md).
     this.stickBase = document.createElement('div');
     this.stickBase.className = 'joystick';
@@ -125,37 +142,27 @@ export class ShopScene {
     sun.position.set(6, 12, 8);
     this.scene.add(sun);
 
-    const { width, depth } = layout.room;
-    this.floor = new Mesh(new PlaneGeometry(width, depth), new MeshLambertMaterial({ color: new Color(layout.floorColor) }));
-    this.floor.rotation.x = -Math.PI / 2;
-    this.scene.add(this.floor);
-    if (layout.floorTile) {
-      // The plain plane stays underneath the tiles, out of their way.
-      this.floor.position.y = -layout.floorTile.height - 0.01;
-      this.addFloorTiles(layout.floorTile);
+    for (const id of ['shop', 'back'] as RoomId[]) {
+      this.groups[id].visible = id === this.room;
+      this.scene.add(this.groups[id]);
+      this.buildRoom(id);
     }
-
-    this.addWalls();
-    for (const zone of layout.zones) {
+    for (const zone of rooms.shop.zones) {
       if (zone.kind !== 'upgrade') continue; // customer areas are invisible: people just stand there
       const [x, z, w, d] = zone.rect;
       const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: UPGRADE_SPOT_COLOR }));
       patch.rotation.x = -Math.PI / 2;
       patch.position.set(x, 0.01, z);
-      this.scene.add(patch);
-      const label = this.addLabel(zone.label, patch, 0.05, 'scene-label--zone');
+      this.groups.shop.add(patch);
+      const label = this.addLabel(zone.label, patch, 0.05, 'scene-label--zone', 'shop');
       this.spotMarkers.set(zone.id, { patch, label });
-    }
-    for (const fixture of layout.fixtures) this.addFixture(fixture);
-    for (const d of layout.decor) {
-      void this.addModel(d.model, d.position, d.rotation, d.y);
     }
 
     this.crowd = new Crowd(
       {
-        scene: this.scene,
-        layout,
-        addLabel: (text, target, height, modifier) => this.addLabel(text, target, height, modifier),
+        scene: this.groups.shop,
+        layout: rooms.shop,
+        addLabel: (text, target, height, modifier) => this.addLabel(text, target, height, modifier, 'shop'),
         removeLabel: (label) => this.removeLabel(label),
         requestFrame: () => this.requestFrame(),
         entered: () => this.events.customerEntered(),
@@ -163,12 +170,12 @@ export class ShopScene {
       browseSeconds,
     );
 
-    this.playerRoot.position.set(layout.spawn[0], 0, layout.spawn[1]);
+    this.playerRoot.position.set(rooms.shop.spawn[0], 0, rooms.shop.spawn[1]);
     this.scene.add(this.playerRoot);
-    this.addLabel('You', this.playerRoot, 1.2, 'scene-label--player');
+    this.addLabel('You', this.playerRoot, 1.2, 'scene-label--player', null);
 
-    this.zoom = layout.camera.defaultZoom;
-    this.focus.set(layout.camera.focus[0], 0, layout.camera.focus[1]);
+    this.zoom = rooms.shop.camera.defaultZoom;
+    this.focus.set(rooms.shop.camera.focus[0], 0, rooms.shop.camera.focus[1]);
     this.placeCamera();
 
     const canvas = this.renderer.domElement;
@@ -178,6 +185,62 @@ export class ShopScene {
     canvas.addEventListener('pointercancel', (e) => this.endPointer(e));
     new ResizeObserver(() => this.resize()).observe(container);
     this.resize();
+  }
+
+  /** The layout of the room you're in. */
+  private get layout(): RoomLayout {
+    return this.rooms[this.room];
+  }
+
+  /** Which room you're in. */
+  get currentRoom(): RoomId {
+    return this.room;
+  }
+
+  /** Builds a room's floor, walls, fixtures and decor into its group. */
+  private buildRoom(id: RoomId): void {
+    const layout = this.rooms[id];
+    const group = this.groups[id];
+    const { width, depth } = layout.room;
+    const floor = new Mesh(new PlaneGeometry(width, depth), new MeshLambertMaterial({ color: new Color(layout.floorColor) }));
+    floor.rotation.x = -Math.PI / 2;
+    group.add(floor);
+    if (layout.floorTile) {
+      // The plain plane stays underneath the tiles, out of their way.
+      floor.position.y = -layout.floorTile.height - 0.01;
+      this.addFloorTiles(layout, group);
+    }
+    this.addWalls(layout, group);
+    for (const fixture of layout.fixtures) this.addFixture(fixture, id);
+    for (const d of layout.decor) void this.addModel(d.model, d.position, d.rotation, d.y, group);
+  }
+
+  /**
+   * Moves to the other room: the screen fades out, you arrive by the door you came through
+   * (its fixture leads back to the room you left), and the view settles on you.
+   */
+  async travel(to: RoomId): Promise<void> {
+    if (to === this.room || this.travelling) return;
+    this.travelling = true;
+    const from = this.room;
+    this.releaseStick();
+    this.path = [];
+    this.pendingFixture = null;
+    this.fade.classList.add('on');
+    await new Promise((r) => window.setTimeout(r, FADE_MS));
+    this.room = to;
+    for (const id of ['shop', 'back'] as RoomId[]) this.groups[id].visible = id === to;
+    const door = this.layout.fixtures.find((f) => f.interact?.action === from);
+    const [x, z] = door?.interact?.standAt ?? this.layout.spawn;
+    this.playerRoot.position.set(x, 0, z);
+    this.player?.play('idle');
+    this.zoom = this.layout.camera.defaultZoom;
+    this.focus.set(x, 0, z);
+    this.resize();
+    this.centreOnPlayer();
+    this.fade.classList.remove('on');
+    this.travelling = false;
+    this.requestFrame();
   }
 
   /** When false (a panel is open), taps and idle animation pause; the scene stays drawn. */
@@ -243,62 +306,67 @@ export class ShopScene {
     else if (isWalkable(this.layout, [p.x, nz])) p.z = nz;
   }
 
-  private async addModel(path: string, [x, z]: Point, rotation: number, y = 0): Promise<Object3D> {
+  private async addModel(path: string, [x, z]: Point, rotation: number, y: number, parent: Object3D): Promise<Object3D> {
     const gltf = await loadGltf(path);
     const model = gltf.scene.clone(true);
     model.position.set(x, y, z);
     model.rotation.y = (rotation * Math.PI) / 180;
-    this.scene.add(model);
+    parent.add(model);
     this.requestFrame();
     return model;
   }
 
   /** Repeats the floor tile model across the room, sunk so its top is level with y = 0. */
-  private addFloorTiles({ model, size, height }: { model: string; size: number; height: number }): void {
-    const { width, depth } = this.layout.room;
+  private addFloorTiles(layout: RoomLayout, group: Object3D): void {
+    const { model, size, height } = layout.floorTile!;
+    const { width, depth } = layout.room;
     for (let x = -width / 2 + size / 2; x < width / 2; x += size) {
-      for (let z = -depth / 2 + size / 2; z < depth / 2; z += size) void this.addModel(model, [x, z], 0, -height);
+      for (let z = -depth / 2 + size / 2; z < depth / 2; z += size) void this.addModel(model, [x, z], 0, -height, group);
     }
   }
 
-  private addWalls(): void {
-    const { width, depth } = this.layout.room;
-    const { panels, back, left } = this.layout.walls;
+  private addWalls(layout: RoomLayout, group: Object3D): void {
+    const { width, depth } = layout.room;
+    const { panels, back, left } = layout.walls;
     const half = WALL_PANEL_WIDTH / 2;
     back.forEach((kind, i) => {
-      void this.addModel(panels[kind], [-width / 2 + half + i * WALL_PANEL_WIDTH, -depth / 2 - 0.1], 0);
+      void this.addModel(panels[kind], [-width / 2 + half + i * WALL_PANEL_WIDTH, -depth / 2 - 0.1], 0, 0, group);
     });
     left.forEach((kind, i) => {
-      void this.addModel(panels[kind], [-width / 2 - 0.1, -depth / 2 + half + i * WALL_PANEL_WIDTH], 90);
+      void this.addModel(panels[kind], [-width / 2 - 0.1, -depth / 2 + half + i * WALL_PANEL_WIDTH], 90, 0, group);
     });
   }
 
-  private addFixture(fixture: Fixture): void {
+  private addFixture(fixture: Fixture, room: RoomId): void {
+    const group = this.groups[room];
     const [w, h, d] = fixture.size;
+    const y = fixture.y ?? 0;
     // An invisible box over the footprint makes taps easy and reliable.
     const hitBox = new Mesh(new BoxGeometry(w, h, d), new MeshBasicMaterial({ visible: false }));
-    hitBox.position.set(fixture.position[0], h / 2, fixture.position[1]);
-    this.scene.add(hitBox);
+    hitBox.position.set(fixture.position[0], y + h / 2, fixture.position[1]);
+    hitBox.userData.room = room;
+    group.add(hitBox);
     if (fixture.interact) this.hitBoxes.set(hitBox, fixture);
 
     if (fixture.model) {
-      void this.addModel(fixture.model, fixture.position, fixture.rotation);
+      void this.addModel(fixture.model, fixture.position, fixture.rotation, y, group);
     } else {
       const box = new Mesh(new BoxGeometry(w, h, d), new MeshStandardMaterial({ color: PLACEHOLDER_COLOR }));
       box.position.copy(hitBox.position);
-      this.scene.add(box);
+      group.add(box);
     }
     if (fixture.label || !fixture.model) {
-      this.addLabel(fixture.label ?? fixture.id, hitBox, h / 2 + 0.2, fixture.interact ? 'scene-label--action' : '');
+      const label = this.addLabel(fixture.label ?? fixture.id, hitBox, h / 2 + 0.2, fixture.interact ? 'scene-label--action' : '', room);
+      if (room === 'back' && fixture.id === this.rooms.back.rack.fixture) this.rackLabel = label.el;
     }
   }
 
-  private addLabel(text: string, target: Object3D, height: number, modifier: string): Label {
+  private addLabel(text: string, target: Object3D, height: number, modifier: string, room: RoomId | null): Label {
     const el = document.createElement('div');
     el.className = `scene-label ${modifier}`;
     el.textContent = text;
     this.labelLayer.appendChild(el);
-    this.labels.push({ el, target, height });
+    this.labels.push({ el, target, height, room });
     return { el };
   }
 
@@ -333,20 +401,20 @@ export class ShopScene {
       marker.patch.visible = !occupied.has(id);
       marker.label.el.hidden = occupied.has(id);
     }
-    this.layout.obstacles = pieces.filter((p) => p.floor).map((p) => ({ position: p.position, size: p.size }));
+    this.rooms.shop.obstacles = pieces.filter((p) => p.floor).map((p) => ({ position: p.position, size: p.size }));
     const models = await Promise.all(pieces.map((p) => loadGltf(p.model)));
     if (key !== this.placedKey) return; // changed again while loading
     pieces.forEach((p, i) => {
       const model = models[i].scene.clone(true);
       model.position.set(p.position[0], p.y, p.position[1]);
       model.rotation.y = Math.PI / 4; // angled towards the room
-      this.scene.add(model);
+      this.groups.shop.add(model);
       this.placed.push(model);
     });
     this.requestFrame();
   }
 
-  /** Shows arrived crates by the back-room door; tapping one goes to the back room. */
+  /** Shows arrived crates by the back room's outside door; tapping one opens them. */
   async setCrates(count: number): Promise<void> {
     for (const c of this.crates) {
       c.removeFromParent();
@@ -354,8 +422,10 @@ export class ShopScene {
       (c.userData.hitBox as Object3D).removeFromParent();
     }
     this.crates = [];
-    const door = this.layout.fixtures.find((f) => f.interact?.action === 'back-room');
-    const { model, spots, stackHeights } = this.layout.crates;
+    const back = this.rooms.back;
+    const door = back.fixtures.find((f) => f.interact?.action === 'outside');
+    const tapped: Fixture | null = door?.interact ? { ...door, id: 'crates', interact: { action: 'crates', standAt: door.interact.standAt } } : null;
+    const { model, spots, stackHeights } = back.crates;
     const shown = Math.min(count, spots.length);
     if (shown === 0) return this.requestFrame();
     const gltf = await loadGltf(model);
@@ -367,9 +437,38 @@ export class ShopScene {
       const hitBox = new Mesh(new BoxGeometry(0.66, 0.6, 0.66), new MeshBasicMaterial({ visible: false }));
       hitBox.position.set(x, (stackHeights[i] ?? 0) + 0.3, z);
       crate.userData.hitBox = hitBox;
-      this.scene.add(crate, hitBox);
-      if (door) this.hitBoxes.set(hitBox, door);
+      hitBox.userData.room = 'back';
+      this.groups.back.add(crate, hitBox);
+      if (tapped) this.hitBoxes.set(hitBox, tapped);
       this.crates.push(crate);
+    }
+    this.requestFrame();
+  }
+
+  /**
+   * Shows what's on hand on the back room's rack: one bottle per material, in order, as many
+   * as its shelves hold. The rack's label counts them all.
+   */
+  async setRack(materials: string[]): Promise<void> {
+    const key = materials.join(',');
+    if (key === this.rackKey) return;
+    this.rackKey = key;
+    const { rack, fixtures } = this.rooms.back;
+    const shelf = fixtures.find((f) => f.id === rack.fixture)!;
+    if (this.rackLabel) this.rackLabel.textContent = `Supplies · ${materials.length} on hand`;
+    const gltf = await loadGltf(rack.bottle);
+    if (key !== this.rackKey) return; // changed again while loading
+    for (const b of this.rackBottles) b.removeFromParent();
+    this.rackBottles = [];
+    const shown = Math.min(materials.length, rack.levels.length * rack.perLevel);
+    for (let i = 0; i < shown; i++) {
+      const level = Math.floor(i / rack.perLevel);
+      const slot = i % rack.perLevel;
+      const bottle = gltf.scene.clone(true);
+      bottle.position.set(shelf.position[0] + (slot - (rack.perLevel - 1) / 2) * rack.spacing, rack.levels[level], shelf.position[1] + rack.forward);
+      bottle.rotation.y = (i * 0.9) % (Math.PI * 2); // not all facing the same way
+      this.groups.back.add(bottle);
+      this.rackBottles.push(bottle);
     }
     this.requestFrame();
   }
@@ -534,11 +633,13 @@ export class ShopScene {
     // A name label counts as its customer or fixture: with the whole room in view, people
     // are small and their labels are the easier thing to tap.
     const label = this.labels.find((l) => {
+      if (l.room && l.room !== this.room) return false;
       const r = l.el.getBoundingClientRect();
       return r.width > 0 && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
     });
     // Otherwise whatever is nearest the camera under the finger wins: a customer or an interactive fixture.
-    const hit = label ? { object: label.target } : this.raycaster.intersectObjects([...this.crowd.hitBoxes(), ...this.hitBoxes.keys()])[0];
+    const here = [...this.hitBoxes.keys()].filter((o) => o.userData.room === this.room);
+    const hit = label ? { object: label.target } : this.raycaster.intersectObjects([...(this.room === 'shop' ? this.crowd.hitBoxes() : []), ...here])[0];
     const customerId = hit ? this.crowd.idOf(hit.object) : null;
     if (customerId) {
       this.events.customer(customerId);
@@ -648,11 +749,11 @@ export class ShopScene {
     // Where each label's anchor is on screen. Upgrade spots only matter where you can see
     // them: off screen, their labels would crowd the edges, so they hide. (All class changes
     // come before any measuring, so the page lays out once per frame, not once per label.)
-    const anchors = this.labels.map(({ el, target, height }) => {
+    const anchors = this.labels.map(({ el, target, height }, i) => {
       target.getWorldPosition(v);
       v.y += height;
       v.project(this.camera);
-      const hide = el.classList.contains('scene-label--zone') && (Math.abs(v.x) > 1 || Math.abs(v.y) > 1);
+      const hide = (this.labels[i].room !== null && this.labels[i].room !== this.room) || (el.classList.contains('scene-label--zone') && (Math.abs(v.x) > 1 || Math.abs(v.y) > 1));
       if (el.classList.contains('scene-label--hidden') !== hide) el.classList.toggle('scene-label--hidden', hide);
       return { x: v.x, y: v.y };
     });

@@ -486,3 +486,6 @@ textarea {
 .rating-list li { margin: 2px 0; }
 #house-name { flex: 1; }
 
+/* Moving between rooms: a plain fade to the page colour. */
+.scene-fade { position: absolute; inset: 0; background: var(--bg); opacity: 0; pointer-events: none; transition: opacity 280ms ease; }
+.scene-fade.on { opacity: 1; pointer-events: auto; }

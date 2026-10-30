@@ -1,7 +1,9 @@
 import shopJson from '../data/shop.json';
+import backRoomJson from '../data/backroom.json';
 
-// The shop interior, from src/data/shop.json. Floor coordinates are [x, z] in metres,
-// centred on the room; x runs to the right-hand wall, z towards the front.
+// The rooms: the shop (src/data/shop.json) and the back room (src/data/backroom.json).
+// Floor coordinates are [x, z] in metres, centred on each room; x runs to the right-hand
+// wall, z towards the front.
 
 export type Point = [number, number];
 
@@ -16,6 +18,8 @@ export interface Fixture {
   rotation: number;
   /** World-space footprint: width (x), height (y), depth (z). Used for walking and tapping. */
   size: [number, number, number];
+  /** Height it stands at, e.g. a placeholder box on a desk (0 = the floor). */
+  y?: number;
   blocks: boolean;
   interact: { action: string; standAt: Point } | null;
 }
@@ -38,7 +42,8 @@ export interface Zone {
   rect: [number, number, number, number];
 }
 
-export interface ShopLayout {
+/** What every room has: its size, walls, floor, fixtures and decor. */
+export interface RoomLayout {
   room: { width: number; depth: number; wallHeight: number };
   /** Colour of the plane under the floor tiles. */
   floorColor: string;
@@ -50,12 +55,6 @@ export interface ShopLayout {
   walkSpeed: number;
   playerRadius: number;
   gridStep: number;
-  /** Where customers come in, and the spots where they queue at the counter (front of the queue first). */
-  customers: { entrance: Point; queue: Point[]; walkSpeed: number };
-  /** Table and counter tops where small decor can be placed. */
-  surfaces: { id: string; label: string; position: Point; y: number }[];
-  /** Where arrived crates stand in the shop, by the back-room door. */
-  crates: { model: string; spots: Point[]; stackHeights: number[] };
   /** 2 m wall panels: `back` runs left to right along the back wall, `left` back to front along the left wall. */
   walls: { panels: Record<string, string>; back: string[]; left: string[] };
   fixtures: Fixture[];
@@ -65,12 +64,35 @@ export interface ShopLayout {
   zones: Zone[];
 }
 
+/** The shop floor: customers, and surfaces for small decor. */
+export interface ShopLayout extends RoomLayout {
+  /** Where customers come in, and the spots where they queue at the counter (front of the queue first). */
+  customers: { entrance: Point; queue: Point[]; walkSpeed: number };
+  /** Table and counter tops where small decor can be placed. */
+  surfaces: { id: string; label: string; position: Point; y: number }[];
+}
+
+/** The back room: crates by the outside door, and the supplies rack. */
+export interface BackRoomLayout extends RoomLayout {
+  /** Where arrived crates stand, by the door to the outside. */
+  crates: { model: string; spots: Point[]; stackHeights: number[] };
+  /**
+   * The rack that shows what's on hand: one bottle per material, on the shelves of the
+   * fixture `fixture`, at heights `levels` (above the floor, filled in order), `perLevel` to a
+   * shelf, `spacing` apart, and `forward` of the rack's centre (towards the room).
+   */
+  rack: { fixture: string; bottle: string; levels: number[]; perLevel: number; spacing: number; forward: number };
+}
+
 export const WALL_PANEL_WIDTH = 2;
 
 export const shop = shopJson as unknown as ShopLayout;
+export const backRoom = backRoomJson as unknown as BackRoomLayout;
+
+export type RoomId = 'shop' | 'back';
 
 /** True if a point on the floor is clear for the player: inside the room and off blocking fixtures. */
-export function isWalkable(layout: ShopLayout, [x, z]: Point): boolean {
+export function isWalkable(layout: RoomLayout, [x, z]: Point): boolean {
   const r = layout.playerRadius;
   const halfW = layout.room.width / 2 - r;
   const halfD = layout.room.depth / 2 - r;
@@ -85,7 +107,8 @@ export function isWalkable(layout: ShopLayout, [x, z]: Point): boolean {
   });
 }
 
-export function validateShop(layout: ShopLayout): string[] {
+/** Checks a room: fixtures, decor and zones inside it, walls covering it, spots you can stand on. */
+export function validateRoom(layout: RoomLayout): string[] {
   const errors: string[] = [];
   const ids = new Set<string>();
   const halfW = layout.room.width / 2;
@@ -115,10 +138,23 @@ export function validateShop(layout: ShopLayout): string[] {
   if (walls.left.length * WALL_PANEL_WIDTH !== room.depth) errors.push('walls.left must cover the room depth in 2 m panels');
   for (const kind of [...walls.back, ...walls.left]) if (!walls.panels[kind]) errors.push(`walls: unknown panel "${kind}"`);
   if (!isWalkable(layout, layout.spawn)) errors.push('spawn is not walkable');
+  return errors;
+}
+
+export function validateShop(layout: ShopLayout): string[] {
+  const errors = validateRoom(layout);
   if (!isWalkable(layout, layout.customers.entrance)) errors.push('customers.entrance is not walkable');
   layout.customers.queue.forEach((p, i) => {
     if (!isWalkable(layout, p)) errors.push(`customers.queue[${i}] is not walkable`);
   });
   if (!layout.zones.some((z) => z.kind === 'customers')) errors.push('zones: customers need at least one area to browse');
+  return errors;
+}
+
+export function validateBackRoom(layout: BackRoomLayout): string[] {
+  const errors = validateRoom(layout);
+  if (!layout.fixtures.some((f) => f.id === layout.rack.fixture)) errors.push(`rack: no fixture "${layout.rack.fixture}"`);
+  if (layout.crates.spots.length !== layout.crates.stackHeights.length) errors.push('crates: one stack height per spot');
+  for (const p of layout.crates.spots) if (!isWalkable(layout, p)) errors.push(`crates: spot ${p} is blocked`);
   return errors;
 }

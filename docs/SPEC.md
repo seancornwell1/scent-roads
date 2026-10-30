@@ -573,6 +573,29 @@ How it was built (Oct 28, 2026):
   - Places on the shelves grow with rank (1, 2, 3, then 5) and with every display piece you place.
   - The old display case's bottles move onto the shelves as house perfumes.
 
+### Prompt 16: Direction change #3 decisions, a smaller shop and a back room
+
+Decided with Sean (Oct 29–30, 2026), from `docs/NARRATIVE_NOTES.md`; most are **not built yet**:
+
+- **Opening:** a title screen with "Intro" and "Play"; the intro is text panels for now (dead-end warehouse job, the uncle's call, liquidate or reopen). Choosing to liquidate is a game over. Later the intro plays automatically on a new game.
+- **The shop starts nearly empty** (the uncle sold most of it). **Henri is the mentor:** a retired master perfumer who hints at it. Mireille's signature masterpiece was meant for him, an ambery perfume in the great amber tradition (invented name; no real brands). It is the narrative ending; the game keeps going after it.
+- **The starting bench includes vanilla** (bergamot, lavender, labdanum, vanilla): a strong starting accord, and the start of one with lavender.
+- **A guided first lesson** with Henri after the intro: later. Remind Sean once he's happy with gameplay and the intro.
+- **Suppliers:** no restocking; materials never run out. Supplies expand over time in batches of about 5–6 new materials, chosen by the player. One laptop does all the supplier business; several suppliers remain for flavour and lore. The supplies rack is only for looks.
+- **Progression:** customers' requests move between accords and full perfumes, with honest gaps that the next materials fill (plan in the conversation of Oct 29). **No rank exams:** progression comes from competitions, which are hard but can be tried often. Reputation may be dropped.
+- **House perfumes are the passive, idle side of the game.**
+- **Later:** a street outside with shops (plant store, bookstore, bodega, café, bar, a cosmetics store run by an intimidating but secretly kind rival) where you meet townspeople; friendship and romance; regulars' backstories (on hold).
+- The player character is "they".
+
+Built now (Oct 30, 2026):
+
+- **The shop is back to 10 × 12 m** and nearly empty: the organ, the counter, her two shelves, a lamp, a rug and the clock. The street wall has the front door, the back-room door and three windows between them. Furniture placed on spots that no longer exist goes back into storage.
+- **The back room is a real room** (6 × 6 m) behind its door, with a short fade between rooms:
+  - a desk, laptop and desk chair (labelled boxes until their models are approved); the laptop opens ordering, letters and the lab
+  - the supplies rack, showing a bottle for each material on hand
+  - the door outside, where crates arrive (the street isn't open yet)
+  - room for upgrades later
+
 ### Prompt 3 (original): clients and reviews
 
 ```

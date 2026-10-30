@@ -3,6 +3,7 @@ import { entriesOf, written, type Dilutions, type Entry } from './game/blend';
 import { rankById, type Rank } from './game/ranks';
 import { content, materialsById } from './game/content';
 import { gameNow, newClock } from './game/clock';
+import { shop } from './game/shop';
 import { newCustomerState } from './game/customers';
 import { newHouseState, type HouseLabel } from './game/house';
 import { newSourcingState, sourcing } from './game/sourcing';
@@ -82,6 +83,9 @@ function initSave(): SaveData {
   save.awards ??= newAwardsState();
   save.lab ??= newLabState();
   save.upgrades ??= newUpgradeState();
+  // Pieces placed on spots the shop no longer has (it was made smaller) go back into storage.
+  const spots = new Set([...shop.zones.filter((z) => z.kind === 'upgrade').map((z) => z.id), ...shop.surfaces.map((x) => x.id)]);
+  save.upgrades.placed = save.upgrades.placed.filter((p) => spots.has(p.spot));
   save.house ??= newHouseState(gameNow(save.clock, now));
   save.news ??= {};
   save.newsSeenWeek ??= -1;
