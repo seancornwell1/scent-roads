@@ -6,6 +6,8 @@ import { gameNow, newClock } from './game/clock';
 import { shop } from './game/shop';
 import { newCustomerState } from './game/customers';
 import { newHouseState, type HouseLabel } from './game/house';
+import { newCounterState } from './game/round';
+import type { Ping, Reveal } from './ui/round';
 import { newSourcingState, sourcing } from './game/sourcing';
 import { newStoryState, story } from './game/story';
 import { newRoutesState } from './game/routes';
@@ -18,7 +20,7 @@ import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'house-new' | 'report' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'round' | 'reveal' | 'house-new' | 'report' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -40,6 +42,10 @@ export interface UiState {
   houseNew: { formulaId: string; name: string; seed: number; label: HouseLabel; tier: string; bottles: number } | null;
   /** The day whose sales report is open (the latest if null). */
   reportDay: number | null;
+  /** The counter: the test ping on screen, an accord reward to show, and the last reveal. */
+  ping: Ping | null;
+  accordReward: string | null;
+  reveal: Reveal | null;
   /** A spot picked in the furniture tab, waiting for something to place on it. */
   pickSpot: string | null;
   /** Which page of the character creator is showing (a slot id). */
@@ -87,6 +93,7 @@ function initSave(): SaveData {
   const spots = new Set([...shop.zones.filter((z) => z.kind === 'upgrade').map((z) => z.id), ...shop.surfaces.map((x) => x.id)]);
   save.upgrades.placed = save.upgrades.placed.filter((p) => spots.has(p.spot));
   save.house ??= newHouseState(gameNow(save.clock, now));
+  save.counter ??= newCounterState();
   save.news ??= {};
   save.newsSeenWeek ??= -1;
   save.notify ??= false;
@@ -96,7 +103,7 @@ function initSave(): SaveData {
 
 export const state: { save: SaveData; ui: UiState } = {
   save: initSave(),
-  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, sheetId: null, sheetBatch: 10, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null, houseNew: null, reportDay: null },
+  ui: { screen: 'shop', organTab: 'materials', browseBy: 'layer', step: 1, sheetId: null, sheetBatch: 10, bookTab: 'pages', compendiumId: null, trainingFeedback: null, detail: null, newAccords: [], toast: null, creatorTab: 'body', visitId: null, orderId: null, backroomTab: 'letters', upgradesTab: 'furniture', pickSpot: null, houseNew: null, reportDay: null, ping: null, accordReward: null, reveal: null },
 };
 
 let render = () => {};

@@ -12,6 +12,7 @@ import { drydownGraph } from './graph';
 import { effective, entriesOf } from '../game/blend';
 import { esc, starsText } from './html';
 import { pageCard } from './book';
+import { intensityWord } from '../game/round';
 
 // Panels for customers: their brief, their first reaction, and their review.
 
@@ -44,8 +45,8 @@ function rememberLine(regular: Regular, state: CustomerState): string {
   return fillTemplate(line.text, { perfume: `“${last.perfume}”`, stage });
 }
 
-export function customerScreen(visit: Visit, state: CustomerState, story: StoryState): string {
-  return visit.status === 'returning' ? reviewScreen(visit) : briefScreen(visit, state, story);
+export function customerScreen(visit: Visit, state: CustomerState, story: StoryState, serving: string | null = null): string {
+  return visit.status === 'returning' ? reviewScreen(visit) : briefScreen(visit, state, story, serving);
 }
 
 /** A townsperson's greeting, what they brought, and (when they come back) what they said last time. */
@@ -60,41 +61,36 @@ function storyIntro(visit: Visit, story: StoryState): string {
     out += `<p>“${esc(r.giveText ?? '')}”</p><p class="banner small"><span>New material: <strong>${esc(names)}</strong>, now on your organ.</span></p>`;
   }
   if (again && rs?.last) {
-    const lines = feedbackLines(rs.last, 3).map((l) => `<p class="hint">“${esc(l)}”</p>`).join('');
+    const lines = rs.last.cause !== undefined ? (rs.last.cause ? `<p class="hint">${esc(rs.last.cause)}</p>` : '') : feedbackLines(rs.last, 3).map((l) => `<p class="hint">“${esc(l)}”</p>`).join('');
     out += `<p class="muted small">${esc(clients.lines.feedback.lastTime)}</p>${lines}`;
   }
   return out;
 }
 
-function briefScreen(visit: Visit, state: CustomerState, story: StoryState): string {
+function briefScreen(visit: Visit, state: CustomerState, story: StoryState, serving: string | null): string {
   const brief = findBrief(visit.briefId)!;
+  const round = visit.round;
   const regular = regularOf(visit);
   const intro = visit.storyId
     ? storyIntro(visit, story)
     : regular
       ? `<p class="muted small">${esc(regular.about)}</p><p>${esc(regular.greeting)} ${esc(rememberLine(regular, state))}</p>`
       : `<p class="muted small">A new customer.</p>`;
-  const hints = brief.hints
-    .slice(0, visit.hintsAsked)
-    .map((h) => `<p class="hint">“${esc(h)}”</p>`)
-    .join('');
-  const canAsk = visit.hintsAsked < brief.hints.length;
-  const chatter = !canAsk && visit.hintsAsked > 0 && !visit.storyId ? `<p class="muted small">${esc(clients.lines.chatter[visit.hintsAsked % clients.lines.chatter.length])}</p>` : '';
   const page = brief.page ? pageById(brief.page) : undefined;
   const pageBlock = page ? `<h2>Her page</h2><p class="muted small">It's in her book, but the ink has run.</p>${pageCard(page, story, false)}` : '';
   const title = visit.name + (regular ? ' · regular' : '');
+  const busy = serving && serving !== visit.id ? state.visits.find((v) => v.id === serving)?.name : null;
+  const action = busy
+    ? `<span class="muted small">You're serving ${esc(busy)} at the counter.</span>`
+    : `<button class="primary" data-action="serve">${serving === visit.id ? 'Back to the counter' : 'Serve at the counter'}</button>`;
   return `${panelHeader(title)}
     <main class="customer">
       ${intro}
-      <p class="muted small">${page ? 'They remember it like this:' : "They'd like a perfume of a memory:"}</p>
-      <blockquote class="memory">“${esc(brief.memory)}”</blockquote>
-      ${brief.budget !== undefined ? `<p class="small">They can spend up to <strong>€${brief.budget}</strong> per 100 g of concentrate on materials.</p>` : ''}
-      ${hints}${chatter}
+      <blockquote class="memory">“${esc(round?.text ?? brief.memory)}”</blockquote>
+      ${(round?.extra ?? []).map((h) => `<p class="hint">“${esc(h)}”</p>`).join('')}
+      ${round ? `<p class="small">They want it <strong>${esc(intensityWord(round.target.intensity))}</strong>.</p>` : ''}
       ${pageBlock}
-      <div class="row-between">
-        ${canAsk ? `<button class="link" data-action="ask-hint">Ask about it</button>` : '<span></span>'}
-        <button class="primary" data-action="compose-for">Compose for ${esc(visit.name)}</button>
-      </div>
+      <div class="row-between"><span></span>${action}</div>
     </main>`;
 }
 

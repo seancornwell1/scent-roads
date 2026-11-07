@@ -1,0 +1,66 @@
+{
+  "tip": {
+    "seconds": 150,
+    "share": 0.5
+  },
+  "ping": {
+    "firstMs": 2600,
+    "factor": 0.7,
+    "minMs": 450
+  },
+  "intensityWords": [
+    {
+      "min": 0,
+      "text": "very light"
+    },
+    {
+      "min": 4,
+      "text": "light"
+    },
+    {
+      "min": 7,
+      "text": "medium"
+    },
+    {
+      "min": 11,
+      "text": "strong"
+    },
+    {
+      "min": 16,
+      "text": "very strong"
+    }
+  ],
+  "ghostSpokes": 2,
+  "walkIn": {
+    "materials": [
+      2,
+      3
+    ],
+    "drops": [
+      1,
+      4
+    ],
+    "pay": {
+      "base": 18,
+      "perMaterial": 6
+    },
+    "specificChance": 0.4
+  },
+  "briefs": {
+    "vague": [
+      "Something {word}, please.",
+      "I'm after something {word}.",
+      "Could you make me something {word}?"
+    ],
+    "vagueTwo": [
+      "Something {word}, with a {word2} side to it.",
+      "I'd like something {word}, and a little {word2}.",
+      "Something {word} but {word2} too, if you can."
+    ],
+    "specific": [
+      "Something {word}, with {material} in it.",
+      "I love {material}. Something {word} around it?",
+      "Could you do something {word} with {material}?"
+    ]
+  }
+}

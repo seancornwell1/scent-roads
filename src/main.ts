@@ -3,9 +3,9 @@ import { recognizeAccords } from './game/accords';
 import { content, materialsById, validateContent } from './game/content';
 import { addParts, totalParts } from './game/formula';
 import { characterOptions, defaultCharacter, randomCharacter, type CharacterConfig } from './game/character';
-import { clients } from './game/clients';
-import { completeReview, handOver, tick, type Visit } from './game/customers';
-import { afterReview, meet, pageById, pageFormula, storyTick } from './game/story';
+import { clients, findBrief } from './game/clients';
+import { completeReview, handOver, serveAtCounter, tick, type Visit } from './game/customers';
+import { afterCounter, afterReview, meet, pageById, pageFormula, requestById, storyTick } from './game/story';
 import { seededRandom } from './game/random';
 import { applyQuality, scorePerfume } from './game/scoring';
 import { setClockSpeed } from './game/clock';
@@ -19,7 +19,9 @@ import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, 
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
-import { validateRadar } from './game/radar';
+import { missCause, radarOf, scoreRadar, validateRadar, type Mix } from './game/radar';
+import { addDrop, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
+import { clock, revealScreen, roundScreen, targetValues } from './ui/round';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
@@ -97,6 +99,7 @@ const scene = new ShopScene(
       state.ui.visitId = id;
       const visit = state.save.customers!.visits.find((v) => v.id === id);
       if (visit && meet(state.save.story!, visit, state.save.sourcing!, nowGame()).length > 0) sounds.play('glass');
+      if (visit) visit.round ??= briefFor(visit);
       openPanel('customer');
     },
     walking: (on) => sounds.loop('footsteps', on),
@@ -137,6 +140,31 @@ function syncCrowd(): void {
 
 /** Storms in the news slow shipping from their region in the week a batch ships. */
 const stormDelay = (regionId: string, at: number) => shippingDelay(newsFor(state.save, at), regionId);
+
+/** A customer's brief at the counter: a story request's or regular's written one, or a walk-in's made up from what you have. */
+function briefFor(visit: Visit): RoundBrief {
+  const written = visit.storyId || visit.regularId ? findBrief(visit.briefId) : undefined;
+  if (written) return writtenBrief(written);
+  let seed = 0;
+  for (const ch of visit.id) seed = (Math.imul(seed, 31) + ch.charCodeAt(0)) >>> 0;
+  return walkInBrief([...ownedMaterials(state.save)], seededRandom(seed));
+}
+
+/** What a material's card shows at the counter (filled in by its EXP; see part 3). */
+function materialCard(_id: string): string {
+  return '';
+}
+
+/** Any accord in the mix for the first time: saved to the accord book, with its reward. */
+function discoverAccords(mix: Mix, accords: string[]): void {
+  const { save, ui } = state;
+  for (const id of accords) {
+    if (save.discoveredAccords[id]) continue;
+    save.discoveredAccords[id] = { at: Date.now(), formula: { ...mix } };
+    ui.accordReward = id;
+    sounds.play('accord');
+  }
+}
 
 /**
  * Opens the organ for an order. A formula made for a different brief is cleared first, so
@@ -197,6 +225,14 @@ function runHouse(): boolean {
     happened = true;
   }
   return happened;
+}
+
+/** The counter's timer and shrinking tip, updated in place once a second. */
+function tickTimer(): void {
+  const el = document.querySelector<HTMLElement>('[data-timer]');
+  if (!el) return;
+  const elapsed = Date.now() - Number(el.dataset.timer);
+  el.textContent = `${clock(elapsed)} · tip ${tipFor(Number(el.dataset.pay), elapsed)}`;
 }
 
 /** Shows the end-of-day report over the shop when one is waiting. */
@@ -343,6 +379,7 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     syncCrowd();
     commit();
     window.setInterval(runTick, 5000);
+    window.setInterval(tickTimer, 1000);
     document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && runTick());
     if (!state.save.story!.introSeen) openPanel('intro');
     else if (!state.save.character) openPanel('creator');
@@ -415,7 +452,11 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
     case 'intro':
       return introScreen();
     case 'customer':
-      return customerScreen(visit!, state.save.customers!, state.save.story!);
+      return customerScreen(visit!, state.save.customers!, state.save.story!, state.save.counter!.round?.visitId ?? null);
+    case 'round':
+      return state.save.counter!.round ? roundScreen(state.ui.ping, state.ui.accordReward, materialCard) : bookScreen();
+    case 'reveal':
+      return state.ui.reveal ? revealScreen(state.ui.reveal, []) : bookScreen();
     case 'reaction':
       return reactionScreen(visit!);
     case 'chapter':
@@ -550,6 +591,90 @@ document.body.addEventListener('click', (event) => {
       else delete look.parts[key];
       save.character = look;
       refreshPlayer();
+      break;
+    }
+    case 'serve': {
+      const visit = save.customers!.visits.find((v) => v.id === ui.visitId);
+      if (!visit) return;
+      const c = save.counter!;
+      if (!c.round || !save.customers!.visits.some((v) => v.id === c.round!.visitId)) {
+        visit.round ??= briefFor(visit);
+        c.round = { visitId: visit.id, startedAt: Date.now(), drops: {}, tests: 0, brief: visit.round };
+        ui.ping = null;
+      }
+      if (c.round.visitId !== visit.id) return;
+      sounds.play('paper');
+      return openPanel('round');
+    }
+    case 'drop': {
+      const r = save.counter!.round;
+      if (!r) return;
+      r.drops = addDrop(r.drops, id!, Number(target.dataset.value));
+      break;
+    }
+    case 'round-clear': {
+      const r = save.counter!.round;
+      if (!r) return;
+      r.drops = {};
+      ui.ping = null;
+      break;
+    }
+    case 'round-test': {
+      const r = save.counter!.round;
+      if (!r) return;
+      const radar = radarOf(r.drops);
+      ui.ping = { values: radar.values, ms: pingMs(r.tests), at: Date.now() };
+      r.tests += 1;
+      sounds.play('glass');
+      discoverAccords(r.drops, radar.accords);
+      break;
+    }
+    case 'dismiss-reward':
+      ui.accordReward = null;
+      break;
+    case 'round-hand-over': {
+      const c = save.counter!;
+      const r = c.round;
+      const visit = r && save.customers!.visits.find((v) => v.id === r.visitId);
+      if (!r || !visit || Object.keys(r.drops).length === 0) return;
+      const radar = radarOf(r.drops);
+      const score = scoreRadar(radar, r.brief.target);
+      const cause = score.stars === 3 && score.total > 0.9 ? null : missCause(radar, r.brief.target);
+      discoverAccords(r.drops, radar.accords);
+      const pay = Math.round(r.brief.pay * (visit.payMultiplier ?? 1) * (clients.economy.payForStars[score.stars - 1] ?? 1));
+      const tip = pay > 0 ? tipFor(r.brief.pay, Date.now() - r.startedAt) : 0;
+      const request = visit.storyId ? requestById(visit.storyId) : undefined;
+      const page = visit.storyId ? afterCounter(save.story!, visit, score.stars, cause, nowGame()) : null;
+      serveAtCounter(save.customers!, visit.id, `${visit.name}'s perfume`, score.stars, pay + tip, nowGame());
+      ui.reveal = {
+        name: visit.name,
+        mix: { ...r.drops },
+        values: radar.values,
+        target: targetValues(r.brief.target),
+        score,
+        cause,
+        pay,
+        tip,
+        accords: radar.accords,
+        page,
+        thanks: request && score.stars === 3 ? request.thanks : null,
+      };
+      c.round = null;
+      ui.ping = null;
+      ui.visitId = null;
+      sounds.play('pouring');
+      syncCrowd();
+      return openPanel('reveal');
+    }
+    case 'reveal-done': {
+      const c = save.customers!;
+      ui.reveal = null;
+      const reached = tierIndex(c.reputation);
+      if (reached > (save.announcedTier ?? 0)) {
+        save.announcedTier = reached;
+        return openPanel('unlock');
+      }
+      ui.screen = 'shop';
       break;
     }
     case 'ask-hint': {

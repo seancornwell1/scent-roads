@@ -60,6 +60,21 @@ The counter's radar (`src/game/radar.ts`). Each material's own vector lives in `
 
 A material's `radar`: `vector` (spoke id → how far one drop pushes it; the strongest spoke is 1) and `verified`. Strength comes from `model.strength`; volatility from `model.halfLifeHours`, which fades a material over time when the radar shows a later stage.
 
+## `counter.json`
+
+A customer round at the counter (`src/game/round.ts`, screens in `src/ui/round.ts`).
+
+| Field | Meaning |
+| ----- | ------- |
+| `tip` | The tip is `share` of the brief's pay at the start of the round, shrinking to nothing at `seconds` (real seconds). No tip on a one-star perfume. |
+| `ping` | The first test ping shows for `firstMs`; each later test in the round for `factor` × the last, down to `minMs` |
+| `intensityWords` | How a target's intensity is described ("They want it medium"): the highest band whose `min` it reaches |
+| `ghostSpokes` | How many of the target's strongest spokes a specific brief shows as a ghost outline |
+| `walkIn` | Walk-ins' made-up briefs: `materials` and `drops` (ranges) of the hidden solution, picked from what the player has unlocked; `pay` (`base` + `perMaterial` × materials); `specificChance` |
+| `briefs` | Walk-ins' words: `vague` (one spoke), `vagueTwo` (two), `specific` (names a material); `{word}`, `{word2}` are spokes' words and `{material}` a material in the solution |
+
+Story requests and regulars keep their written briefs (`story.json`, `clients.json`): their target formula becomes the hidden solution (a 10-part formula drop for drop, a 100-part one in tenths), and they're always specific. The round is saved as `counter.round` (who, when it started, the drops, how many tests); each visit keeps its brief as `round`.
+
 ## `accords.json`
 
 An accord is recognized when the formula meets every one of its `requires` conditions.

@@ -5,7 +5,7 @@ import { assetUrl } from './assets';
 // synthesized: a cue with no file yet stays silent. Phones only allow audio after a touch, so
 // the context starts on the first tap; it suspends while the app is hidden to save battery.
 
-export type Cue = 'door-chime' | 'footsteps' | 'glass' | 'pouring' | 'paper' | 'crate' | 'ambience';
+export type Cue = 'door-chime' | 'footsteps' | 'glass' | 'pouring' | 'paper' | 'crate' | 'ambience' | 'accord';
 
 interface CueData {
   file: string | null;

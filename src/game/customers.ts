@@ -1,6 +1,7 @@
 import { canAnswer, clients, findBrief, type Brief, type ClientsData, type Regular } from './clients';
 import type { Entry } from './blend';
 import type { ScoreResult } from './scoring';
+import type { RoundBrief } from './round';
 import { gameHoursToMs, realMinutesToMs } from './time';
 import type { Formula } from './types';
 
@@ -24,6 +25,8 @@ export interface Visit {
   arrivedAt: number;
   /** What you handed over: the formula as written, and (Phase D) the blend it expands to. */
   perfume?: { name: string; parts: Formula; entries?: Entry[]; handedAt: number; paid: number; bonus?: number };
+  /** Their brief at the counter, fixed the first time it's shown (the radar round). */
+  round?: RoundBrief;
   /** From the shop's appeal when they arrived: better shops draw better-paying, more demanding customers. */
   payMultiplier?: number;
   strictness?: number;
@@ -186,3 +189,27 @@ export function completeReview(s: CustomerState, visitId: string, now: number, d
   s.visits = s.visits.filter((x) => x.id !== visitId);
   return change;
 }
+
+/**
+ * Serves a customer at the counter: they pay (nothing for one star) and tip, reputation
+ * changes, a regular moves on to their next brief, and they leave. Returns the reputation change.
+ */
+export function serveAtCounter(s: CustomerState, visitId: string, perfume: string, stars: 1 | 2 | 3, coins: number, now: number, data: ClientsData = clients): number {
+  const v = s.visits.find((x) => x.id === visitId);
+  if (!v) return 0;
+  const change = data.economy.reputationForStars[stars - 1] ?? 0;
+  s.money += coins;
+  s.reputation = Math.max(0, s.reputation + change);
+  const past: PastPerfume = { perfume, stars, weakStage: null, at: now };
+  s.reviews.push({ ...past, name: v.name, briefId: v.briefId, reputation: change });
+  if (v.regularId) {
+    const progress = s.regulars[v.regularId] ?? { nextBrief: 0, nextVisitAt: 0, history: [] };
+    progress.history.push(past);
+    progress.nextBrief += 1;
+    progress.nextVisitAt = now + gameHoursToMs(data.timing.regularReturnsAfterGameHours);
+    s.regulars[v.regularId] = progress;
+  }
+  s.visits = s.visits.filter((x) => x.id !== visitId);
+  return change;
+}
+

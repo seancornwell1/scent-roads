@@ -67,7 +67,8 @@ export interface RequestState {
   gave?: boolean;
   doneAt?: number;
   /** What they said last time, to say again when they come back. */
-  last?: { stars: number; directions: Direction[] };
+  /** How the last attempt went: stars, and either the old directions or (at the counter) the reveal's cause. */
+  last?: { stars: number; directions: Direction[]; cause?: string | null };
 }
 
 export interface StoryState {
@@ -155,13 +156,23 @@ export function meet(s: StoryState, visit: Visit, sourcing: SourcingState, now: 
  * Returns the recovered page's id, if any.
  */
 export function afterReview(s: StoryState, visit: Visit, now: number, data: StoryData = story): string | null {
+  if (!visit.result) return null;
+  return afterAttempt(s, visit, { stars: visit.result.stars, directions: visit.result.directions }, now, data);
+}
+
+/** After serving a story customer at the counter: the same rules, with the reveal's cause for next time. */
+export function afterCounter(s: StoryState, visit: Visit, stars: number, cause: string | null, now: number, data: StoryData = story): string | null {
+  return afterAttempt(s, visit, { stars, directions: [], cause }, now, data);
+}
+
+function afterAttempt(s: StoryState, visit: Visit, last: NonNullable<RequestState['last']>, now: number, data: StoryData): string | null {
   const r = visit.storyId ? requestById(visit.storyId, data) : undefined;
   const rs = r && s.requests[r.id];
-  if (!r || !rs || !visit.result) return null;
+  if (!r || !rs) return null;
   rs.attempts += 1;
-  rs.last = { stars: visit.result.stars, directions: visit.result.directions };
+  rs.last = last;
   const page = r.brief.page;
-  if (page && visit.result.stars < 3) {
+  if (page && last.stars < 3) {
     rs.status = 'waiting';
     rs.dueAt = now + data.retryAfterGameHours;
     return null;
