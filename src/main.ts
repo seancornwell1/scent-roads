@@ -230,12 +230,10 @@ function runHouse(): boolean {
   return happened;
 }
 
-/** The counter's timer and shrinking tip, updated in place once a second. */
+/** The counter's timer, updated in place once a second. */
 function tickTimer(): void {
   const el = document.querySelector<HTMLElement>('[data-timer]');
-  if (!el) return;
-  const elapsed = Date.now() - Number(el.dataset.timer);
-  el.textContent = `${clock(elapsed)} · tip ${tipFor(Number(el.dataset.pay), elapsed)}`;
+  if (el) el.textContent = clock(Date.now() - Number(el.dataset.timer));
 }
 
 /** Shows the end-of-day report over the shop when one is waiting. */

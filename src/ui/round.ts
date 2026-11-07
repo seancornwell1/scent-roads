@@ -1,6 +1,6 @@
 import { content, materialsById } from '../game/content';
 import { radarOf, SPOKES, type Mix, type RoundScore, type Target, type Values } from '../game/radar';
-import { cardFor, counter, intensityWord, maxLevel, tipFor } from '../game/round';
+import { cardFor, counter, intensityWord, maxLevel } from '../game/round';
 import { radarData, spokeInfo } from '../game/radar';
 import type { Spoke } from '../game/types';
 import { ownedMaterials } from '../game/world';
@@ -109,7 +109,7 @@ export function roundScreen(ping: Ping | null, reward: string | null, card: (id:
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Later</button>
       <h1>${esc(visit?.name ?? 'The counter')}</h1>
-      <span class="round-timer" data-timer="${round.startedAt}" data-pay="${b.pay}">${clock(elapsed)} · tip ${tipFor(b.pay, elapsed)}</span>
+      <span class="round-timer" data-timer="${round.startedAt}">${clock(elapsed)}</span>
     </header>
     <main class="customer round">
       ${reward ? accordReward(reward) : ''}
@@ -128,15 +128,34 @@ export function roundScreen(ping: Ping | null, reward: string | null, card: (id:
     </main>`;
 }
 
-function percentWord(v: number): string {
-  return v >= 0.85 ? 'spot on' : v >= 0.6 ? 'close' : v >= 0.35 ? 'some way off' : 'far off';
+/** A stage's main spokes in words: "warm and sweet". */
+function mainWords(v: Values): string {
+  const total = SPOKES.reduce((a, s) => a + v[s], 0) || 1;
+  const top = [...SPOKES].sort((a, b) => v[b] - v[a]).filter((s, i) => i === 0 || v[s] / total >= 0.18).slice(0, 2);
+  return top.map((s) => spokeInfo(s).word).join(' and ');
 }
 
-function intensityVerdict(values: Values, target: Values, score: number): string {
-  const mine = SPOKES.reduce((a, s) => a + values[s], 0);
-  const theirs = SPOKES.reduce((a, s) => a + target[s], 0);
-  if (score >= 0.85) return 'just right';
-  return mine > theirs ? (score >= 0.5 ? 'a little strong' : 'far too strong') : score >= 0.5 ? 'a little faint' : 'far too faint';
+/** How strong it came out next to what they wanted, in words. */
+function strengthWords(v: Values, t: Values): string {
+  const ratio = SPOKES.reduce((a, s) => a + v[s], 0) / (SPOKES.reduce((a, s) => a + t[s], 0) || 1);
+  if (ratio > 1.7) return 'far too strong';
+  if (ratio > 1.25) return 'a little strong';
+  if (ratio < 0.6) return 'far too faint';
+  if (ratio < 0.8) return 'a little faint';
+  return 'at just the right strength';
+}
+
+/** What they smelled, in words, stage by stage: no chart, just a description. */
+function description(r: Reveal): string {
+  return r.stages
+    .map((st) => {
+      const made = mainWords(st.values);
+      const wanted = mainWords(st.target);
+      const when = st.name ? `${st.name}: ` : '';
+      const shape = made === wanted ? `it smelled ${made}, just as they pictured` : `it smelled ${made}, where they'd pictured something ${wanted}`;
+      return `<p>${esc(when)}${esc(when ? shape : shape.charAt(0).toUpperCase() + shape.slice(1))}, ${esc(strengthWords(st.values, st.target))}.</p>`;
+    })
+    .join('');
 }
 
 export function revealScreen(r: Reveal, gains: string[]): string {
@@ -149,15 +168,9 @@ export function revealScreen(r: Reveal, gains: string[]): string {
     .join(' · ');
   return `<header class="bar-top"><span></span><h1>The reveal</h1><span></span></header>
     <main class="customer reveal">
-      <div class="radar-box${r.stages.length > 1 ? ' radar-box--stages' : ''}">${r.stages
-        .map((st) => `<figure class="radar-stage">${st.name ? `<figcaption class="small"><strong>${esc(st.name)}</strong></figcaption>` : ''}${radarChart([{ kind: 'target', values: st.target }, { kind: 'mix', values: st.values }], scaleFor(st.target))}</figure>`)
-        .join('')}</div>
-      <p class="muted small reveal-key"><span class="key key--target">dashed</span> what ${esc(r.name)} wanted · <span class="key key--mix">filled</span> what you made</p>
+      <p class="muted small">${esc(r.name)} tries it on…</p>
       <p class="stars" aria-label="${r.score.stars} of 3 stars">${starsText(r.score.stars)}</p>
-      <ul class="plain reveal-scores">
-        <li><strong>Shape:</strong> ${percentWord(r.score.shape)} (${Math.round(r.score.shape * 100)}%)</li>
-        <li><strong>Intensity:</strong> ${intensityVerdict(r.stages[0].values, r.stages[0].target, r.score.intensity)} (${Math.round(r.score.intensity * 100)}%)</li>
-      </ul>
+      <div class="reveal-description">${description(r)}</div>
       <p class="reveal-cause">${esc(r.cause ?? 'Nothing to change: that’s exactly it.')}</p>
       ${accords ? `<p class="small">Accords in it: <strong>${esc(accords)}</strong></p>` : ''}
       <p class="muted small">You used ${esc(used)}.</p>
