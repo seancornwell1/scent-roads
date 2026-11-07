@@ -185,6 +185,12 @@ The minimum percentages in every accord's requirements (e.g. labdanum and vanill
 
 Growers' letters are story, not new facts. Where a letter mentions a harvest season or method (bergamot picked through the winter, jasmine picked at dawn, vanilla cured for months), it repeats that region's entry in `src/data/regions.json`, so confirming the region confirms the letter. The growers, the chemist Varenne & Fils and their memories of Mireille are invented.
 
+## The counter's radar — `src/data/materials.json` (`radar`) and `src/data/radar.json`
+
+- **Every material's radar vector is my estimate** from its character notes and family, so all 108 are marked `"verified": false`. Each says which families a drop pushes and how far, relative to its strongest one. Worth checking the starting bench and early materials first: bergamot, lavender, labdanum, vanillin, lemon, sweet orange, petitgrain, neroli, rosemary, frankincense, myrrh, benzoin.
+- **Accord bonuses** (which pairs push further together): amber (labdanum + vanilla), lavender and vanilla, cologne, fougère, chypre, carnation (rose + clove), incense amber, rose and patchouli. The four new ones in `accords.json` are unverified: `lavender-vanilla`, `carnation`, `incense-amber`, `rose-patchouli`.
+- **Clashes** are the shakiest: mint against heady florals ("toothpaste"), and sharp cut-grass greens against sugary vanillin or maltol. Both are unverified; please replace them with clashes the course teaches.
+
 ## House perfume ratings — `src/data/house.json`
 
 The rating's measures are game design, not perfumery facts: "lasts a working day" is set at 8 hours on skin, strength is judged against the median of the game's own briefs, and a top, heart and base each need 5% of the oil. Worth a look in case the course teaches different rules of thumb.

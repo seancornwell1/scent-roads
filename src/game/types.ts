@@ -52,8 +52,13 @@ export interface Material {
   verified: boolean;
   check: string[];
   model: { strength: number; halfLifeHours: number };
+  /** How far one drop pushes each spoke of the counter's radar (the strongest spoke is 1). */
+  radar: { vector: Partial<Record<Spoke, number>>; verified: boolean };
   ref: MaterialRef;
 }
+
+/** The radar's spokes (src/data/radar.json). */
+export type Spoke = 'citrus' | 'fresh' | 'green' | 'floral' | 'woody' | 'amber' | 'gourmand' | 'spicy';
 
 /** One requirement of an accord, as a percentage of the formula's total parts. */
 export interface Condition {

@@ -19,6 +19,7 @@ import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, 
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
+import { validateRadar } from './game/radar';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
@@ -59,7 +60,7 @@ const urlSpeed = Number(new URLSearchParams(location.search).get('speed'));
 if (urlSpeed > 0) setClockSpeed(state.save.clock!, urlSpeed, Date.now());
 setTimeSpeed(state.save.clock!.speed);
 
-const problems = [...validateContent(content), ...validateShop(shop), ...validateBackRoom(backRoom)];
+const problems = [...validateContent(content), ...validateShop(shop), ...validateBackRoom(backRoom), ...validateRadar(content.materials, new Set(content.accords.map((a) => a.id)))];
 if (problems.length > 0) console.error('Content problems:\n' + problems.join('\n'));
 
 // What tapping each interactive fixture does once the player reaches it (shop.json, backroom.json).

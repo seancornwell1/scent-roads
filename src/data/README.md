@@ -44,6 +44,22 @@ The olfactive families materials are sorted by on the organ, in display order.
 
 After editing materials, run `npm run factcheck` to regenerate the materials tables in `docs/FACT_CHECK.md`; a test fails if an unverified material is missing from them.
 
+## `radar.json`
+
+The counter's radar (`src/game/radar.ts`). Each material's own vector lives in `materials.json` as `radar`.
+
+| Field | Meaning |
+| ----- | ------- |
+| `spokes` | The radar's spokes in order: `id`, `name`, and words for explaining a miss: `too` ("too woody"), `more` ("more wood"), `word` ("woody") |
+| `strength` | A drop pushes `base` ^ (material strength − `pivot`) times its vector |
+| `dropDecay` | Diminishing returns: each further drop of a material pushes this share of the one before |
+| `accords` | Bonuses: `accord` (an id in `accords.json`, so it goes in the accord book), `groups` (lists of material ids; every group needs a drop), `spokes` it pushes and how much, and `bonus` × the weakest group's push |
+| `clashes` | Muddy pairs: `id`, `groups` (every group needs a drop), `shrink` (share of the whole chart lost), `text` (said at the reveal), `verified` |
+| `crowding` | Beyond `free` different materials, each extra one shrinks the chart by `shrinkPerExtra`; `text` for the reveal |
+| `scoring` | `shapeFloor` (shape overlap that scores 0), `shapeWeight` (shape's share of the total; the rest is intensity), `underSpan` / `overSpan` (doublings below or above the target intensity where it scores 0: overshooting is forgiven more), `stars` (totals for two and three stars) |
+
+A material's `radar`: `vector` (spoke id → how far one drop pushes it; the strongest spoke is 1) and `verified`. Strength comes from `model.strength`; volatility from `model.halfLifeHours`, which fades a material over time when the radar shows a later stage.
+
 ## `accords.json`
 
 An accord is recognized when the formula meets every one of its `requires` conditions.

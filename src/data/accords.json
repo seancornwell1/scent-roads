@@ -153,5 +153,149 @@
         "lavender": 1
       }
     }
+  },
+  {
+    "id": "lavender-vanilla",
+    "name": "Lavender and vanilla",
+    "description": "Fresh lavender softened with vanilla: herbal on top, creamy underneath.",
+    "course": {
+      "mission": null
+    },
+    "verified": false,
+    "check": [
+      "structure"
+    ],
+    "requires": [
+      {
+        "materials": [
+          "lavender",
+          "lavandin"
+        ],
+        "min": 20
+      },
+      {
+        "materials": [
+          "vanillin",
+          "vanilla",
+          "ethyl-vanillin"
+        ],
+        "min": 15
+      }
+    ],
+    "lesson": "Lavender alone is clean and a little sharp; vanilla rounds its camphor edge into something soft. Keep the lavender in front, or it turns to custard.",
+    "example": {
+      "parts": {
+        "lavender": 6,
+        "vanillin": 4
+      }
+    }
+  },
+  {
+    "id": "carnation",
+    "name": "Carnation",
+    "description": "Rose and clove together: the old spicy-floral accord of carnation.",
+    "course": {
+      "mission": null
+    },
+    "verified": false,
+    "check": [
+      "structure"
+    ],
+    "requires": [
+      {
+        "materials": [
+          "rose-damascena",
+          "rose-centifolia",
+          "phenylethyl-alcohol",
+          "geraniol"
+        ],
+        "min": 20
+      },
+      {
+        "materials": [
+          "clove",
+          "eugenol"
+        ],
+        "min": 5
+      }
+    ],
+    "lesson": "A rose with a little clove reads as carnation, the spicy flower. The clove is strong: a few drops are enough.",
+    "example": {
+      "parts": {
+        "rose-damascena": 7,
+        "clove": 3
+      }
+    }
+  },
+  {
+    "id": "incense-amber",
+    "name": "Incense amber",
+    "description": "Frankincense smoke over a warm resin base.",
+    "course": {
+      "mission": null
+    },
+    "verified": false,
+    "check": [
+      "structure"
+    ],
+    "requires": [
+      {
+        "materials": [
+          "frankincense",
+          "myrrh"
+        ],
+        "min": 15
+      },
+      {
+        "materials": [
+          "labdanum",
+          "benzoin",
+          "opoponax"
+        ],
+        "min": 20
+      }
+    ],
+    "lesson": "Frankincense gives a lemony smoke on top; labdanum or benzoin holds it warm and sweet underneath, like a chapel after the candles go out.",
+    "example": {
+      "parts": {
+        "frankincense": 4,
+        "labdanum": 4,
+        "benzoin": 2
+      }
+    }
+  },
+  {
+    "id": "rose-patchouli",
+    "name": "Rose and patchouli",
+    "description": "A deep rose over dark, earthy patchouli.",
+    "course": {
+      "mission": null
+    },
+    "verified": false,
+    "check": [
+      "structure"
+    ],
+    "requires": [
+      {
+        "materials": [
+          "rose-damascena",
+          "rose-centifolia"
+        ],
+        "min": 25
+      },
+      {
+        "materials": [
+          "patchouli"
+        ],
+        "min": 15
+      }
+    ],
+    "lesson": "Patchouli gives rose a dark, earthy floor to stand on; rose keeps patchouli from smelling like a cellar.",
+    "example": {
+      "parts": {
+        "rose-damascena": 6,
+        "patchouli": 4
+      }
+    }
   }
 ]

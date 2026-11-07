@@ -23,6 +23,15 @@
       "strength": 7,
       "halfLifeHours": 0.25
     },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "fresh": 0.4,
+        "floral": 0.2,
+        "spicy": 0.1
+      },
+      "verified": false
+    },
     "subfamily": "fresh citrus",
     "ref": {
       "year": 1700,
@@ -66,6 +75,14 @@
       "strength": 6,
       "halfLifeHours": 12
     },
+    "radar": {
+      "vector": {
+        "woody": 0.3,
+        "amber": 1,
+        "gourmand": 0.2
+      },
+      "verified": false
+    },
     "subfamily": "resinous, leathery",
     "ref": {
       "year": 1500,
@@ -104,6 +121,13 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 300
+    },
+    "radar": {
+      "vector": {
+        "amber": 0.3,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "subfamily": "vanilla",
     "ref": {
@@ -146,6 +170,13 @@
       "strength": 3,
       "halfLifeHours": 60
     },
+    "radar": {
+      "vector": {
+        "woody": 1,
+        "amber": 0.4
+      },
+      "verified": false
+    },
     "subfamily": "woody-amber",
     "ref": {
       "year": 1973,
@@ -184,6 +215,14 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 400
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.2,
+        "woody": 0.4,
+        "amber": 1
+      },
+      "verified": false
     },
     "subfamily": "ambergris",
     "ref": {
@@ -226,6 +265,14 @@
       "strength": 8,
       "halfLifeHours": 3
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.2,
+        "green": 1,
+        "gourmand": 0.1
+      },
+      "verified": false
+    },
     "subfamily": "fig leaf",
     "ref": {
       "year": 1990,
@@ -264,6 +311,13 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 0.25
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.3,
+        "green": 1
+      },
+      "verified": false
     },
     "subfamily": "cut grass",
     "ref": {
@@ -306,6 +360,13 @@
       "strength": 5,
       "halfLifeHours": 30
     },
+    "radar": {
+      "vector": {
+        "floral": 0.1,
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "subfamily": "coconut",
     "ref": {
       "year": 1910,
@@ -346,6 +407,13 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 30
+    },
+    "radar": {
+      "vector": {
+        "floral": 0.2,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "subfamily": "peach",
     "ref": {
@@ -390,6 +458,13 @@
       "strength": 5,
       "halfLifeHours": 40
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.1,
+        "woody": 1
+      },
+      "verified": false
+    },
     "subfamily": "dry cedar",
     "ref": {
       "year": 1880,
@@ -429,6 +504,14 @@
       "strength": 3,
       "halfLifeHours": 24
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.2,
+        "fresh": 0.4,
+        "floral": 1
+      },
+      "verified": false
+    },
     "subfamily": "transparent jasmine",
     "ref": {
       "year": 1962,
@@ -467,6 +550,13 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 6
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "gourmand": 0.1
+      },
+      "verified": false
     },
     "subfamily": "rose",
     "ref": {
@@ -508,6 +598,14 @@
     "model": {
       "strength": 9,
       "halfLifeHours": 60
+    },
+    "radar": {
+      "vector": {
+        "green": 0.2,
+        "amber": 0.3,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "subfamily": "hay, tonka",
     "ref": {
@@ -553,6 +651,14 @@
       "strength": 8,
       "halfLifeHours": 200
     },
+    "radar": {
+      "vector": {
+        "green": 0.8,
+        "woody": 1,
+        "amber": 0.2
+      },
+      "verified": false
+    },
     "subfamily": "oakmoss",
     "ref": {
       "year": 1880,
@@ -592,6 +698,15 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 150
+    },
+    "radar": {
+      "vector": {
+        "green": 0.1,
+        "woody": 1,
+        "amber": 0.3,
+        "spicy": 0.1
+      },
+      "verified": false
     },
     "behaviour": "A tenacious base note and one pillar of the classic chypre.",
     "subfamily": "earthy",
@@ -637,6 +752,14 @@
       "strength": 6,
       "halfLifeHours": 1.5
     },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "floral": 0.5,
+        "woody": 0.1
+      },
+      "verified": false
+    },
     "subfamily": "lavender",
     "ref": {
       "year": 1600,
@@ -678,6 +801,13 @@
       "strength": 7,
       "halfLifeHours": 0.75
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.6,
+        "fresh": 1
+      },
+      "verified": false
+    },
     "subfamily": "fresh, metallic",
     "ref": {
       "year": 1970,
@@ -716,6 +846,14 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 50
+    },
+    "radar": {
+      "vector": {
+        "woody": 1,
+        "amber": 0.4,
+        "spicy": 0.2
+      },
+      "verified": false
     },
     "subfamily": "musky wood",
     "ref": {
@@ -758,6 +896,14 @@
       "strength": 8,
       "halfLifeHours": 4
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.2,
+        "fresh": 1,
+        "floral": 0.3
+      },
+      "verified": false
+    },
     "behaviour": "Strong: used in traces to add sparkle and lift, the 'aldehydic' effect.",
     "subfamily": "waxy, soapy",
     "ref": {
@@ -796,6 +942,14 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 500
+    },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "floral": 0.3,
+        "amber": 0.5
+      },
+      "verified": false
     },
     "behaviour": "A gentle, very long-lasting musk that rounds out and fixes the base.",
     "subfamily": "clean musk",
@@ -839,6 +993,14 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 3
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.2,
+        "green": 1,
+        "gourmand": 0.3
+      },
+      "verified": false
     },
     "behaviour": "Very strong; a little gives a juicy green lift to the top.",
     "subfamily": "pineapple, galbanum",
@@ -884,6 +1046,15 @@
       "strength": 5,
       "halfLifeHours": 12
     },
+    "radar": {
+      "vector": {
+        "green": 0.6,
+        "woody": 1,
+        "amber": 0.3,
+        "spicy": 0.2
+      },
+      "verified": false
+    },
     "behaviour": "Adds a dark, dry, slightly smoky depth to the heart.",
     "subfamily": "tea leaf",
     "ref": {
@@ -926,6 +1097,14 @@
       "strength": 10,
       "halfLifeHours": 20
     },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "gourmand": 0.7,
+        "spicy": 0.2
+      },
+      "verified": false
+    },
     "behaviour": "Extremely powerful: used in traces to make roses and fruits glow.",
     "subfamily": "rose, plum",
     "ref": {
@@ -966,6 +1145,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 20
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "woody": 0.5,
+        "gourmand": 0.2
+      },
+      "verified": false
     },
     "behaviour": "Gives violet and powdery orris effects to florals and woods.",
     "subfamily": "violet",
@@ -1008,6 +1195,13 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 40
+    },
+    "radar": {
+      "vector": {
+        "floral": 0.1,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "behaviour": "Adds a gentle milky creaminess to fruity and floral blends.",
     "subfamily": "creamy coconut",
@@ -1054,6 +1248,15 @@
       "strength": 6,
       "halfLifeHours": 1
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.3,
+        "fresh": 0.6,
+        "green": 0.3,
+        "woody": 1
+      },
+      "verified": false
+    },
     "behaviour": "A bright, resinous top note for forest and winter accords.",
     "subfamily": "conifer needles",
     "ref": {
@@ -1095,6 +1298,13 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 1
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.7,
+        "woody": 1
+      },
+      "verified": false
     },
     "behaviour": "A classic pine note for fresh, coniferous accords.",
     "subfamily": "pine",
@@ -1141,6 +1351,15 @@
       "strength": 6,
       "halfLifeHours": 0.75
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.3,
+        "fresh": 0.2,
+        "floral": 0.3,
+        "spicy": 1
+      },
+      "verified": false
+    },
     "behaviour": "A sparkling spicy top note; modern and bright.",
     "subfamily": "rosy pepper",
     "ref": {
@@ -1184,6 +1403,14 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 20
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "amber": 0.1,
+        "gourmand": 0.2
+      },
+      "verified": false
     },
     "subfamily": "white flowers",
     "ref": {
@@ -1229,6 +1456,14 @@
       "strength": 6,
       "halfLifeHours": 20
     },
+    "radar": {
+      "vector": {
+        "green": 0.2,
+        "floral": 1,
+        "gourmand": 0.2
+      },
+      "verified": false
+    },
     "subfamily": "rose",
     "ref": {
       "year": 1700,
@@ -1272,6 +1507,14 @@
       "strength": 8,
       "halfLifeHours": 30
     },
+    "radar": {
+      "vector": {
+        "green": 0.1,
+        "floral": 1,
+        "gourmand": 0.4
+      },
+      "verified": false
+    },
     "subfamily": "white flowers",
     "ref": {
       "year": 1700,
@@ -1312,6 +1555,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 15
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "gourmand": 0.1,
+        "spicy": 0.3
+      },
+      "verified": false
     },
     "subfamily": "rose",
     "ref": {
@@ -1356,6 +1607,15 @@
       "strength": 6,
       "halfLifeHours": 200
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.2,
+        "green": 0.3,
+        "woody": 1,
+        "amber": 0.1
+      },
+      "verified": false
+    },
     "subfamily": "earthy roots",
     "ref": {
       "year": 1800,
@@ -1396,6 +1656,14 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 250
+    },
+    "radar": {
+      "vector": {
+        "woody": 0.2,
+        "amber": 0.4,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "subfamily": "vanilla",
     "ref": {
@@ -1441,6 +1709,15 @@
       "strength": 6,
       "halfLifeHours": 6
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.4,
+        "fresh": 0.2,
+        "woody": 0.3,
+        "amber": 1
+      },
+      "verified": false
+    },
     "subfamily": "incense",
     "ref": {
       "year": 1000,
@@ -1483,6 +1760,13 @@
       "strength": 6,
       "halfLifeHours": 0.25
     },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "fresh": 0.5
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1700,
       "tenacityHours": 4,
@@ -1524,6 +1808,13 @@
       "strength": 5,
       "halfLifeHours": 0.25
     },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "gourmand": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1700,
       "tenacityHours": 3,
@@ -1563,6 +1854,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 0.25
+    },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "fresh": 0.3,
+        "green": 0.1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1900,
@@ -1605,6 +1904,14 @@
       "strength": 6,
       "halfLifeHours": 0.25
     },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "fresh": 0.3,
+        "green": 0.3
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1800,
       "tenacityHours": 3,
@@ -1646,6 +1953,14 @@
       "strength": 5,
       "halfLifeHours": 0.3
     },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "floral": 0.2,
+        "gourmand": 0.1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1850,
       "tenacityHours": 4,
@@ -1686,6 +2001,15 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 0.75
+    },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "green": 0.7,
+        "floral": 0.4,
+        "woody": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1700,
@@ -1730,6 +2054,14 @@
       "strength": 6,
       "halfLifeHours": 1
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.6,
+        "green": 0.3,
+        "floral": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1680,
       "tenacityHours": 12,
@@ -1768,6 +2100,14 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 0.5
+    },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "fresh": 0.3,
+        "green": 0.2
+      },
+      "verified": false
     },
     "ref": {
       "year": 1890,
@@ -1809,6 +2149,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 0.75
+    },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "green": 0.3,
+        "woody": 0.4
+      },
+      "verified": false
     },
     "ref": {
       "year": 1600,
@@ -1853,6 +2201,14 @@
       "strength": 5,
       "halfLifeHours": 4
     },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "green": 0.5,
+        "amber": 0.7
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1800,
       "tenacityHours": 24,
@@ -1893,6 +2249,13 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 0.75
+    },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "green": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1750,
@@ -1935,6 +2298,14 @@
       "strength": 6,
       "halfLifeHours": 0.75
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.7,
+        "green": 1,
+        "spicy": 0.4
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1900,
       "tenacityHours": 6,
@@ -1975,6 +2346,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 1.5
+    },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "floral": 0.4,
+        "woody": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1930,
@@ -2017,6 +2396,14 @@
       "strength": 4,
       "halfLifeHours": 0.75
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.7,
+        "floral": 1,
+        "woody": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1890,
       "tenacityHours": 8,
@@ -2055,6 +2442,14 @@
     "model": {
       "strength": 4,
       "halfLifeHours": 0.75
+    },
+    "radar": {
+      "vector": {
+        "citrus": 0.5,
+        "fresh": 1,
+        "floral": 0.4
+      },
+      "verified": false
     },
     "ref": {
       "year": 1890,
@@ -2097,6 +2492,14 @@
       "strength": 9,
       "halfLifeHours": 3
     },
+    "radar": {
+      "vector": {
+        "green": 1,
+        "woody": 0.1,
+        "amber": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1000,
       "tenacityHours": 24,
@@ -2138,6 +2541,14 @@
       "strength": 9,
       "halfLifeHours": 6
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.2,
+        "green": 1,
+        "floral": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1880,
       "tenacityHours": 48,
@@ -2177,6 +2588,14 @@
       "strength": 8,
       "halfLifeHours": 1
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.3,
+        "fresh": 0.3,
+        "green": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1960,
       "tenacityHours": 24,
@@ -2215,6 +2634,14 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 0.25
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.2,
+        "green": 1,
+        "gourmand": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1950,
@@ -2257,6 +2684,14 @@
       "strength": 6,
       "halfLifeHours": 4
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.5,
+        "green": 0.3,
+        "floral": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1850,
       "tenacityHours": 24,
@@ -2297,6 +2732,14 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 8
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "gourmand": 0.3,
+        "spicy": 0.2
+      },
+      "verified": false
     },
     "ref": {
       "year": 1880,
@@ -2339,6 +2782,14 @@
       "strength": 7,
       "halfLifeHours": 12
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.2,
+        "floral": 1,
+        "gourmand": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1850,
       "tenacityHours": 100,
@@ -2379,6 +2830,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 60
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "woody": 0.4,
+        "gourmand": 0.2
+      },
+      "verified": false
     },
     "ref": {
       "year": 1600,
@@ -2421,6 +2880,14 @@
       "strength": 6,
       "halfLifeHours": 20
     },
+    "radar": {
+      "vector": {
+        "green": 0.2,
+        "floral": 1,
+        "gourmand": 0.3
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1880,
       "tenacityHours": 200,
@@ -2459,6 +2926,13 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 0.75
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "gourmand": 0.4
+      },
+      "verified": false
     },
     "ref": {
       "year": 1890,
@@ -2499,6 +2973,13 @@
       "strength": 4,
       "halfLifeHours": 15
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.4,
+        "floral": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1905,
       "tenacityHours": 100,
@@ -2537,6 +3018,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 12
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.6,
+        "green": 0.4,
+        "floral": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1960,
@@ -2577,6 +3066,13 @@
       "strength": 4,
       "halfLifeHours": 6
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.3,
+        "floral": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1880,
       "tenacityHours": 48,
@@ -2615,6 +3111,14 @@
     "model": {
       "strength": 4,
       "halfLifeHours": 6
+    },
+    "radar": {
+      "vector": {
+        "citrus": 0.3,
+        "fresh": 0.2,
+        "floral": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1880,
@@ -2657,6 +3161,13 @@
       "strength": 5,
       "halfLifeHours": 60
     },
+    "radar": {
+      "vector": {
+        "floral": 0.5,
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1885,
       "tenacityHours": 200,
@@ -2695,6 +3206,13 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 20
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "woody": 0.5
+      },
+      "verified": false
     },
     "ref": {
       "year": 1900,
@@ -2737,6 +3255,13 @@
       "strength": 9,
       "halfLifeHours": 20
     },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "amber": 0.5
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1890,
       "tenacityHours": 200,
@@ -2775,6 +3300,13 @@
     "model": {
       "strength": 2,
       "halfLifeHours": 100
+    },
+    "radar": {
+      "vector": {
+        "floral": 1,
+        "amber": 0.4
+      },
+      "verified": false
     },
     "ref": {
       "year": 1900,
@@ -2815,6 +3347,14 @@
       "strength": 9,
       "halfLifeHours": 1.5
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.3,
+        "green": 0.6,
+        "floral": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1960,
       "tenacityHours": 24,
@@ -2853,6 +3393,14 @@
     "model": {
       "strength": 4,
       "halfLifeHours": 80
+    },
+    "radar": {
+      "vector": {
+        "floral": 0.3,
+        "woody": 0.2,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1960,
@@ -2893,6 +3441,13 @@
       "strength": 5,
       "halfLifeHours": 30
     },
+    "radar": {
+      "vector": {
+        "floral": 0.2,
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1908,
       "tenacityHours": 300,
@@ -2932,6 +3487,12 @@
       "strength": 6,
       "halfLifeHours": 30
     },
+    "radar": {
+      "vector": {
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1908,
       "tenacityHours": 200,
@@ -2970,6 +3531,14 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 0.5
+    },
+    "radar": {
+      "vector": {
+        "citrus": 0.3,
+        "fresh": 0.2,
+        "gourmand": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1950,
@@ -3012,6 +3581,14 @@
       "strength": 8,
       "halfLifeHours": 6
     },
+    "radar": {
+      "vector": {
+        "green": 1,
+        "floral": 0.1,
+        "gourmand": 0.8
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1950,
       "tenacityHours": 48,
@@ -3052,6 +3629,14 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 6
+    },
+    "radar": {
+      "vector": {
+        "amber": 0.2,
+        "gourmand": 0.3,
+        "spicy": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1600,
@@ -3094,6 +3679,13 @@
       "strength": 6,
       "halfLifeHours": 1
     },
+    "radar": {
+      "vector": {
+        "fresh": 0.6,
+        "spicy": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1800,
       "tenacityHours": 8,
@@ -3134,6 +3726,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 0.75
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.3,
+        "woody": 0.4,
+        "spicy": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1900,
@@ -3176,6 +3776,14 @@
       "strength": 6,
       "halfLifeHours": 1
     },
+    "radar": {
+      "vector": {
+        "woody": 0.3,
+        "gourmand": 0.2,
+        "spicy": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1800,
       "tenacityHours": 12,
@@ -3217,6 +3825,14 @@
       "strength": 5,
       "halfLifeHours": 1
     },
+    "radar": {
+      "vector": {
+        "citrus": 0.4,
+        "woody": 0.2,
+        "spicy": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1900,
       "tenacityHours": 12,
@@ -3255,6 +3871,13 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 8
+    },
+    "radar": {
+      "vector": {
+        "gourmand": 0.2,
+        "spicy": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1880,
@@ -3295,6 +3918,13 @@
       "strength": 8,
       "halfLifeHours": 1.5
     },
+    "radar": {
+      "vector": {
+        "citrus": 1,
+        "fresh": 0.6
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1905,
       "tenacityHours": 24,
@@ -3333,6 +3963,14 @@
     "model": {
       "strength": 8,
       "halfLifeHours": 3
+    },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "floral": 0.3,
+        "woody": 0.2
+      },
+      "verified": false
     },
     "ref": {
       "year": 1905,
@@ -3375,6 +4013,14 @@
       "strength": 8,
       "halfLifeHours": 8
     },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "green": 0.3,
+        "amber": 0.5
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1905,
       "tenacityHours": 100,
@@ -3415,6 +4061,14 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 200
+    },
+    "radar": {
+      "vector": {
+        "woody": 1,
+        "amber": 0.2,
+        "gourmand": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1500,
@@ -3457,6 +4111,14 @@
       "strength": 4,
       "halfLifeHours": 150
     },
+    "radar": {
+      "vector": {
+        "floral": 0.2,
+        "woody": 1,
+        "amber": 0.3
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1900,
       "tenacityHours": 400,
@@ -3497,6 +4159,14 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 1
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.4,
+        "green": 0.5,
+        "woody": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1900,
@@ -3539,6 +4209,14 @@
       "strength": 5,
       "halfLifeHours": 60
     },
+    "radar": {
+      "vector": {
+        "woody": 1,
+        "amber": 0.3,
+        "gourmand": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1900,
       "tenacityHours": 300,
@@ -3578,6 +4256,14 @@
       "strength": 8,
       "halfLifeHours": 200
     },
+    "radar": {
+      "vector": {
+        "floral": 0.3,
+        "woody": 1,
+        "gourmand": 0.3
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1997,
       "tenacityHours": 600,
@@ -3616,6 +4302,13 @@
     "model": {
       "strength": 4,
       "halfLifeHours": 150
+    },
+    "radar": {
+      "vector": {
+        "woody": 1,
+        "amber": 0.4
+      },
+      "verified": false
     },
     "ref": {
       "year": 1960,
@@ -3659,6 +4352,14 @@
       "strength": 9,
       "halfLifeHours": 100
     },
+    "radar": {
+      "vector": {
+        "woody": 1,
+        "amber": 0.6,
+        "spicy": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1880,
       "tenacityHours": 400,
@@ -3699,6 +4400,14 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 120
+    },
+    "radar": {
+      "vector": {
+        "green": 0.2,
+        "woody": 1,
+        "amber": 0.4
+      },
+      "verified": false
     },
     "ref": {
       "year": 1990,
@@ -3741,6 +4450,14 @@
       "strength": 9,
       "halfLifeHours": 20
     },
+    "radar": {
+      "vector": {
+        "green": 0.7,
+        "woody": 1,
+        "amber": 0.6
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1890,
       "tenacityHours": 200,
@@ -3781,6 +4498,13 @@
     "model": {
       "strength": 4,
       "halfLifeHours": 150
+    },
+    "radar": {
+      "vector": {
+        "amber": 1,
+        "gourmand": 0.6
+      },
+      "verified": false
     },
     "ref": {
       "year": 1000,
@@ -3823,6 +4547,14 @@
       "strength": 6,
       "halfLifeHours": 40
     },
+    "radar": {
+      "vector": {
+        "woody": 0.3,
+        "amber": 1,
+        "spicy": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1000,
       "tenacityHours": 200,
@@ -3863,6 +4595,14 @@
     "model": {
       "strength": 5,
       "halfLifeHours": 80
+    },
+    "radar": {
+      "vector": {
+        "amber": 1,
+        "gourmand": 0.4,
+        "spicy": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1900,
@@ -3905,6 +4645,13 @@
       "strength": 6,
       "halfLifeHours": 100
     },
+    "radar": {
+      "vector": {
+        "amber": 0.3,
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1850,
       "tenacityHours": 400,
@@ -3944,6 +4691,13 @@
       "strength": 7,
       "halfLifeHours": 300
     },
+    "radar": {
+      "vector": {
+        "amber": 0.2,
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1894,
       "tenacityHours": 400,
@@ -3982,6 +4736,12 @@
     "model": {
       "strength": 7,
       "halfLifeHours": 100
+    },
+    "radar": {
+      "vector": {
+        "gourmand": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1970,
@@ -4024,6 +4784,13 @@
       "strength": 5,
       "halfLifeHours": 80
     },
+    "radar": {
+      "vector": {
+        "woody": 0.2,
+        "gourmand": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1990,
       "tenacityHours": 300,
@@ -4065,6 +4832,13 @@
       "strength": 7,
       "halfLifeHours": 0.5
     },
+    "radar": {
+      "vector": {
+        "gourmand": 1,
+        "spicy": 0.2
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1870,
       "tenacityHours": 4,
@@ -4103,6 +4877,14 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 400
+    },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "floral": 0.4,
+        "amber": 0.3
+      },
+      "verified": false
     },
     "ref": {
       "year": 1965,
@@ -4143,6 +4925,13 @@
       "strength": 3,
       "halfLifeHours": 400
     },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "amber": 0.4
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1995,
       "tenacityHours": 600,
@@ -4182,6 +4971,14 @@
       "strength": 3,
       "halfLifeHours": 400
     },
+    "radar": {
+      "vector": {
+        "fresh": 1,
+        "floral": 0.4,
+        "gourmand": 0.6
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1990,
       "tenacityHours": 600,
@@ -4220,6 +5017,14 @@
     "model": {
       "strength": 4,
       "halfLifeHours": 400
+    },
+    "radar": {
+      "vector": {
+        "floral": 0.6,
+        "amber": 1,
+        "gourmand": 0.5
+      },
+      "verified": false
     },
     "ref": {
       "year": 1930,
@@ -4262,6 +5067,14 @@
       "strength": 4,
       "halfLifeHours": 150
     },
+    "radar": {
+      "vector": {
+        "floral": 0.3,
+        "amber": 1,
+        "gourmand": 0.5
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1800,
       "tenacityHours": 300,
@@ -4300,6 +5113,14 @@
     "model": {
       "strength": 3,
       "halfLifeHours": 400
+    },
+    "radar": {
+      "vector": {
+        "fresh": 0.4,
+        "floral": 0.5,
+        "amber": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1927,
@@ -4342,6 +5163,13 @@
       "strength": 7,
       "halfLifeHours": 150
     },
+    "radar": {
+      "vector": {
+        "green": 0.7,
+        "woody": 1
+      },
+      "verified": false
+    },
     "ref": {
       "year": 1900,
       "tenacityHours": 400,
@@ -4380,6 +5208,13 @@
     "model": {
       "strength": 6,
       "halfLifeHours": 200
+    },
+    "radar": {
+      "vector": {
+        "green": 0.6,
+        "woody": 1
+      },
+      "verified": false
     },
     "ref": {
       "year": 1960,
