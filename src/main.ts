@@ -471,7 +471,7 @@ async function uploadLabel(file: File): Promise<void> {
 function importSave(text: string): void {
   const data = parseSave(text.trim());
   if (!data) {
-    optionsMessage = "That doesn't look like a Field & Flacon save.";
+    optionsMessage = "That doesn't look like a Scentshop Tale save.";
     commit();
     return;
   }

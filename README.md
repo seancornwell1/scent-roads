@@ -1,4 +1,4 @@
-# Field & Flacon
+# Scentshop Tale
 
 A cozy perfume-house game for phones. Play it at **https://seancornwell1.github.io/scent-roads/** — on iPhone, open it in Safari and use Share → Add to Home Screen.
 

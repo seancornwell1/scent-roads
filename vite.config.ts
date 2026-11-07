@@ -17,8 +17,8 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {
-        name: 'Field & Flacon',
-        short_name: 'Field & Flacon',
+        name: 'Scentshop Tale',
+        short_name: 'Scentshop Tale',
         description: 'A cozy perfume-house game.',
         start_url: base,
         scope: base,

@@ -1,12 +1,76 @@
-# Field & Flacon — Game Spec
+# Scentshop Tale — Game Spec
 
-_Formerly "Scent Roads" (working title)._
+_Formerly "Field & Flacon", and before that "Scent Roads" (working titles). Renamed Nov 7, 2026._
 
 Oct 26, 2026 · @Sean Cornwell
 
 > **Direction change — Oct 27, 2026.** The atelier is no longer a flat screen. The game now takes place in a small 3D perfume shop seen from a fixed isometric (orthographic) camera, in portrait. A character I create in a character creator walks the shop, serves customers and upgrades the store. The organ stands behind the counter; tapping it opens the composing desk from step 2 as a panel over the scene, with its logic unchanged. The world map becomes a back-room screen, reached through a door in the shop. Art is free low-poly 3D in one consistent style (see **Assets**). Where older text below says "atelier", read "the shop"; where it says "world map", read "the back room". Step 3 is now the shop; clients, sourcing and progression move to later steps (see **Claude Code prompts**).
 
 > **Shop and customers — Oct 27, 2026.** The shop is long (now 10 × 18 m) with room for customers to hang around and for upgrades and furniture. There is no suggestion booth: customers stand around the shop (and sit, once seating upgrades exist) and can engage me in conversation. Sometimes a conversation gives a hint towards the final product they'll like. Art comes from Grab3D (CC0, one cozy pastel style, approved Oct 27, 2026); I'm happy to credit artists, so CC BY assets that fit the style are fine too.
+
+## Counter redesign — Nov 7, 2026: the radar puzzle
+
+This section replaces anything below that conflicts with it. Making perfumes for customers at the counter becomes a timed puzzle on a radar chart. The organ stays for writing formulas (house perfumes, the formula book, sheets, the lab and her signature perfume).
+
+### The radar
+
+- A radar chart whose spokes are olfactive families: **citrus, fresh, green, floral, woody, amber, gourmand, spicy**. The material data's 13 families fold into these: aromatic, aldehydic and clean musks push *fresh*; mossy pushes *woody* and *green*; fruity and lactonic push *gourmand* (sweet and edible); warm musks push *amber*.
+- Every material has a real vector: how far it pushes each spoke, from its real odour profile. It also has strength (from its strength rating) and volatility (from its half-life). Vectors are estimates until checked; they are marked unverified and listed in `docs/FACT_CHECK.md`.
+- **Diminishing returns:** each extra drop of a material pushes less than the one before.
+- **Intensity:** the radar has an overall size as well as a shape. Briefs set a target intensity. Overshooting is allowed: the player can accept it, or try to correct it with other materials, which risks raising intensity further.
+- **Accord bonuses:** some combinations push further together than apart (labdanum and vanillin make amber). Discovering one gives a big, satisfying reward and saves it to the accord book.
+- **Clashes:** some combinations go muddy and shrink or distort the radar. This is shown clearly when it happens.
+- The radar is a data chart, like the drydown graph, not drawn art. The accord reward is text and the chart itself until reward art is approved (listed in `ASSETS_NEEDED.md`).
+
+### A customer round
+
+- The customer gives a brief and a target shape and intensity. Specific briefs show part of the target as a ghost outline; vague briefs show nothing.
+- Every brief comes from a hidden solution formula that uses only materials the player has unlocked, so every target is achievable. Townspeople's story requests and regulars keep their written briefs, with their formulas as the solution; walk-ins get generated briefs.
+- **Timer:** a visible timer runs the whole round. Taking longer shrinks the tip. No patience meter, no fail state.
+- **Test button:** shows a radar ping of the current mix, which then fades. Each ping in the same round fades faster than the last, so experienced players test less.
+- **Hand over** the bottle to end the round.
+- **The reveal:** the player's shape is laid over the target. Shape and intensity are scored separately, and the main cause of any miss is named in plain language ("the vetiver pulled it too woody"). This is the main teaching moment, so it must be clear and quick. The customer pays and tips at the reveal; there is no later review.
+- Drops at the counter don't use stock (materials never run out, as decided on Oct 30).
+
+### Material EXP
+
+- Using a material in a served perfume earns it EXP. Levels reveal more on the material's card:
+  - 1: direction unknown (?)
+  - 2: its main direction on the radar
+  - 3: how strongly it pushes
+  - max: its exact vector and its volatility
+- **No quizzes.** Daily nose training is retired from the counter.
+
+### Difficulty progression
+
+- **Early:** single-shape briefs from the starting materials.
+- **General to specific:** briefs move from "something floral" to "something with rose" over time.
+- **Modifiers:** must-include, then must-avoid, unlocked early to mid game. Both together only in the late game.
+- **Seasons:** the season nudges which families customers ask for.
+- **Time-shifted briefs**, the big mid-game step: first two targets (opening and drydown), later three (top, heart, base). The radar then shows the mix at each stage, using the existing volatility model.
+- Until competitions exist, the stage of the game is measured by reputation.
+
+### Test bench
+
+A no-timer sandbox at the counter for experimenting and discovering accords. It uses the same radar, tests and card reveals, but earns no money and no EXP (only served perfumes earn EXP).
+
+### Not now
+
+Cute customer reactions, combos and a customer album come later, in a polish pass.
+
+### What this replaces
+
+- Customers' perfumes made at the organ in 10 or 100 parts, the per-rank star thresholds for customers, asking for hints, first impressions and returning reviews (the reveal does all of it at once). Old saves' customers who are already away still come back with a review.
+- Nose-training quizzes.
+- Three-star rules elsewhere (house perfumes, awards, her signature, the lab) are unchanged.
+
+### Build order
+
+1. Radar engine: material vectors, intensity, diminishing returns, accord bonuses, clashes.
+2. Customer round: briefs from hidden solutions, timer and tip, test ping with faster fading, the reveal.
+3. Material EXP and card reveals.
+4. Test bench.
+5. Difficulty progression, up to two-stage time-shifted briefs.
 
 ## Direction change #2 — Oct 28, 2026: progression, story and education
 

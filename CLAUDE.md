@@ -1,4 +1,4 @@
-# Field & Flacon — rules for Claude Code
+# Scentshop Tale — rules for Claude Code
 
 ## Rules
 
