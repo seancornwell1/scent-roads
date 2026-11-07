@@ -16,3 +16,4 @@ Every placeholder or stand-in waiting for a real asset. Remove a line once the a
 | Desk, laptop and desk chair | Back room | Plain labelled boxes for now. Grab3D has none; candidates need Sean's OK (e.g. Kenney's CC0 Furniture Kit, if its style fits). |
 | A proper shop front (big display window, glazed door) | The shop's street wall | Three of Grab3D's small wall windows stand in between the two doors. |
 | An empty rack or shelf for supplies | Back room rack | Grab3D's shelf unit has books and baskets built in; supply bottles (potion bottles, standing in) sit at the front of each shelf and on top. |
+| Accord discovery reward art (a burst or sparkle effect) and its sound | The counter and test bench, when a mix first hits an accord | For now a large text card with the accord's spokes lit on the radar; the `accord` sound cue in `src/data/sounds.json` has no file yet. Candidate: a Kenney CC0 particle pack, waiting for Sean's OK. |
