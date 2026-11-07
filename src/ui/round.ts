@@ -1,7 +1,8 @@
 import { content, materialsById } from '../game/content';
 import { radarOf, SPOKES, type Mix, type RoundScore, type Target, type Values } from '../game/radar';
 import { cardFor, counter, intensityWord, maxLevel, tipFor } from '../game/round';
-import { spokeInfo } from '../game/radar';
+import { radarData, spokeInfo } from '../game/radar';
+import type { Spoke } from '../game/types';
 import { ownedMaterials } from '../game/world';
 import { state } from '../state';
 import { esc, starsText } from './html';
@@ -76,6 +77,11 @@ export function accordReward(id: string): string {
   </div>`;
 }
 
+/** The spokes an accord pushes, to light up while its reward shows. */
+function pulseFor(reward: string | null): Spoke[] {
+  return reward ? (Object.keys(radarData.accords.find((a) => a.accord === reward)?.spokes ?? {}) as Spoke[]) : [];
+}
+
 export function pingLayer(ping: Ping | null): RadarLayer[] {
   if (!ping) return [];
   const elapsed = Date.now() - ping.at;
@@ -102,7 +108,7 @@ export function roundScreen(ping: Ping | null, reward: string | null, card: (id:
       <blockquote class="memory">“${esc(b.text)}”</blockquote>
       ${b.extra.map((h) => `<p class="hint">“${esc(h)}”</p>`).join('')}
       <p class="small">They want it <strong>${esc(intensityWord(b.target.intensity))}</strong>.${b.ghost.length ? ' The dashed lines are part of what they described.' : ''}</p>
-      <div class="radar-box">${radarChart(layers, scaleFor(target))}</div>
+      <div class="radar-box">${radarChart(layers, scaleFor(target), pulseFor(reward))}</div>
       ${muddy}
       <div class="row-between">
         <button class="chip" data-action="round-test" ${used ? '' : 'disabled'}>Test${round.tests ? ` (${round.tests})` : ''}</button>
@@ -182,4 +188,30 @@ export function levelUpLine(id: string, level: number): string {
   return `<strong>${name}</strong> reached level ${level}: you know its main direction.`;
 }
 
+/** The test bench: the same radar, drops and tests as a round, with no customer, timer or money. */
+export function benchScreen(ping: Ping | null, reward: string | null): string {
+  const bench = state.save.counter!.bench;
+  const used = Object.values(bench.drops).reduce((a, n) => a + n, 0);
+  const shown = ping ? radarOf(bench.drops) : null;
+  const scale = shown ? Math.max(1, ...SPOKES.map((s) => shown.values[s])) * 1.3 : 1;
+  const found = shown?.accords.map((id) => content.accords.find((a) => a.id === id)?.name).filter(Boolean) ?? [];
+  return `<header class="bar-top">
+      <button class="link" data-action="close-panel">Close</button>
+      <h1>Test bench</h1>
+      <span></span>
+    </header>
+    <main class="customer round">
+      ${reward ? accordReward(reward) : ''}
+      <p class="muted small">Try anything: no customer, no timer, no money. Find accords and get a feel for each material. Only perfumes you serve earn EXP.</p>
+      <div class="radar-box">${radarChart(pingLayer(ping), scale, pulseFor(reward))}</div>
+      ${shown?.muddy.length ? '<p class="small warn-text">It went muddy: something in the mix is fighting.</p>' : ''}
+      ${found.length ? `<p class="small">Accords in it: <strong>${esc(found.join(', '))}</strong></p>` : ''}
+      <div class="row-between">
+        <button class="chip" data-action="round-test" ${used ? '' : 'disabled'}>Test${bench.tests ? ` (${bench.tests})` : ''}</button>
+        <button class="link danger" data-action="round-clear" ${used ? '' : 'disabled'}>Pour it out</button>
+      </div>
+      <p class="muted small">${used} drop${used === 1 ? '' : 's'} in the bottle. Each test fades faster than the last; pouring it out starts afresh.</p>
+      <ul class="list drops">${dropRows(bench.drops, cardLine)}</ul>
+    </main>`;
+}
 

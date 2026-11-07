@@ -20,7 +20,7 @@ import { loadSave, newSave, writeSave, type SaveData } from './game/save';
 import type { Formula } from './game/types';
 
 /** 'shop' is the 3D scene alone; the others are panels over it. */
-export type Screen = 'shop' | 'round' | 'reveal' | 'house-new' | 'report' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
+export type Screen = 'shop' | 'round' | 'reveal' | 'bench' | 'house-new' | 'report' | 'intro' | 'chapter' | 'training' | 'exam' | 'signature' | 'epilogue' | 'sheet' | 'organ' | 'book' | 'creator' | 'customer' | 'reaction' | 'unlock' | 'backroom' | 'upgrades' | 'news' | 'options';
 
 export interface UiState {
   screen: Screen;
@@ -94,6 +94,7 @@ function initSave(): SaveData {
   save.upgrades.placed = save.upgrades.placed.filter((p) => spots.has(p.spot));
   save.house ??= newHouseState(gameNow(save.clock, now));
   save.counter ??= newCounterState();
+  save.counter.bench ??= { drops: {}, tests: 0 };
   save.news ??= {};
   save.newsSeenWeek ??= -1;
   save.notify ??= false;

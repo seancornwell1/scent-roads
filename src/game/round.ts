@@ -68,12 +68,14 @@ export interface RoundState {
 
 export interface CounterState {
   round: RoundState | null;
+  /** The test bench: a mix in progress and its tests (no timer, no money, no EXP). */
+  bench: { drops: Mix; tests: number };
   /** Material id → EXP from served perfumes. */
   exp: Record<string, number>;
 }
 
 export function newCounterState(): CounterState {
-  return { round: null, exp: {} };
+  return { round: null, bench: { drops: {}, tests: 0 }, exp: {} };
 }
 
 /** A written formula as drops: 10-part formulas drop for drop; 100-part ones in tenths. */

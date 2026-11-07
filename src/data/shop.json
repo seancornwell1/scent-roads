@@ -156,7 +156,7 @@
     },
     {
       "id": "counter-left",
-      "label": null,
+      "label": "Test bench",
       "model": "grab3d/models/bar-counter.glb",
       "position": [
         -1.78,
@@ -169,7 +169,13 @@
         0.66
       ],
       "blocks": true,
-      "interact": null
+      "interact": {
+        "action": "bench",
+        "standAt": [
+          -1.78,
+          -2.75
+        ]
+      }
     },
     {
       "id": "counter-right",

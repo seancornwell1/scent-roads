@@ -21,7 +21,7 @@ import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
 import { missCause, radarOf, scoreRadar, validateRadar, type Mix } from './game/radar';
 import { addDrop, awardExp, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
-import { cardLine, clock, levelUpLine, revealScreen, roundScreen, targetValues } from './ui/round';
+import { benchScreen, cardLine, clock, levelUpLine, revealScreen, roundScreen, targetValues } from './ui/round';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
@@ -79,6 +79,10 @@ const FIXTURE_ACTIONS: Record<string, () => void> = {
   crates: () => {
     state.ui.backroomTab = 'letters';
     openPanel('backroom');
+  },
+  bench: () => {
+    state.ui.ping = null;
+    openPanel('bench');
   },
   outside: () => {
     state.ui.toast = "The street outside isn't open yet. Deliveries come in through this door.";
@@ -453,6 +457,8 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
       return customerScreen(visit!, state.save.customers!, state.save.story!, state.save.counter!.round?.visitId ?? null);
     case 'round':
       return state.save.counter!.round ? roundScreen(state.ui.ping, state.ui.accordReward, materialCard) : bookScreen();
+    case 'bench':
+      return benchScreen(state.ui.ping, state.ui.accordReward);
     case 'reveal':
       return state.ui.reveal ? revealScreen(state.ui.reveal, state.ui.reveal.levelUps.map((u) => levelUpLine(u.id, u.level))) : bookScreen();
     case 'reaction':
@@ -605,20 +611,21 @@ document.body.addEventListener('click', (event) => {
       return openPanel('round');
     }
     case 'drop': {
-      const r = save.counter!.round;
+      const r = ui.screen === 'bench' ? save.counter!.bench : save.counter!.round;
       if (!r) return;
       r.drops = addDrop(r.drops, id!, Number(target.dataset.value));
       break;
     }
     case 'round-clear': {
-      const r = save.counter!.round;
+      const r = ui.screen === 'bench' ? save.counter!.bench : save.counter!.round;
       if (!r) return;
       r.drops = {};
+      if (ui.screen === 'bench') r.tests = 0; // a fresh start at the bench
       ui.ping = null;
       break;
     }
     case 'round-test': {
-      const r = save.counter!.round;
+      const r = ui.screen === 'bench' ? save.counter!.bench : save.counter!.round;
       if (!r) return;
       const radar = radarOf(r.drops);
       ui.ping = { values: radar.values, ms: pingMs(r.tests), at: Date.now() };
