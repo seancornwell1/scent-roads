@@ -66,7 +66,7 @@ A customer round at the counter (`src/game/round.ts`, screens in `src/ui/round.t
 
 | Field | Meaning |
 | ----- | ------- |
-| `tip` | The tip is `share` of the brief's pay at the start of the round, shrinking to nothing at `seconds` (real seconds). No tip on a one-star perfume. |
+| `tip` | Tips by speed: `tiers`, each `withinSeconds` (real seconds from the start of the round), `share` of the brief's pay, and `text` (why, at the reveal). The fastest tier you qualify for counts; slower than all of them, no tip. No tip on a one-star perfume either. |
 | `ping` | The first test ping shows for `firstMs`; each later test in the round for `factor` × the last, down to `minMs` |
 | `intensityWords` | How a target's intensity is described ("They want it medium"): the highest band whose `min` it reaches |
 | `ghostSpokes` | How many of the target's strongest spokes a specific brief shows as a ghost outline |

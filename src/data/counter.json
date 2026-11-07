@@ -1,7 +1,22 @@
 {
   "tip": {
-    "seconds": 150,
-    "share": 0.5
+    "tiers": [
+      {
+        "withinSeconds": 45,
+        "share": 0.5,
+        "text": "for being so quick"
+      },
+      {
+        "withinSeconds": 90,
+        "share": 0.3,
+        "text": "for the quick service"
+      },
+      {
+        "withinSeconds": 150,
+        "share": 0.15,
+        "text": "for not keeping them waiting"
+      }
+    ]
   },
   "ping": {
     "firstMs": 2600,

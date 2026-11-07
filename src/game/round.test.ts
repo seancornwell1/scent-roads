@@ -3,7 +3,7 @@ import { clients } from './clients';
 import { newCustomerState, serveAtCounter, tick } from './customers';
 import { radarOf, scoreRadar } from './radar';
 import { seededRandom } from './random';
-import { addDrop, awardExp, cardFor, counter, expLevel, judgeRound, maxLevel, newCounterState, pingMs, solutionFromFormula, tipFor, topSpokes, walkInBrief, writtenBrief } from './round';
+import { addDrop, awardExp, cardFor, counter, expLevel, judgeRound, maxLevel, newCounterState, pingMs, solutionFromFormula, tipFor, tipTier, topSpokes, walkInBrief, writtenBrief } from './round';
 import { content } from './content';
 import { materialsById } from './content';
 import { afterCounter, newStoryState, story } from './story';
@@ -35,10 +35,12 @@ describe('counter rounds', () => {
     expect(writtenBrief(story.requests[0].brief).ghost).toHaveLength(counter.ghostSpokes);
   });
 
-  it('shrink the tip as time passes, never below nothing', () => {
-    expect(tipFor(40, 0)).toBe(Math.round(40 * counter.tip.share));
-    expect(tipFor(40, 60_000)).toBeLessThan(tipFor(40, 0));
+  it('tip by time tier: more the quicker you serve, nothing past the slowest tier', () => {
+    const tiers = [...counter.tip.tiers].sort((a, b) => a.withinSeconds - b.withinSeconds);
+    expect(tipFor(40, 1000)).toBe(Math.round(40 * tiers[0].share));
+    expect(tipFor(40, (tiers[0].withinSeconds + 1) * 1000)).toBe(Math.round(40 * tiers[1].share));
     expect(tipFor(40, 10 * 60_000)).toBe(0);
+    expect(tipTier(10 * 60_000)).toBeNull();
   });
 
   it('fade each test ping faster than the last', () => {

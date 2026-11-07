@@ -19,6 +19,8 @@ export interface Reveal {
   cause: string | null;
   pay: number;
   tip: number;
+  /** Why they tipped (the time tier's words). */
+  tipText?: string | null;
   accords: string[];
   page: string | null;
   thanks: string | null;
@@ -178,7 +180,7 @@ export function revealScreen(r: Reveal, gains: string[]): string {
       <p class="muted small">You used ${esc(used)}.</p>
       ${r.thanks ? `<p>“${esc(r.thanks)}”</p>` : ''}
       ${r.page ? `<p class="banner small"><span>You've recovered a page of her book.</span></p>` : ''}
-      <p>${r.pay ? `They pay <strong>${r.pay} coins</strong>${r.tip ? ` and tip <strong>${r.tip}</strong>` : ''}.` : 'It isn’t what they came for, so they won’t pay for it.'}</p>
+      <p>${r.pay ? `They pay <strong>${r.pay} coins</strong>${r.tip ? ` and tip <strong>${r.tip}</strong>${r.tipText ? ` ${esc(r.tipText)}` : ''}` : ''}.` : 'It isn’t what they came for, so they won’t pay for it.'}</p>
       ${gains.length ? `<ul class="plain small exp-gains">${gains.map((g) => `<li>${g}</li>`).join('')}</ul>` : ''}
       <div class="row-between"><span></span><button class="primary" data-action="reveal-done">Thank ${esc(r.name)}</button></div>
     </main>`;

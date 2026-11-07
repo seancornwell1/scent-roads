@@ -20,7 +20,7 @@ import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
 import { radarOf, validateRadar, type Mix } from './game/radar';
-import { addDrop, awardExp, judgeRound, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
+import { addDrop, awardExp, judgeRound, pingMs, tipFor, tipTier, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
 import { benchScreen, cardLine, clock, levelUpLine, revealScreen, roundScreen, targetValues } from './ui/round';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
@@ -647,6 +647,7 @@ document.body.addEventListener('click', (event) => {
       discoverAccords(r.drops, judged.accords);
       const pay = Math.round(r.brief.pay * (visit.payMultiplier ?? 1) * (clients.economy.payForStars[score.stars - 1] ?? 1));
       const tip = pay > 0 ? tipFor(r.brief.pay, Date.now() - r.startedAt) : 0;
+      const tipText = tip ? tipTier(Date.now() - r.startedAt)?.text ?? null : null;
       const request = visit.storyId ? requestById(visit.storyId) : undefined;
       const page = visit.storyId ? afterCounter(save.story!, visit, score.stars, cause, nowGame()) : null;
       serveAtCounter(save.customers!, visit.id, `${visit.name}'s perfume`, score.stars, pay + tip, nowGame());
@@ -659,6 +660,7 @@ document.body.addEventListener('click', (event) => {
         cause,
         pay,
         tip,
+        tipText,
         accords: judged.accords,
         page,
         thanks: request && score.stars === 3 ? request.thanks : null,

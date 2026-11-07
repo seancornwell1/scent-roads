@@ -26,7 +26,8 @@ This section replaces anything below that conflicts with it. Making perfumes for
 
 - The customer gives a brief and a target shape and intensity. Specific briefs show part of the target as a ghost outline; vague briefs show nothing.
 - Every brief comes from a hidden solution formula that uses only materials the player has unlocked, so every target is achievable. Townspeople's story requests and regulars keep their written briefs, with their formulas as the solution; walk-ins get generated briefs.
-- **Timer:** a visible timer runs the whole round. Taking longer shrinks the tip, which is only shown at the reveal (no tip counter during the round, Nov 8). No patience meter, no fail state.
+- **Timer:** a visible timer runs the whole round. Serving within a time tier earns a tip (quicker tiers tip more, Nov 9), shown only at the reveal (no tip counter during the round). No patience meter, no fail state.
+- **Materials cost money:** unlocked materials are bought from the supplier with coins (kept on purpose, Nov 9).
 - **Test button:** shows a radar ping of the current mix, which then fades. Each ping in the same round fades faster than the last, so experienced players test less.
 - **Hand over** the bottle to end the round.
 - **The reveal:** no chart (Nov 8): the reveal describes in words how it smelled against what they pictured, and how strong it was. Shape and intensity are scored separately into 1–3 stars, and the main cause of any miss is named in plain language ("the vetiver pulled it too woody"). This is the main teaching moment, so it must be clear and quick. The customer pays and tips at the reveal; there is no later review.

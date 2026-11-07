@@ -7,12 +7,12 @@ import type { Spoke } from './types';
 // A customer round at the counter. Every brief comes from a hidden solution (a mix of drops
 // of materials the player has unlocked), so its target is always reachable. Story requests
 // and regulars keep their written briefs, their formula as the solution; walk-ins get one
-// made up from the player's materials. The round runs on a timer that shrinks the tip, and
+// made up from the player's materials. The round runs on a timer: serving within a time tier earns a tip, and
 // each test ping fades faster than the one before.
 
 export interface CounterData {
-  /** The tip is `share` of the pay at the start, shrinking to nothing at `seconds`. */
-  tip: { seconds: number; share: number };
+  /** Tips by speed: served within a tier's `withinSeconds` (real seconds), they tip `share` of the pay; slower than every tier, no tip. `text` says why at the reveal. */
+  tip: { tiers: { withinSeconds: number; share: number; text: string }[] };
   /** The first test ping shows for `firstMs`; each next one for `factor` × the last, down to `minMs`. */
   ping: { firstMs: number; factor: number; minMs: number };
   /** How a target intensity is described: the highest band whose `min` it reaches. */
@@ -289,10 +289,15 @@ export function intensityWord(intensity: number, data: CounterData = counter): s
   return [...data.intensityWords].reverse().find((b) => intensity >= b.min)?.text ?? data.intensityWords[0].text;
 }
 
-/** The tip left after `elapsedMs` at the counter. */
+/** The time tier a round finished in, if any (the fastest it qualifies for). */
+export function tipTier(elapsedMs: number, data: CounterData = counter): CounterData['tip']['tiers'][number] | null {
+  return [...data.tip.tiers].sort((a, b) => a.withinSeconds - b.withinSeconds).find((t) => elapsedMs / 1000 <= t.withinSeconds) ?? null;
+}
+
+/** The tip for serving after `elapsedMs`: by time tier, nothing if slower than every tier. */
 export function tipFor(pay: number, elapsedMs: number, data: CounterData = counter): number {
-  const left = Math.max(0, 1 - elapsedMs / 1000 / data.tip.seconds);
-  return Math.round(pay * data.tip.share * left);
+  const tier = tipTier(elapsedMs, data);
+  return tier ? Math.round(pay * tier.share) : 0;
 }
 
 /** How long the next test ping shows, after `tests` earlier ones this round. */
