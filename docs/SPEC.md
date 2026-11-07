@@ -62,6 +62,11 @@ Cute customer reactions, combos and a customer album come later, in a polish pas
 
 All five parts are built: the radar engine (`src/game/radar.ts`, `src/data/radar.json`, vectors in `materials.json`), customer rounds with briefs from hidden solutions, timer and tip, test pings and the reveal (`src/game/round.ts`, `src/data/counter.json`, `src/ui/round.ts`), material EXP and cards, the test bench (tap the counter), and progression up to two-stage briefs. Stages of the game are set by reputation: first days (starting materials, vague single-shape briefs), then specific briefs, must-include from reputation 8, must-avoid from 14, two-stage briefs from 20, and both modifiers together from 35. Three-stage briefs (top, heart, base) come later.
 
+### Laptop and organ changes (Nov 8, 2026)
+
+- **Laptop:** suppliers' letters are flavour text about material families and harvesting methods, arriving with the seasons; nothing is answered or unlocked by them. The map is flavour too: where each material comes from, its season and how it's gathered. No waiting for materials: harvest contracts are gone, and orders go straight into stock. The lab tab is hidden until Sean decides whether to keep the lab.
+- **Organ:** in the Materials tab, tapping a material puts it in the formula (the row is highlighted) and tapping it again takes it out; amounts are set in the Formula tab.
+
 ### What this replaces
 
 - Customers' perfumes made at the organ in 10 or 100 parts, the per-rank star thresholds for customers, asking for hints, first impressions and returning reviews (the reveal does all of it at once). Old saves' customers who are already away still come back with a review.

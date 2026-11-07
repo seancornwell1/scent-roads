@@ -1,24 +1,18 @@
 import { MONTH_NAMES, dateAt, realMsUntil } from '../game/clock';
 import { materialsById } from '../game/content';
 import {
-  contractStage,
-  harvestQuality,
-  inSeason,
   priceOf,
   processes,
   qualityWord,
   regions,
-  shippingGameHours,
   sourcing,
   stockOf,
   stockQuality,
   type Crop,
   type Region,
 } from '../game/sourcing';
-import { priceMultiplier, shippingDelay, yieldMultiplier } from '../game/events';
-import { unlocks } from '../game/unlocks';
-import { processStats } from '../game/upgrades';
-import { CHEMIST, chapterInfo, inTransit, routeById, routeOpen, unreadLetters, type Letter } from '../game/routes';
+import { priceMultiplier } from '../game/events';
+import { chapterInfo, routeById, unreadLetters, type Letter } from '../game/routes';
 import { newsFor, ownedMaterials } from '../game/world';
 import { DILUTIONS } from '../game/blend';
 import { lab } from '../game/lab';
@@ -26,33 +20,31 @@ import { DILUTION_BATCH_GRAMS } from '../game/sourcing';
 import { currentRank, nowGame, state } from '../state';
 import { esc, starsText } from './html';
 
-// The back room: crates that have arrived, letters from her supply network, the sourcing
-// map, harvests in progress, the supplier, and the stock room. Times show as real time
+// The laptop: crates that have arrived, her suppliers' letters, the map of where materials
+// come from, the supplier, and the stock room. Times show as real time
 // left at the current speed.
 
 export type BackroomTab = 'letters' | 'map' | 'harvests' | 'supplier' | 'stock' | 'lab';
+// Harvests are gone (no waiting for materials) and the lab is hidden for now (Nov 8): their
+// tabs aren't shown, though old saves' harvests in progress still arrive.
 const TABS: { id: BackroomTab; label: string }[] = [
   { id: 'letters', label: 'Letters' },
   { id: 'map', label: 'Map' },
-  { id: 'harvests', label: 'Harvests' },
   { id: 'supplier', label: 'Supplier' },
   { id: 'stock', label: 'Stock' },
-  { id: 'lab', label: 'Lab' },
 ];
 const SPEEDS = [1, 60, 600];
 const SHORT_MONTHS = MONTH_NAMES.map((m) => m.slice(0, 3));
 
 export function backroomScreen(): string {
   const { ui, save } = state;
-  const s = save.sourcing!;
   const now = nowGame();
   const date = dateAt(now, sourcing.calendarStart);
   const tab = ui.backroomTab;
   const unread = unreadLetters(save.routes!);
-  const count = (id: BackroomTab) =>
-    id === 'harvests' && s.contracts.length + s.batches.length + s.shipments.length > 0 ? ` · ${s.contracts.length + s.batches.length + s.shipments.length}` : id === 'letters' && unread > 0 ? ` · ${unread}` : '';
+  const count = (id: BackroomTab) => (id === 'letters' && unread > 0 ? ` · ${unread}` : '');
   const tabs = TABS.map((t) => `<button class="tab-chip ${t.id === tab ? 'on' : ''}" data-action="backroom-tab" data-value="${t.id}">${t.label}${count(t.id)}</button>`).join('');
-  const body = tab === 'letters' ? lettersTab() : tab === 'map' ? mapTab(now) : tab === 'harvests' ? harvestsTab(now) : tab === 'supplier' ? supplierTab() : tab === 'lab' ? labTab() : stockTab(now);
+  const body = tab === 'letters' ? lettersTab() : tab === 'map' ? mapTab() : tab === 'supplier' ? supplierTab() : stockTab(now);
   const speed = save.clock!.speed;
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>
@@ -84,9 +76,6 @@ export function timeLeft(gameHours: number): string {
 }
 
 /** Real time a span of game hours takes at the current speed. */
-function duration(gameHours: number): string {
-  return timeLeft(nowGame() + gameHours);
-}
 
 function cratesSection(): string {
   const crates = state.save.sourcing!.crates;
@@ -112,160 +101,61 @@ function seasonText(crop: Crop): string {
   return start === end ? SHORT_MONTHS[start - 1] : `${SHORT_MONTHS[start - 1]}–${SHORT_MONTHS[end - 1]}`;
 }
 
-function nextSeasonMonth(crop: Crop, now: number): string {
-  for (let d = 1; d <= 366; d++) {
-    const t = now + d * 24;
-    if (inSeason(crop, t)) return MONTH_NAMES[dateAt(t, sourcing.calendarStart).month - 1];
-  }
-  return '';
-}
 
-function letterCard(l: Letter, action = ''): string {
+/**
+ * Her suppliers' letters: flavour, not business. Each tells you about their material family
+ * and how it's grown, harvested or made. They arrive with the seasons.
+ */
+function letterCard(l: Letter): string {
   const route = routeById(l.route);
-  const kind = l.kind === 'first' ? 'wrote to the shop' : l.kind === 'reply' ? 'wrote back' : 'sent a note with a crate';
+  if (!route) return '';
   return `<li class="card letter-card">
-    <div><strong>${esc(route?.from ?? l.route)}</strong> <span class="muted small">${kind}${l.read ? '' : ' <span class="tag">new</span>'}</span></div>
-    ${l.kind === 'first' && route ? `<p class="muted small">${esc(route.about)}</p>` : ''}
-    <div class="letter">${l.body.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
-    ${action}
+    <div><strong>${esc(route.from)}</strong>${l.read ? '' : ' <span class="tag">new</span>'}${route.loreVerified ? '' : ' <span class="tag tag--warn">unverified</span>'}</div>
+    <p class="muted small">${esc(route.about)}</p>
+    <div class="letter">${route.lore.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
   </li>`;
 }
 
 function lettersTab(): string {
   const r = state.save.routes!;
   const chapter = chapterInfo(r.chapter, sourcing.calendarStart);
-  const transit = inTransit(r);
-  const waiting = r.letters.filter((l) => l.kind === 'first' && r.routes[l.route]?.status === 'waiting');
-  const waitingCards = waiting
-    .map((l) => {
-      const route = routeById(l.route);
-      const button = transit
-        ? `<p class="muted small">You can write back once ${esc(routeById(transit)?.from ?? '')} has answered.</p>`
-        : `<div class="row-between"><span class="muted small">${l.route === CHEMIST ? 'Reopens the catalogue of aroma chemicals' : `Reopens the route to ${esc(regions.find((x) => x.id === l.route)?.name ?? l.route)}`}</span><button class="primary" data-action="answer-letter" data-id="${esc(l.route)}">Write back</button></div>`;
-      return route ? letterCard(l, button) : '';
-    })
-    .join('');
-  const transitCard = transit
-    ? `<li class="card"><p class="small">Your letter to <strong>${esc(routeById(transit)?.from ?? transit)}</strong> is on its way. Their answer should come in ${timeLeft(r.routes[transit].opensAt!)}.</p></li>`
-    : '';
-  const others = r.letters
-    .filter((l) => !(l.kind === 'first' && r.routes[l.route]?.status === 'waiting'))
+  const letters = r.letters
+    .filter((l) => l.kind === 'first')
     .slice()
     .reverse()
-    .map((l) => letterCard(l))
+    .map(letterCard)
     .join('');
-  return `<p class="muted small"><strong>Chapter ${r.chapter + 1} · ${esc(chapter.title)}.</strong> Her growers and her chemist went quiet when she died. Write back to reopen a route, one letter at a time; new letters come with the seasons.</p>
-    ${transitCard ? `<ul class="list cards">${transitCard}</ul>` : ''}
-    ${waitingCards ? `<h2>Waiting for your answer</h2><ul class="list cards">${waitingCards}</ul>` : ''}
-    <h2>Letters</h2>
-    <ul class="list cards">${others || '<li class="muted">Nothing yet. Answered letters, and notes that come with crates, are kept here.</li>'}</ul>`;
+  return `<p class="muted small"><strong>Chapter ${r.chapter + 1} · ${esc(chapter.title)}.</strong> Her old suppliers write about their materials and how they're made. New letters come with the seasons.</p>
+    <ul class="list cards">${letters || '<li class="muted">No letters yet.</li>'}</ul>`;
 }
 
-function mapTab(now: number): string {
-  const unlocked = ownedMaterials(state.save);
-  const cards = regions.map((r) => regionCard(r, now, unlocked)).join('');
+/** The map: where her materials come from, and how each is harvested. Flavour only. */
+function mapTab(): string {
+  const cards = regions.map(regionCard).join('');
   return `<div class="placeholder placeholder--map">Placeholder: painted world map</div>
-    <p class="muted small">Sign a harvest contract while a crop is in season. It ripens over real time; collect it inside its best window for top quality.</p>
+    <p class="muted small">Where her materials come from, and how they're gathered.</p>
     <ul class="list cards">${cards}</ul>`;
 }
 
-function regionCard(r: Region, now: number, unlocked: Set<string>): string {
-  const s = state.save.sourcing!;
-  const money = state.save.customers!.money;
-  const routes = state.save.routes!;
-  const open = routeOpen(routes, r.id);
-  const grower = routeById(r.id);
-  const status = routes.routes[r.id]?.status;
-  const closedWhy =
-    status === 'waiting'
-      ? `${grower?.from ?? 'The grower'} has written: answer under Letters to reopen this route`
-      : status === 'replied'
-        ? `Your letter to ${grower?.from ?? 'the grower'} is on its way`
-        : `${grower?.from ?? 'The grower'} hasn't written yet`;
-  const news = newsFor(state.save, now);
+function regionCard(r: Region): string {
   const crops = r.crops
     .map((crop) => {
       const m = materialsById.get(crop.material)!;
-      const tier = unlocks.tiers.find((t) => t.materials.includes(crop.material));
-      const season = `${seasonText(crop)}${crop.verified ? '' : ' <span class="tag tag--warn">unverified</span>'}`;
-      let action: string;
-      const bumper = yieldMultiplier(news, r.id, crop.material) > 1 ? ' <span class="tag">bumper crop this week</span>' : '';
-      if (!unlocked.has(crop.material)) action = `<span class="muted small">Unlocks at reputation ${tier?.reputation ?? '?'}</span>`;
-      else if (!open) action = `<span class="muted small">${esc(closedWhy)}</span>`;
-      else if (s.contracts.some((c) => c.region === r.id && c.material === crop.material)) action = `<span class="muted small">Growing now</span>`;
-      else if (!inSeason(crop, now)) action = `<span class="muted small">Out of season · next: ${nextSeasonMonth(crop, now)}</span>`;
-      else
-        action = `<button class="primary" data-action="sign" data-region="${r.id}" data-material="${crop.material}" ${money < crop.cost ? 'disabled' : ''}>Sign · ${crop.cost} coins</button>`;
-      return `<div class="crop">
-        <p><strong>${esc(m.name)}</strong>${bumper} <span class="muted small">· season ${season} · ${crop.grams} g · ripens in ${duration(crop.growGameHours)}</span></p>
-        <div class="row-between"><span></span>${action}</div>
-      </div>`;
+      const methods = crop.methods.map((id) => processes.find((p) => p.id === id)?.name ?? id).join(', ');
+      return `<p class="small"><strong>${esc(m.name)}</strong> <span class="muted">· season ${seasonText(crop)}${crop.verified ? '' : ' <span class="tag tag--warn">unverified</span>'} · ${esc(methods)}</span></p>`;
     })
     .join('');
   return `<li class="card">
-    <div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)} · ships in ${duration(shippingGameHours(r) + shippingDelay(news, r.id))}${open ? '' : ' · route closed'}</span>${shippingDelay(news, r.id) ? ' <span class="tag tag--warn">storm delays</span>' : ''}</div>
+    <div><strong>${esc(r.name)}</strong> <span class="muted small">${esc(r.country)}</span></div>
     <p class="small">${esc(r.quirk)}</p>
     ${crops}
   </li>`;
-}
-
-function harvestsTab(now: number): string {
-  const s = state.save.sourcing!;
-  const contracts = s.contracts
-    .map((c) => {
-      const region = regions.find((r) => r.id === c.region)!;
-      const crop = region.crops.find((x) => x.material === c.material)!;
-      const stage = contractStage(c, now);
-      let status: string;
-      if (stage === 'growing') status = `Ripens in ${timeLeft(c.ripeAt)}`;
-      else if (stage === 'best') status = `<strong>Ripe!</strong> Best quality for ${timeLeft(c.bestUntil)}`;
-      else if (stage === 'late') status = `Late: quality falling (${qualityWord(harvestQuality(c, now))} now)`;
-      else status = `Past its best: ${qualityWord(harvestQuality(c, now))} quality`;
-      const methods =
-        stage === 'growing'
-          ? ''
-          : crop.methods
-              .map((id) => processes.find((p) => p.id === id)!)
-              .map((p) => {
-                const stats = processStats(state.save.upgrades!, p.id);
-                return `<button class="chip" data-action="harvest" data-id="${esc(c.id)}" data-method="${p.id}" ${!stats.owned || state.save.customers!.money < p.cost ? 'disabled' : ''}>
-                  ${esc(p.name)} · ${p.cost} coins · ${duration(stats.gameHours)}${stats.owned ? '' : ' · buy under Shop → Processing'}
-                </button>`;
-              })
-              .join('');
-      const about =
-        stage === 'growing'
-          ? ''
-          : `<p class="muted small">${crop.methods.map((id) => processes.find((p) => p.id === id)!).map((p) => `${esc(p.name)}: ${esc(p.about)}`).join('<br>')}</p>`;
-      return `<li class="card"><div><strong>${esc(name(c.material))}</strong> <span class="muted small">${esc(region.name)}</span></div>
-        <p class="small">${status}</p>${about}<div class="chips">${methods}</div></li>`;
-    })
-    .join('');
-  const batches = s.batches
-    .map((b) => {
-      const p = processes.find((x) => x.id === b.method)!;
-      return `<li class="card"><div><strong>${esc(name(b.material))}</strong> <span class="muted small">${esc(p.name)} → ${esc(p.output)}</span></div>
-        <p class="small">Ready in ${timeLeft(b.readyAt)} · ${b.grams} g · ${qualityWord(b.quality)}</p></li>`;
-    })
-    .join('');
-  const shipments = s.shipments
-    .map(
-      (x) => `<li class="card"><div><strong>${x.items.map((i) => esc(name(i.material))).join(', ')}</strong> <span class="muted small">from ${esc(x.from)}</span></div>
-        <p class="small">On its way · arrives in ${timeLeft(x.arrivesAt)}</p></li>`,
-    )
-    .join('');
-  const empty = !contracts && !batches && !shipments ? '<p class="muted">Nothing on the go. Sign a harvest on the map, or order from the apothecary or the chemist.</p>' : '';
-  return `${empty}
-    ${contracts ? `<h2>Growing</h2><ul class="list cards">${contracts}</ul>` : ''}
-    ${batches ? `<h2>Processing</h2><ul class="list cards">${batches}</ul>` : ''}
-    ${shipments ? `<h2>Shipping</h2><ul class="list cards">${shipments}</ul>` : ''}`;
 }
 
 function supplierTab(): string {
   const unlocked = ownedMaterials(state.save);
   const money = state.save.customers!.money;
   const sup = sourcing.supplier;
-  const chemistOpen = routeOpen(state.save.routes!, CHEMIST);
   const row = (id: string, kind: string, closed: boolean) => {
     const m = materialsById.get(id)!;
     const multiplier = priceMultiplier(newsFor(state.save, nowGame()), m.id);
@@ -276,17 +166,12 @@ function supplierTab(): string {
   };
   const owned = [...unlocked].map((id) => materialsById.get(id)!).sort((a, b) => a.name.localeCompare(b.name));
   const naturals = owned.filter((m) => m.type === 'natural').map((m) => row(m.id, `broker stock · ${qualityWord(sup.brokerQuality)} quality`, false)).join('');
-  const synthetics = owned.filter((m) => m.type === 'synthetic').map((m) => row(m.id, 'catalogue', !chemistOpen)).join('');
-  const status = routeOpen(state.save.routes!, CHEMIST)
-    ? `Orders come by train in ${duration(sup.chemistShippingGameHours)}, with a note from Paul Varenne.`
-    : state.save.routes!.routes[CHEMIST]?.status === 'replied'
-      ? 'Your letter is on its way; you can order once they write back.'
-      : 'Closed until you answer their letter (Letters).';
+  const synthetics = owned.filter((m) => m.type === 'synthetic').map((m) => row(m.id, 'catalogue', false)).join('');
   return `<h2>${esc(sup.name)}</h2>
-    <p class="muted small">Naturals from a broker's stock all year round, at a premium and of ${qualityWord(sup.brokerQuality)} quality. Harvest them yourself for better. Ready in ${duration(sup.shippingGameHours)}.</p>
+    <p class="muted small">Naturals from a broker's stock all year round. Orders go straight onto your rack.</p>
     <ul class="list cards">${naturals || '<li class="muted">No naturals unlocked.</li>'}</ul>
     <h2>${esc(sup.chemistName)}</h2>
-    <p class="muted small">Her old chemist: aroma chemicals from the catalogue. ${status}</p>
+    <p class="muted small">Her old chemist: aroma chemicals from the catalogue, straight onto your rack.</p>
     <ul class="list cards">${synthetics || '<li class="muted">No aroma chemicals unlocked yet.</li>'}</ul>`;
 }
 
@@ -319,7 +204,8 @@ function stockTab(now: number): string {
 }
 
 /** The analysis lab and its reconstruction challenges. */
-function labTab(): string {
+/** The lab tab: hidden for now while Sean decides whether to keep the lab (Nov 8). */
+export function labTab(): string {
   const l = state.save.lab!;
   const money = state.save.customers!.money;
   const reputation = state.save.customers!.reputation;

@@ -260,22 +260,16 @@ export function order(
   now: number,
   unlocked: Set<string>,
   priceMultiplier = 1,
-  chemistOpen = true,
   data: SourcingData = sourcing,
 ): string | null {
   const sup = data.supplier;
   if (sup.prices[material] === undefined) return 'Not sold.';
   const price = priceOf(material, priceMultiplier, data);
   if (!unlocked.has(material)) return 'Not unlocked yet.';
-  if (!natural && !chemistOpen) return `Write back to ${sup.chemistName} first: their letter is in the back room.`;
   if (wallet.money < price) return 'Not enough coins.';
   wallet.money -= price;
-  const lot = { material, grams: sup.lotGrams, quality: natural ? sup.brokerQuality : sup.catalogueQuality };
-  s.shipments.push(
-    natural
-      ? { id: id(s, 's'), from: sup.name, items: [lot], arrivesAt: now + sup.shippingGameHours }
-      : { id: id(s, 's'), from: sup.chemistName, route: 'chemist', items: [lot], arrivesAt: now + sup.chemistShippingGameHours },
-  );
+  // No waiting for materials: an order goes straight into stock.
+  s.inventory.push({ id: id(s, 'l'), material, grams: sup.lotGrams, quality: natural ? sup.brokerQuality : sup.catalogueQuality, since: now });
   return null;
 }
 

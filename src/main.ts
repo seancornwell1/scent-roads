@@ -963,8 +963,9 @@ document.body.addEventListener('click', (event) => {
       const material = target.dataset.material!;
       const natural = materialsById.get(material)?.type === 'natural';
       const multiplier = priceMultiplier(newsFor(save, nowGame()), material);
-      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), ownedMaterials(save), multiplier, routeOpen(save.routes!, CHEMIST));
-      ui.toast = why ?? `Ordered ${materialsById.get(material)?.name}. It's on its way.`;
+      const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), ownedMaterials(save), multiplier);
+      ui.toast = why ?? `${materialsById.get(material)?.name}: ${sourcing.supplier.lotGrams} g more in stock.`;
+      if (!why) sounds.play('glass');
       break;
     }
     case 'unpack': {

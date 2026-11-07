@@ -82,7 +82,8 @@ export function clueContext(save: SaveData): ClueContext {
   const rankIndex = ranks.indexOf(rankById(save.rank));
   return {
     requestsDone: new Set(Object.entries(save.story!.requests).filter(([, r]) => r.status === 'done').map(([id]) => id)),
-    routesOpen: new Set(Object.entries(save.routes!.routes).filter(([, r]) => r.status === 'open').map(([id]) => id)),
+    // A grower's clue counts once their letter has arrived (letters are read, not answered).
+    routesOpen: new Set(Object.keys(save.routes!.routes)),
     pages: new Set(Object.keys(save.story!.pages)),
     ranks: new Set(ranks.slice(0, rankIndex + 1).map((r) => r.id)),
     reviews: save.customers!.reviews.length,

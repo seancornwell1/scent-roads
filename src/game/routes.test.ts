@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHEMIST, answer, chapterAt, chapterInfo, crateLetter, inTransit, letters, markRead, newRoutesState, routeOpen, routesTick, unreadLetters, validateLetters } from './routes';
+import { answer, chapterAt, chapterInfo, crateLetter, inTransit, letters, markRead, newRoutesState, routeOpen, routesTick, unreadLetters, validateLetters } from './routes';
 import { newSourcingState, order, regions, sourcing } from './sourcing';
 
 const start = sourcing.calendarStart;
@@ -78,12 +78,21 @@ describe('routes', () => {
 
 describe('ordering', () => {
   const owned = new Set(['vanillin', 'bergamot']);
-  it('needs the chemist for aroma chemicals, but the apothecary sells naturals all along', () => {
+  it('puts an order straight into stock, naturals and aroma chemicals alike', () => {
     const s = newSourcingState();
-    expect(order(s, { money: 999 }, 'vanillin', false, 0, owned, 1, false)).toMatch(/Write back/);
-    expect(order(s, { money: 999 }, 'bergamot', true, 0, owned, 1, false)).toBeNull();
-    expect(order(s, { money: 999 }, 'vanillin', false, 0, owned, 1, true)).toBeNull();
-    expect(s.shipments.find((x) => x.items[0].material === 'vanillin')?.route).toBe(CHEMIST);
-    expect(s.shipments.find((x) => x.items[0].material === 'bergamot')?.route).toBeUndefined();
+    expect(order(s, { money: 999 }, 'vanillin', false, 0, owned)).toBeNull();
+    expect(order(s, { money: 999 }, 'bergamot', true, 0, owned)).toBeNull();
+    expect(s.shipments).toHaveLength(0);
+    expect(s.inventory.map((l) => l.material).sort()).toEqual(['bergamot', 'vanillin']);
   });
 });
+
+describe('suppliers’ letters', () => {
+  it('each tell you about their material family or how it’s made', () => {
+    for (const r of letters.routes) {
+      expect(r.lore.length).toBeGreaterThan(0);
+      for (const p of r.lore) expect(p.length).toBeGreaterThan(40);
+    }
+  });
+});
+

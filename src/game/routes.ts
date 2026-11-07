@@ -18,6 +18,9 @@ export interface RouteData {
   reply: string[];
   /** Notes tucked into crates, in turn; `{material}` and `{quality}` fill in. */
   crate: string[];
+  /** Their letter as the laptop shows it: about their material family and how it's harvested. */
+  lore: string[];
+  loreVerified: boolean;
 }
 
 export interface Chapter {

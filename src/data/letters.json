@@ -18,7 +18,13 @@
         "Packed this morning. Mind the caps: some of these travel better than they smell in the warehouse.",
         "Your grandmother once returned a whole case because the labels were crooked. I still check every one.",
         "A small catalogue note: our molecules are the same every time. That's the point of them, and the comfort."
-      ]
+      ],
+      "lore": [
+        "Our trade began when chemists learned to make nature's smells in a flask. Coumarin, the sweet hay of the tonka bean, was first made in a laboratory in 1868; vanillin, the heart of vanilla, followed in 1874.",
+        "An aroma chemical is a single molecule, the same from one batch to the next, where a natural oil is a crowd of hundreds. Perfumers use them for what nature can't give: clean musks, an airy jasmine, the fizz of aldehydes.",
+        "Some are fiercely strong. We send several already diluted to ten or even one percent, because a single neat drop would flatten everything else in the bottle."
+      ],
+      "loreVerified": false
     },
     {
       "id": "calabria",
@@ -37,7 +43,13 @@
         "Here is your {material}, {quality} this time. My daughter wrapped the bottles; she says hello.",
         "Mireille always asked whether the sea wind had been strong that year. It was. You can smell it, I think.",
         "The grove is quiet now the picking is done. This {material} is from the last of it."
-      ]
+      ],
+      "lore": [
+        "Almost all the world's bergamot grows here, on a narrow strip of coast around Reggio Calabria. The fruit is too sour to eat; we grow it for its peel.",
+        "The oil sits in tiny sacs in the rind. We press it out cold, with machines that rasp the skin under running water: no heat, which would dull the sparkle.",
+        "Raw bergamot oil contains bergapten, which can mark the skin in sunlight, so perfumers use a bergapten-free grade."
+      ],
+      "loreVerified": false
     },
     {
       "id": "provence",
@@ -56,7 +68,13 @@
         "Your {material}, {quality}. The still ran all night; the whole valley smelled of it.",
         "I found one of her postcards in the kitchen drawer: 'Are the bees happy?' They are.",
         "Here's this year's {material}. My mother says to tell you Mireille liked it a year old, after it had softened."
-      ]
+      ],
+      "lore": [
+        "True lavender, Lavandula angustifolia, grows high on the plateaus, where the summers are hot and the winters hard. We cut it in July and August, when the flowers are open.",
+        "The stems are left to wilt a little, then steam-distilled: steam carries the oil up through the still, and it separates from the water as it cools.",
+        "Lower down you'll see fields of lavandin, a hybrid. It gives far more oil, sharper and more camphorous, and it's what most lavender soaps smell of."
+      ],
+      "loreVerified": false
     },
     {
       "id": "andalusia",
@@ -75,7 +93,13 @@
         "Your {material}, {quality}. It stuck to everything on the way, as it always does.",
         "Mireille told my grandfather that labdanum is the smell of a warm animal asleep. He laughed for a week.",
         "This {material} will deepen if you leave it on the shelf. She always had an old bottle and a new one."
-      ]
+      ],
+      "lore": [
+        "Labdanum comes from the rockrose, Cistus ladanifer, a shrub of dry, stony hills. In the summer heat its leaves sweat a sticky resin to keep from drying out.",
+        "On Crete, shepherds once combed it out of the beards of goats that grazed among the bushes. Today the branches are boiled to loosen the gum, which is then extracted with solvents into a dark, amber resinoid.",
+        "Smell it warm on your skin: leathery, honeyed, a little animal. It's the backbone of almost every amber."
+      ],
+      "loreVerified": false
     },
     {
       "id": "reunion",
@@ -94,7 +118,12 @@
         "Your {material}, {quality}. The trees were heavy this year; the birds took their share.",
         "I kept all of Mireille's letters. She wrote in green ink and always asked about the weather here.",
         "Here is your {material}. Use a little: she said it was a spark, not a fire."
-      ]
+      ],
+      "lore": [
+        "Pink peppercorns aren't pepper at all. They're the berries of a tree from South America, Schinus terebinthifolia, that grows wild here.",
+        "We pick the clusters when they turn red, then distil them or extract them with carbon dioxide. The scent is fresh, rosy and peppery, with none of black pepper's heat."
+      ],
+      "loreVerified": false
     },
     {
       "id": "virginia",
@@ -113,7 +142,12 @@
         "Your {material}, {quality}. Sawdust in the packing, sorry, it gets everywhere.",
         "The framed letter is still on the office wall. People ask about it.",
         "Here's your {material}. Dry and steady, like Mireille said a good base should be."
-      ]
+      ],
+      "lore": [
+        "Virginia cedarwood isn't a true cedar: it comes from Juniperus virginiana, the eastern red cedar, a juniper.",
+        "The oil is distilled from what the mills leave behind, sawdust, stumps and offcuts, so nothing goes to waste. That dry, clean smell of a pencil being sharpened is this wood."
+      ],
+      "loreVerified": false
     },
     {
       "id": "indonesia",
@@ -132,7 +166,13 @@
         "Your {material}, {quality}. Keep it somewhere dark and it will thank you.",
         "She once wrote that young patchouli is like a loud guest who becomes good company late in the evening.",
         "Here is your {material}. My son labelled it with the date, so you know how long it has been resting."
-      ]
+      ],
+      "lore": [
+        "Patchouli is a bushy plant of the mint family, Pogostemon cablin. Fresh leaves smell of very little.",
+        "We cut the leaves, dry them in the shade and let them ferment a little before steam distillation, which opens up the scent.",
+        "The oil is unusual: it gets better with age, darker and smoother, like a good wine."
+      ],
+      "loreVerified": false
     },
     {
       "id": "balkans",
@@ -151,7 +191,13 @@
         "Your {material}, {quality}. The forest was very wet this year.",
         "Mireille warned me never to let anyone tell her how much oakmoss she was allowed. Then she used it very carefully anyway.",
         "Here is your {material}. Dark and green and a little salty, the way she liked it."
-      ]
+      ],
+      "lore": [
+        "Oakmoss isn't a moss: it's a lichen, Evernia prunastri, that grows on the bark of oaks. We gather it in the damp months, when it's soft.",
+        "Dried and extracted with solvents, it gives a thick, dark green paste, then an absolute: earthy, inky, salty-sweet, the floor of a forest after rain.",
+        "Some people are allergic to it, so perfumers use very little, and today's grades have the worst allergens taken out."
+      ],
+      "loreVerified": false
     },
     {
       "id": "oman",
@@ -170,7 +216,13 @@
         "Your {material}, {quality}. The wind was hot and the resin set quickly.",
         "My father remembers Mireille's letters. She drew a small tree at the bottom of every one.",
         "Here is your {material}. Burn a tear one evening and think of her."
-      ]
+      ],
+      "lore": [
+        "Frankincense is the resin of Boswellia sacra, which grows in the dry hills here. We make small cuts in the bark, and a milky sap beads up.",
+        "Over a few weeks it hardens into tears that we collect by hand. Dhofar's frankincense has been traded for thousands of years, by camel and by sea.",
+        "Distilled, it gives a fresh, lemony, pine-like oil with smoke underneath."
+      ],
+      "loreVerified": false
     },
     {
       "id": "haiti",
@@ -189,7 +241,12 @@
         "Your {material}, {quality}. Earthy and smoky, the way the roots should be.",
         "We still have Mireille's books in the school, with her name inside the covers.",
         "Here is your {material}. It lasts and lasts; she called it the floor every perfume stands on."
-      ]
+      ],
+      "lore": [
+        "Vetiver is a grass whose scent is all in its roots, which grow deep into the soil. We dig them up by hand, wash and dry them.",
+        "The roots are distilled for many hours to coax out a thick, earthy, smoky oil with a bright edge like grapefruit peel. Much of the world's vetiver comes from around Les Cayes."
+      ],
+      "loreVerified": false
     },
     {
       "id": "pacific-northwest",
@@ -208,7 +265,12 @@
         "Your {material}, {quality}. Smells like the whole forest got into the truck.",
         "I still have her two-page letter. Page two was mostly about my handwriting.",
         "Here's your {material}. Bright and green at the top, like walking into the trees."
-      ]
+      ],
+      "lore": [
+        "Douglas fir isn't a true fir either: it's Pseudotsuga menziesii, the tall tree of our coastal forests.",
+        "The oil is steam-distilled from needles and branches cut when the forest is thinned. Fresh, green and a little citrusy: a walk in the woods in a bottle."
+      ],
+      "loreVerified": false
     },
     {
       "id": "assam",
@@ -227,7 +289,12 @@
         "Your {material}, {quality}. The rains came early; the leaves were full.",
         "Mireille once sent us a little bottle of the perfume she made with our tea. My grandmother wore it to weddings.",
         "Here is your {material}. Malty and warm, she said, like toast in a library."
-      ]
+      ],
+      "lore": [
+        "Assam's tea grows on the plains of the Brahmaputra, and it's plucked in flushes, the new leaves of each growing season.",
+        "Black tea gets its scent from withering, rolling and oxidising the leaves. For perfume it's extracted with carbon dioxide under pressure, which keeps its delicate, smoky, hay-like notes without heat."
+      ],
+      "loreVerified": false
     },
     {
       "id": "madagascar",
@@ -246,7 +313,12 @@
         "Your {material}, {quality}. Months in the sun and the boxes, and worth it.",
         "Mireille said real vanilla has a hundred voices and the molecule only one. She loved them both.",
         "Here is your {material}. Every pod was turned by hand."
-      ]
+      ],
+      "lore": [
+        "Vanilla is the pod of an orchid. Each flower opens for a single day, and here it has to be pollinated by hand, because the insects that do it in Mexico, where vanilla comes from, don't live here.",
+        "Green pods smell of almost nothing. Curing brings the scent out: the pods are dipped in hot water, sweated, dried in the sun and left to rest for months, until they're dark, supple and rich with vanillin and hundreds of other notes."
+      ],
+      "loreVerified": false
     },
     {
       "id": "grasse",
@@ -265,7 +337,13 @@
         "Your {material}, {quality}. Picked before the sun was high.",
         "There's still a row we call 'Mireille's row'. Nobody else picks it.",
         "Here is your {material}. It took a great many flowers to make so little."
-      ]
+      ],
+      "lore": [
+        "Jasmine is picked at dawn, by hand, before the sun weakens it. Flowers this delicate can't be distilled, so they're extracted with solvents into a waxy concrete, then washed with alcohol to give an absolute.",
+        "The old way was enfleurage: laying petals on trays of cold fat and changing them every day, until the fat was full of their scent.",
+        "Our rose, Rosa centifolia, the rose de mai, flowers for only a few weeks in May."
+      ],
+      "loreVerified": false
     },
     {
       "id": "bulgaria",
@@ -284,13 +362,18 @@
         "Your {material}, {quality}. The whole valley picked for three weeks.",
         "Mireille visited once for the festival. She danced, which surprised everyone.",
         "Here is your {material}. Small bottle, many flowers."
-      ]
+      ],
+      "lore": [
+        "Rosa damascena is picked by hand at dawn in May and June, in the valley around Kazanlak, while the dew is still on the petals.",
+        "The petals are distilled the same day to give rose oil, the otto. It takes several tonnes of petals for a single kilogram, which is why it's so precious."
+      ],
+      "loreVerified": false
     }
   ],
   "chapters": [
     {
       "title": "The shop reopens",
-      "text": "Spring on the square. Her letters have started to come: growers and a chemist who supplied her for years, wondering whether the shop will buy from them again. Answer them one at a time.",
+      "text": "Spring on the square. Her letters have started to come: growers and a chemist who supplied her for years, writing about their fields, their harvests and how their materials are made.",
       "letters": [
         "calabria",
         "provence",

@@ -128,12 +128,13 @@ export function roundScreen(ping: Ping | null, reward: string | null, card: (id:
     </main>`;
 }
 
-/** A stage's main spokes in words: "warm and sweet". */
-function mainWords(v: Values): string {
+/** A stage's main spokes, strongest first (one or two). */
+function mainSpokes(v: Values): Spoke[] {
   const total = SPOKES.reduce((a, s) => a + v[s], 0) || 1;
-  const top = [...SPOKES].sort((a, b) => v[b] - v[a]).filter((s, i) => i === 0 || v[s] / total >= 0.18).slice(0, 2);
-  return top.map((s) => spokeInfo(s).word).join(' and ');
+  return [...SPOKES].sort((a, b) => v[b] - v[a]).filter((s, i) => i === 0 || v[s] / total >= 0.18).slice(0, 2);
 }
+
+const inWords = (spokes: Spoke[]) => spokes.map((s) => spokeInfo(s).word).join(' and ');
 
 /** How strong it came out next to what they wanted, in words. */
 function strengthWords(v: Values, t: Values): string {
@@ -149,10 +150,11 @@ function strengthWords(v: Values, t: Values): string {
 function description(r: Reveal): string {
   return r.stages
     .map((st) => {
-      const made = mainWords(st.values);
-      const wanted = mainWords(st.target);
+      const made = mainSpokes(st.values);
+      const wanted = mainSpokes(st.target);
+      const same = made.length === wanted.length && made.every((s) => wanted.includes(s));
       const when = st.name ? `${st.name}: ` : '';
-      const shape = made === wanted ? `it smelled ${made}, just as they pictured` : `it smelled ${made}, where they'd pictured something ${wanted}`;
+      const shape = same ? `it smelled ${inWords(wanted)}, as they pictured` : `it smelled ${inWords(made)}, where they'd pictured something ${inWords(wanted)}`;
       return `<p>${esc(when)}${esc(when ? shape : shape.charAt(0).toUpperCase() + shape.slice(1))}, ${esc(strengthWords(st.values, st.target))}.</p>`;
     })
     .join('');

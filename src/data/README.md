@@ -352,15 +352,15 @@ A page: `id`, `title`, `dated`, `hiddenNames` (materials whose names have run as
 
 ## `letters.json`
 
-Her supply network (`src/game/routes.ts`). Every route starts closed: growers and her chemist went quiet when she died. Each season is a chapter in which some of them write; writing back reopens their route once their reply comes, and you wait on one reply at a time, so you choose who's next. Crates from an open route carry a note. A test checks every region has a grower and everyone writes in exactly one chapter.
+Her suppliers' letters (`src/game/routes.ts`), shown on the laptop. Since Nov 8 they are flavour, not business: each season is a chapter in which some of them write, and their letter (`lore`) tells you about their material family and how it's grown, harvested or made. Nothing is answered or unlocked by them; a grower's clue to her signature perfume counts once their letter has arrived. A test checks every region has a grower, everyone writes in exactly one chapter, and every letter has its text.
 
 | Field | Meaning |
 | ----- | ------- |
 | `replyGameHours` | How long a grower takes to write back after you answer |
-| `routes` | One per region (same `id` as in `regions.json`) plus `chemist`: `from` (who signs), `about` (one line), `first` (their first letter, paragraphs), `reply` (when the route opens), `crate` (notes tucked into crates, in turn; `{material}` and `{quality}` fill in) |
+| `routes` | One per region (same `id` as in `regions.json`) plus `chemist`: `from` (who signs), `about` (one line), `first` (their first letter, paragraphs), `reply` (when the route opens), `crate` (notes tucked into crates, in turn; `{material}` and `{quality}` fill in). `lore` (the letter the laptop shows, paragraphs) and `loreVerified` (its facts are listed in `docs/FACT_CHECK.md` until confirmed). `first`, `reply` and `crate` are kept from the old answering game but no longer shown. |
 | `chapters` | In order from the first spring, one per season: `title`, `text`, and `letters` (route ids whose first letter arrives when the chapter begins). Past the last one, chapters are just the season and year. |
 
-The letters are story, not facts: where one mentions a season or method, it repeats the region's own (possibly unverified) data in `regions.json`.
+The `lore` letters carry real facts about materials and methods, so they are unverified until checked.
 
 ## `training.json`
 

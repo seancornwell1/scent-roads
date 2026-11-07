@@ -185,6 +185,26 @@ The minimum percentages in every accord's requirements (e.g. labdanum and vanill
 
 Growers' letters are story, not new facts. Where a letter mentions a harvest season or method (bergamot picked through the winter, jasmine picked at dawn, vanilla cured for months), it repeats that region's entry in `src/data/regions.json`, so confirming the region confirms the letter. The growers, the chemist Varenne & Fils and their memories of Mireille are invented.
 
+## Suppliers' letters — `src/data/letters.json` (`lore`)
+
+Since Nov 8 the laptop's letters are flavour text about materials and how they're made. All of it is from general knowledge and unverified. The claims worth checking:
+
+- **Chemist:** coumarin first synthesised in 1868 and vanillin in 1874; some aroma chemicals are supplied pre-diluted to 10% or 1%.
+- **Calabria:** most of the world's bergamot grows around Reggio Calabria; the oil is cold-pressed (rasped under water); bergapten-free grades avoid sun sensitivity.
+- **Provence:** true lavender (*Lavandula angustifolia*) grows high up and is cut in July and August, wilted and steam-distilled; lavandin is a higher-yield, more camphorous hybrid lower down.
+- **Andalusia:** labdanum comes from *Cistus ladanifer*; it was historically combed from goats' beards on Crete; today the branches are boiled and the gum is solvent-extracted into a resinoid.
+- **Réunion:** pink pepper is the berry of *Schinus terebinthifolia*, distilled or CO₂-extracted.
+- **Virginia:** Virginia cedarwood is *Juniperus virginiana*, distilled from mill waste.
+- **Indonesia:** patchouli (*Pogostemon cablin*) leaves are dried and lightly fermented before distillation, and the oil improves with age.
+- **Balkans:** oakmoss is the lichen *Evernia prunastri*, solvent-extracted; it is restricted for allergies and modern grades have the worst allergens removed.
+- **Oman:** frankincense (*Boswellia sacra*) is tapped from the bark and hardens into tears over weeks.
+- **Haiti:** vetiver roots are dug by hand and distilled for many hours; much of the world's vetiver comes from around Les Cayes.
+- **Pacific Northwest:** Douglas fir (*Pseudotsuga menziesii*) needle oil comes from thinnings.
+- **Assam:** tea is plucked in flushes, and perfumery tea is a CO₂ extract.
+- **Madagascar:** vanilla flowers open for a day and are hand-pollinated outside Mexico; curing (scalding, sweating, sun-drying, resting for months) develops the scent.
+- **Grasse:** jasmine is picked at dawn and solvent-extracted (concrete, then absolute); enfleurage used cold fat; rose de mai (*Rosa centifolia*) flowers in May.
+- **Bulgaria:** *Rosa damascena* is picked at dawn in May and June around Kazanlak and distilled the same day; several tonnes of petals make a kilogram of rose otto.
+
 ## The counter's radar — `src/data/materials.json` (`radar`) and `src/data/radar.json`
 
 - **Every material's radar vector is my estimate** from its character notes and family, so all 108 are marked `"verified": false`. Each says which families a drop pushes and how far, relative to its strongest one. Worth checking the starting bench and early materials first: bergamot, lavender, labdanum, vanillin, lemon, sweet orange, petitgrain, neroli, rosemary, frankincense, myrrh, benzoin.
