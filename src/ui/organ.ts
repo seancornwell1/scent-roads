@@ -159,13 +159,12 @@ function basesList(): string {
   if (!currentRank().bases || bases.length === 0) return '';
   const rows = bases
     .map((b) => {
-      const parts = state.save.draft[baseKey(b.id)];
-      return `<li class="material">
-        <button class="material-add" data-action="add" data-id="${esc(baseKey(b.id))}">
+      const on = state.save.draft[baseKey(b.id)] !== undefined;
+      return `<li class="material${on ? ' material--on' : ''}">
+        <button class="material-add" data-action="toggle" data-id="${esc(baseKey(b.id))}" aria-pressed="${on}">
           <span class="material-name">${esc(b.name)}</span>
           <span class="muted small">Base · ${esc(Object.keys(b.parts).map((id) => materialsById.get(id)?.name ?? id).join(', '))}</span>
         </button>
-        ${parts ? `<span class="count">${formatParts(parts)}</span>` : ''}
       </li>`;
     })
     .join('');
@@ -173,14 +172,15 @@ function basesList(): string {
 }
 
 function materialRow(m: Material): string {
-  const parts = state.save.draft[m.id];
+  // Tapping a material puts it in the formula (the row is highlighted) or takes it out again;
+  // how much of it goes in is set in the Formula tab.
+  const on = state.save.draft[m.id] !== undefined;
   const sub = state.ui.browseBy === 'layer' ? familyName(m.family) : LAYER_NAMES[m.layer];
-  return `<li class="material">
-    <button class="material-add" data-action="add" data-id="${esc(m.id)}">
+  return `<li class="material${on ? ' material--on' : ''}">
+    <button class="material-add" data-action="toggle" data-id="${esc(m.id)}" aria-pressed="${on}">
       <span class="material-name">${esc(m.name)}</span>
       <span class="muted small">${esc(sub)}${tags(m)}</span>
     </button>
-    ${parts ? `<span class="count">${formatParts(parts)}</span>` : ''}
     <button class="info" data-action="detail" data-id="${esc(m.id)}" aria-label="About ${esc(m.name)}">Info</button>
   </li>`;
 }
@@ -207,7 +207,7 @@ function formulaTab(): string {
   const { draft } = state.save;
   const keys = Object.keys(draft);
   if (keys.length === 0) {
-    return `<p class="empty">Nothing on the organ yet. Open <strong>Materials</strong> and tap a material to add parts.</p>`;
+    return `<p class="empty">Nothing on the organ yet. Open <strong>Materials</strong> and tap a material to put it in; set how much of each here.</p>`;
   }
   const rank = currentRank();
   const blend = draftBlend();
@@ -283,7 +283,7 @@ function detailSheet(m: Material): string {
       <p class="muted small">${stockLine(m.id)}</p>
       <div class="row-between">
         <button class="link" data-action="close-detail">Close</button>
-        <button class="primary" data-action="add" data-id="${esc(m.id)}">Add 1 part</button>
+        <button class="primary" data-action="toggle" data-id="${esc(m.id)}">${state.save.draft[m.id] !== undefined ? 'Take it out of the formula' : 'Put it in the formula'}</button>
       </div>`,
     )}
   </section>`;

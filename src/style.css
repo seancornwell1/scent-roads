@@ -251,6 +251,8 @@ button:disabled { opacity: 0.5; cursor: default; }
   min-height: 56px;
 }
 .material-name { font-weight: 600; }
+.material--on { background: rgb(138 75 92 / 0.14); border-color: var(--accent); }
+.material--on .material-name { color: var(--accent); }
 .count {
   min-width: 32px;
   text-align: center;

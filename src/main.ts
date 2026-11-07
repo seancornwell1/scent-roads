@@ -1145,6 +1145,23 @@ document.body.addEventListener('click', (event) => {
     case 'browse':
       ui.browseBy = target.dataset.by as typeof ui.browseBy;
       break;
+    case 'toggle': {
+      // In the formula: take it out (with its dilution). Not in: put one step of it in.
+      if (save.draft[id!] !== undefined) {
+        const next = { ...save.draft };
+        delete next[id!];
+        sounds.play('paper');
+        return setDraft(next);
+      }
+      const max = Math.max(...currentRank().wearableParts);
+      const step = max > 10 ? ui.step : 1;
+      if (totalParts(save.draft) + step > max) {
+        ui.toast = `That would be over ${max} parts, a full formula. Take something out first.`;
+        break;
+      }
+      sounds.play('glass');
+      return setDraft(addParts(save.draft, id!, step));
+    }
     case 'add':
     case 'inc': {
       const max = Math.max(...currentRank().wearableParts);
