@@ -62,5 +62,50 @@
       "I love {material}. Something {word} around it?",
       "Could you do something {word} with {material}?"
     ]
+  },
+  "exp": {
+    "perServe": 1,
+    "levels": [
+      0,
+      2,
+      5,
+      10
+    ],
+    "strengthWords": [
+      {
+        "min": 0,
+        "text": "pushes gently"
+      },
+      {
+        "min": 0.8,
+        "text": "pushes moderately"
+      },
+      {
+        "min": 1.3,
+        "text": "pushes strongly"
+      },
+      {
+        "min": 2,
+        "text": "pushes very strongly"
+      }
+    ],
+    "volatilityWords": [
+      {
+        "maxHours": 1,
+        "text": "gone within the hour"
+      },
+      {
+        "maxHours": 12,
+        "text": "lasts a few hours"
+      },
+      {
+        "maxHours": 100,
+        "text": "lasts all day"
+      },
+      {
+        "maxHours": 100000,
+        "text": "lasts for days"
+      }
+    ]
   }
 }

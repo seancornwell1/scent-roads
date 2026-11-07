@@ -72,6 +72,7 @@ A customer round at the counter (`src/game/round.ts`, screens in `src/ui/round.t
 | `ghostSpokes` | How many of the target's strongest spokes a specific brief shows as a ghost outline |
 | `walkIn` | Walk-ins' made-up briefs: `materials` and `drops` (ranges) of the hidden solution, picked from what the player has unlocked; `pay` (`base` + `perMaterial` × materials); `specificChance` |
 | `briefs` | Walk-ins' words: `vague` (one spoke), `vagueTwo` (two), `specific` (names a material); `{word}`, `{word2}` are spokes' words and `{material}` a material in the solution |
+| `exp` | Material EXP: `perServe` for each material in a served perfume; `levels`, the EXP each card level starts at (level 1 at 0; the last is the top level). A card shows: level 1, direction unknown; 2, its main spoke; 3, how strongly it pushes (`strengthWords`, by its push per drop); top, its exact vector and how long it lasts (`volatilityWords`, by half-life in hours). EXP is saved as `counter.exp`. |
 
 Story requests and regulars keep their written briefs (`story.json`, `clients.json`): their target formula becomes the hidden solution (a 10-part formula drop for drop, a 100-part one in tenths), and they're always specific. The round is saved as `counter.round` (who, when it started, the drops, how many tests); each visit keeps its brief as `round`.
 

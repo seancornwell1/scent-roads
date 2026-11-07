@@ -1,6 +1,7 @@
 import { content, materialsById } from '../game/content';
 import { radarOf, SPOKES, type Mix, type RoundScore, type Target, type Values } from '../game/radar';
-import { intensityWord, tipFor } from '../game/round';
+import { cardFor, counter, intensityWord, maxLevel, tipFor } from '../game/round';
+import { spokeInfo } from '../game/radar';
 import { ownedMaterials } from '../game/world';
 import { state } from '../state';
 import { esc, starsText } from './html';
@@ -20,6 +21,8 @@ export interface Reveal {
   accords: string[];
   page: string | null;
   thanks: string | null;
+  /** Materials that levelled up from this perfume. */
+  levelUps: { id: string; level: number }[];
 }
 
 /** A test ping on screen: what it showed, for how long, and when it started. */
@@ -149,3 +152,34 @@ export function revealScreen(r: Reveal, gains: string[]): string {
       <div class="row-between"><span></span><button class="primary" data-action="reveal-done">Thank ${esc(r.name)}</button></div>
     </main>`;
 }
+
+/** A material's card, as much as its EXP has revealed. */
+export function cardLine(id: string): string {
+  const exp = state.save.counter!.exp[id] ?? 0;
+  const card = cardFor(id, exp);
+  const levels = counter.exp.levels;
+  const next = levels[card.level];
+  const progress = next !== undefined ? ` · ${exp}/${next} EXP` : '';
+  const label = card.level >= maxLevel() ? 'Level max' : `Level ${card.level}`;
+  let what: string;
+  if (card.vector) {
+    const parts = Object.entries(card.vector)
+      .sort((a, b) => b[1] - a[1])
+      .map(([s, v]) => `${spokeInfo(s as never).name} ${Math.round(v * 100)}`)
+      .join(' · ');
+    what = `${parts} · ${card.volatility}`;
+  } else if (card.strength) what = `${spokeInfo(card.direction!).name}, ${card.strength}`;
+  else if (card.direction) what = `pushes ${spokeInfo(card.direction).name}`;
+  else what = 'direction unknown (?)';
+  return `<span class="material-card small">${label}: ${esc(what)}<span class="muted">${progress}</span></span>`;
+}
+
+/** What a level-up taught you, for the reveal. */
+export function levelUpLine(id: string, level: number): string {
+  const name = esc(materialsById.get(id)?.name ?? id);
+  if (level >= maxLevel()) return `<strong>${name}</strong> is at its top level: its card shows its exact pull and how long it lasts.`;
+  if (level >= 3) return `<strong>${name}</strong> reached level ${level}: you know how strongly it pushes.`;
+  return `<strong>${name}</strong> reached level ${level}: you know its main direction.`;
+}
+
+

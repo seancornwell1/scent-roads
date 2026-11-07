@@ -1,7 +1,7 @@
 import counterJson from '../data/counter.json';
 import type { Brief } from './clients';
 import { materialsById } from './content';
-import { radarOf, spokeInfo, SPOKES, targetOf, type Mix, type Target } from './radar';
+import { radarOf, spokeInfo, SPOKES, strengthOf, targetOf, type Mix, type Target } from './radar';
 import type { Spoke } from './types';
 
 // A customer round at the counter. Every brief comes from a hidden solution (a mix of drops
@@ -29,6 +29,16 @@ export interface CounterData {
   };
   /** Walk-ins' words: {word}, {word2} are spokes' words, {material} a material in it. */
   briefs: { vague: string[]; vagueTwo: string[]; specific: string[] };
+  /**
+   * Material EXP: `perServe` for each material in a served perfume; `levels` is the EXP each
+   * level starts at (level 1 at the first). Words for a card's strength and volatility.
+   */
+  exp: {
+    perServe: number;
+    levels: number[];
+    strengthWords: { min: number; text: string }[];
+    volatilityWords: { maxHours: number; text: string }[];
+  };
 }
 
 export const counter = counterJson as CounterData;
@@ -133,3 +143,59 @@ export function addDrop(mix: Mix, id: string, delta: number): Mix {
   if (next[id] === 0) delete next[id];
   return next;
 }
+
+// Material EXP: served perfumes teach you their materials. A card shows more at each level:
+// 1, direction unknown; 2, its main direction; 3, how strongly it pushes; max, its exact
+// vector and its volatility.
+
+export function expLevel(exp: number, data: CounterData = counter): number {
+  return data.exp.levels.filter((x) => exp >= x).length;
+}
+
+export function maxLevel(data: CounterData = counter): number {
+  return data.exp.levels.length;
+}
+
+/** Adds EXP for every material in a served perfume. Returns the ones that levelled up, with their new level. */
+export function awardExp(c: CounterState, mix: Mix, data: CounterData = counter): { id: string; level: number }[] {
+  const ups: { id: string; level: number }[] = [];
+  for (const [id, drops] of Object.entries(mix)) {
+    if (drops <= 0) continue;
+    const before = expLevel(c.exp[id] ?? 0, data);
+    c.exp[id] = (c.exp[id] ?? 0) + data.exp.perServe;
+    const after = expLevel(c.exp[id], data);
+    if (after > before) ups.push({ id, level: after });
+  }
+  return ups;
+}
+
+export interface Card {
+  level: number;
+  /** Its main spoke, from level 2. */
+  direction?: Spoke;
+  /** How hard it pushes, in words, from level 3. */
+  strength?: string;
+  /** Its exact vector and how long it lasts, at the top level. */
+  vector?: Partial<Record<Spoke, number>>;
+  volatility?: string;
+}
+
+/** What a material's card shows at its level. */
+export function cardFor(id: string, exp: number, data: CounterData = counter): Card {
+  const m = materialsById.get(id);
+  const level = expLevel(exp, data);
+  if (!m) return { level };
+  const card: Card = { level };
+  const entries = Object.entries(m.radar.vector) as [Spoke, number][];
+  if (level >= 2) card.direction = entries.sort((a, b) => b[1] - a[1])[0][0];
+  if (level >= 3) {
+    const s = strengthOf(m);
+    card.strength = [...data.exp.strengthWords].reverse().find((w) => s >= w.min)?.text;
+  }
+  if (level >= maxLevel(data)) {
+    card.vector = { ...m.radar.vector };
+    card.volatility = data.exp.volatilityWords.find((w) => m.model.halfLifeHours <= w.maxHours)?.text;
+  }
+  return card;
+}
+

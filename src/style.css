@@ -517,3 +517,5 @@ textarea {
 .key { font-weight: 600; }
 .key--target { color: var(--ink); text-decoration: underline dashed; }
 .key--mix { color: var(--accent); }
+.material-card { display: block; color: var(--ink); opacity: 0.85; }
+.exp-gains li { margin: 3px 0; }

@@ -16,7 +16,6 @@ import { currentRank, draftBlend, nowGame, state } from '../state';
 import { pageCard } from './book';
 import { houseUnlocked } from './house';
 import { compendiumEntry } from './compendium';
-import { currentStreak, dayNumber, nextQuestion } from '../game/learning';
 import { drydownGraph, familyName } from './graph';
 import { esc, formatParts, header } from './html';
 
@@ -116,16 +115,6 @@ function accordBanner(): string {
   </div>`;
 }
 
-/** Today's nose training, from the organ. */
-function trainingButton(): string {
-  const l = state.save.learning!;
-  const day = dayNumber(new Date());
-  const done = l.today?.day === day && nextQuestion(l) < 0;
-  const streak = currentStreak(l, day);
-  return `<div class="row-between training-row"><span class="small">${done ? 'Nose training done for today' : 'Nose training: a few questions today'} · streak ${streak}</span>
-    <button class="chip" data-action="nav" data-to="training">${done ? 'Review' : 'Train'}</button></div>`;
-}
-
 /** How full the formula is: a perfume totals exactly one of the totals your rank allows. */
 function partsMeter(): string {
   const total = partsTotal(draftBlend());
@@ -161,7 +150,7 @@ function materialsTab(): string {
     .filter((g) => g.items.length > 0)
     .map((g) => `<h2>${esc(g.title)}</h2><ul class="list">${g.items.sort(byName).map(materialRow).join('')}</ul>`)
     .join('');
-  return `${trainingButton()}<div class="row-between">${toggle}</div>${partsMeter()}${basesList()}${list}${upcoming}`;
+  return `<div class="row-between">${toggle}</div>${partsMeter()}${basesList()}${list}${upcoming}`;
 }
 
 /** Your saved accords, each usable as one ingredient. */

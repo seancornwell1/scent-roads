@@ -20,8 +20,8 @@ import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
 import { missCause, radarOf, scoreRadar, validateRadar, type Mix } from './game/radar';
-import { addDrop, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
-import { clock, revealScreen, roundScreen, targetValues } from './ui/round';
+import { addDrop, awardExp, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
+import { cardLine, clock, levelUpLine, revealScreen, roundScreen, targetValues } from './ui/round';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
@@ -150,10 +150,8 @@ function briefFor(visit: Visit): RoundBrief {
   return walkInBrief([...ownedMaterials(state.save)], seededRandom(seed));
 }
 
-/** What a material's card shows at the counter (filled in by its EXP; see part 3). */
-function materialCard(_id: string): string {
-  return '';
-}
+/** What a material's card shows at the counter: as much as its EXP has revealed. */
+const materialCard = (id: string): string => cardLine(id);
 
 /** Any accord in the mix for the first time: saved to the accord book, with its reward. */
 function discoverAccords(mix: Mix, accords: string[]): void {
@@ -456,7 +454,7 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
     case 'round':
       return state.save.counter!.round ? roundScreen(state.ui.ping, state.ui.accordReward, materialCard) : bookScreen();
     case 'reveal':
-      return state.ui.reveal ? revealScreen(state.ui.reveal, []) : bookScreen();
+      return state.ui.reveal ? revealScreen(state.ui.reveal, state.ui.reveal.levelUps.map((u) => levelUpLine(u.id, u.level))) : bookScreen();
     case 'reaction':
       return reactionScreen(visit!);
     case 'chapter':
@@ -646,6 +644,7 @@ document.body.addEventListener('click', (event) => {
       const request = visit.storyId ? requestById(visit.storyId) : undefined;
       const page = visit.storyId ? afterCounter(save.story!, visit, score.stars, cause, nowGame()) : null;
       serveAtCounter(save.customers!, visit.id, `${visit.name}'s perfume`, score.stars, pay + tip, nowGame());
+      const levelUps = awardExp(c, r.drops);
       ui.reveal = {
         name: visit.name,
         mix: { ...r.drops },
@@ -658,6 +657,7 @@ document.body.addEventListener('click', (event) => {
         accords: radar.accords,
         page,
         thanks: request && score.stars === 3 ? request.thanks : null,
+        levelUps,
       };
       c.round = null;
       ui.ping = null;

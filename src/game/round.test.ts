@@ -3,7 +3,8 @@ import { clients } from './clients';
 import { newCustomerState, serveAtCounter, tick } from './customers';
 import { radarOf, scoreRadar } from './radar';
 import { seededRandom } from './random';
-import { addDrop, counter, pingMs, solutionFromFormula, tipFor, walkInBrief, writtenBrief } from './round';
+import { addDrop, awardExp, cardFor, counter, expLevel, maxLevel, newCounterState, pingMs, solutionFromFormula, tipFor, walkInBrief, writtenBrief } from './round';
+import { materialsById } from './content';
 import { afterCounter, newStoryState, story } from './story';
 
 const bench = ['bergamot', 'lavender', 'labdanum', 'vanillin'];
@@ -68,5 +69,27 @@ describe('counter rounds', () => {
     expect(afterCounter(st, visit, 2, 'It needed more citrus.', 10)).toBeNull();
     expect(st.requests[request.id].last?.cause).toBe('It needed more citrus.');
     expect(afterCounter(st, visit, 3, null, 20)).toBe(request.brief.page);
+  });
+});
+
+describe('material EXP', () => {
+  it('earns EXP for each material in a served perfume, and reports level-ups', () => {
+    const c = newCounterState();
+    expect(awardExp(c, { bergamot: 3, lavender: 1 })).toEqual([]);
+    const ups = awardExp(c, { bergamot: 2 });
+    expect(ups).toEqual([{ id: 'bergamot', level: 2 }]);
+    expect(c.exp.lavender).toBe(counter.exp.perServe);
+  });
+
+  it('reveals more of a card at each level: ?, direction, strength, then exact vector and volatility', () => {
+    const at = (level: number) => cardFor('bergamot', counter.exp.levels[level - 1]);
+    expect(at(1).direction).toBeUndefined();
+    expect(at(2).direction).toBe('citrus');
+    expect(at(2).strength).toBeUndefined();
+    expect(at(3).strength).toMatch(/pushes/);
+    expect(at(3).vector).toBeUndefined();
+    expect(at(maxLevel()).vector).toEqual(materialsById.get('bergamot')!.radar.vector);
+    expect(at(maxLevel()).volatility).toMatch(/hour/);
+    expect(expLevel(0)).toBe(1);
   });
 });
