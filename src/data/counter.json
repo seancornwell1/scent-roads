@@ -107,5 +107,169 @@
         "text": "lasts for days"
       }
     ]
+  },
+  "progression": {
+    "starting": [
+      "bergamot",
+      "lavender",
+      "labdanum",
+      "vanillin"
+    ],
+    "stages": [
+      {
+        "reputation": 0,
+        "name": "First days",
+        "materials": [
+          1,
+          2
+        ],
+        "drops": [
+          1,
+          4
+        ],
+        "startingOnly": true,
+        "specificChance": 0,
+        "includeChance": 0,
+        "avoidChance": 0,
+        "bothAllowed": false,
+        "shiftedChance": 0
+      },
+      {
+        "reputation": 4,
+        "name": "Finding your feet",
+        "materials": [
+          2,
+          3
+        ],
+        "drops": [
+          1,
+          4
+        ],
+        "startingOnly": false,
+        "specificChance": 0.3,
+        "includeChance": 0,
+        "avoidChance": 0,
+        "bothAllowed": false,
+        "shiftedChance": 0
+      },
+      {
+        "reputation": 8,
+        "name": "Regulars",
+        "materials": [
+          2,
+          3
+        ],
+        "drops": [
+          1,
+          5
+        ],
+        "startingOnly": false,
+        "specificChance": 0.5,
+        "includeChance": 0.3,
+        "avoidChance": 0,
+        "bothAllowed": false,
+        "shiftedChance": 0
+      },
+      {
+        "reputation": 14,
+        "name": "Known in town",
+        "materials": [
+          2,
+          4
+        ],
+        "drops": [
+          1,
+          5
+        ],
+        "startingOnly": false,
+        "specificChance": 0.6,
+        "includeChance": 0.3,
+        "avoidChance": 0.3,
+        "bothAllowed": false,
+        "shiftedChance": 0
+      },
+      {
+        "reputation": 20,
+        "name": "A perfumer",
+        "materials": [
+          3,
+          4
+        ],
+        "drops": [
+          1,
+          5
+        ],
+        "startingOnly": false,
+        "specificChance": 0.65,
+        "includeChance": 0.3,
+        "avoidChance": 0.3,
+        "bothAllowed": false,
+        "shiftedChance": 0.4
+      },
+      {
+        "reputation": 35,
+        "name": "Master of the counter",
+        "materials": [
+          3,
+          4
+        ],
+        "drops": [
+          1,
+          6
+        ],
+        "startingOnly": false,
+        "specificChance": 0.7,
+        "includeChance": 0.35,
+        "avoidChance": 0.35,
+        "bothAllowed": true,
+        "shiftedChance": 0.5
+      }
+    ],
+    "seasons": {
+      "Spring": [
+        "green",
+        "floral"
+      ],
+      "Summer": [
+        "citrus",
+        "fresh"
+      ],
+      "Autumn": [
+        "woody",
+        "spicy",
+        "gourmand"
+      ],
+      "Winter": [
+        "amber",
+        "gourmand",
+        "spicy"
+      ]
+    },
+    "seasonWeight": 2.5,
+    "shifted": {
+      "opening": "opening",
+      "drydown": "drydown",
+      "volatileMaxHalfLife": 2,
+      "tenaciousMinHalfLife": 20
+    },
+    "texts": {
+      "include": [
+        "It has to have {material} in it.",
+        "Please put some {material} in it.",
+        "{Material} is a must, for me."
+      ],
+      "avoid": [
+        "No {material}, please: it gives me a headache.",
+        "Anything but {material}.",
+        "Please keep {material} out of it."
+      ],
+      "shifted": [
+        "{word} at first, drying down {word2}.",
+        "I want it to open {word} and end {word2}.",
+        "Start {word}, then settle into something {word2}."
+      ],
+      "brokeInclude": "They asked for {material} in it.",
+      "brokeAvoid": "They asked for no {material}."
+    }
   }
 }

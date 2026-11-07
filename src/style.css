@@ -519,3 +519,6 @@ textarea {
 .key--mix { color: var(--accent); }
 .material-card { display: block; color: var(--ink); opacity: 0.85; }
 .exp-gains li { margin: 3px 0; }
+.radar-box--stages { gap: 4px; }
+.radar-stage { margin: 0; flex: 1; min-width: 0; text-align: center; }
+.radar-stage figcaption { color: var(--muted); }

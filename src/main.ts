@@ -8,7 +8,7 @@ import { completeReview, handOver, serveAtCounter, tick, type Visit } from './ga
 import { afterCounter, afterReview, meet, pageById, pageFormula, requestById, storyTick } from './game/story';
 import { seededRandom } from './game/random';
 import { applyQuality, scorePerfume } from './game/scoring';
-import { setClockSpeed } from './game/clock';
+import { dateAt, seasonOf, setClockSpeed } from './game/clock';
 import { DILUTION_BATCH_GRAMS, consume, contractStage, dilute, harvest, missingFor, order, qualityWord, signContract, sourcing, tickSourcing, unpack, type Crate } from './game/sourcing';
 import { addCustomLabel, addHousePerfume, fairPrice, house, rateHouse, restock, setTier, settleHouse, suggestName, takeDown, unlockBlockers } from './game/house';
 import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
@@ -19,8 +19,8 @@ import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, 
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
-import { missCause, radarOf, scoreRadar, validateRadar, type Mix } from './game/radar';
-import { addDrop, awardExp, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
+import { radarOf, validateRadar, type Mix } from './game/radar';
+import { addDrop, awardExp, judgeRound, pingMs, tipFor, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
 import { benchScreen, cardLine, clock, levelUpLine, revealScreen, roundScreen, targetValues } from './ui/round';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
@@ -151,7 +151,8 @@ function briefFor(visit: Visit): RoundBrief {
   if (written) return writtenBrief(written);
   let seed = 0;
   for (const ch of visit.id) seed = (Math.imul(seed, 31) + ch.charCodeAt(0)) >>> 0;
-  return walkInBrief([...ownedMaterials(state.save)], seededRandom(seed));
+  const season = seasonOf(dateAt(nowGame(), sourcing.calendarStart).month);
+  return walkInBrief([...ownedMaterials(state.save)], seededRandom(seed), { reputation: state.save.customers!.reputation, season, modelStages: content.model.stages });
 }
 
 /** What a material's card shows at the counter: as much as its EXP has revealed. */
@@ -628,7 +629,8 @@ document.body.addEventListener('click', (event) => {
       const r = ui.screen === 'bench' ? save.counter!.bench : save.counter!.round;
       if (!r) return;
       const radar = radarOf(r.drops);
-      ui.ping = { values: radar.values, ms: pingMs(r.tests), at: Date.now() };
+      const hours = ui.screen === 'round' ? (save.counter!.round!.brief.stages?.map((st) => st.hours) ?? [0]) : [0];
+      ui.ping = { values: hours.map((h) => radarOf(r.drops, h).values), ms: pingMs(r.tests), at: Date.now() };
       r.tests += 1;
       sounds.play('glass');
       discoverAccords(r.drops, radar.accords);
@@ -642,10 +644,9 @@ document.body.addEventListener('click', (event) => {
       const r = c.round;
       const visit = r && save.customers!.visits.find((v) => v.id === r.visitId);
       if (!r || !visit || Object.keys(r.drops).length === 0) return;
-      const radar = radarOf(r.drops);
-      const score = scoreRadar(radar, r.brief.target);
-      const cause = score.stars === 3 && score.total > 0.9 ? null : missCause(radar, r.brief.target);
-      discoverAccords(r.drops, radar.accords);
+      const judged = judgeRound(r.drops, r.brief);
+      const { score, cause } = judged;
+      discoverAccords(r.drops, judged.accords);
       const pay = Math.round(r.brief.pay * (visit.payMultiplier ?? 1) * (clients.economy.payForStars[score.stars - 1] ?? 1));
       const tip = pay > 0 ? tipFor(r.brief.pay, Date.now() - r.startedAt) : 0;
       const request = visit.storyId ? requestById(visit.storyId) : undefined;
@@ -655,13 +656,12 @@ document.body.addEventListener('click', (event) => {
       ui.reveal = {
         name: visit.name,
         mix: { ...r.drops },
-        values: radar.values,
-        target: targetValues(r.brief.target),
+        stages: judged.stages.map((st) => ({ name: st.name, values: st.radar.values, target: targetValues(st.target) })),
         score,
         cause,
         pay,
         tip,
-        accords: radar.accords,
+        accords: judged.accords,
         page,
         thanks: request && score.stars === 3 ? request.thanks : null,
         levelUps,

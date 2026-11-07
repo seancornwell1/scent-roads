@@ -1,7 +1,7 @@
 import counterJson from '../data/counter.json';
 import type { Brief } from './clients';
 import { materialsById } from './content';
-import { radarOf, spokeInfo, SPOKES, strengthOf, targetOf, type Mix, type Target } from './radar';
+import { missCause, radarData, radarOf, scoreRadar, spokeInfo, SPOKES, strengthOf, targetOf, type Mix, type Radar, type RoundScore, type Target } from './radar';
 import type { Spoke } from './types';
 
 // A customer round at the counter. Every brief comes from a hidden solution (a mix of drops
@@ -33,6 +33,8 @@ export interface CounterData {
    * Material EXP: `perServe` for each material in a served perfume; `levels` is the EXP each
    * level starts at (level 1 at the first). Words for a card's strength and volatility.
    */
+  /** Difficulty by stage of the game (reputation, until competitions exist). */
+  progression: Progression;
   exp: {
     perServe: number;
     levels: number[];
@@ -41,7 +43,42 @@ export interface CounterData {
   };
 }
 
-export const counter = counterJson as CounterData;
+export interface ProgressionStage {
+  /** Reputation it starts at. */
+  reputation: number;
+  name: string;
+  /** Materials (range) and drops of each (range) in a walk-in's solution. */
+  materials: [number, number];
+  drops: [number, number];
+  /** Only the starting materials (the first days' single-shape briefs). */
+  startingOnly: boolean;
+  /** Chance a walk-in names a material and shows a ghost outline (general → specific). */
+  specificChance: number;
+  /** Chances of a must-include and a must-avoid; both together only when `bothAllowed`. */
+  includeChance: number;
+  avoidChance: number;
+  bothAllowed: boolean;
+  /** Chance of a time-shifted brief (an opening and a drydown target). */
+  shiftedChance: number;
+}
+
+export interface Progression {
+  starting: string[];
+  stages: ProgressionStage[];
+  /** Season name → spokes customers lean towards then; materials pushing them are `seasonWeight` times likelier. */
+  seasons: Record<string, Spoke[]>;
+  seasonWeight: number;
+  /** Time-shifted briefs: the model stages they're judged at, and what counts as a top note (half-life at most) and a base note (at least), in hours. */
+  shifted: { opening: string; drydown: string; volatileMaxHalfLife: number; tenaciousMinHalfLife: number };
+  texts: { include: string[]; avoid: string[]; shifted: string[]; brokeInclude: string; brokeAvoid: string };
+}
+
+export const counter = counterJson as unknown as CounterData;
+
+/** The stage of the game a reputation puts you at. */
+export function stageAt(reputation: number, data: CounterData = counter): ProgressionStage {
+  return [...data.progression.stages].reverse().find((s) => reputation >= s.reputation) ?? data.progression.stages[0];
+}
 
 export interface RoundBrief {
   /** What the customer says. */
@@ -54,6 +91,11 @@ export interface RoundBrief {
   /** Specific briefs show part of the target (these spokes) as a ghost outline. */
   ghost: Spoke[];
   pay: number;
+  /** A material that must be in it, or must not be. */
+  include?: string;
+  avoid?: string;
+  /** A time-shifted brief's targets at each stage (`target` is the first). */
+  stages?: { id: string; name: string; hours: number; target: Target }[];
 }
 
 export interface RoundState {
@@ -100,29 +142,147 @@ export function writtenBrief(b: Brief, data: CounterData = counter): RoundBrief 
 const between = ([lo, hi]: [number, number], rnd: () => number) => lo + Math.floor(rnd() * (hi - lo + 1));
 const pick = <T>(list: T[], rnd: () => number): T => list[Math.floor(rnd() * list.length)];
 
-/** A walk-in's brief, made up from materials the player has. */
-export function walkInBrief(owned: string[], rnd: () => number, data: CounterData = counter): RoundBrief {
-  const w = data.walkIn;
-  const pool = owned.filter((id) => materialsById.has(id));
-  const count = Math.min(pool.length, between(w.materials, rnd));
+/** Where a walk-in comes in: their stage of the game and the season. */
+export interface BriefContext {
+  reputation: number;
+  season: string;
+  /** The model's stages (id, name, hours), for time-shifted briefs. */
+  modelStages: { id: string; name: string; hours: number }[];
+}
+
+const name = (id: string) => (materialsById.get(id)?.name ?? id).toLowerCase();
+const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+const topSpoke = (id: string): Spoke | undefined => (Object.entries(materialsById.get(id)?.radar.vector ?? {}) as [Spoke, number][]).sort((a, b) => b[1] - a[1])[0]?.[0];
+
+/** Picks one id, the season's materials more likely. */
+function pickWeighted(ids: string[], season: Spoke[], weight: number, rnd: () => number): string {
+  const ws = ids.map((id) => (season.includes(topSpoke(id)!) ? weight : 1));
+  let r = rnd() * ws.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < ids.length; i++) if ((r -= ws[i]) < 0) return ids[i];
+  return ids[ids.length - 1];
+}
+
+/**
+ * A walk-in's brief, made up from materials the player has, as hard as their stage of the
+ * game: how many materials, general or specific, must-include and must-avoid, and (from mid
+ * game) an opening and a drydown target. The season nudges which families they ask for.
+ */
+export function walkInBrief(owned: string[], rnd: () => number, ctx: BriefContext = { reputation: 0, season: 'Spring', modelStages: [] }, data: CounterData = counter): RoundBrief {
+  const pr = data.progression;
+  const stage = stageAt(ctx.reputation, data);
+  const season = pr.seasons[ctx.season] ?? [];
+  let pool = owned.filter((id) => materialsById.has(id));
+  if (stage.startingOnly) {
+    const first = pool.filter((id) => pr.starting.includes(id));
+    if (first.length) pool = first;
+  }
+  const count = Math.max(1, Math.min(pool.length, between(stage.materials, rnd)));
+  const opening = ctx.modelStages.find((x) => x.id === pr.shifted.opening);
+  const drydown = ctx.modelStages.find((x) => x.id === pr.shifted.drydown);
+  const tops = pool.filter((id) => materialsById.get(id)!.model.halfLifeHours <= pr.shifted.volatileMaxHalfLife);
+  const bases = pool.filter((id) => materialsById.get(id)!.model.halfLifeHours >= pr.shifted.tenaciousMinHalfLife);
+  const shifted = !!opening && !!drydown && count >= 2 && tops.length > 0 && bases.length > 0 && rnd() < stage.shiftedChance;
+
   const chosen: string[] = [];
-  while (chosen.length < count) {
-    const id = pick(pool, rnd);
+  if (shifted) {
+    // A top note and a base note, so the shape moves as it dries down.
+    chosen.push(pickWeighted(tops, season, pr.seasonWeight, rnd), pickWeighted(bases, season, pr.seasonWeight, rnd));
+  }
+  for (let guard = 0; chosen.length < count && guard < 50; guard++) {
+    const id = pickWeighted(pool, season, pr.seasonWeight, rnd);
     if (!chosen.includes(id)) chosen.push(id);
   }
-  const solution: Mix = Object.fromEntries(chosen.map((id) => [id, between(w.drops, rnd)]));
+  const solution: Mix = Object.fromEntries(chosen.map((id) => [id, between(stage.drops, rnd)]));
   const radar = radarOf(solution);
   const target = targetOf(radar);
   const [first, second] = topSpokes(target, 2);
-  const specific = rnd() < w.specificChance;
+  const specific = rnd() < stage.specificChance;
   // A specific brief names the material that pushes its main spoke hardest.
-  const lead = Object.entries(radar.pushes).sort((a, b) => b[1][first] - a[1][first])[0]?.[0];
-  const template = specific ? pick(data.briefs.specific, rnd) : target.shape[second] >= 0.2 ? pick(data.briefs.vagueTwo, rnd) : pick(data.briefs.vague, rnd);
-  const text = template
-    .replace('{word}', spokeInfo(first).word)
-    .replace('{word2}', spokeInfo(second).word)
-    .replace('{material}', (materialsById.get(lead ?? '')?.name ?? '').toLowerCase());
-  return { text, extra: [], solution, target, ghost: specific ? topSpokes(target, data.ghostSpokes) : [], pay: w.pay.base + w.pay.perMaterial * count };
+  const lead = Object.entries(radar.pushes).sort((a, b) => b[1][first] - a[1][first])[0]?.[0] ?? chosen[0];
+
+  let stages: RoundBrief['stages'];
+  let text: string;
+  if (shifted) {
+    stages = [opening!, drydown!].map((st) => ({ id: st.id, name: st.name, hours: st.hours, target: targetOf(radarOf(solution, st.hours)) }));
+    const late = topSpokes(stages[1].target, 1)[0];
+    const early = topSpokes(stages[0].target, 1)[0];
+    text = cap(pick(pr.texts.shifted, rnd).replace('{word}', spokeInfo(early).word).replace('{word2}', spokeInfo(late).word));
+    if (specific) text += ` ${cap(pick(data.briefs.specific, rnd).replace('{word}', spokeInfo(first).word).replace('{material}', name(lead)))}`;
+  } else {
+    const template = specific ? pick(data.briefs.specific, rnd) : target.shape[second] >= 0.2 ? pick(data.briefs.vagueTwo, rnd) : pick(data.briefs.vague, rnd);
+    text = template.replace('{word}', spokeInfo(first).word).replace('{word2}', spokeInfo(second).word).replace('{material}', name(lead));
+  }
+
+  // Modifiers: a must-include from the solution; a must-avoid that's tempting (it pushes the
+  // same way) but not in it. Both together only late in the game.
+  let include: string | undefined;
+  let avoid: string | undefined;
+  const extra: string[] = [];
+  if (rnd() < stage.includeChance) include = chosen[Math.floor(rnd() * chosen.length)];
+  if ((!include || stage.bothAllowed) && rnd() < stage.avoidChance) {
+    const others = pool.filter((id) => !chosen.includes(id));
+    const tempting = others.filter((id) => topSpoke(id) === first || topSpoke(id) === second);
+    const from = tempting.length ? tempting : others;
+    if (from.length) avoid = from[Math.floor(rnd() * from.length)];
+  }
+  if (include) extra.push(fill(pick(pr.texts.include, rnd), include));
+  if (avoid) extra.push(fill(pick(pr.texts.avoid, rnd), avoid));
+
+  return {
+    text,
+    extra,
+    solution,
+    target: stages ? stages[0].target : target,
+    ghost: specific ? topSpokes(target, data.ghostSpokes) : [],
+    pay: data.walkIn.pay.base + data.walkIn.pay.perMaterial * count + (shifted ? data.walkIn.pay.perMaterial : 0),
+    ...(include ? { include } : {}),
+    ...(avoid ? { avoid } : {}),
+    ...(stages ? { stages } : {}),
+  };
+}
+
+function fill(t: string, id: string): string {
+  return t.replace('{Material}', cap(name(id))).replace('{material}', name(id));
+}
+
+export interface StageJudgement {
+  name: string;
+  radar: Radar;
+  target: Target;
+  score: RoundScore;
+}
+
+export interface Judgement {
+  score: RoundScore;
+  /** The main cause of any miss, in plain words (or a broken must-include / must-avoid). */
+  cause: string | null;
+  stages: StageJudgement[];
+  /** Accords in the mix (at the first stage). */
+  accords: string[];
+}
+
+/**
+ * Judges a mix against a brief: each stage's shape and intensity (a time-shifted brief at
+ * each of its stages), averaged; a broken must-include or must-avoid caps it at one star.
+ */
+export function judgeRound(drops: Mix, brief: RoundBrief, data: CounterData = counter): Judgement {
+  const stages = (brief.stages ?? [{ id: '', name: '', hours: 0, target: brief.target }]).map((st) => {
+    const radar = radarOf(drops, st.hours);
+    return { name: st.name, radar, target: st.target, score: scoreRadar(radar, st.target) };
+  });
+  const avg = (f: (x: StageJudgement) => number) => stages.reduce((a, x) => a + f(x), 0) / stages.length;
+  const total = avg((x) => x.score.total);
+  const stars = (1 + radarData.scoring.stars.filter((t) => total >= t).length) as 1 | 2 | 3;
+  const score: RoundScore = { shape: avg((x) => x.score.shape), intensity: avg((x) => x.score.intensity), total, stars };
+  const worst = [...stages].sort((a, b) => a.score.total - b.score.total)[0];
+  let cause = stars === 3 && total > 0.9 ? null : missCause(worst.radar, worst.target);
+  if (cause && stages.length > 1) cause = `${worst.name}: ${cause}`;
+  const broke = brief.include && !(drops[brief.include] > 0) ? data.progression.texts.brokeInclude.replace('{material}', name(brief.include)) : brief.avoid && drops[brief.avoid] > 0 ? data.progression.texts.brokeAvoid.replace('{material}', name(brief.avoid)) : null;
+  if (broke) {
+    score.stars = 1;
+    cause = broke;
+  }
+  return { score, cause, stages, accords: stages[0].radar.accords };
 }
 
 export function intensityWord(intensity: number, data: CounterData = counter): string {

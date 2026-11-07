@@ -13,8 +13,8 @@ import { radarChart, scaleFor, type RadarLayer } from './radar';
 export interface Reveal {
   name: string;
   mix: Mix;
-  values: Values;
-  target: Values;
+  /** Each stage (one, or opening and drydown): what you made and what they wanted. */
+  stages: { name: string; values: Values; target: Values }[];
   score: RoundScore;
   cause: string | null;
   pay: number;
@@ -28,7 +28,8 @@ export interface Reveal {
 
 /** A test ping on screen: what it showed, for how long, and when it started. */
 export interface Ping {
-  values: Values;
+  /** The mix at each of the brief's stages (one for the bench and simple briefs). */
+  values: Values[];
   ms: number;
   at: number;
 }
@@ -82,19 +83,26 @@ function pulseFor(reward: string | null): Spoke[] {
   return reward ? (Object.keys(radarData.accords.find((a) => a.accord === reward)?.spokes ?? {}) as Spoke[]) : [];
 }
 
-export function pingLayer(ping: Ping | null): RadarLayer[] {
-  if (!ping) return [];
+export function pingLayer(ping: Ping | null, stage = 0): RadarLayer[] {
+  if (!ping || !ping.values[stage]) return [];
   const elapsed = Date.now() - ping.at;
-  return elapsed < ping.ms ? [{ kind: 'ping', values: ping.values, ms: ping.ms, elapsed }] : [];
+  if (stage > 0) return elapsed < ping.ms ? [{ kind: 'ping', values: ping.values[stage], ms: ping.ms, elapsed }] : [];
+  return elapsed < ping.ms ? [{ kind: 'ping', values: ping.values[0], ms: ping.ms, elapsed }] : [];
 }
 
 export function roundScreen(ping: Ping | null, reward: string | null, card: (id: string) => string): string {
   const round = state.save.counter!.round!;
   const visit = state.save.customers!.visits.find((v) => v.id === round.visitId);
   const b = round.brief;
-  const target = targetValues(b.target);
   const elapsed = Date.now() - round.startedAt;
-  const layers: RadarLayer[] = [...(b.ghost.length ? [{ kind: 'ghost' as const, values: target, spokes: b.ghost }] : []), ...pingLayer(ping)];
+  const stages = b.stages ?? [{ id: '', name: '', hours: 0, target: b.target }];
+  const charts = stages
+    .map((st, i) => {
+      const target = targetValues(st.target);
+      const layers: RadarLayer[] = [...(b.ghost.length ? [{ kind: 'ghost' as const, values: target, spokes: b.ghost }] : []), ...pingLayer(ping, i)];
+      return `<figure class="radar-stage">${st.name ? `<figcaption class="small"><strong>${esc(st.name)}</strong> · ${esc(intensityWord(st.target.intensity))}</figcaption>` : ''}${radarChart(layers, scaleFor(target), pulseFor(reward))}</figure>`;
+    })
+    .join('');
   const used = Object.values(round.drops).reduce((a, n) => a + n, 0);
   const lastPing = ping ? radarOf(round.drops) : null;
   const muddy = lastPing?.muddy.length ? '<p class="small warn-text">It went muddy: something in the mix is fighting.</p>' : '';
@@ -107,8 +115,8 @@ export function roundScreen(ping: Ping | null, reward: string | null, card: (id:
       ${reward ? accordReward(reward) : ''}
       <blockquote class="memory">“${esc(b.text)}”</blockquote>
       ${b.extra.map((h) => `<p class="hint">“${esc(h)}”</p>`).join('')}
-      <p class="small">They want it <strong>${esc(intensityWord(b.target.intensity))}</strong>.${b.ghost.length ? ' The dashed lines are part of what they described.' : ''}</p>
-      <div class="radar-box">${radarChart(layers, scaleFor(target), pulseFor(reward))}</div>
+      <p class="small">They want it <strong>${esc(intensityWord(b.target.intensity))}</strong>${stages.length > 1 ? ' at first, and it should change as it dries down' : ''}.${b.ghost.length ? ' The dashed lines are part of what they described.' : ''}</p>
+      <div class="radar-box${stages.length > 1 ? ' radar-box--stages' : ''}">${charts}</div>
       ${muddy}
       <div class="row-between">
         <button class="chip" data-action="round-test" ${used ? '' : 'disabled'}>Test${round.tests ? ` (${round.tests})` : ''}</button>
@@ -141,12 +149,14 @@ export function revealScreen(r: Reveal, gains: string[]): string {
     .join(' · ');
   return `<header class="bar-top"><span></span><h1>The reveal</h1><span></span></header>
     <main class="customer reveal">
-      <div class="radar-box">${radarChart([{ kind: 'target', values: r.target }, { kind: 'mix', values: r.values }], scaleFor(r.target))}</div>
+      <div class="radar-box${r.stages.length > 1 ? ' radar-box--stages' : ''}">${r.stages
+        .map((st) => `<figure class="radar-stage">${st.name ? `<figcaption class="small"><strong>${esc(st.name)}</strong></figcaption>` : ''}${radarChart([{ kind: 'target', values: st.target }, { kind: 'mix', values: st.values }], scaleFor(st.target))}</figure>`)
+        .join('')}</div>
       <p class="muted small reveal-key"><span class="key key--target">dashed</span> what ${esc(r.name)} wanted · <span class="key key--mix">filled</span> what you made</p>
       <p class="stars" aria-label="${r.score.stars} of 3 stars">${starsText(r.score.stars)}</p>
       <ul class="plain reveal-scores">
         <li><strong>Shape:</strong> ${percentWord(r.score.shape)} (${Math.round(r.score.shape * 100)}%)</li>
-        <li><strong>Intensity:</strong> ${intensityVerdict(r.values, r.target, r.score.intensity)} (${Math.round(r.score.intensity * 100)}%)</li>
+        <li><strong>Intensity:</strong> ${intensityVerdict(r.stages[0].values, r.stages[0].target, r.score.intensity)} (${Math.round(r.score.intensity * 100)}%)</li>
       </ul>
       <p class="reveal-cause">${esc(r.cause ?? 'Nothing to change: that’s exactly it.')}</p>
       ${accords ? `<p class="small">Accords in it: <strong>${esc(accords)}</strong></p>` : ''}
@@ -193,7 +203,7 @@ export function benchScreen(ping: Ping | null, reward: string | null): string {
   const bench = state.save.counter!.bench;
   const used = Object.values(bench.drops).reduce((a, n) => a + n, 0);
   const shown = ping ? radarOf(bench.drops) : null;
-  const scale = shown ? Math.max(1, ...SPOKES.map((s) => shown.values[s])) * 1.3 : 1;
+  const scale = shown ? Math.max(1, ...SPOKES.map((s) => shown.values[s])) * 1.3 : 1; // no target: fit the mix
   const found = shown?.accords.map((id) => content.accords.find((a) => a.id === id)?.name).filter(Boolean) ?? [];
   return `<header class="bar-top">
       <button class="link" data-action="close-panel">Close</button>

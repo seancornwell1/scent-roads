@@ -3,7 +3,8 @@ import { clients } from './clients';
 import { newCustomerState, serveAtCounter, tick } from './customers';
 import { radarOf, scoreRadar } from './radar';
 import { seededRandom } from './random';
-import { addDrop, awardExp, cardFor, counter, expLevel, maxLevel, newCounterState, pingMs, solutionFromFormula, tipFor, walkInBrief, writtenBrief } from './round';
+import { addDrop, awardExp, cardFor, counter, expLevel, judgeRound, maxLevel, newCounterState, pingMs, solutionFromFormula, tipFor, topSpokes, walkInBrief, writtenBrief } from './round';
+import { content } from './content';
 import { materialsById } from './content';
 import { afterCounter, newStoryState, story } from './story';
 
@@ -28,7 +29,7 @@ describe('counter rounds', () => {
 
   it('show a ghost only for specific briefs; written briefs are specific', () => {
     const rnd = seededRandom(9);
-    const briefs = Array.from({ length: 40 }, () => walkInBrief(bench, rnd));
+    const briefs = Array.from({ length: 40 }, () => walkInBrief(bench, rnd, { reputation: 8, season: 'Spring', modelStages: [] }));
     expect(briefs.some((b) => b.ghost.length === 0)).toBe(true);
     expect(briefs.some((b) => b.ghost.length === counter.ghostSpokes)).toBe(true);
     expect(writtenBrief(story.requests[0].brief).ghost).toHaveLength(counter.ghostSpokes);
@@ -93,3 +94,60 @@ describe('material EXP', () => {
     expect(expLevel(0)).toBe(1);
   });
 });
+
+describe('difficulty progression', () => {
+  const owned = ['bergamot', 'lavender', 'labdanum', 'vanillin', 'lemon', 'rosemary', 'frankincense', 'benzoin', 'myrrh', 'sweet-orange', 'petitgrain', 'neroli', 'clove', 'rose-damascena', 'patchouli', 'cedarwood-virginia'];
+  const ctx = (reputation: number, season = 'Spring') => ({ reputation, season, modelStages: content.model.stages });
+  const many = (reputation: number, n = 80, season = 'Spring') => {
+    const rnd = seededRandom(reputation * 7 + season.length);
+    return Array.from({ length: n }, () => walkInBrief(owned, rnd, ctx(reputation, season)));
+  };
+
+  it('starts with simple, vague briefs from the starting materials', () => {
+    for (const b of many(0)) {
+      expect(Object.keys(b.solution).length).toBeLessThanOrEqual(2);
+      expect(Object.keys(b.solution).every((id) => counter.progression.starting.includes(id))).toBe(true);
+      expect(b.ghost).toEqual([]);
+      expect(b.include ?? b.avoid ?? b.stages).toBeUndefined();
+    }
+  });
+
+  it('adds must-include, then must-avoid, and both together only late', () => {
+    expect(many(8).some((b) => b.include)).toBe(true);
+    expect(many(8).some((b) => b.avoid)).toBe(false);
+    const mid = many(14);
+    expect(mid.some((b) => b.avoid)).toBe(true);
+    expect(mid.some((b) => b.include && b.avoid)).toBe(false);
+    expect(many(35, 200).some((b) => b.include && b.avoid)).toBe(true);
+    for (const b of mid) if (b.avoid) expect(b.solution[b.avoid]).toBeUndefined();
+  });
+
+  it('brings time-shifted briefs with an opening and a drydown target, still reachable', () => {
+    const shifted = many(20).filter((b) => b.stages);
+    expect(shifted.length).toBeGreaterThan(0);
+    for (const b of shifted) {
+      expect(b.stages!.map((st) => st.id)).toEqual(['opening', 'drydown']);
+      expect(judgeRound(b.solution, b).score.stars).toBe(3);
+      expect(b.stages![0].target.shape).not.toEqual(b.stages![1].target.shape);
+    }
+    expect(many(14).some((b) => b.stages)).toBe(false);
+  });
+
+  it('caps a broken must-include or must-avoid at one star, and says why', () => {
+    const b = many(14).find((x) => x.include)!;
+    const without = { ...b.solution };
+    delete without[b.include!];
+    const j = judgeRound(Object.keys(without).length ? without : { bergamot: 1 }, b);
+    expect(j.score.stars).toBe(1);
+    expect(j.cause).toMatch(/asked for/);
+  });
+
+  it('leans towards the season’s families', () => {
+    const share = (season: string, spokes: string[]) => {
+      const bs = many(8, 300, season);
+      return bs.filter((b) => spokes.includes(topSpokes(b.target, 1)[0])).length / bs.length;
+    };
+    expect(share('Winter', ['amber', 'gourmand', 'spicy'])).toBeGreaterThan(share('Summer', ['amber', 'gourmand', 'spicy']));
+  });
+});
+

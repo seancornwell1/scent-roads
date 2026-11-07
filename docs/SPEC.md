@@ -58,6 +58,10 @@ A no-timer sandbox at the counter for experimenting and discovering accords. It 
 
 Cute customer reactions, combos and a customer album come later, in a polish pass.
 
+### Built (Nov 7, 2026)
+
+All five parts are built: the radar engine (`src/game/radar.ts`, `src/data/radar.json`, vectors in `materials.json`), customer rounds with briefs from hidden solutions, timer and tip, test pings and the reveal (`src/game/round.ts`, `src/data/counter.json`, `src/ui/round.ts`), material EXP and cards, the test bench (tap the counter), and progression up to two-stage briefs. Stages of the game are set by reputation: first days (starting materials, vague single-shape briefs), then specific briefs, must-include from reputation 8, must-avoid from 14, two-stage briefs from 20, and both modifiers together from 35. Three-stage briefs (top, heart, base) come later.
+
 ### What this replaces
 
 - Customers' perfumes made at the organ in 10 or 100 parts, the per-rank star thresholds for customers, asking for hints, first impressions and returning reviews (the reveal does all of it at once). Old saves' customers who are already away still come back with a review.
