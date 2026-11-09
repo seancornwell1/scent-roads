@@ -66,3 +66,4 @@ Models built in Blender for Scentshop Tale, following `docs/ASSET_STYLE.md`. The
 | File | Model — where it's used | Source | Author | License | URL |
 | ---- | ----------------------- | ------ | ------ | ------- | --- |
 | `assets/custom/models/perfume-bottle-gumdrop.glb` | Gumdrop perfume bottle (squat glass body, mint collar and sprout, pink mushroom cap, round label); not placed in the scene yet. 1,878 triangles, 0.129 m tall, no textures | Made for this game (`blender/perfume-bottle-gumdrop.py`) | Claude Code for Sean Cornwell | Project's own | — |
+| `assets/custom/models/perfume-organ.glb` | Perfumer's organ (cozy overhaul): chunky desk with drawers, three stepped tiers of pastel bottles, mint arched backboard; not placed in the scene yet. 8,248 triangles, 1.56 × 0.76 × 1.74 m | Made for this game (`blender/perfume-organ.py`) | Claude Code for Sean Cornwell | Project's own | — |
