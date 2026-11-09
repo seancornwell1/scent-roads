@@ -211,6 +211,23 @@
       ],
       "blocks": true,
       "interact": null
+    },
+    {
+      "id": "round-table",
+      "label": null,
+      "model": "custom/models/round-table.glb",
+      "position": [
+        3.6,
+        2.2
+      ],
+      "rotation": 0,
+      "size": [
+        0.84,
+        0.73,
+        0.84
+      ],
+      "blocks": true,
+      "interact": null
     }
   ],
   "decor": [
@@ -338,6 +355,24 @@
         -3.62
       ],
       "y": 0.9,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-moon.glb",
+      "position": [
+        3.6,
+        2.2
+      ],
+      "y": 0.733,
+      "rotation": 30
+    },
+    {
+      "model": "custom/models/flower-vase.glb",
+      "position": [
+        3.35,
+        2.05
+      ],
+      "y": 0.733,
       "rotation": 0
     }
   ],
