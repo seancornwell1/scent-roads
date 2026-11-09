@@ -156,6 +156,8 @@ class Model:
         bpy.ops.object.join()
         o = bpy.context.object
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)  # origin back to world 0
+        old = bpy.data.meshes.get(self.name)
+        if old and old != o.data: old.name = self.name + "-old"   # e.g. still used by room-preview
         o.name = self.name; o.data.name = self.name
         zmin = min(v.co.z for v in o.data.vertices)
         for v in o.data.vertices: v.co.z -= zmin  # sit exactly on z = 0
