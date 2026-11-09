@@ -57,7 +57,8 @@
       "hair_long",
       "hair_ponytail",
       "hair_spiky",
-      "hair_tousled"
+      "hair_tousled",
+      "hair_fluffy"
     ],
     "hat": [
       "hat_beanie",
@@ -70,14 +71,16 @@
     "face": [
       "face_glasses",
       "face_beard",
-      "face_mustache"
+      "face_mustache",
+      "face_heartglasses"
     ],
     "top": [
       "top_sweater",
       "top_tshirt",
       "top_tunic",
       "top_robe",
-      "top_chef"
+      "top_chef",
+      "top_apron"
     ],
     "bottom": [
       "bottom_pants",
@@ -89,7 +92,8 @@
     "shoes": [
       "shoes_sneakers",
       "shoes_boots",
-      "shoes_curly"
+      "shoes_curly",
+      "shoes_clogs"
     ],
     "handL": [
       "handL_potion",

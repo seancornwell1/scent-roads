@@ -2011,6 +2011,111 @@
         "perfumer",
         "custom"
       ]
+    },
+    {
+      "id": "top_apron",
+      "slot": "top",
+      "name": {
+        "en": "Perfumer's Apron",
+        "de": "Parfümeur-Schürze",
+        "es": "Delantal de perfumista"
+      },
+      "file": "../../custom/characters/top_apron.glb",
+      "thumb": "../../custom/characters/thumbs/top_apron.webp",
+      "tris": 2272,
+      "colorSlots": [
+        "primary",
+        "secondary",
+        "accent"
+      ],
+      "defaultColors": {
+        "primary": "#F5A7C2",
+        "secondary": "#FBF8F3",
+        "accent": "#FBEBD3"
+      },
+      "fitMorphs": [
+        "chubby",
+        "slim"
+      ],
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
+    },
+    {
+      "id": "hair_fluffy",
+      "slot": "hair",
+      "name": {
+        "en": "Fluffy Curls",
+        "de": "Flauschige Locken",
+        "es": "Rizos esponjosos"
+      },
+      "file": "../../custom/characters/hair_fluffy.glb",
+      "thumb": "../../custom/characters/thumbs/hair_fluffy.webp",
+      "tris": 5440,
+      "colorSlots": [
+        "hair"
+      ],
+      "defaultColors": {},
+      "variants": {
+        "short": {
+          "file": "../../custom/characters/hair_fluffy__short.glb",
+          "tris": 4264
+        }
+      },
+      "hairLength": "medium",
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
+    },
+    {
+      "id": "face_heartglasses",
+      "slot": "face",
+      "name": {
+        "en": "Heart Glasses",
+        "de": "Herzbrille",
+        "es": "Gafas de corazón"
+      },
+      "file": "../../custom/characters/face_heartglasses.glb",
+      "thumb": "../../custom/characters/thumbs/face_heartglasses.webp",
+      "tris": 568,
+      "colorSlots": [
+        "metal"
+      ],
+      "defaultColors": {
+        "metal": "#E07A9A"
+      },
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
+    },
+    {
+      "id": "shoes_clogs",
+      "slot": "shoes",
+      "name": {
+        "en": "Wooden Clogs",
+        "de": "Holzschuhe",
+        "es": "Zuecos de madera"
+      },
+      "file": "../../custom/characters/shoes_clogs.glb",
+      "thumb": "../../custom/characters/thumbs/shoes_clogs.webp",
+      "tris": 992,
+      "colorSlots": [
+        "primary",
+        "secondary",
+        "accent"
+      ],
+      "defaultColors": {
+        "primary": "#E8A25C",
+        "secondary": "#9A5636",
+        "accent": "#F5A7C2"
+      },
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
     }
    ],
    "presets": [

@@ -107,7 +107,7 @@ class Part:
         for o in coll.objects: o.hide_render = False
 
 out = {}
-HEAD = Vector((0, 0, 0.95))   # centre of the chibi head (beanie spans z 0.82 to 1.22)
+HEAD = Vector((0, 0, 0.87))   # centre of the chibi head (it spans z 0.63 to 1.07)
 
 # ---------- beret ----------
 P = Part("hat_beret")
