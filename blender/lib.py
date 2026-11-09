@@ -131,6 +131,14 @@ class Model:
         if profile[-1][0] > 0: bm.faces.new(rings[-1])
         bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=1e-6)
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+        # cylindrical UVs: u around, v up (so a label texture wraps the band)
+        uvl = bm.loops.layers.uv.new("UVMap")
+        z0 = min(p[1] for p in profile); z1 = max(p[1] for p in profile); hz = (z1 - z0) or 1
+        for f in bm.faces:
+            us = [(math.atan2(l.vert.co.y, l.vert.co.x) / (2 * math.pi)) % 1.0 for l in f.loops]
+            seam = max(us) - min(us) > 0.5
+            for l, u in zip(f.loops, us):
+                l[uvl].uv = (u + 1.0 if seam and u < 0.5 else u, (l.vert.co.z - z0) / hz)
         me = bpy.data.meshes.new("lathe"); bm.to_mesh(me); bm.free()
         o = bpy.data.objects.new("lathe", me); self.coll.objects.link(o)
         o.location = loc
