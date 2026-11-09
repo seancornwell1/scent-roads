@@ -6,7 +6,7 @@
   },
   "floorColor": "#e8d2b4",
   "floorTile": {
-    "model": "grab3d/models/modular-floor-tile.glb",
+    "model": "custom/models/floor-planks.glb",
     "size": 2,
     "height": 0.1
   },
@@ -53,9 +53,10 @@
   },
   "walls": {
     "panels": {
-      "plain": "grab3d/models/modular-wall-straight.glb",
-      "window": "grab3d/models/modular-wall-window.glb",
-      "doorway": "grab3d/models/modular-wall-door.glb"
+      "plain": "custom/models/wall-plain.glb",
+      "window": "custom/models/wall-window.glb",
+      "doorway": "custom/models/wall-doorway.glb",
+      "shopfront": "custom/models/wall-shopfront.glb"
     },
     "back": [
       "plain",
@@ -67,9 +68,9 @@
     "left": [
       "plain",
       "doorway",
-      "window",
-      "window",
-      "window",
+      "shopfront",
+      "shopfront",
+      "shopfront",
       "doorway"
     ]
   },
@@ -77,16 +78,16 @@
     {
       "id": "organ",
       "label": "The organ",
-      "model": "grab3d/models/alchemy-table.glb",
+      "model": "custom/models/perfume-organ.glb",
       "position": [
         -1,
         -5.55
       ],
       "rotation": 0,
       "size": [
-        1.1,
-        1.27,
-        0.6
+        1.56,
+        1.74,
+        0.76
       ],
       "blocks": true,
       "interact": {
@@ -100,7 +101,7 @@
     {
       "id": "back-room-door",
       "label": "Back room",
-      "model": "grab3d/models/door.glb",
+      "model": "custom/models/door-arched.glb",
       "position": [
         -5.05,
         -3
@@ -108,7 +109,7 @@
       "rotation": 90,
       "size": [
         0.2,
-        2.07,
+        2.1,
         1
       ],
       "blocks": false,
@@ -121,35 +122,35 @@
       }
     },
     {
-      "id": "potion-shelf-left",
+      "id": "bookshelf-left",
       "label": null,
-      "model": "grab3d/models/potion-shelf.glb",
+      "model": "custom/models/bookshelf.glb",
       "position": [
         -2.6,
-        -5.75
+        -5.78
       ],
       "rotation": 0,
       "size": [
-        0.94,
-        1.21,
-        0.32
+        0.96,
+        2.05,
+        0.36
       ],
       "blocks": true,
       "interact": null
     },
     {
-      "id": "potion-shelf-right",
+      "id": "wall-shelf-right",
       "label": null,
-      "model": "grab3d/models/potion-shelf.glb",
+      "model": "custom/models/wall-shelf.glb",
       "position": [
-        0.6,
-        -5.75
+        0.75,
+        -5.97
       ],
       "rotation": 0,
       "size": [
-        0.94,
-        1.21,
-        0.32
+        1.24,
+        2.42,
+        0.34
       ],
       "blocks": true,
       "interact": null
@@ -157,16 +158,16 @@
     {
       "id": "counter-left",
       "label": "Test bench",
-      "model": "grab3d/models/bar-counter.glb",
+      "model": "custom/models/shop-counter.glb",
       "position": [
-        -1.78,
+        -1.6,
         -3.6
       ],
       "rotation": 0,
       "size": [
-        1.56,
-        1.23,
-        0.66
+        1.86,
+        1.26,
+        0.68
       ],
       "blocks": true,
       "interact": {
@@ -178,18 +179,18 @@
       }
     },
     {
-      "id": "counter-right",
+      "id": "display-case",
       "label": null,
-      "model": "grab3d/models/bar-counter.glb",
+      "model": "custom/models/display-case.glb",
       "position": [
-        -0.22,
+        0.35,
         -3.6
       ],
       "rotation": 0,
       "size": [
-        1.56,
-        1.23,
-        0.66
+        0.84,
+        1.39,
+        0.56
       ],
       "blocks": true,
       "interact": null
@@ -197,16 +198,16 @@
     {
       "id": "floor-lamp",
       "label": null,
-      "model": "grab3d/models/floor-lamp.glb",
+      "model": "custom/models/floor-lamp.glb",
       "position": [
         -4.5,
         -5.3
       ],
       "rotation": 90,
       "size": [
-        0.6,
-        1.6,
-        0.5
+        0.55,
+        1.57,
+        0.55
       ],
       "blocks": true,
       "interact": null
@@ -214,7 +215,7 @@
   ],
   "decor": [
     {
-      "model": "grab3d/models/door.glb",
+      "model": "custom/models/door-arched.glb",
       "position": [
         -4.55,
         5.5
@@ -223,7 +224,7 @@
       "rotation": 0
     },
     {
-      "model": "grab3d/models/rug.glb",
+      "model": "custom/models/shop-rug.glb",
       "position": [
         -1,
         -1.6
@@ -232,12 +233,111 @@
       "rotation": 0
     },
     {
-      "model": "grab3d/models/wall-clock.glb",
+      "model": "custom/models/wall-clock.glb",
       "position": [
-        2,
+        2.2,
         -5.97
       ],
-      "y": 2.1,
+      "y": 1.95,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/potted-plant.glb",
+      "position": [
+        4.45,
+        -5.45
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-gumdrop.glb",
+      "position": [
+        0.35,
+        -5.82
+      ],
+      "y": 1,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-tall.glb",
+      "position": [
+        0.75,
+        -5.82
+      ],
+      "y": 1,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-moon.glb",
+      "position": [
+        1.15,
+        -5.82
+      ],
+      "y": 1,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-atomizer.glb",
+      "position": [
+        0.5,
+        -5.82
+      ],
+      "y": 1.35,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-bell.glb",
+      "position": [
+        1,
+        -5.82
+      ],
+      "y": 1.35,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-tall.glb",
+      "position": [
+        0.45,
+        -5.82
+      ],
+      "y": 1.7,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-gumdrop.glb",
+      "position": [
+        0.8,
+        -5.82
+      ],
+      "y": 1.7,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-moon.glb",
+      "position": [
+        1.1,
+        -5.82
+      ],
+      "y": 1.7,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/perfume-bottle-gumdrop.glb",
+      "position": [
+        -1.45,
+        -3.65
+      ],
+      "y": 0.98,
+      "rotation": 20
+    },
+    {
+      "model": "custom/models/perfume-bottle-bell.glb",
+      "position": [
+        0.35,
+        -3.62
+      ],
+      "y": 0.9,
       "rotation": 0
     }
   ],
@@ -358,19 +458,19 @@
       "id": "counter-left-end",
       "label": "Counter",
       "position": [
-        -2.3,
+        -2.35,
         -3.55
       ],
-      "y": 1.23
+      "y": 0.98
     },
     {
       "id": "counter-right-end",
-      "label": "Counter",
+      "label": "Display case",
       "position": [
         0.35,
         -3.55
       ],
-      "y": 1.23
+      "y": 1.38
     }
   ]
 }

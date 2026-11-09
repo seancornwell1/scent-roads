@@ -71,7 +71,7 @@
       "id": "armchair",
       "name": "Butter-yellow armchair",
       "kind": "seating",
-      "model": "grab3d/models/armchair.glb",
+      "model": "custom/models/armchair.glb",
       "placement": "floor",
       "price": 60,
       "appeal": 5,
@@ -141,7 +141,7 @@
       "id": "monstera",
       "name": "Monstera",
       "kind": "plant",
-      "model": "grab3d/models/monstera-plant.glb",
+      "model": "custom/models/potted-plant.glb",
       "placement": "floor",
       "price": 40,
       "appeal": 4,
@@ -155,7 +155,7 @@
       "id": "floor-lamp",
       "name": "Floor lamp",
       "kind": "lighting",
-      "model": "grab3d/models/floor-lamp.glb",
+      "model": "custom/models/floor-lamp.glb",
       "placement": "floor",
       "price": 35,
       "appeal": 3,
@@ -267,14 +267,14 @@
       "id": "signature-shelf",
       "name": "Signature shelf",
       "kind": "display",
-      "model": "grab3d/models/potion-shelf.glb",
+      "model": "custom/models/display-case.glb",
       "placement": "floor",
       "price": 90,
       "appeal": 4,
       "reputation": 0,
       "size": [
-        0.94,
-        0.32
+        0.84,
+        0.56
       ],
       "capacity": 3
     },
@@ -282,14 +282,14 @@
       "id": "display-bookcase",
       "name": "Display bookcase",
       "kind": "display",
-      "model": "grab3d/models/bookshelf.glb",
+      "model": "custom/models/bookshelf.glb",
       "placement": "floor",
       "price": 150,
       "appeal": 6,
       "reputation": 22,
       "size": [
-        0.82,
-        0.32
+        0.96,
+        0.36
       ],
       "capacity": 6
     }

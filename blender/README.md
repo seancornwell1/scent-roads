@@ -2,7 +2,7 @@
 
 Models made in Blender for Scentshop Tale's cozy overhaul (Nov 8, 2026). Each script rebuilds its models from scratch, exports them to `assets/custom/models/` and renders a preview into `previews/`. Everything here sits outside the served `assets/` folder.
 
-None of these models are placed in the scene yet: the game still uses the Grab3D kit. They don't follow `docs/ASSET_STYLE.md` on purpose. Sean asked for a full cozy overhaul rather than a match to the current kit.
+Since Nov 9 the game uses them in place of the Grab3D kit (`src/data/shop.json`, `backroom.json`, `furniture.json`); the Grab3D files stay in `assets/grab3d/` for the pieces not yet remade. They don't follow `docs/ASSET_STYLE.md` on purpose. Sean asked for a full cozy overhaul rather than a match to the current kit.
 
 ## Running a script
 
@@ -29,7 +29,7 @@ Run the scripts inside Blender (5.2): paste `exec(open(r"<repo>\blender\<script>
 ## Conventions (`lib.py`)
 
 - Metres, Z up in Blender (Y up in the glTF), origin at the bottom centre, base exactly at height 0. The exceptions are wall-hung pieces built with `Model(name, ground=False)`, which keep real mounting heights (`wall-shelf`).
-- The front faces +Y in Blender, which is −Z in the glTF, the same as the gumdrop. The game will need to turn each model to face the room.
+- Models are built with the front facing +Y in Blender. `export_glb` turns them 180° on export, so in the glTF the front faces +Z, the same as the Grab3D kit. The rotations in `shop.json` and `backroom.json` work for both.
 - Wall panels are 2 m wide, 3 m tall and 0.2 m thick, centred on their wall line with the room side at +Y. Floor tiles are 2 × 2 m and 0.1 m thick. Both match `shop.json`.
 - Each model is one mesh with a few flat-colour Principled materials, named by part (`counter_top`, `rack_shelf`…). There are no textures.
 - The perfume bottles and the stock bottle share the material names `glass`, `liquid`, `collar`/`cap` and `label`, so code can tint the liquid and cap, and put label art on `label` (its UVs fill 0–1).

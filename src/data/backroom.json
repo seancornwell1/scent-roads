@@ -6,7 +6,7 @@
   },
   "floorColor": "#e8d2b4",
   "floorTile": {
-    "model": "grab3d/models/modular-floor-tile.glb",
+    "model": "custom/models/floor-planks.glb",
     "size": 2,
     "height": 0.1
   },
@@ -28,9 +28,9 @@
   "gridStep": 0.25,
   "walls": {
     "panels": {
-      "plain": "grab3d/models/modular-wall-straight.glb",
-      "window": "grab3d/models/modular-wall-window.glb",
-      "doorway": "grab3d/models/modular-wall-door.glb"
+      "plain": "custom/models/wall-plain.glb",
+      "window": "custom/models/wall-window.glb",
+      "doorway": "custom/models/wall-doorway.glb"
     },
     "back": [
       "plain",
@@ -47,7 +47,7 @@
     {
       "id": "shop-door",
       "label": "Shop",
-      "model": "grab3d/models/door.glb",
+      "model": "custom/models/door-arched.glb",
       "position": [
         -3.05,
         2
@@ -55,7 +55,7 @@
       "rotation": 90,
       "size": [
         0.2,
-        2.07,
+        2.1,
         1
       ],
       "blocks": false,
@@ -70,7 +70,7 @@
     {
       "id": "outside-door",
       "label": "Outside",
-      "model": "grab3d/models/door.glb",
+      "model": "custom/models/door-arched.glb",
       "position": [
         2,
         -3.05
@@ -78,7 +78,7 @@
       "rotation": 0,
       "size": [
         1,
-        2.07,
+        2.1,
         0.2
       ],
       "blocks": false,
@@ -93,16 +93,16 @@
     {
       "id": "desk",
       "label": "Desk",
-      "model": null,
+      "model": "custom/models/writing-desk.glb",
       "position": [
-        -2.55,
+        -2.62,
         -0.9
       ],
-      "rotation": 0,
+      "rotation": 90,
       "size": [
-        0.8,
-        0.75,
-        1.4
+        0.6,
+        0.94,
+        1.1
       ],
       "blocks": true,
       "interact": null
@@ -110,18 +110,18 @@
     {
       "id": "laptop",
       "label": "Laptop",
-      "model": null,
+      "model": "custom/models/laptop.glb",
       "position": [
-        -2.55,
+        -2.6,
         -0.9
       ],
-      "rotation": 0,
+      "rotation": 90,
       "size": [
-        0.4,
+        0.3,
         0.25,
-        0.5
+        0.36
       ],
-      "y": 0.75,
+      "y": 0.76,
       "blocks": false,
       "interact": {
         "action": "laptop",
@@ -134,16 +134,16 @@
     {
       "id": "desk-chair",
       "label": "Desk chair",
-      "model": null,
+      "model": "custom/models/desk-chair.glb",
       "position": [
-        -1.85,
+        -1.95,
         -0.9
       ],
-      "rotation": 0,
+      "rotation": -90,
       "size": [
-        0.5,
-        0.9,
-        0.5
+        0.46,
+        0.87,
+        0.46
       ],
       "blocks": true,
       "interact": null
@@ -151,31 +151,50 @@
     {
       "id": "supplies-rack",
       "label": "Supplies",
-      "model": "grab3d/models/shelf-unit.glb",
+      "model": "custom/models/supplies-rack.glb",
       "position": [
         -0.3,
-        -2.75
+        -2.77
       ],
       "rotation": 0,
       "size": [
-        1.2,
-        1.16,
-        0.43
+        1.26,
+        1.68,
+        0.42
       ],
       "blocks": true,
       "interact": {
         "action": "rack",
         "standAt": [
           -0.3,
-          -2.0
+          -2
         ]
       }
     }
   ],
-  "decor": [],
+  "decor": [
+    {
+      "model": "custom/models/potted-plant.glb",
+      "position": [
+        2.5,
+        2.4
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/floor-lamp.glb",
+      "position": [
+        -2.55,
+        -2.5
+      ],
+      "y": 0,
+      "rotation": 0
+    }
+  ],
   "zones": [],
   "crates": {
-    "model": "grab3d/models/wooden-crate.glb",
+    "model": "custom/models/wooden-crate.glb",
     "spots": [
       [
         0.9,
@@ -208,12 +227,12 @@
       0,
       0,
       0,
-      0.6
+      0.5
     ]
   },
   "rack": {
     "fixture": "supplies-rack",
-    "bottle": "grab3d/models/potion-bottle.glb",
+    "bottle": "custom/models/stock-bottle.glb",
     "levels": [
       1.16,
       0.8,

@@ -174,11 +174,9 @@ zs = [v.co.z for o in parts for v in o.data.vertices]
 
 
 def export(path):
-    bpy.ops.object.select_all(action='DESELECT')
-    for o in parts: o.select_set(True)
-    bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', use_selection=True, export_apply=True,
-                              export_yup=True, export_materials='EXPORT', export_cameras=False,
-                              export_lights=False, export_animations=False)
+    lib = {}
+    exec(open(os.path.join(os.path.dirname(path), "..", "..", "..", "blender", "lib.py")).read(), lib)
+    lib["export_glb"](parts, path)  # turned to face +Z in the glTF, like the Grab3D kit
 
 
 build_info = {"tris": tris, "height": max(zs), "min_z": min(zs)}

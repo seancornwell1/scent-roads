@@ -1,7 +1,7 @@
 # Shared helpers for the cozy-overhaul models. Loaded by each model script:
 #   exec(open(LIB).read(), g)
 # Conventions: metres, Z up in Blender, origin at the bottom centre (z = 0),
-# front faces +Y in Blender (-Z in glTF), like perfume-bottle-gumdrop.
+# front faces +Y in Blender; export_glb turns it to face +Z in the glTF, like the Grab3D kit.
 import bpy, bmesh, math, os
 from mathutils import Vector
 
@@ -38,6 +38,22 @@ def mat(name, hexc, rough=0.6, metal=0.0, alpha=1.0):
     m.surface_render_method = 'BLENDED' if alpha < 1 else 'DITHERED'
     m.use_backface_culling = True
     return m
+
+
+def export_glb(objs, path):
+    """Exports objs as one .glb, turned 180 degrees so the front (+Y in Blender) ends up
+    facing +Z in the glTF, the way the Grab3D kit and the game's rotations expect."""
+    from mathutils import Matrix
+    turn = Matrix.Rotation(math.pi, 4, 'Z')
+    for o in objs: o.data.transform(turn)
+    try:
+        bpy.ops.object.select_all(action='DESELECT')
+        for o in objs: o.select_set(True)
+        bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', use_selection=True, export_apply=True,
+                                  export_yup=True, export_materials='EXPORT', export_cameras=False,
+                                  export_lights=False, export_animations=False)
+    finally:
+        for o in objs: o.data.transform(turn)  # turning 180 twice puts it back
 
 
 class Model:
@@ -184,11 +200,7 @@ class Model:
 
     def export(self):
         os.makedirs(MODELS, exist_ok=True)
-        bpy.ops.object.select_all(action='DESELECT'); self.obj.select_set(True)
-        bpy.ops.export_scene.gltf(filepath=os.path.join(MODELS, self.name + ".glb"), export_format='GLB',
-                                  use_selection=True, export_apply=True, export_yup=True,
-                                  export_materials='EXPORT', export_cameras=False, export_lights=False,
-                                  export_animations=False)
+        export_glb([self.obj], os.path.join(MODELS, self.name + ".glb"))
 
     def preview(self, elev=28, azim_deg=-35, pad=1.4, res=(1000, 1000)):
         """Render a front three-quarter view to blender/previews/<name>.png, other models hidden."""
