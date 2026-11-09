@@ -8,7 +8,7 @@ import { rankById, scoringFor } from '../game/ranks';
 import { signature } from '../game/signature';
 import { challengeBrief, lab } from '../game/lab';
 import { LAYERS, type Material } from '../game/types';
-import { missingFor, qualityWord, stockOf, stockQuality } from '../game/sourcing';
+import { missingFor, owns, qualityWord, stockQuality } from '../game/sourcing';
 import { nextTier } from '../game/unlocks';
 import { ownedMaterials } from '../game/world';
 import { pageById } from '../game/story';
@@ -187,18 +187,12 @@ function materialRow(m: Material): string {
 
 function stockLine(id: string): string {
   const s = state.save.sourcing!;
-  const lines = DILUTIONS.filter((d) => stockOf(s, id, d) > 0).map((d) => `${formatGrams(stockOf(s, id, d))}${d < 100 ? ` at ${d}%` : ' neat'} (${qualityWord(stockQuality(s, id, nowGame(), d))})`);
-  return lines.length ? `In stock: ${lines.join(', ')}` : 'None in stock: order or harvest it in the back room.';
-}
-
-function formatGrams(g: number): string {
-  return `${g >= 10 ? Math.round(g) : g.toFixed(1)} g`;
+  return owns(s, id) ? `Yours, as much as you need (${qualityWord(stockQuality(s, id, nowGame()))} quality).` : 'Not yours yet: buy it from the supplier on the laptop.';
 }
 
 function tags(m: Material): string {
   let out = '';
-  const grams = stockOf(state.save.sourcing!, m.id);
-  out += grams > 0 ? ` <span class="tag">${formatGrams(grams)}</span>` : ' <span class="tag tag--warn">out of stock</span>';
+  out += owns(state.save.sourcing!, m.id) ? ' <span class="tag">yours</span>' : ' <span class="tag tag--warn">not bought</span>';
   if (!m.verified) out += ' <span class="tag tag--warn">unverified</span>';
   return out;
 }

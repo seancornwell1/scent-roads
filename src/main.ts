@@ -961,12 +961,20 @@ document.body.addEventListener('click', (event) => {
       ui.toast = why ?? "Harvested and off to be processed. It ships to you when it's done.";
       break;
     }
+    case 'supplier-info':
+      ui.supplierInfo = target.dataset.material!;
+      break;
+    case 'supplier-info-close':
+      ui.supplierInfo = null;
+      break;
+    case 'supplier-info-stay':
+      return; // a tap inside the card (not on a button) leaves it open
     case 'order': {
       const material = target.dataset.material!;
       const natural = materialsById.get(material)?.type === 'natural';
       const multiplier = priceMultiplier(newsFor(save, nowGame()), material);
       const why = order(save.sourcing!, save.customers!, material, natural, nowGame(), ownedMaterials(save), multiplier);
-      ui.toast = why ?? `${materialsById.get(material)?.name}: ${sourcing.supplier.lotGrams} g more in stock.`;
+      ui.toast = why ?? `${materialsById.get(material)?.name} is yours: use as much as you like.`;
       if (!why) sounds.play('glass');
       break;
     }

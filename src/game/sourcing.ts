@@ -122,17 +122,27 @@ export interface Crate {
   arrivedAt: number;
 }
 
+/** A material bought from the supplier: yours for good, in any amount (Nov 9). Quality still ages. */
+export interface OwnedMaterial {
+  quality: number;
+  /** When it was bought (game hours): aging counts from here. */
+  since: number;
+}
+
 export interface SourcingState {
   contracts: Contract[];
   batches: Batch[];
   shipments: Shipment[];
   crates: Crate[];
+  /** Old saves' lots; folded into `owned` on load (see claimStock). */
   inventory: Lot[];
+  /** Materials you own outright: unlimited stock. */
+  owned: Record<string, OwnedMaterial>;
   nextId: number;
 }
 
 export function newSourcingState(): SourcingState {
-  return { contracts: [], batches: [], shipments: [], crates: [], inventory: [], nextId: 1 };
+  return { contracts: [], batches: [], shipments: [], crates: [], inventory: [], owned: {}, nextId: 1 };
 }
 
 const id = (s: SourcingState, prefix: string) => `${prefix}${s.nextId++}`;
@@ -266,11 +276,41 @@ export function order(
   if (sup.prices[material] === undefined) return 'Not sold.';
   const price = priceOf(material, priceMultiplier, data);
   if (!unlocked.has(material)) return 'Not unlocked yet.';
+  if (owns(s, material)) return 'Already yours: you have as much as you need.';
   if (wallet.money < price) return 'Not enough coins.';
   wallet.money -= price;
-  // No waiting for materials: an order goes straight into stock.
-  s.inventory.push({ id: id(s, 'l'), material, grams: sup.lotGrams, quality: natural ? sup.brokerQuality : sup.catalogueQuality, since: now });
+  // Buy once and it's yours for good, in any amount (Nov 9).
+  s.owned[material] = { quality: natural ? sup.brokerQuality : sup.catalogueQuality, since: now };
   return null;
+}
+
+/** Whether a material is yours (bought, or on her bench): unlimited stock. */
+export function owns(s: SourcingState, material: string): boolean {
+  return Boolean(s.owned?.[material]);
+}
+
+/** Stock of an owned material: there's always enough. */
+export const UNLIMITED = Number.POSITIVE_INFINITY;
+
+/**
+ * Folds old saves' lots and unopened crates into owned materials (best quality, earliest
+ * date, so aged stock keeps its age). Safe to run on every load.
+ */
+export function claimStock(s: SourcingState): void {
+  s.owned ??= {};
+  const items = [...s.inventory, ...s.crates.flatMap((c) => c.items.map((i) => ({ ...i, since: c.arrivedAt })))];
+  for (const l of items) {
+    const had = s.owned[l.material];
+    s.owned[l.material] = had ? { quality: Math.max(had.quality, l.quality), since: Math.min(had.since, l.since) } : { quality: l.quality, since: l.since };
+  }
+  s.inventory = [];
+  s.crates = [];
+}
+
+/** An owned material's quality now, including what it has gained from aging. */
+function ownedQuality(s: SourcingState, material: string, now: number, data: SourcingData = sourcing): number {
+  const o = s.owned[material];
+  return lotQuality({ id: '', material, grams: 0, quality: o.quality, since: o.since }, now, data);
 }
 
 export function priceOf(material: string, multiplier = 1, data: SourcingData = sourcing): number {
@@ -300,6 +340,7 @@ export function unpack(s: SourcingState, crateId: string, now: number): Item[] {
   if (!crate) return [];
   for (const item of crate.items) s.inventory.push({ ...item, id: id(s, 'l'), since: now });
   s.crates = s.crates.filter((c) => c.id !== crateId);
+  claimStock(s); // what was in the crate is yours for good
   return crate.items;
 }
 
@@ -312,11 +353,13 @@ export function lotQuality(lot: Lot, now: number, data: SourcingData = sourcing)
 }
 
 export function stockOf(s: SourcingState, material: string, dilution: Dilution = 100): number {
+  if (owns(s, material)) return UNLIMITED;
   return s.inventory.filter((l) => l.material === material && (l.dilution ?? 100) === dilution).reduce((sum, l) => sum + l.grams, 0);
 }
 
 /** Average quality of a material in stock (at a dilution), weighted by grams (0 if none). */
 export function stockQuality(s: SourcingState, material: string, now: number, dilution: Dilution = 100): number {
+  if (owns(s, material)) return ownedQuality(s, material, now);
   const lots = s.inventory.filter((l) => l.material === material && (l.dilution ?? 100) === dilution);
   const grams = lots.reduce((sum, l) => sum + l.grams, 0);
   return grams > 0 ? lots.reduce((sum, l) => sum + l.grams * lotQuality(l, now), 0) / grams : 0;
@@ -328,6 +371,7 @@ export function missingFor(s: SourcingState, blend: Entry[], data: SourcingData 
 }
 
 export function takeStock(s: SourcingState, material: string, dilution: Dilution, grams: number, now: number, data: SourcingData = sourcing): { quality: number; grams: number } {
+  if (owns(s, material)) return { quality: ownedQuality(s, material, now, data), grams }; // owned: nothing runs out
   let left = grams;
   let qualitySum = 0;
   let taken = 0;
@@ -365,6 +409,7 @@ export const DILUTION_BATCH_GRAMS = 10;
  * material for 10%, 0.1 g for 1%. Returns why not, or null.
  */
 export function dilute(s: SourcingState, material: string, to: 10 | 1, now: number, data: SourcingData = sourcing): string | null {
+  if (owns(s, material)) return 'No need: you have as much as you like, at any dilution.';
   const neat = (DILUTION_BATCH_GRAMS * to) / 100;
   if (stockOf(s, material, 100) + 1e-9 < neat) return `You need ${neat} g of it neat to make a ${to}% dilution.`;
   const got = takeStock(s, material, 100, neat, now, data);

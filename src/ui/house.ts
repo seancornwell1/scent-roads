@@ -138,7 +138,7 @@ export function houseNewScreen(): string {
   const bottles = house.bottleOptions
     .map((n) => `<button class="chip ${n === draft.bottles ? 'on' : ''}" data-action="house-bottles" data-value="${n}" ${n > can ? 'disabled' : ''}>${n}</button>`)
     .join('');
-  const why = full ? 'Every place on the shelves is taken: take one down first.' : can === 0 ? 'Not enough materials in stock for even one bottle.' : null;
+  const why = full ? 'Every place on the shelves is taken: take one down first.' : can === 0 ? 'Some of its materials aren’t yours yet: buy them from the supplier on the laptop.' : null;
 
   return `<header class="bar-top"><button class="link" data-action="close-panel">Close</button><h1>House perfume</h1><span></span></header>
     <main class="customer house-new">
@@ -161,7 +161,7 @@ export function houseNewScreen(): string {
       <p class="muted small">A fair price for a perfume this good is ${fair} coins. Cheaper sells faster; dearer sells slower. Materials cost about ${materialCost} coin${materialCost === 1 ? '' : 's'} a bottle.</p>
       <h2>Bottles to make</h2>
       <div class="chips">${bottles}</div>
-      <p class="muted small">Stock for ${can} bottle${can === 1 ? '' : 's'}.</p>
+      <p class="muted small">${can === Infinity ? 'You own every material in it: make as many as you like.' : `Stock for ${can} bottle${can === 1 ? '' : 's'}.`}</p>
       ${why ? `<p class="small warn-text">${esc(why)}</p>` : ''}
       <div class="row-between"><button class="link" data-action="close-panel">Not now</button><button class="primary" data-action="house-create" ${why ? 'disabled' : ''}>Put it on the shelf</button></div>
     </main>`;

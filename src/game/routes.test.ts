@@ -78,12 +78,16 @@ describe('routes', () => {
 
 describe('ordering', () => {
   const owned = new Set(['vanillin', 'bergamot']);
-  it('puts an order straight into stock, naturals and aroma chemicals alike', () => {
+  it('buys a material once for good, naturals and aroma chemicals alike', () => {
     const s = newSourcingState();
-    expect(order(s, { money: 999 }, 'vanillin', false, 0, owned)).toBeNull();
-    expect(order(s, { money: 999 }, 'bergamot', true, 0, owned)).toBeNull();
+    const wallet = { money: 999 };
+    expect(order(s, wallet, 'vanillin', false, 0, owned)).toBeNull();
+    expect(order(s, wallet, 'bergamot', true, 0, owned)).toBeNull();
     expect(s.shipments).toHaveLength(0);
-    expect(s.inventory.map((l) => l.material).sort()).toEqual(['bergamot', 'vanillin']);
+    expect(Object.keys(s.owned).sort()).toEqual(['bergamot', 'vanillin']);
+    const left = wallet.money;
+    expect(order(s, wallet, 'vanillin', false, 0, owned)).toMatch(/Already yours/);
+    expect(wallet.money).toBe(left); // buying it again costs nothing and does nothing
   });
 });
 

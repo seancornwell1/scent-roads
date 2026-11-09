@@ -4,6 +4,8 @@ import { dateAt, gameNow, newClock, realMsPerGameHour, setClockSpeed } from './c
 import { content } from './content';
 import {
   DILUTION_BATCH_GRAMS,
+  UNLIMITED,
+  claimStock,
   consume,
   dilute,
   harvest,
@@ -108,7 +110,8 @@ describe('harvest contracts', () => {
     const crates = tickSourcing(s, arrives);
     expect(crates).toHaveLength(1);
     unpack(s, crates[0].id, arrives);
-    expect(stockOf(s, 'bergamot')).toBe(cropOf('calabria', 'bergamot')!.grams);
+    expect(cropOf('calabria', 'bergamot')!.grams).toBeGreaterThan(0);
+    expect(stockOf(s, 'bergamot')).toBe(UNLIMITED); // what arrives is yours for good
   });
 
   it('ship faster from nearby regions than from far away', () => {
@@ -125,15 +128,24 @@ describe('inventory', () => {
     expect(lotQuality({ ...lot, material: 'bergamot' }, 24 * 10)).toBe(1);
   });
 
-  it('uses up materials for a perfume, oldest first, and refuses when short', () => {
+  it('never runs out of a material you own, and refuses one you don’t', () => {
     const s = newSourcingState();
     order(s, { money: 100 }, 'vanillin', false, 0, ownedMaterials);
     order(s, { money: 100 }, 'labdanum', true, 0, ownedMaterials);
-    for (const crate of tickSourcing(s, 100)) unpack(s, crate.id, 100);
     expect(consume(s, entriesOf({ parts: { vanillin: 1, bergamot: 1 } }), 100)).toBeNull();
-    const q = consume(s, entriesOf({ parts: { vanillin: 1, labdanum: 1 } }), 100);
-    expect(q).not.toBeNull();
-    expect(stockOf(s, 'vanillin')).toBeCloseTo(9.5);
+    for (let i = 0; i < 50; i++) expect(consume(s, entriesOf({ parts: { vanillin: 1, labdanum: 1 } }), 100)).not.toBeNull();
+    expect(stockOf(s, 'vanillin')).toBe(UNLIMITED);
+    expect(dilute(s, 'vanillin', 10, 100)).toMatch(/No need/);
+  });
+
+  it('folds old saves’ stock into owned materials, keeping the oldest date for aging', () => {
+    const s = newSourcingState();
+    s.inventory.push({ id: 'l1', material: 'labdanum', grams: 3, quality: 1, since: 50 }, { id: 'l2', material: 'labdanum', grams: 1, quality: 1.1, since: 10 });
+    claimStock(s);
+    expect(s.inventory).toHaveLength(0);
+    expect(s.owned.labdanum).toEqual({ quality: 1.1, since: 10 });
+    claimStock(s); // safe to run again
+    expect(s.owned.labdanum).toEqual({ quality: 1.1, since: 10 });
   });
 });
 

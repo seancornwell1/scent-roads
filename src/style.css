@@ -560,3 +560,13 @@ textarea {
   .star-pop, .reveal-pay, .levelup, .reveal-sparkle { animation-duration: 1ms !important; animation-delay: 0s !important; }
   .tile--pop .tile-icon, .tile--pop .tile-badge { animation: none; }
 }
+
+/* Supplier: a tappable name, and a material's card floating over the tab. */
+.supplier-item { background: none; border: 0; padding: 0; margin: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; flex: 1; min-width: 0; }
+.popover-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgb(74 53 64 / 0.35); animation: popover-fade 160ms ease; }
+.popover { position: relative; width: 100%; max-width: 360px; max-height: 80vh; overflow-y: auto; background: var(--card); border: 2px solid var(--line); border-radius: 18px; box-shadow: 0 6px 0 var(--line); padding: 16px 18px 14px; animation: popover-in 260ms cubic-bezier(.2, 1.5, .4, 1); }
+.popover h2 { margin: 0 28px 2px 0; }
+.popover-close { position: absolute; top: 6px; right: 10px; font-size: 1.6rem; line-height: 1; padding: 4px 8px; }
+@keyframes popover-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popover-in { from { opacity: 0; transform: scale(0.85) translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .popover, .popover-backdrop { animation: none; } }

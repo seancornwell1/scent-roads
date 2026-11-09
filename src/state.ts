@@ -8,7 +8,7 @@ import { newCustomerState } from './game/customers';
 import { newHouseState, type HouseLabel } from './game/house';
 import { newCounterState } from './game/round';
 import type { Ping, Reveal } from './ui/round';
-import { newSourcingState, sourcing } from './game/sourcing';
+import { claimStock, newSourcingState, sourcing } from './game/sourcing';
 import { newStoryState, story } from './game/story';
 import { newRoutesState } from './game/routes';
 import { newLearningState } from './game/learning';
@@ -36,6 +36,8 @@ export interface UiState {
   orderId: string | null;
   /** Which tab of the back room is showing. */
   backroomTab: 'letters' | 'map' | 'harvests' | 'supplier' | 'stock' | 'lab';
+  /** The material whose card floats over the supplier tab, or null. */
+  supplierInfo?: string | null;
   /** Which tab of the shop-upgrades panel is showing. */
   upgradesTab: 'furniture' | 'house' | 'processing';
   /** A house perfume being set up: its formula, name, label, price tier and bottles. */
@@ -77,6 +79,7 @@ function initSave(): SaveData {
     for (const b of story.bench) save.sourcing.inventory.push({ id: `l${save.sourcing.nextId++}`, material: b.material, grams: b.grams, quality: 1, since: 0 });
     save.customers.money += sourcing.startingCoins;
   }
+  claimStock(save.sourcing); // anything in stock is owned outright: buy once, unlimited (Nov 9)
   save.story ??= newStoryState();
   save.routes ??= newRoutesState();
   save.learning ??= newLearningState();

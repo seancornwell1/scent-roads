@@ -66,6 +66,7 @@ All five parts are built: the radar engine (`src/game/radar.ts`, `src/data/radar
 ### Laptop and organ changes (Nov 8, 2026)
 
 - **Laptop:** suppliers' letters are flavour text about material families and harvesting methods, arriving with the seasons; nothing is answered or unlocked by them. The map is flavour too: where each material comes from, its season and how it's gathered. No waiting for materials: harvest contracts are gone, and orders go straight into stock. The lab tab is hidden until Sean decides whether to keep the lab.
+- **Supplier (Nov 9):** buy a material once and it's yours for good, in any amount and at any dilution: no quantities, no running out. Quality still ages (her labdanum keeps improving). Old saves' stock becomes owned. Tapping a material in the supplier opens a floating card with its description.
 - **Organ:** in the Materials tab, tapping a material puts it in the formula (the row is highlighted) and tapping it again takes it out; amounts are set in the Formula tab.
 
 ### What this replaces

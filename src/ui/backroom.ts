@@ -1,12 +1,12 @@
 import { MONTH_NAMES, dateAt, realMsUntil } from '../game/clock';
 import { materialsById } from '../game/content';
 import {
+  owns,
   priceOf,
   processes,
   qualityWord,
   regions,
   sourcing,
-  stockOf,
   stockQuality,
   type Crop,
   type Region,
@@ -14,10 +14,8 @@ import {
 import { priceMultiplier } from '../game/events';
 import { chapterInfo, routeById, unreadLetters, type Letter } from '../game/routes';
 import { newsFor, ownedMaterials } from '../game/world';
-import { DILUTIONS } from '../game/blend';
 import { lab } from '../game/lab';
-import { DILUTION_BATCH_GRAMS } from '../game/sourcing';
-import { currentRank, nowGame, state } from '../state';
+import { nowGame, state } from '../state';
 import { esc, starsText } from './html';
 
 // The laptop: crates that have arrived, her suppliers' letters, the map of where materials
@@ -154,53 +152,71 @@ function regionCard(r: Region): string {
 
 function supplierTab(): string {
   const unlocked = ownedMaterials(state.save);
-  const money = state.save.customers!.money;
+  const stock = state.save.sourcing!;
   const sup = sourcing.supplier;
-  const row = (id: string, kind: string, closed: boolean) => {
+  const row = (id: string, kind: string) => {
     const m = materialsById.get(id)!;
     const multiplier = priceMultiplier(newsFor(state.save, nowGame()), m.id);
     const price = priceOf(m.id, multiplier);
-    const deal = multiplier < 1 ? ' <span class="tag">on offer</span>' : multiplier > 1 ? ' <span class="tag tag--warn">prices up</span>' : '';
-    return `<li class="card"><div class="row-between"><div><strong>${esc(m.name)}</strong>${deal}<br><span class="muted small">${sup.lotGrams} g · ${kind}</span></div>
-      <button class="primary" data-action="order" data-material="${m.id}" ${closed || money < price ? 'disabled' : ''}>${price} coins</button></div></li>`;
+    const mine = owns(stock, m.id);
+    const deal = mine ? '' : multiplier < 1 ? ' <span class="tag">on offer</span>' : multiplier > 1 ? ' <span class="tag tag--warn">prices up</span>' : '';
+    const buy = mine
+      ? '<span class="tag">yours</span>'
+      : `<button class="primary" data-action="order" data-material="${m.id}" ${state.save.customers!.money < price ? 'disabled' : ''}>${price} coins</button>`;
+    return `<li class="card"><div class="row-between">
+      <button class="supplier-item" data-action="supplier-info" data-material="${m.id}"><strong>${esc(m.name)}</strong>${deal}<br><span class="muted small">${mine ? 'yours to use, as much as you like' : kind}</span></button>
+      ${buy}</div></li>`;
   };
-  const owned = [...unlocked].map((id) => materialsById.get(id)!).sort((a, b) => a.name.localeCompare(b.name));
-  const naturals = owned.filter((m) => m.type === 'natural').map((m) => row(m.id, `broker stock · ${qualityWord(sup.brokerQuality)} quality`, false)).join('');
-  const synthetics = owned.filter((m) => m.type === 'synthetic').map((m) => row(m.id, 'catalogue', false)).join('');
+  const list = [...unlocked].map((id) => materialsById.get(id)!).sort((a, b) => Number(owns(stock, a.id)) - Number(owns(stock, b.id)) || a.name.localeCompare(b.name));
+  const naturals = list.filter((m) => m.type === 'natural').map((m) => row(m.id, `from the broker · ${qualityWord(sup.brokerQuality)} quality`)).join('');
+  const synthetics = list.filter((m) => m.type === 'synthetic').map((m) => row(m.id, 'from the catalogue')).join('');
+  const info = state.ui.supplierInfo ? supplierCard(state.ui.supplierInfo) : '';
   return `<h2>${esc(sup.name)}</h2>
-    <p class="muted small">Naturals from a broker's stock all year round. Orders go straight onto your rack.</p>
+    <p class="muted small">Buy a material once and it's yours for good: use as much as you like. Tap a name to read about it.</p>
     <ul class="list cards">${naturals || '<li class="muted">No naturals unlocked.</li>'}</ul>
     <h2>${esc(sup.chemistName)}</h2>
-    <p class="muted small">Her old chemist: aroma chemicals from the catalogue, straight onto your rack.</p>
-    <ul class="list cards">${synthetics || '<li class="muted">No aroma chemicals unlocked yet.</li>'}</ul>`;
+    <p class="muted small">Her old chemist: aroma chemicals from the catalogue.</p>
+    <ul class="list cards">${synthetics || '<li class="muted">No aroma chemicals unlocked yet.</li>'}</ul>
+    ${info}`;
+}
+
+/** A material's card, floating over the supplier tab: what it smells like, how it behaves, where it's from. */
+function supplierCard(id: string): string {
+  const m = materialsById.get(id);
+  if (!m) return '';
+  const stock = state.save.sourcing!;
+  const mine = owns(stock, id);
+  const price = priceOf(id, priceMultiplier(newsFor(state.save, nowGame()), id));
+  const origin = m.origin ? [m.origin.plant, m.origin.region, m.origin.method].filter(Boolean).map((x) => esc(String(x))).join(' · ') : '';
+  const layer = { top: 'Top note', heart: 'Heart note', base: 'Base note' }[m.layer as string] ?? '';
+  return `<div class="popover-backdrop" data-action="supplier-info-close">
+    <div class="popover" role="dialog" aria-label="${esc(m.name)}" data-action="supplier-info-stay">
+      <button class="popover-close link" data-action="supplier-info-close" aria-label="Close">×</button>
+      <h2>${esc(m.name)}</h2>
+      <p class="muted small">${esc(m.family)}${layer ? ` · ${layer}` : ''} · ${m.type === 'synthetic' ? 'aroma chemical' : 'natural'}${m.verified ? '' : ' <span class="tag tag--warn">unverified</span>'}</p>
+      <p>${esc(m.character)}</p>
+      ${m.behaviour ? `<p class="small">${esc(m.behaviour)}</p>` : ''}
+      ${origin ? `<p class="muted small">${origin}</p>` : ''}
+      <div class="row-between">
+        <span class="muted small">${mine ? `Yours · ${qualityWord(stockQuality(stock, id, nowGame()))} quality` : 'Buy once, use as much as you like.'}</span>
+        ${mine ? '' : `<button class="primary" data-action="order" data-material="${esc(id)}" ${state.save.customers!.money < price ? 'disabled' : ''}>${price} coins</button>`}
+      </div>
+    </div>
+  </div>`;
 }
 
 function stockTab(now: number): string {
   const s = state.save.sourcing!;
-  const materials = [...new Set(s.inventory.map((l) => l.material))].sort((a, b) => name(a).localeCompare(name(b)));
-  if (materials.length === 0) return '<p class="muted">The shelves are bare. Unpack crates to fill them.</p>';
-  const canDilute = currentRank().dilutions;
-  const g = (x: number) => `${x >= 10 ? Math.round(x) : x.toFixed(1)} g`;
+  const materials = Object.keys(s.owned).sort((a, b) => name(a).localeCompare(name(b)));
+  if (materials.length === 0) return '<p class="muted">Nothing is yours yet. Buy materials from the supplier.</p>';
   const rows = materials
     .map((id) => {
       const ages = sourcing.aging[id] ? ' · improving with age' : '';
-      const lots = DILUTIONS.filter((d) => stockOf(s, id, d) > 0)
-        .map((d) => `${g(stockOf(s, id, d))} ${d === 100 ? 'neat' : `at ${d}%`} · ${qualityWord(stockQuality(s, id, now, d))} quality`)
-        .join('<br>');
-      const neat = stockOf(s, id, 100);
-      const dilute = canDilute
-        ? `<div class="chips">${([10, 1] as const)
-            .map((d) => `<button class="chip" data-action="dilute" data-id="${esc(id)}" data-value="${d}" ${neat + 1e-9 < (DILUTION_BATCH_GRAMS * d) / 100 ? 'disabled' : ''}>Make ${DILUTION_BATCH_GRAMS} g at ${d}%</button>`)
-            .join('')}</div>`
-        : '';
       return `<li class="card"><div><strong>${esc(name(id))}</strong></div>
-        <p class="muted small">${lots}${ages}</p>${dilute}</li>`;
+        <p class="muted small">As much as you need, neat or diluted · ${qualityWord(stockQuality(s, id, now))} quality${ages}</p></li>`;
     })
     .join('');
-  const help = canDilute
-    ? `Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula. A dilution is made with odourless solvent: ${DILUTION_BATCH_GRAMS} g at 10% takes 1 g of the neat material, at 1% only a tenth of a gram.`
-    : `Each perfume uses ${sourcing.perfumeGrams} g of material in total, shared by its formula. Junior perfumers can make dilutions here.`;
-  return `<p class="muted small">${help}</p><ul class="list cards">${rows}</ul>`;
+  return `<p class="muted small">Everything you've bought is yours for good, in any amount and at any dilution.</p><ul class="list cards">${rows}</ul>`;
 }
 
 /** The analysis lab and its reconstruction challenges. */
