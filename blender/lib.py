@@ -155,6 +155,7 @@ class Model:
         bpy.context.view_layer.objects.active = self.parts[0]
         bpy.ops.object.join()
         o = bpy.context.object
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)  # origin back to world 0
         o.name = self.name; o.data.name = self.name
         zmin = min(v.co.z for v in o.data.vertices)
         for v in o.data.vertices: v.co.z -= zmin  # sit exactly on z = 0
@@ -195,7 +196,14 @@ class Model:
         cam.location = target + d * 20
         cam.rotation_euler = (-d).to_track_quat('-Z', 'Y').to_euler()
         cam.data.clip_end = 100
-        cam.data.ortho_scale = max(w, dp, h) * pad + 0.02
+        # fit the bounding box as seen by the camera
+        bpy.context.view_layer.update()
+        inv = cam.matrix_world.inverted()
+        vs = [inv @ v.co for v in self.obj.data.vertices]
+        ex = max(max(v.x for v in vs) - min(v.x for v in vs), max(v.y for v in vs) - min(v.y for v in vs))
+        cx = (max(v.x for v in vs) + min(v.x for v in vs)) / 2; cy = (max(v.y for v in vs) + min(v.y for v in vs)) / 2
+        cam.location = cam.matrix_world @ Vector((cx, cy, 0))
+        cam.data.ortho_scale = ex * (1 + (pad - 1) * 0.5) + 0.02
         li = bpy.data.objects["Light"]
         ld = Vector((-0.5, 0.75, 1.1)).normalized()
         li.rotation_euler = (-ld).to_track_quat('-Z', 'Y').to_euler()
