@@ -3,7 +3,7 @@ import { radarOf, SPOKES, type Mix, type RoundScore, type Target, type Values } 
 import { cardFor, counter, intensityWord, maxLevel } from '../game/round';
 import { radarData, spokeInfo } from '../game/radar';
 import type { Spoke } from '../game/types';
-import { ownedMaterials } from '../game/world';
+import { usableMaterials } from '../game/world';
 import { state } from '../state';
 import { esc } from './html';
 import { radarChart, scaleFor, type RadarLayer } from './radar';
@@ -45,7 +45,7 @@ export function clock(ms: number): string {
 
 /** Materials you can use at the counter, sorted by family then name. */
 function counterMaterials() {
-  const owned = ownedMaterials(state.save);
+  const owned = usableMaterials(state.save); // bought (or given) materials only
   const order = new Map(content.families.map((f, i) => [f.id, i]));
   return content.materials.filter((m) => owned.has(m.id)).sort((a, b) => (order.get(a.family) ?? 0) - (order.get(b.family) ?? 0) || a.name.localeCompare(b.name));
 }

@@ -63,7 +63,7 @@ describe('story', () => {
     const visit = c.visits.find((v) => v.storyId === 'josette-sweeter')!;
     expect(meet(s, visit, sourcing, 11)).toEqual([{ material: 'vanillin', grams: 10 }]);
     expect(meet(s, visit, sourcing, 12)).toEqual([]); // only once
-    expect(stockOf(sourcing, 'vanillin')).toBe(10);
+    expect(stockOf(sourcing, 'vanillin')).toBe(Infinity); // a gift is yours for good
     expect(s.materials).toContain('vanillin');
   });
 
@@ -91,5 +91,18 @@ describe('story facts', () => {
     const factCheck = readFileSync(new URL('../../docs/FACT_CHECK.md', import.meta.url), 'utf8');
     const missing = story.pages.filter((p) => p.lesson && !p.lesson.verified && !factCheck.includes(`\`${p.id}\``)).map((p) => p.id);
     expect(missing).toEqual([]);
+  });
+});
+
+describe('story requests and what you own', () => {
+  it('wait until you own everything their formula needs (what they bring counts)', () => {
+    const r = story.requests.find((x) => Object.keys(x.brief.target.formula).length > 0)!;
+    const needs = Object.keys(r.brief.target.formula).filter((id) => !r.gives?.some((g) => g.material === id));
+    const s = newStoryState();
+    const c = newCustomerState(0);
+    if (needs.length) expect(storyTick(s, c, 1e9, 0, story, 99, new Set())).not.toContain(`s-${r.id}-0`);
+    const s2 = newStoryState();
+    const all = new Set(Object.keys(r.brief.target.formula));
+    expect(storyTick(s2, newCustomerState(0), 1e9, 0, story, 99, all).length).toBeGreaterThan(0);
   });
 });

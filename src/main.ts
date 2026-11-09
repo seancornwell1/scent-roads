@@ -15,7 +15,7 @@ import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/
 import { parseSave, writeSave, type SavedFormula } from './game/save';
 import { buyItem, buyProcess, itemById, place, processStats, unplace } from './game/upgrades';
 import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOpen, routesTick } from './game/routes';
-import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal } from './game/world';
+import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal, usableMaterials } from './game/world';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
@@ -152,7 +152,7 @@ function briefFor(visit: Visit): RoundBrief {
   let seed = 0;
   for (const ch of visit.id) seed = (Math.imul(seed, 31) + ch.charCodeAt(0)) >>> 0;
   const season = seasonOf(dateAt(nowGame(), sourcing.calendarStart).month);
-  return walkInBrief([...ownedMaterials(state.save)], seededRandom(seed), { reputation: state.save.customers!.reputation, season, modelStages: content.model.stages });
+  return walkInBrief([...usableMaterials(state.save)], seededRandom(seed), { reputation: state.save.customers!.reputation, season, modelStages: content.model.stages });
 }
 
 
@@ -320,7 +320,8 @@ function runTick(): void {
   const { save } = state;
   const c = save.customers!;
   const now = nowGame();
-  const changed = [...storyTick(save.story!, c, now, Date.now()), ...tick(c, Date.now(), ownedMaterials(save), Math.random, arrivalConditions(save, now))];
+  const usable = usableMaterials(save);
+  const changed = [...storyTick(save.story!, c, now, Date.now(), undefined, undefined, usable), ...tick(c, Date.now(), usable, Math.random, arrivalConditions(save, now))];
   const crates = tickSourcing(save.sourcing!, now, stormDelay);
   const sold = runHouse();
   const post = runPost(crates);
@@ -369,7 +370,7 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     kit = loaded;
     refreshPlayer();
     storyTick(state.save.story!, state.save.customers!, nowGame(), Date.now());
-    tick(state.save.customers!, Date.now(), ownedMaterials(state.save), Math.random, arrivalConditions(state.save, nowGame()));
+    tick(state.save.customers!, Date.now(), usableMaterials(state.save), Math.random, arrivalConditions(state.save, nowGame()));
     runPost(tickSourcing(state.save.sourcing!, nowGame(), stormDelay));
     migrateDisplay();
     runHouse();

@@ -116,7 +116,16 @@ export function firstDueAt(r: StoryRequest, s: StoryState, reviews: number, now:
  * (one more than walk-ins may take, so the story never waits behind a full shop for long).
  * Returns the new visits' ids. `realNow` is the arrival timestamp (customer visits use real time).
  */
-export function storyTick(s: StoryState, customers: CustomerState, now: number, realNow: number, data: StoryData = story, capacity = clients.timing.maxInShop + 1): string[] {
+export function storyTick(
+  s: StoryState,
+  customers: CustomerState,
+  now: number,
+  realNow: number,
+  data: StoryData = story,
+  capacity = clients.timing.maxInShop + 1,
+  /** Materials you can use; a request waits until its formula needs nothing else (what they bring counts). */
+  usable?: Set<string>,
+): string[] {
   const arrived: string[] = [];
   for (const r of data.requests) {
     if (customers.visits.filter((v) => v.status !== 'away').length >= capacity) break;
@@ -128,6 +137,7 @@ export function storyTick(s: StoryState, customers: CustomerState, now: number, 
       s.requests[r.id] = rs;
     }
     if (rs.status !== 'waiting' || now < rs.dueAt) continue;
+    if (usable && !Object.keys(r.brief.target.formula).every((id) => usable.has(id) || r.gives?.some((g) => g.material === id))) continue;
     const person = personById(r.person, data)!;
     const id = `s-${r.id}-${rs.attempts}`;
     customers.visits.push({ id, regularId: null, storyId: r.id, name: person.name, lookSeed: 0, briefId: r.brief.id, hintsAsked: rs.attempts > 0 ? r.brief.hints.length : 0, status: 'waiting', arrivedAt: realNow });
@@ -144,7 +154,7 @@ export function meet(s: StoryState, visit: Visit, sourcing: SourcingState, now: 
   if (!r || !rs || rs.gave || !r.gives) return [];
   rs.gave = true;
   for (const g of r.gives) {
-    sourcing.inventory.push({ id: `l${sourcing.nextId++}`, material: g.material, grams: g.grams, quality: 1, since: now });
+    sourcing.owned[g.material] ??= { quality: 1, since: now }; // a gift is yours for good
     if (!s.materials.includes(g.material)) s.materials.push(g.material);
   }
   return r.gives;

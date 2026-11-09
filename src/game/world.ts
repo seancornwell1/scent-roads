@@ -9,6 +9,7 @@ import { arrivalMultiplier, generateWeek, weekOf, type NewsItem } from './events
 import type { SaveData } from './save';
 import { regions } from './sourcing';
 import { unlockedMaterialIds } from './unlocks';
+import { owns } from './sourcing';
 import { routeOpen } from './routes';
 import { appealLevel, appealOf, type AppealLevel } from './upgrades';
 
@@ -19,6 +20,14 @@ export function ownedMaterials(save: SaveData): Set<string> {
   const owned = unlockedMaterialIds(save.customers!.reputation);
   for (const id of save.story?.materials ?? []) owned.add(id);
   return owned;
+}
+
+/**
+ * What you can work with at the counter: unlocked materials you've also bought (or were
+ * given). Walk-ins, regulars and story requests only ask for what these can make (Nov 9).
+ */
+export function usableMaterials(save: SaveData): Set<string> {
+  return new Set([...ownedMaterials(save)].filter((id) => owns(save.sourcing!, id)));
 }
 
 /** This week's paper, printing it (and remembering it) the first time it's asked for. */
