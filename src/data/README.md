@@ -50,7 +50,7 @@ The counter's radar (`src/game/radar.ts`). Each material's own vector lives in `
 
 | Field | Meaning |
 | ----- | ------- |
-| `spokes` | The radar's spokes in order: `id`, `name`, and words for explaining a miss: `too` ("too woody"), `more` ("more wood"), `word` ("woody") |
+| `spokes` | The radar's spokes in order: `id`, `name`, words for explaining a miss: `too` ("too woody"), `more` ("more wood"), `word` ("woody"), and `icon` (the spoke's bottle picture, shown on a material's tile at the counter once its card reveals its direction) |
 | `strength` | A drop pushes `base` ^ (material strength − `pivot`) times its vector |
 | `dropDecay` | Diminishing returns: each further drop of a material pushes this share of the one before |
 | `accords` | Bonuses: `accord` (an id in `accords.json`, so it goes in the accord book), `groups` (lists of material ids; every group needs a drop), `spokes` it pushes and how much, and `bonus` × the weakest group's push |
@@ -73,6 +73,7 @@ A customer round at the counter (`src/game/round.ts`, screens in `src/ui/round.t
 | `walkIn` | Walk-ins' made-up briefs: `materials` and `drops` (ranges) of the hidden solution, picked from what the player has unlocked; `pay` (`base` + `perMaterial` × materials); `specificChance` |
 | `briefs` | Walk-ins' words: `vague` (one spoke), `vagueTwo` (two), `specific` (names a material); `{word}`, `{word2}` are spokes' words and `{material}` a material in the solution |
 | `progression` | Difficulty by stage of the game (reputation, until competitions exist). `starting`: the starting materials. `stages`, each from a `reputation`: `name`, `materials` and `drops` (ranges), `startingOnly` (the first days' single-shape briefs), `specificChance` (general to specific: names a material and shows a ghost), `includeChance` and `avoidChance` (must-include and must-avoid; both together only with `bothAllowed`), `shiftedChance` (an opening and a drydown target; built from one top note, half-life at most `shifted.volatileMaxHalfLife`, and one base note, at least `shifted.tenaciousMinHalfLife`). `seasons`: season → spokes customers lean towards, whose materials are `seasonWeight` times likelier. `texts`: words for must-include, must-avoid and time-shifted briefs, and what the reveal says when one is broken (which caps the perfume at one star). |
+| `ui` | Pictures for the counter's screens, as paths under `assets/`: `unknownIcon` (a material's tile before you know its direction), `star` / `starEmpty` (the reveal), `coin`, `sparkle` (behind a three-star reveal); `popMs`, how long a tapped tile bounces |
 | `exp` | Material EXP: `perServe` for each material in a served perfume; `levels`, the EXP each card level starts at (level 1 at 0; the last is the top level). A card shows: level 1, direction unknown; 2, its main spoke; 3, how strongly it pushes (`strengthWords`, by its push per drop); top, its exact vector and how long it lasts (`volatilityWords`, by half-life in hours). EXP is saved as `counter.exp`. |
 
 The **test bench** (tap the counter in the shop) uses the same radar, drops, tests and cards with no customer, timer, money or EXP; its mix is saved as `counter.bench`.

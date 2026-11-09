@@ -9,7 +9,8 @@ import type { Material, Spoke } from './types';
 // mix's intensity; its shape is where that intensity goes.
 
 export interface RadarData {
-  spokes: { id: Spoke; name: string; too: string; more: string; word: string }[];
+  /** `icon`: the spoke's bottle picture under assets/, shown on material tiles once you know a material's direction. */
+  spokes: { id: Spoke; name: string; too: string; more: string; word: string; icon: string }[];
   /** A drop's push is base ^ (strength − pivot) times its vector. */
   strength: { base: number; pivot: number };
   /** Each further drop of a material pushes this share of the one before. */

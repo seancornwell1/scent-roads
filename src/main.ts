@@ -21,7 +21,7 @@ import { tierIndex, unlocks } from './game/unlocks';
 import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
 import { radarOf, validateRadar, type Mix } from './game/radar';
 import { addDrop, awardExp, judgeRound, pingMs, tipFor, tipTier, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
-import { benchScreen, cardLine, clock, levelUpLine, revealScreen, roundScreen, targetValues } from './ui/round';
+import { benchScreen, clock, noteDrop, revealScreen, roundScreen, targetValues } from './ui/round';
 import { CharacterKit } from './scene/characters';
 import { ShopScene } from './scene/shopScene';
 import { SoundBoard } from './scene/audio';
@@ -155,8 +155,6 @@ function briefFor(visit: Visit): RoundBrief {
   return walkInBrief([...ownedMaterials(state.save)], seededRandom(seed), { reputation: state.save.customers!.reputation, season, modelStages: content.model.stages });
 }
 
-/** What a material's card shows at the counter: as much as its EXP has revealed. */
-const materialCard = (id: string): string => cardLine(id);
 
 /** Any accord in the mix for the first time: saved to the accord book, with its reward. */
 function discoverAccords(mix: Mix, accords: string[]): void {
@@ -455,11 +453,11 @@ function panelContent(screen: Screen, visit: Visit | undefined): string {
     case 'customer':
       return customerScreen(visit!, state.save.customers!, state.save.story!, state.save.counter!.round?.visitId ?? null);
     case 'round':
-      return state.save.counter!.round ? roundScreen(state.ui.ping, state.ui.accordReward, materialCard) : bookScreen();
+      return state.save.counter!.round ? roundScreen(state.ui.ping, state.ui.accordReward) : bookScreen();
     case 'bench':
       return benchScreen(state.ui.ping, state.ui.accordReward);
     case 'reveal':
-      return state.ui.reveal ? revealScreen(state.ui.reveal, state.ui.reveal.levelUps.map((u) => levelUpLine(u.id, u.level))) : bookScreen();
+      return state.ui.reveal ? revealScreen(state.ui.reveal) : bookScreen();
     case 'reaction':
       return reactionScreen(visit!);
     case 'chapter':
@@ -613,6 +611,8 @@ document.body.addEventListener('click', (event) => {
       const r = ui.screen === 'bench' ? save.counter!.bench : save.counter!.round;
       if (!r) return;
       r.drops = addDrop(r.drops, id!, Number(target.dataset.value));
+      if (Number(target.dataset.value) > 0) noteDrop(id!);
+      sounds.play('pouring');
       break;
     }
     case 'round-clear': {

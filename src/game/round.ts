@@ -11,6 +11,8 @@ import type { Spoke } from './types';
 // each test ping fades faster than the one before.
 
 export interface CounterData {
+  /** Pictures for the counter's screens (paths under assets/) and how long a tapped tile's pop lasts. */
+  ui: { unknownIcon: string; star: string; starEmpty: string; coin: string; sparkle: string; popMs: number };
   /** Tips by speed: served within a tier's `withinSeconds` (real seconds), they tip `share` of the pay; slower than every tier, no tip. `text` says why at the reveal. */
   tip: { tiers: { withinSeconds: number; share: number; text: string }[] };
   /** The first test ping shows for `firstMs`; each next one for `factor` × the last, down to `minMs`. */

@@ -5,56 +5,64 @@
       "name": "Citrus",
       "too": "too citrusy",
       "more": "more citrus",
-      "word": "bright"
+      "word": "bright",
+      "icon": "custom/ui/bottle-citrus.png"
     },
     {
       "id": "fresh",
       "name": "Fresh",
       "too": "too sharp and fresh",
       "more": "something fresher",
-      "word": "fresh"
+      "word": "fresh",
+      "icon": "custom/ui/bottle-fresh.png"
     },
     {
       "id": "green",
       "name": "Green",
       "too": "too green",
       "more": "more green",
-      "word": "green"
+      "word": "green",
+      "icon": "custom/ui/bottle-green.png"
     },
     {
       "id": "floral",
       "name": "Floral",
       "too": "too floral",
       "more": "more flowers",
-      "word": "floral"
+      "word": "floral",
+      "icon": "custom/ui/bottle-floral.png"
     },
     {
       "id": "woody",
       "name": "Woody",
       "too": "too woody",
       "more": "more wood",
-      "word": "woody"
+      "word": "woody",
+      "icon": "custom/ui/bottle-woody.png"
     },
     {
       "id": "amber",
       "name": "Amber",
       "too": "too ambery and heavy",
       "more": "more warmth",
-      "word": "warm"
+      "word": "warm",
+      "icon": "custom/ui/bottle-amber.png"
     },
     {
       "id": "gourmand",
       "name": "Gourmand",
       "too": "too sweet",
       "more": "more sweetness",
-      "word": "sweet"
+      "word": "sweet",
+      "icon": "custom/ui/bottle-gourmand.png"
     },
     {
       "id": "spicy",
       "name": "Spicy",
       "too": "too spicy",
       "more": "more spice",
-      "word": "spicy"
+      "word": "spicy",
+      "icon": "custom/ui/bottle-spicy.png"
     }
   ],
   "strength": {

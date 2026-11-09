@@ -23,6 +23,7 @@ Run the scripts inside Blender (5.2): paste `exec(open(r"<repo>\blender\<script>
 | `decor.py` | `floor-lamp`, `wall-clock`, `round-table`, `armchair`, `bookshelf` |
 | `furniture.py` | the buyable furniture: `cushion-bench`, `bar-stool`, `rocking-chair`, `sofa`, `snake-plant`, `fern`, `table-lamp`, `candle-cluster`, `star-lantern`, `flower-vase`, `globe`, `standing-mirror`, `vanity-table` |
 | `character-parts.py` | character kit parts `hat_beret`, `hat_flowercrown`, `handL_perfume` (to `assets/custom/characters/`, rigidly skinned to the kit skeleton) |
+| `ui-icons.py` | the counter's interface pictures in `assets/custom/ui/`: a bottle per radar spoke, an unknown bottle, stars, coin, sparkle |
 | `room-preview.py` | renders `previews/room-preview.png`, a corner of the shop built from the models (run the model scripts first) |
 | `lineup.py` | renders a side-by-side contact sheet of named models |
 

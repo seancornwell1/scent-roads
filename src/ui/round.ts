@@ -5,7 +5,7 @@ import { radarData, spokeInfo } from '../game/radar';
 import type { Spoke } from '../game/types';
 import { ownedMaterials } from '../game/world';
 import { state } from '../state';
-import { esc, starsText } from './html';
+import { esc } from './html';
 import { radarChart, scaleFor, type RadarLayer } from './radar';
 
 // The counter: a customer round (brief, timer, drops, test pings, hand over) and its reveal.
@@ -50,18 +50,41 @@ function counterMaterials() {
   return content.materials.filter((m) => owned.has(m.id)).sort((a, b) => (order.get(a.family) ?? 0) - (order.get(b.family) ?? 0) || a.name.localeCompare(b.name));
 }
 
-/** The material rows: name, family, and drops with − and +. */
-export function dropRows(mix: Mix, card: (id: string) => string): string {
+const asset = (path: string): string => `${import.meta.env.BASE_URL}${path}`;
+
+/** The last tile tapped, so the freshly drawn tile can bounce. */
+let lastDrop: { id: string; at: number } | null = null;
+export function noteDrop(id: string): void {
+  lastDrop = { id, at: Date.now() };
+}
+
+/** A material's bottle: plain until its card shows its direction, then that spoke's colour. */
+export function bottleIcon(id: string): string {
+  const card = cardFor(id, state.save.counter!.exp[id] ?? 0);
+  return asset(card.direction ? spokeInfo(card.direction).icon : counter.ui.unknownIcon);
+}
+
+/** A tile's small print: its card level and, once known, its main direction. */
+function tileInfo(id: string): string {
+  const card = cardFor(id, state.save.counter!.exp[id] ?? 0);
+  const level = card.level >= maxLevel() ? 'Lv max' : `Lv ${card.level}`;
+  return card.direction ? `${level} · ${spokeInfo(card.direction).name}` : `${level} · ?`;
+}
+
+/** The materials as bottle tiles: tap to add a drop; the badge counts drops and − takes one out. */
+export function dropTiles(mix: Mix): string {
+  const popping = lastDrop && Date.now() - lastDrop.at < counter.ui.popMs ? lastDrop.id : null;
   return counterMaterials()
     .map((m) => {
       const n = mix[m.id] ?? 0;
-      return `<li class="drop-row${n ? ' drop-row--on' : ''}">
-        <div class="drop-name"><strong>${esc(m.name)}</strong> <span class="muted small">${esc(m.family)}</span>${card(m.id)}</div>
-        <div class="drop-count">
-          <button class="chip" data-action="drop" data-id="${esc(m.id)}" data-value="-1" ${n ? '' : 'disabled'} aria-label="One drop less">−</button>
-          <strong>${n}</strong>
-          <button class="chip" data-action="drop" data-id="${esc(m.id)}" data-value="1" aria-label="One drop more">+</button>
-        </div>
+      const id = esc(m.id);
+      return `<li class="tile${n ? ' tile--on' : ''}${popping === m.id ? ' tile--pop' : ''}">
+        <button class="tile-add" data-action="drop" data-id="${id}" data-value="1" aria-label="One drop of ${esc(m.name)}">
+          <img class="tile-icon" src="${bottleIcon(m.id)}" alt="">
+          <span class="tile-name">${esc(m.name)}</span>
+          <span class="tile-info">${esc(tileInfo(m.id))}</span>
+        </button>
+        ${n ? `<span class="tile-badge" aria-label="${n} drops">${n}</span><button class="tile-minus" data-action="drop" data-id="${id}" data-value="-1" aria-label="One drop less">−</button>` : ''}
       </li>`;
     })
     .join('');
@@ -92,7 +115,7 @@ export function pingLayer(ping: Ping | null, stage = 0): RadarLayer[] {
   return elapsed < ping.ms ? [{ kind: 'ping', values: ping.values[0], ms: ping.ms, elapsed }] : [];
 }
 
-export function roundScreen(ping: Ping | null, reward: string | null, card: (id: string) => string): string {
+export function roundScreen(ping: Ping | null, reward: string | null): string {
   const round = state.save.counter!.round!;
   const visit = state.save.customers!.visits.find((v) => v.id === round.visitId);
   const b = round.brief;
@@ -115,18 +138,17 @@ export function roundScreen(ping: Ping | null, reward: string | null, card: (id:
     </header>
     <main class="customer round">
       ${reward ? accordReward(reward) : ''}
-      <blockquote class="memory">“${esc(b.text)}”</blockquote>
-      ${b.extra.map((h) => `<p class="hint">“${esc(h)}”</p>`).join('')}
+      <div class="bubble"><p class="bubble-text">“${esc(b.text)}”</p>${b.extra.map((h) => `<p class="bubble-hint">“${esc(h)}”</p>`).join('')}</div>
       <p class="small">They want it <strong>${esc(intensityWord(b.target.intensity))}</strong>${stages.length > 1 ? ' at first, and it should change as it dries down' : ''}.${b.ghost.length ? ' The dashed lines are part of what they described.' : ''}</p>
       <div class="radar-box${stages.length > 1 ? ' radar-box--stages' : ''}">${charts}</div>
       ${muddy}
-      <div class="row-between">
+      <p class="muted small">Tap a bottle for a drop. Test shows your mix for a moment, and each test fades faster.</p>
+      <ul class="tiles">${dropTiles(round.drops)}</ul>
+      <div class="action-bar">
         <button class="chip" data-action="round-test" ${used ? '' : 'disabled'}>Test${round.tests ? ` (${round.tests})` : ''}</button>
-        <button class="link danger" data-action="round-clear" ${used ? '' : 'disabled'}>Pour it out</button>
-        <button class="primary" data-action="round-hand-over" ${used ? '' : 'disabled'}>Hand over</button>
+        <button class="link danger" data-action="round-clear" ${used ? '' : 'disabled'}>Pour out</button>
+        <button class="primary" data-action="round-hand-over" ${used ? '' : 'disabled'}>Hand over${used ? ` · ${used}` : ''}</button>
       </div>
-      <p class="muted small">Each test shows your mix for a moment; every test fades faster than the last. ${used} drop${used === 1 ? '' : 's'} in the bottle.</p>
-      <ul class="list drops">${dropRows(round.drops, card)}</ul>
     </main>`;
 }
 
@@ -162,7 +184,14 @@ function description(r: Reveal): string {
     .join('');
 }
 
-export function revealScreen(r: Reveal, gains: string[]): string {
+/** The stars, popping in one after another; a sparkle turns behind a three-star perfume. */
+function revealStars(stars: number): string {
+  const ui = counter.ui;
+  const imgs = [0, 1, 2].map((i) => `<img class="star-pop" style="animation-delay:${0.25 + i * 0.35}s" src="${asset(i < stars ? ui.star : ui.starEmpty)}" alt="">`).join('');
+  return `<div class="reveal-stars${stars === 3 ? ' reveal-stars--best' : ''}" role="img" aria-label="${stars} of 3 stars">${stars === 3 ? `<img class="reveal-sparkle" src="${asset(ui.sparkle)}" alt="">` : ''}${imgs}</div>`;
+}
+
+export function revealScreen(r: Reveal): string {
   const accords = r.accords
     .map((id) => content.accords.find((a) => a.id === id)?.name)
     .filter(Boolean)
@@ -170,18 +199,23 @@ export function revealScreen(r: Reveal, gains: string[]): string {
   const used = Object.entries(r.mix)
     .map(([id, n]) => `${materialsById.get(id)?.name ?? id} ×${n}`)
     .join(' · ');
+  const total = r.pay + r.tip;
+  const levelUps = r.levelUps
+    .map((u, i) => `<li class="levelup" style="animation-delay:${1.4 + i * 0.25}s"><img src="${bottleIcon(u.id)}" alt=""><span>${levelUpLine(u.id, u.level)}</span></li>`)
+    .join('');
   return `<header class="bar-top"><span></span><h1>The reveal</h1><span></span></header>
     <main class="customer reveal">
       <p class="muted small">${esc(r.name)} tries it on…</p>
-      <p class="stars" aria-label="${r.score.stars} of 3 stars">${starsText(r.score.stars)}</p>
+      ${revealStars(r.score.stars)}
       <div class="reveal-description">${description(r)}</div>
       <p class="reveal-cause">${esc(r.cause ?? 'Nothing to change: that’s exactly it.')}</p>
+      ${total ? `<p class="reveal-pay"><img class="coin" src="${asset(counter.ui.coin)}" alt=""><strong>+${total}</strong></p>` : ''}
+      <p class="small">${r.pay ? `They pay <strong>${r.pay} coins</strong>${r.tip ? ` and tip <strong>${r.tip}</strong>${r.tipText ? ` ${esc(r.tipText)}` : ''}` : ''}.` : 'It isn’t what they came for, so they won’t pay for it.'}</p>
       ${accords ? `<p class="small">Accords in it: <strong>${esc(accords)}</strong></p>` : ''}
-      <p class="muted small">You used ${esc(used)}.</p>
       ${r.thanks ? `<p>“${esc(r.thanks)}”</p>` : ''}
       ${r.page ? `<p class="banner small"><span>You've recovered a page of her book.</span></p>` : ''}
-      <p>${r.pay ? `They pay <strong>${r.pay} coins</strong>${r.tip ? ` and tip <strong>${r.tip}</strong>${r.tipText ? ` ${esc(r.tipText)}` : ''}` : ''}.` : 'It isn’t what they came for, so they won’t pay for it.'}</p>
-      ${gains.length ? `<ul class="plain small exp-gains">${gains.map((g) => `<li>${g}</li>`).join('')}</ul>` : ''}
+      ${levelUps ? `<ul class="plain levelups">${levelUps}</ul>` : ''}
+      <p class="muted small">You used ${esc(used)}.</p>
       <div class="row-between"><span></span><button class="primary" data-action="reveal-done">Thank ${esc(r.name)}</button></div>
     </main>`;
 }
@@ -233,12 +267,12 @@ export function benchScreen(ping: Ping | null, reward: string | null): string {
       <div class="radar-box">${radarChart(pingLayer(ping), scale, pulseFor(reward))}</div>
       ${shown?.muddy.length ? '<p class="small warn-text">It went muddy: something in the mix is fighting.</p>' : ''}
       ${found.length ? `<p class="small">Accords in it: <strong>${esc(found.join(', '))}</strong></p>` : ''}
-      <div class="row-between">
+      <p class="muted small">Tap a bottle for a drop. Each test fades faster than the last; pouring it out starts afresh.</p>
+      <ul class="tiles">${dropTiles(bench.drops)}</ul>
+      <div class="action-bar">
         <button class="chip" data-action="round-test" ${used ? '' : 'disabled'}>Test${bench.tests ? ` (${bench.tests})` : ''}</button>
-        <button class="link danger" data-action="round-clear" ${used ? '' : 'disabled'}>Pour it out</button>
+        <button class="link danger" data-action="round-clear" ${used ? '' : 'disabled'}>Pour out${used ? ` · ${used}` : ''}</button>
       </div>
-      <p class="muted small">${used} drop${used === 1 ? '' : 's'} in the bottle. Each test fades faster than the last; pouring it out starts afresh.</p>
-      <ul class="list drops">${dropRows(bench.drops, cardLine)}</ul>
     </main>`;
 }
 

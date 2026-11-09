@@ -116,3 +116,12 @@ Extra parts for the Grab3D Character Mixer cozy kit, skinned to its skeleton and
 | `assets/custom/characters/hat_beret.glb`, `thumbs/hat_beret.webp` | Perfumer's beret (hat slot, head bone), 940 triangles | Made for this game (`blender/character-parts.py`) | Claude Code for Sean Cornwell | Project's own | — |
 | `assets/custom/characters/hat_flowercrown.glb`, `thumbs/hat_flowercrown.webp` | Flower crown (hat slot, head bone), 3,792 triangles | Made for this game (`blender/character-parts.py`) | Claude Code for Sean Cornwell | Project's own | — |
 | `assets/custom/characters/handL_perfume.glb`, `thumbs/handL_perfume.webp` | Perfume bottle held in the left hand (hand.L bone), 500 triangles | Made for this game (`blender/character-parts.py`) | Claude Code for Sean Cornwell | Project's own | — |
+
+## Interface pictures made for this game
+
+Rendered in Blender from little models (`blender/ui-icons.py`), 192 px PNGs with transparent backgrounds, listed in `src/data/radar.json` (spoke icons) and `src/data/counter.json` (`ui`).
+
+| File | Picture | Source | Author | License | URL |
+| ---- | ------- | ------ | ------ | ------- | --- |
+| `assets/custom/ui/bottle-<spoke>.png` (citrus, fresh, green, floral, woody, amber, gourmand, spicy) and `bottle-unknown.png` | A chunky bottle per radar spoke, and a plain one for a material whose direction you haven't learned | Made for this game | Claude Code for Sean Cornwell | Project's own | — |
+| `assets/custom/ui/star.png`, `star-empty.png`, `coin.png`, `sparkle.png` | Reveal stars, coin and the sparkle behind three stars | Made for this game | Claude Code for Sean Cornwell | Project's own | — |

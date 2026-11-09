@@ -502,12 +502,6 @@ textarea {
 @keyframes radar-ping-fade { from { opacity: 1; } to { opacity: 0; } }
 
 .round-timer { font-variant-numeric: tabular-nums; font-size: 0.85rem; color: var(--muted); text-align: right; }
-.drops { margin-top: 8px; }
-.drop-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
-.drop-row--on .drop-name strong { color: var(--accent); }
-.drop-name { min-width: 0; }
-.drop-count { display: flex; align-items: center; gap: 8px; flex: none; }
-.drop-count strong { min-width: 1.4em; text-align: center; font-variant-numeric: tabular-nums; }
 
 .accord-reward { border: 2px solid var(--accent); background: var(--card); border-radius: 14px; padding: 14px; margin-bottom: 12px; text-align: center; animation: accord-reward-in 420ms cubic-bezier(.2, 1.6, .4, 1); }
 .accord-reward-kicker { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; margin: 0; }
@@ -524,3 +518,45 @@ textarea {
 .radar-box--stages { gap: 4px; }
 .radar-stage { margin: 0; flex: 1; min-width: 0; text-align: center; }
 .radar-stage figcaption { color: var(--muted); }
+
+/* Counter: the brief as a speech bubble. */
+.bubble { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 12px 14px; margin: 4px 0 10px; box-shadow: 0 3px 0 var(--line); }
+.bubble-text { font-size: 1.05rem; margin: 0; }
+.bubble-hint { font-style: italic; color: var(--muted); margin: 8px 0 0; }
+
+/* Counter: the materials as chunky bottle tiles. Tap adds a drop. */
+.tiles { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tile { position: relative; }
+.tile-add { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px 8px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; box-shadow: 0 4px 0 var(--line); color: var(--ink); font: inherit; cursor: pointer; transition: transform 80ms ease, box-shadow 80ms ease; -webkit-tap-highlight-color: transparent; }
+.tile-add:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.tile--on .tile-add { border-color: var(--accent); box-shadow: 0 4px 0 var(--accent); }
+.tile-icon { width: 54px; height: 54px; object-fit: contain; pointer-events: none; }
+.tile-name { font-weight: 700; font-size: 0.82rem; line-height: 1.15; text-align: center; }
+.tile-info { font-size: 0.68rem; color: var(--muted); }
+.tile-badge { position: absolute; top: -6px; right: -4px; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 13px; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; pointer-events: none; }
+.tile-minus { position: absolute; top: -6px; left: -4px; width: 26px; height: 26px; border-radius: 13px; border: 2px solid var(--line); background: var(--card); color: var(--ink); font-weight: 700; line-height: 1; padding: 0; cursor: pointer; }
+.tile--pop .tile-icon { animation: tile-pop 420ms cubic-bezier(.2, 1.8, .4, 1); }
+.tile--pop .tile-badge { animation: tile-pop 420ms cubic-bezier(.2, 1.8, .4, 1); }
+@keyframes tile-pop { 0% { transform: scale(1); } 30% { transform: scale(1.28) rotate(-6deg); } 100% { transform: scale(1) rotate(0); } }
+
+/* Counter: the actions stay at the bottom of the panel while the tiles scroll. */
+.action-bar { position: sticky; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 12px -16px 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); z-index: 2; }
+
+/* The reveal: stars pop in one by one; a sparkle turns behind three stars. */
+.reveal-stars { position: relative; display: flex; justify-content: center; gap: 6px; margin: 6px 0 10px; height: 76px; }
+.star-pop { width: 70px; height: 70px; opacity: 0; transform: scale(0.2); animation: star-pop 520ms cubic-bezier(.2, 1.7, .4, 1) forwards; position: relative; z-index: 1; }
+.reveal-stars .star-pop:nth-of-type(2) { margin-top: -10px; }
+@keyframes star-pop { to { opacity: 1; transform: scale(1); } }
+.reveal-sparkle { position: absolute; left: 50%; top: 50%; width: 170px; height: 170px; margin: -85px 0 0 -85px; opacity: 0; animation: sparkle-in 600ms ease 1.2s forwards, sparkle-turn 6s linear 1.2s infinite; }
+@keyframes sparkle-in { to { opacity: 0.85; } }
+@keyframes sparkle-turn { to { transform: rotate(360deg); } }
+.reveal-pay { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1.6rem; margin: 6px 0 2px; opacity: 0; animation: star-pop 480ms cubic-bezier(.2, 1.7, .4, 1) 1.3s forwards; }
+.reveal-pay .coin { width: 40px; height: 40px; }
+.levelups { display: grid; gap: 8px; margin: 10px 0; }
+.levelup { display: flex; align-items: center; gap: 10px; background: var(--card); border: 2px solid var(--accent); border-radius: 14px; padding: 8px 10px; opacity: 0; transform: translateY(10px); animation: levelup-in 420ms ease forwards; }
+.levelup img { width: 44px; height: 44px; flex: none; }
+@keyframes levelup-in { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .star-pop, .reveal-pay, .levelup, .reveal-sparkle { animation-duration: 1ms !important; animation-delay: 0s !important; }
+  .tile--pop .tile-icon, .tile--pop .tile-badge { animation: none; }
+}

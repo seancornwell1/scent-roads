@@ -286,5 +286,13 @@
       "brokeInclude": "They asked for {material} in it.",
       "brokeAvoid": "They asked for no {material}."
     }
+  },
+  "ui": {
+    "unknownIcon": "custom/ui/bottle-unknown.png",
+    "star": "custom/ui/star.png",
+    "starEmpty": "custom/ui/star-empty.png",
+    "coin": "custom/ui/coin.png",
+    "sparkle": "custom/ui/sparkle.png",
+    "popMs": 450
   }
 }
