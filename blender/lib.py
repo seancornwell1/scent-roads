@@ -54,6 +54,7 @@ class Model:
         if not c:
             c = bpy.data.collections.new(name); bpy.context.scene.collection.children.link(c)
         self.coll = c
+        bpy.context.view_layer.layer_collection.children[name].exclude = False
         bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
         self.parts = []
         self.n = 0
