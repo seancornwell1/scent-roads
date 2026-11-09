@@ -23,7 +23,7 @@ for x0, x1 in ((-W / 2, -ow / 2), (ow / 2, W / 2)):
     M.box(plaster, (x1 - x0, T, z1), ((x0 + x1) / 2, 0, 0), bevel=0)
 M.box(wains, (ow, T + 0.02, z0), (0, 0.01, 0), bevel=0.01, segs=1)              # under the window
 M.box(wood, (W, T + 0.05, 0.12), (0, 0.025, 0), bevel=0.02)                     # skirting
-M.box(wood, (W, T + 0.08, 0.1), (0, 0.04, H - 0.1), bevel=0.03)                 # crown
+M.box(wood, (W, T + 0.08, 0.115), (0, 0.04, H - 0.1), bevel=0.03)                # crown, top just above the plaster
 fr = 0.08
 for x in (-ow / 2 - fr / 2 + 0.01, ow / 2 + fr / 2 - 0.01):
     M.box(trim, (fr, T + 0.06, z1 - z0 + fr), (x, 0, z0), bevel=0.02)

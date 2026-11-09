@@ -46,7 +46,8 @@ def wainscot(M, x0, x1):
 
 
 def crown(M, x0, x1):
-    M.box(wood, (x1 - x0, T + 0.08, 0.1), ((x0 + x1) / 2, 0.04, H - 0.1), bevel=0.03)
+    # top sits 1.5 cm above the plaster so the two top faces don't fight
+    M.box(wood, (x1 - x0, T + 0.08, 0.115), ((x0 + x1) / 2, 0.04, H - 0.1), bevel=0.03)
 
 
 # ---------- plain wall ----------
@@ -123,13 +124,17 @@ br = mat("door_brass", "brass", 0.35, metal=1.0)
 R = 0.54; rect = 1.6; th = 0.06   # fills wall-doorway's arched opening (1.1 m wide, 2.15 m tall)
 M.box(door, (2 * R, th, rect), (0, 0, 0), bevel=0.015)
 M.cyl(door, R, th, (0, -th / 2, rect), verts=24, rot=(math.radians(-90), 0, 0), bevel=0.012)
-for x in (-0.22, 0.22):                       # two raised panels
-    M.box(dtrim, (0.3, 0.02, 0.8), (x, th / 2, 0.2), bevel=0.012)
-    M.box(door, (0.24, 0.02, 0.74), (x, th / 2 + 0.01, 0.23), bevel=0.012)
-M.cyl(dtrim, 0.24, 0.025, (0, th / 2 - 0.005, rect + 0.05), verts=20, rot=(math.radians(-90), 0, 0), bevel=0.008)
-M.cyl(mat("door_glass", "#CFEFFF", 0.05), 0.19, 0.03, (0, th / 2, rect + 0.05), verts=20, rot=(math.radians(-90), 0, 0), bevel=0.006)
-M.sphere(br, 0.04, (0.38, th / 2 + 0.04, 1.0), seg=12, rings=8)
-M.cyl(br, 0.015, 0.04, (0.38, th / 2, 1.0), verts=8, rot=(math.radians(-90), 0, 0), bevel=0)
+for side in (1, -1):                          # both faces get panels, a window ring and a knob
+    face = side * th / 2
+    for x in (-0.22, 0.22):                   # two raised panels
+        M.box(dtrim, (0.3, 0.02, 0.8), (x, face, 0.2), bevel=0.012)
+        M.box(door, (0.24, 0.02, 0.74), (x, face + side * 0.01, 0.23), bevel=0.012)
+    M.cyl(dtrim, 0.24, 0.025, (0, face - side * 0.005, rect + 0.05), verts=20, rot=(math.radians(-90 * side), 0, 0), bevel=0.008)
+    M.sphere(br, 0.04, (0.38, face + side * 0.04, 1.0), seg=12, rings=8)
+    M.cyl(br, 0.015, 0.04, (0.38, face, 1.0), verts=8, rot=(math.radians(-90 * side), 0, 0), bevel=0)
+M.cyl(mat("door_glass", "#CFEFFF", 0.05), 0.19, th + 0.03, (0, -th / 2 - 0.015, rect + 0.05), verts=20, rot=(math.radians(-90), 0, 0), bevel=0.006)
+for z in (0.3, 1.45):                         # hinges on the left edge (x = -R)
+    M.cyl(br, 0.018, 0.14, (-R - 0.005, 0, z), verts=10, bevel=0.004)
 out.append(M.finish())
 
 result = {"models": out}
