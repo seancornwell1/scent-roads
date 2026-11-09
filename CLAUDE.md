@@ -17,6 +17,7 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 - Never draw models, sprites, icons or effects in code, and never synthesize audio. Code only loads asset files.
 - Use free low-poly 3D libraries in one consistent style: Kenney.nl (CC0) and Quaternius (CC0) first, Poly Pizza for gaps. Download them into `assets/` yourself. Propose the packs with preview links and wait for Sean's OK before downloading.
 - Log every asset in `CREDITS.md` (source, author, license, URL). CC0 or CC BY only.
+- Custom models made in Blender follow `docs/ASSET_STYLE.md` (look, palette, sizes, export settings) and go in `assets/custom/`.
 - Approved so far: Grab3D (CC0) models and its Character Mixer "Cozy" parts. Downscale textures to 512 px with `npx gltf-transform resize in.glb out.glb --width 512 --height 512` before adding a model, and note it in `CREDITS.md`. Sean is happy to credit artists, so CC BY is fine when the style matches.
 
 ## Project
