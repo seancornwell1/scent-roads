@@ -43,8 +43,9 @@ def mat(name, hexc, rough=0.6, metal=0.0, alpha=1.0):
 class Model:
     """Collects parts for one model; join() makes a single multi-material mesh."""
 
-    def __init__(self, name):
+    def __init__(self, name, ground=True):
         self.name = name
+        self.ground = ground  # False keeps real heights (wall-hung pieces)
         for o in list(bpy.data.objects):
             if o.name.startswith(name + "_") or o.name == name:
                 bpy.data.objects.remove(o, do_unlink=True)
@@ -167,8 +168,9 @@ class Model:
         old = bpy.data.meshes.get(self.name)
         if old and old != o.data: old.name = self.name + "-old"   # e.g. still used by room-preview
         o.name = self.name; o.data.name = self.name
-        zmin = min(v.co.z for v in o.data.vertices)
-        for v in o.data.vertices: v.co.z -= zmin  # sit exactly on z = 0
+        if self.ground:
+            zmin = min(v.co.z for v in o.data.vertices)
+            for v in o.data.vertices: v.co.z -= zmin  # sit exactly on z = 0
         o.data.update()
         self.obj = o
         return o
