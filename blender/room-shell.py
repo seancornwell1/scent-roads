@@ -79,15 +79,40 @@ out.append(M.finish())
 
 # ---------- doorway wall ----------
 M = Model("wall-doorway")
-dw, dh = 1.1, 2.25
-plaster_block(M, -W / 2, -dw / 2, 1.0, H); plaster_block(M, dw / 2, W / 2, 1.0, H)
-plaster_block(M, -dw / 2, dw / 2, dh, H)
-wainscot(M, -W / 2, -dw / 2 - 0.06); wainscot(M, dw / 2 + 0.06, W / 2)
+# arched opening that matches door-arched: 1.1 m wide, straight sides to 1.6 m, round top to 2.15 m
+DR, DS = 0.55, 1.6          # arch radius, height where the arch starts
+NA = 16                     # segments in the half circle
+
+
+def arc(r, a0, a1, n):
+    return [(r * math.cos(a0 + (a1 - a0) * i / n), DS + r * math.sin(a0 + (a1 - a0) * i / n)) for i in range(n + 1)]
+
+
+def slab(M, m, outline, y0, depth):
+    """Extrudes a 2D outline in the XZ plane from y0 to y0 + depth (front at +Y)."""
+    n = len(outline)
+    vs = [(x, y0, z) for x, z in outline] + [(x, y0 + depth, z) for x, z in outline]
+    fs = [tuple(range(n - 1, -1, -1)), tuple(range(n, 2 * n))]
+    fs += [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+    o = M.mesh(m, vs, fs, smooth=False)
+    bm = bmesh.new(); bm.from_mesh(o.data)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])   # make every face point outward
+    bm.to_mesh(o.data); bm.free()
+    return o
+
+plaster_block(M, -W / 2, -DR, 1.0, H); plaster_block(M, DR, W / 2, 1.0, H)
+plaster_block(M, -DR, DR, DS + DR, H)
+for side in (1, -1):        # spandrels: the plaster between the arch and the square above it
+    pts = [(side * x, z) for x, z in arc(DR, 0, math.pi / 2, NA // 2)] + [(side * DR, DS + DR)]
+    if side < 0: pts.reverse()
+    slab(M, plaster, pts, -T / 2, T)
+wainscot(M, -W / 2, -DR - 0.06); wainscot(M, DR + 0.06, W / 2)
 crown(M, -W / 2, W / 2)
-for x in (-dw / 2 - 0.04, dw / 2 + 0.04):
-    M.box(wood, (0.1, T + 0.08, dh + 0.04), (x, 0, 0), bevel=0.025)
-M.box(wood, (dw + 0.3, T + 0.1, 0.14), (0, 0, dh), bevel=0.035)
-M.sphere(mat("wall_keystone", "pink", 0.6), 0.05, (0, T / 2 + 0.06, dh + 0.07), scale=(1, 0.5, 1), seg=12, rings=8)
+for x in (-DR - 0.05, DR + 0.05):                       # straight sides of the frame
+    M.box(wood, (0.1, T + 0.08, DS + 0.01), (x, 0, 0), bevel=0.025)
+ring = arc(DR + 0.1, 0, math.pi, NA) + list(reversed(arc(DR, 0, math.pi, NA)))
+slab(M, wood, ring, -T / 2 - 0.04, T + 0.08)            # arched top of the frame
+M.sphere(mat("wall_keystone", "pink", 0.6), 0.06, (0, T / 2 + 0.05, DS + DR + 0.05), scale=(1, 0.5, 1.1), seg=12, rings=8)
 out.append(M.finish())
 
 # ---------- arched door leaf ----------
@@ -95,7 +120,7 @@ M = Model("door-arched")
 door = mat("door_paint", "mint", 0.6)
 dtrim = mat("door_trim", "white", 0.6)
 br = mat("door_brass", "brass", 0.35, metal=1.0)
-R = 0.5; rect = 1.6; th = 0.06
+R = 0.54; rect = 1.6; th = 0.06   # fills wall-doorway's arched opening (1.1 m wide, 2.15 m tall)
 M.box(door, (2 * R, th, rect), (0, 0, 0), bevel=0.015)
 M.cyl(door, R, th, (0, -th / 2, rect), verts=24, rot=(math.radians(-90), 0, 0), bevel=0.012)
 for x in (-0.22, 0.22):                       # two raised panels

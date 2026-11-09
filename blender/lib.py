@@ -104,7 +104,8 @@ class Model:
         bpy.ops.mesh.primitive_cube_add(size=1, location=(loc[0], loc[1], loc[2] + sz / 2), rotation=rot)
         o = bpy.context.object; o.scale = (sx, sy, sz); self._apply(o)
         if bevel is None: bevel = min(size) * 0.18
-        return self._take(o, m, bevel=bevel, segs=segs)
+        # an unbevelled box is flat-shaded: smooth normals on sharp corners shade unevenly
+        return self._take(o, m, bevel=bevel, segs=segs, smooth=bevel > 0)
 
     def cyl(self, m, r, h, loc=(0, 0, 0), verts=20, r2=None, bevel=None, rot=(0, 0, 0), caps=True, segs=3):
         bpy.ops.mesh.primitive_cone_add(vertices=verts, radius1=r, radius2=r if r2 is None else r2, depth=h,
