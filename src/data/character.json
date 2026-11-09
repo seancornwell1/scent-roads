@@ -63,7 +63,9 @@
       "hat_beanie",
       "hat_chef",
       "hat_explorer",
-      "hat_wizard"
+      "hat_wizard",
+      "hat_beret",
+      "hat_flowercrown"
     ],
     "face": [
       "face_glasses",
@@ -92,7 +94,8 @@
     "handL": [
       "handL_potion",
       "handL_flower",
-      "handL_book"
+      "handL_book",
+      "handL_perfume"
     ],
     "body": []
   },

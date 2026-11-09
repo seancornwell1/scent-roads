@@ -106,3 +106,13 @@ Models built in Blender for Scentshop Tale, following `docs/ASSET_STYLE.md`. The
 | `assets/custom/models/globe.glb` | Globe: sky sea, sage continents, brass ring (cozy overhaul); buyable furniture in furniture.json since Nov 9. 2,032 triangles | Made for this game (`blender/furniture.py`) | Claude Code for Sean Cornwell | Project's own | — |
 | `assets/custom/models/standing-mirror.glb` | Standing mirror with an arched top and a pink bow (cozy overhaul); buyable furniture in furniture.json since Nov 9. 2,332 triangles | Made for this game (`blender/furniture.py`) | Claude Code for Sean Cornwell | Project's own | — |
 | `assets/custom/models/vanity-table.glb` | Vanity table with a round mirror, pink drawers and little bottles (cozy overhaul); buyable furniture in furniture.json since Nov 9. 2,852 triangles | Made for this game (`blender/furniture.py`) | Claude Code for Sean Cornwell | Project's own | — |
+
+## Character parts made for this game
+
+Extra parts for the Grab3D Character Mixer cozy kit, skinned to its skeleton and listed in its manifest (`assets/grab3d/characters/manifest.json`, ids tagged `custom`) with paths into `assets/custom/characters/`. Thumbnails rendered in Blender.
+
+| File | Part | Source | Author | License | URL |
+| ---- | ---- | ------ | ------ | ------- | --- |
+| `assets/custom/characters/hat_beret.glb`, `thumbs/hat_beret.webp` | Perfumer's beret (hat slot, head bone), 940 triangles | Made for this game (`blender/character-parts.py`) | Claude Code for Sean Cornwell | Project's own | — |
+| `assets/custom/characters/hat_flowercrown.glb`, `thumbs/hat_flowercrown.webp` | Flower crown (hat slot, head bone), 3,792 triangles | Made for this game (`blender/character-parts.py`) | Claude Code for Sean Cornwell | Project's own | — |
+| `assets/custom/characters/handL_perfume.glb`, `thumbs/handL_perfume.webp` | Perfume bottle held in the left hand (hand.L bone), 500 triangles | Made for this game (`blender/character-parts.py`) | Claude Code for Sean Cornwell | Project's own | — |

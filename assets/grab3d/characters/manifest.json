@@ -1932,6 +1932,85 @@
      "tags": [
       "beard"
      ]
+    },
+    {
+      "id": "hat_beret",
+      "slot": "hat",
+      "name": {
+        "en": "Perfumer's Beret",
+        "de": "Parfümeur-Baskenmütze",
+        "es": "Boina de perfumista"
+      },
+      "file": "../../custom/characters/hat_beret.glb",
+      "thumb": "../../custom/characters/thumbs/hat_beret.webp",
+      "tris": 940,
+      "colorSlots": [
+        "primary",
+        "secondary",
+        "accent"
+      ],
+      "defaultColors": {
+        "primary": "#B7A2EA",
+        "secondary": "#8F7BCB",
+        "accent": "#8F7BCB"
+      },
+      "hairVariant": "short",
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
+    },
+    {
+      "id": "hat_flowercrown",
+      "slot": "hat",
+      "name": {
+        "en": "Flower Crown",
+        "de": "Blumenkranz",
+        "es": "Corona de flores"
+      },
+      "file": "../../custom/characters/hat_flowercrown.glb",
+      "thumb": "../../custom/characters/thumbs/hat_flowercrown.webp",
+      "tris": 3792,
+      "colorSlots": [
+        "primary",
+        "secondary",
+        "accent"
+      ],
+      "defaultColors": {
+        "primary": "#8FC9A0",
+        "secondary": "#F5A7C2",
+        "accent": "#F6D774"
+      },
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
+    },
+    {
+      "id": "handL_perfume",
+      "slot": "handL",
+      "name": {
+        "en": "Perfume Bottle",
+        "de": "Parfümflakon",
+        "es": "Frasco de perfume"
+      },
+      "file": "../../custom/characters/handL_perfume.glb",
+      "thumb": "../../custom/characters/thumbs/handL_perfume.webp",
+      "tris": 500,
+      "colorSlots": [
+        "primary",
+        "secondary",
+        "accent"
+      ],
+      "defaultColors": {
+        "primary": "#F5A7C2",
+        "secondary": "#F6D774",
+        "accent": "#A6E8C6"
+      },
+      "tags": [
+        "perfumer",
+        "custom"
+      ]
     }
    ],
    "presets": [
