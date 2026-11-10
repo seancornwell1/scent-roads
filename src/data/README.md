@@ -137,6 +137,7 @@ The two rooms, the shop and its back room, for the 3D scene (`src/scene/shopScen
 | `fixtures` | Furniture you walk around or use, below |
 | `decor` | Models only for looks, below |
 | `zones` | Marked floor areas, below |
+| `upgradeSpot` | Shop only: how an empty upgrade spot is marked on the floor, a tint of `color` at `opacity` (0 to 1, see-through so the floor shows) |
 | `customers` | Shop only: `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
 | `surfaces` | Shop only: table and counter tops for small decor: `id`, `label`, `position`, `y` (height) |
 | `crates` | Back room only: arrived crates, `model`, the `spots` they stand on by the outside door, and `stackHeights` (to stack one on top) |

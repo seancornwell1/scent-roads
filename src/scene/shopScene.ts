@@ -36,7 +36,6 @@ import { Crowd, type CrowdEntry, type Label } from './crowd';
 // model yet is a plain labelled box (see ASSETS_NEEDED.md).
 
 const PLACEHOLDER_COLOR = 0xd3c2b1;
-const UPGRADE_SPOT_COLOR = 0xdcc5a6;
 const TAP_SLOP_PX = 10;
 /** Isometric viewing direction: the camera sits this far from its focus point. */
 const CAMERA_OFFSET = new Vector3(10, 10, 10);
@@ -160,7 +159,8 @@ export class ShopScene {
     for (const zone of rooms.shop.zones) {
       if (zone.kind !== 'upgrade') continue; // customer areas are invisible: people just stand there
       const [x, z, w, d] = zone.rect;
-      const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: UPGRADE_SPOT_COLOR }));
+      const { color, opacity } = rooms.shop.upgradeSpot;
+      const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: new Color(color), transparent: true, opacity, depthWrite: false }));
       patch.rotation.x = -Math.PI / 2;
       patch.position.set(x, 0.01, z);
       patch.receiveShadow = true;

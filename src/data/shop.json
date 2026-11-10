@@ -6,14 +6,14 @@
   },
   "lighting": {
     "exposure": 1.0,
-    "environment": 0.35,
+    "environment": 0.3,
     "ambient": {
-      "sky": "#fff0dc",
-      "ground": "#d9a878",
-      "intensity": 1.1
+      "sky": "#fff1df",
+      "ground": "#c9a27a",
+      "intensity": 0.9
     },
     "sun": {
-      "color": "#ffe2b8",
+      "color": "#fff0d8",
       "intensity": 2.2,
       "from": [
         -9,
@@ -26,11 +26,11 @@
       }
     }
   },
-  "floorColor": "#e8d2b4",
+  "floorColor": "#6b3f2a",
   "floorTile": {
-    "model": "custom/models/floor-planks.glb",
+    "model": "custom/models/floor-parquet.glb",
     "size": 2,
-    "height": 0.1
+    "height": 0
   },
   "camera": {
     "focus": [
@@ -77,22 +77,21 @@
     "panels": {
       "plain": "custom/models/wall-plain.glb",
       "window": "custom/models/wall-window.glb",
-      "doorway": "custom/models/wall-doorway.glb",
-      "shopfront": "custom/models/wall-shopfront.glb"
+      "doorway": "custom/models/wall-doorway.glb"
     },
     "back": [
       "plain",
-      "window",
       "plain",
-      "window",
+      "plain",
+      "plain",
       "plain"
     ],
     "left": [
       "plain",
       "doorway",
-      "shopfront",
-      "shopfront",
-      "shopfront",
+      "window",
+      "window",
+      "window",
       "doorway"
     ]
   },
@@ -123,16 +122,16 @@
     {
       "id": "back-room-door",
       "label": "Back room",
-      "model": "custom/models/door-arched.glb",
+      "model": "custom/models/door-curtain.glb",
       "position": [
-        -5.05,
+        -5.0,
         -3
       ],
       "rotation": 90,
       "size": [
         0.2,
-        2.1,
-        1
+        2.3,
+        1.4
       ],
       "blocks": false,
       "interact": {
@@ -144,35 +143,52 @@
       }
     },
     {
-      "id": "bookshelf-left",
+      "id": "shelf-back-left",
       "label": null,
-      "model": "custom/models/bookshelf.glb",
+      "model": "custom/models/shelf-tall-a.glb",
       "position": [
-        -2.6,
-        -5.78
+        -3.0,
+        -5.74
       ],
       "rotation": 0,
       "size": [
-        0.96,
-        2.05,
-        0.36
+        1.68,
+        2.32,
+        0.49
       ],
       "blocks": true,
       "interact": null
     },
     {
-      "id": "wall-shelf-right",
+      "id": "shelf-back-right",
       "label": null,
-      "model": "custom/models/wall-shelf.glb",
+      "model": "custom/models/shelf-tall-b.glb",
       "position": [
-        0.75,
-        -5.97
+        1.2,
+        -5.74
       ],
       "rotation": 0,
       "size": [
-        1.24,
-        2.42,
-        0.34
+        1.68,
+        2.32,
+        0.49
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "shelf-back-far",
+      "label": null,
+      "model": "custom/models/shelf-tall-a.glb",
+      "position": [
+        3.05,
+        -5.74
+      ],
+      "rotation": 0,
+      "size": [
+        1.68,
+        2.32,
+        0.49
       ],
       "blocks": true,
       "interact": null
@@ -223,13 +239,87 @@
       "model": "custom/models/floor-lamp.glb",
       "position": [
         -4.5,
-        -5.3
+        -5.45
       ],
       "rotation": 90,
       "size": [
         0.55,
         1.57,
         0.55
+      ],
+      "blocks": true,
+      "interact": null,
+      "glow": {
+        "y": 1.35,
+        "color": "#ffb765",
+        "intensity": 4,
+        "distance": 4.5
+      }
+    },
+    {
+      "id": "sideboard-back",
+      "label": null,
+      "model": "custom/models/sideboard.glb",
+      "position": [
+        -4.7,
+        -1
+      ],
+      "rotation": 90,
+      "size": [
+        0.53,
+        0.8,
+        1.57
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "chest",
+      "label": null,
+      "model": "custom/models/chest-armillary.glb",
+      "position": [
+        -4.72,
+        1
+      ],
+      "rotation": 90,
+      "size": [
+        0.51,
+        0.74,
+        0.96
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "sideboard-front",
+      "label": null,
+      "model": "custom/models/sideboard.glb",
+      "position": [
+        -4.7,
+        3
+      ],
+      "rotation": 90,
+      "size": [
+        0.53,
+        0.8,
+        1.57
+      ],
+      "blocks": true,
+      "interact": null
+    },
+    {
+      "id": "display-table",
+      "label": null,
+      "model": "custom/models/display-table.glb",
+      "position": [
+        1.3,
+        1.8
+      ],
+      "rotation": 0,
+      "size": [
+        1.22,
+        0.82,
+        1.22
       ],
       "blocks": true,
       "interact": null
@@ -261,105 +351,6 @@
       ],
       "y": 0,
       "rotation": 180
-    },
-    {
-      "model": "custom/models/shop-rug.glb",
-      "position": [
-        -1,
-        -1.6
-      ],
-      "y": 0,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/wall-clock.glb",
-      "position": [
-        2.2,
-        -5.97
-      ],
-      "y": 1.95,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/potted-plant.glb",
-      "position": [
-        4.45,
-        -5.45
-      ],
-      "y": 0,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-gumdrop.glb",
-      "position": [
-        0.35,
-        -5.82
-      ],
-      "y": 1,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-tall.glb",
-      "position": [
-        0.75,
-        -5.82
-      ],
-      "y": 1,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-moon.glb",
-      "position": [
-        1.15,
-        -5.82
-      ],
-      "y": 1,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-atomizer.glb",
-      "position": [
-        0.5,
-        -5.82
-      ],
-      "y": 1.35,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-bell.glb",
-      "position": [
-        1,
-        -5.82
-      ],
-      "y": 1.35,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-tall.glb",
-      "position": [
-        0.45,
-        -5.82
-      ],
-      "y": 1.7,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-gumdrop.glb",
-      "position": [
-        0.8,
-        -5.82
-      ],
-      "y": 1.7,
-      "rotation": 0
-    },
-    {
-      "model": "custom/models/perfume-bottle-moon.glb",
-      "position": [
-        1.1,
-        -5.82
-      ],
-      "y": 1.7,
-      "rotation": 0
     },
     {
       "model": "custom/models/perfume-bottle-gumdrop.glb",
@@ -395,6 +386,280 @@
         2.05
       ],
       "y": 0.733,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/rug-runner.glb",
+      "position": [
+        -0.25,
+        -2.35
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/rug-round.glb",
+      "position": [
+        1.3,
+        1.8
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/shop-sign.glb",
+      "position": [
+        -1,
+        -5.99
+      ],
+      "y": 1.86,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/wall-sconce.glb",
+      "position": [
+        -1.97,
+        -5.99
+      ],
+      "y": 1.95,
+      "rotation": 0,
+      "glow": {
+        "y": 2.0,
+        "color": "#ffb765",
+        "intensity": 5,
+        "distance": 5,
+        "offset": [
+          0,
+          0.3
+        ]
+      }
+    },
+    {
+      "model": "custom/models/wall-sconce.glb",
+      "position": [
+        -0.03,
+        -5.99
+      ],
+      "y": 1.95,
+      "rotation": 0,
+      "glow": {
+        "y": 2.0,
+        "color": "#ffb765",
+        "intensity": 5,
+        "distance": 5,
+        "offset": [
+          0,
+          0.3
+        ]
+      }
+    },
+    {
+      "model": "custom/models/wall-sconce.glb",
+      "position": [
+        -4.99,
+        0
+      ],
+      "y": 1.95,
+      "rotation": 90,
+      "glow": {
+        "y": 2.0,
+        "color": "#ffb765",
+        "intensity": 5,
+        "distance": 5,
+        "offset": [
+          0.3,
+          0
+        ]
+      }
+    },
+    {
+      "model": "custom/models/wall-sconce.glb",
+      "position": [
+        -4.99,
+        2
+      ],
+      "y": 1.95,
+      "rotation": 90,
+      "glow": {
+        "y": 2.0,
+        "color": "#ffb765",
+        "intensity": 5,
+        "distance": 5,
+        "offset": [
+          0.3,
+          0
+        ]
+      }
+    },
+    {
+      "model": "custom/models/wall-clock.glb",
+      "position": [
+        -4.97,
+        -5
+      ],
+      "y": 2.0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/ivy-window.glb",
+      "position": [
+        -5.1,
+        -1
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/ivy-window.glb",
+      "position": [
+        -5.1,
+        3
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/plant-leafy.glb",
+      "position": [
+        4.45,
+        -5.4
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/plant-leafy.glb",
+      "position": [
+        -4.5,
+        -4.35
+      ],
+      "y": 0,
+      "rotation": 140
+    },
+    {
+      "model": "custom/models/plant-leafy.glb",
+      "position": [
+        4.5,
+        5.5
+      ],
+      "y": 0,
+      "rotation": 250
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        -4.0,
+        6.0
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        -2.0,
+        6.0
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        0.0,
+        6.0
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        2.0,
+        6.0
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        4.0,
+        6.0
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        5.0,
+        -5.0
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        5.0,
+        -3.0
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        5.0,
+        -1.0
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        5.0,
+        1.0
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        5.0,
+        3.0
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/floor-kerb.glb",
+      "position": [
+        5.0,
+        5.0
+      ],
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "model": "custom/models/floor-kerb-corner.glb",
+      "position": [
+        5.08,
+        6.08
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/wall-corner.glb",
+      "position": [
+        -5.1,
+        -6.1
+      ],
+      "y": 0,
       "rotation": 0
     }
   ],
@@ -510,6 +775,10 @@
       ]
     }
   ],
+  "upgradeSpot": {
+    "color": "#ffd9a0",
+    "opacity": 0.28
+  },
   "surfaces": [
     {
       "id": "counter-left-end",

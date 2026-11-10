@@ -100,6 +100,8 @@ export interface ShopLayout extends RoomLayout {
   customers: { entrance: Point; queue: Point[]; walkSpeed: number };
   /** Table and counter tops where small decor can be placed. */
   surfaces: { id: string; label: string; position: Point; y: number }[];
+  /** How an empty upgrade spot is marked on the floor: a tint this see-through (0 to 1). */
+  upgradeSpot: { color: string; opacity: number };
 }
 
 /** The back room: crates by the outside door, and the supplies rack. */

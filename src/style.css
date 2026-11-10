@@ -391,6 +391,8 @@ button:disabled { opacity: 0.5; cursor: default; }
 
 /* Customers */
 .hud-stats { margin: 6px 0 0; font-size: 0.85rem; }
+/* The status lines sit over the scene: a card behind them keeps them readable on dark wood. */
+.hud-stats, .hud-hint { width: fit-content; padding: 5px 10px; border-radius: 10px; background: rgba(255, 250, 244, 0.88); }
 .scene-label--customer { border-style: solid; border-color: var(--line); }
 .customer { display: grid; gap: 10px; }
 .memory {

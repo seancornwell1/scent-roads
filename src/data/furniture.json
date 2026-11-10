@@ -69,7 +69,7 @@
     },
     {
       "id": "armchair",
-      "name": "Butter-yellow armchair",
+      "name": "Red armchair",
       "kind": "seating",
       "model": "custom/models/armchair.glb",
       "placement": "floor",

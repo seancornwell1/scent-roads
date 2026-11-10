@@ -18,6 +18,7 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 - Use free low-poly 3D libraries in one consistent style: Kenney.nl (CC0) and Quaternius (CC0) first, Poly Pizza for gaps. Download them into `assets/` yourself. Propose the packs with preview links and wait for Sean's OK before downloading.
 - Log every asset in `CREDITS.md` (source, author, license, URL). CC0 or CC BY only.
 - Custom models made in Blender follow `docs/ASSET_STYLE.md` (look, palette, sizes, export settings) and go in `assets/custom/`.
+- The rooms (Nov 10) are built from the game's own models in `assets/custom/models/`, in the warm dark-wood look the style guide describes; each is written by a script in `blender/` (see `blender/README.md`), coloured with painted vertex colours and no textures.
 - Approved so far: Grab3D (CC0) models and its Character Mixer "Cozy" parts. Downscale textures to 512 px with `npx gltf-transform resize in.glb out.glb --width 512 --height 512` before adding a model, and note it in `CREDITS.md`. Sean is happy to credit artists, so CC BY is fine when the style matches.
 
 ## Project
@@ -26,6 +27,7 @@ The game is a 3D shop seen from a fixed isometric camera (see the direction chan
 - Content is JSON in `src/data/` (schemas in `src/data/README.md`); game logic in `src/game/` (no DOM, unit-tested); the Three.js shop scene in `src/scene/`; HTML panels and HUD in `src/ui/`.
 - The camera's zoom 1 frames the whole room below the HUD (`setTopInset`); the game opens zoomed in (`defaultZoom` in `shop.json`) and follows the player; scene labels are kept on screen, out from under the HUD and never overlapping, and tapping one counts as tapping its person or fixture.
 - Two rooms, the shop (`src/data/shop.json`, 10 × 12 m) and the back room (`src/data/backroom.json`: desk, laptop, chair, the supplies rack and the outside door where crates arrive), share one scene (`ShopScene.travel` fades between them). The laptop opens the old back-room panel (`src/ui/backroom.ts`); the rack shows a bottle per material on hand.
+- Each room's light is data: `lighting` (exposure, ambient, a sun with soft shadows) and a `glow` on lamps and sconces (`src/data/README.md`); keep glows to about six a room. The shop's `upgradeSpot` sets the tint of empty upgrade spots.
 - The player moves with an on-screen joystick (bottom right, `ShopScene.steer`), sliding along walls and furniture; tapping a person or fixture still walks there, and tapping the floor does nothing.
 - The 3D scene renders on demand: full frame rate only while something moves, about 24 fps for idle character animation, and nothing while an organ or book panel covers it. Keep it that way for battery.
 - Files in `assets/` are served from the site root (Vite `publicDir`); refer to them by their path under `assets/` (e.g. `grab3d/models/door.glb`) and load them through `src/scene/assets.ts`.
