@@ -9,14 +9,23 @@ REPO = r"C:\Users\seanc\Projects\scent-roads"
 MODELS = os.path.join(REPO, "assets", "custom", "models")
 PREVIEWS = os.path.join(REPO, "blender", "previews")
 
-# Cozy palette: soft, warm, pastel accents.
+# The warm shop palette (Nov 10): walnut and mahogany wood, cream plaster, burgundy and
+# forest green cloth, old gold. The first set of names comes from the pastel palette the
+# earlier models were written with; each now gives the nearest colour of the new one.
 PAL = {
-    "honey": "#E8A25C", "lightwood": "#F2C48D", "darkwood": "#A8643F", "cream": "#FBEBD3",
-    "peach": "#F6D6AE", "mint": "#A6E8C6", "sage": "#8FC9A0", "pink": "#F5A7C2",
-    "lilac": "#B7A2EA", "sky": "#9DD4F2", "butter": "#F6D774", "brass": "#D9A84E",
-    "terracotta": "#E0806A", "leaf": "#7CC27A", "deepleaf": "#5DA864", "rose": "#EE8FA6",
-    "white": "#FFF8EE", "ink": "#5B4350", "straw": "#F1D48A", "berry": "#C8608A",
+    "honey": "#8F5236", "lightwood": "#B0714A", "darkwood": "#633626", "cream": "#F6E7CF",
+    "peach": "#E3BE8E", "mint": "#5F8F72", "sage": "#4E7A62", "pink": "#9E3447",
+    "lilac": "#8C6DB0", "sky": "#7FB6CC", "butter": "#E6B655", "brass": "#D6A446",
+    "terracotta": "#C56A42", "leaf": "#63A555", "deepleaf": "#3F8248", "rose": "#BC4C60",
+    "white": "#FFF6E4", "ink": "#3B2A2A", "straw": "#DDBA78", "berry": "#7F2538",
+    # new names
+    "walnut": "#8F5236", "walnut_lt": "#A9663F", "walnut_dk": "#633626", "mahogany": "#4E281E",
+    "plaster": "#F6E7CF", "plaster_dk": "#EAD4B4", "parquet": "#CC8A4A", "burgundy": "#8E2B3D",
+    "wine": "#6E1F30", "forest": "#3E6B55", "moss": "#557F52", "gold": "#DDAE4E", "paper": "#F3E4C4",
+    "glow": "#FFD58A",
 }
+
+SHADE = 0.8   # painted shading: how dark the foot of each part is (1 = none)
 
 
 def hexcol(h):
@@ -25,8 +34,10 @@ def hexcol(h):
     return (*[x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c], 1.0)
 
 
-def mat(name, hexc, rough=0.6, metal=0.0, alpha=1.0):
-    """Material named by part; hexc may be a palette key."""
+def mat(name, hexc, rough=0.6, metal=0.0, alpha=1.0, emit=0.0, paint=True):
+    """Material named by part; hexc may be a palette key. emit makes it glow in its own colour.
+    Plain materials (opaque, not metal, not glowing) are merged into one painted material when
+    the model is joined (see Model._paint); paint=False keeps one on its own."""
     hexc = PAL.get(hexc, hexc)
     m = bpy.data.materials.get(name) or bpy.data.materials.new(name)
     m.use_nodes = True
@@ -35,8 +46,39 @@ def mat(name, hexc, rough=0.6, metal=0.0, alpha=1.0):
     b.inputs["Roughness"].default_value = rough
     b.inputs["Metallic"].default_value = metal
     b.inputs["Alpha"].default_value = alpha
+    b.inputs["Emission Color"].default_value = hexcol(hexc) if emit else (0, 0, 0, 1)
+    b.inputs["Emission Strength"].default_value = emit
     m.surface_render_method = 'BLENDED' if alpha < 1 else 'DITHERED'
     m.use_backface_culling = True
+    m["paint"] = bool(paint)
+    return m
+
+
+def paint_kind(m):
+    """Which painted material a part with material m is merged into: matte, gloss, or none
+    (glass, metal, glowing or textured parts, and materials made with paint=False)."""
+    if not m.get("paint", False): return ""
+    nt = m.node_tree
+    if any(n.type == 'TEX_IMAGE' for n in nt.nodes): return ""
+    b = nt.nodes["Principled BSDF"].inputs
+    if b["Alpha"].default_value < 1 or b["Metallic"].default_value > 0 or b["Emission Strength"].default_value > 0: return ""
+    return "gloss" if b["Roughness"].default_value < 0.4 else "matte"
+
+
+def paint_mat(kind="matte"):
+    """The material every plain part ends up with: its colour comes from the painted vertex
+    colours (attribute Col), so a whole piece of furniture is drawn in one go. There are two,
+    matte (wood, cloth, plaster) and gloss (glazed and polished things)."""
+    name = "paint" if kind == "matte" else "paint-gloss"
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = bpy.data.materials.new(name); m.use_nodes = True
+    nt = m.node_tree; b = nt.nodes["Principled BSDF"]
+    a = nt.nodes.new("ShaderNodeVertexColor"); a.layer_name = "Col"
+    nt.links.new(a.outputs["Color"], b.inputs["Base Color"])
+    b.inputs["Roughness"].default_value = 0.72 if kind == "matte" else 0.25
+    m.use_backface_culling = True
+    m["paint"] = False
     return m
 
 
@@ -51,17 +93,20 @@ def export_glb(objs, path):
         for o in objs: o.select_set(True)
         bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', use_selection=True, export_apply=True,
                                   export_yup=True, export_materials='EXPORT', export_cameras=False,
-                                  export_lights=False, export_animations=False)
+                                  export_lights=False, export_animations=False, export_vertex_color='NAME',
+                                  export_vertex_color_name='Col', export_all_vertex_colors=False)
     finally:
         for o in objs: o.data.transform(turn)  # turning 180 twice puts it back
 
 
 class Model:
-    """Collects parts for one model; join() makes a single multi-material mesh."""
+    """Collects parts for one model; join() makes a single mesh: one painted material for the
+    plain parts, plus one each for glass, metal and glowing parts."""
 
-    def __init__(self, name, ground=True):
+    def __init__(self, name, ground=True, shade=None):
         self.name = name
         self.ground = ground  # False keeps real heights (wall-hung pieces)
+        self.shade = SHADE if shade is None else shade  # painted shading at the foot of each part
         for o in list(bpy.data.objects):
             if o.name.startswith(name + "_") or o.name == name:
                 bpy.data.objects.remove(o, do_unlink=True)
@@ -170,6 +215,46 @@ class Model:
         o = bpy.data.objects.new("m", me); self.coll.objects.link(o)
         return self._take(o, m, bevel=bevel, smooth=smooth)
 
+    def prism(self, m, outline, a0, a1, axis='Y', bevel=0.0, smooth=False):
+        """A flat outline pushed through from a0 to a1 along an axis, with flat ends.
+        axis Y: outline is (x, z) points; X: (y, z) points; Z: (x, y) points."""
+        put = {'Y': lambda u, v, a: (u, a, v), 'X': lambda u, v, a: (a, u, v), 'Z': lambda u, v, a: (u, v, a)}[axis]
+        n = len(outline)
+        vs = [put(u, v, a0) for u, v in outline] + [put(u, v, a1) for u, v in outline]
+        fs = [tuple(range(n)), tuple(range(n, 2 * n))]
+        fs += [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+        o = self.mesh(m, vs, fs, bevel=bevel, smooth=smooth)
+        bm = bmesh.new(); bm.from_mesh(o.data)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+        bm.to_mesh(o.data); bm.free()
+        return o
+
+    def _paint(self, o):
+        """Writes the colour of a part into its vertex colours, darker towards its foot, and gives
+        plain parts the shared painted material. Glass, metal and glowing parts keep their own
+        (painted white). A part can set its own foot shade: o["shade"] = 1 leaves it even;
+        o["zspan"] = (z0, z1) shades it over that height instead of its own."""
+        me = o.data
+        m = me.materials[0]
+        plain = paint_kind(m)
+        col = me.color_attributes.get("Col") or me.color_attributes.new("Col", 'FLOAT_COLOR', 'CORNER')
+        base = tuple(m.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value)[:3] if plain else (1.0, 1.0, 1.0)
+        zs = [v.co.z for v in me.vertices]
+        z0 = min(zs); tall = max(zs) - z0
+        lo = o.get("shade", self.shade)
+        if o.get("zspan"):   # shade over a given height instead (parts that make one surface together)
+            z0 = o["zspan"][0]; tall = o["zspan"][1] - z0
+        ks = [1.0] * len(zs)
+        if plain and tall > 0.06 and lo < 1:
+            ks = [lo + (1 - lo) * min(1.0, max(0.0, (z - z0) / tall)) ** 0.8 for z in zs]
+        flat = [0.0] * (len(me.loops) * 4)
+        for i, l in enumerate(me.loops):
+            k = ks[l.vertex_index]
+            flat[i * 4:i * 4 + 4] = (base[0] * k, base[1] * k, base[2] * k, 1.0)
+        col.data.foreach_set("color", flat)
+        if plain:
+            me.materials.clear(); me.materials.append(paint_mat(plain))
+
     # -- output --
     def join(self):
         bpy.ops.object.select_all(action='DESELECT')
@@ -177,6 +262,7 @@ class Model:
             o.select_set(True)
             bpy.context.view_layer.objects.active = o
             bpy.ops.object.convert(target='MESH')
+        for o in self.parts: self._paint(o)
         for o in self.parts: o.select_set(True)
         bpy.context.view_layer.objects.active = self.parts[0]
         bpy.ops.object.join()

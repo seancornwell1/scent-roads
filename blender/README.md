@@ -2,7 +2,7 @@
 
 Models made in Blender for Scentshop Tale's cozy overhaul (Nov 8, 2026). Each script rebuilds its models from scratch, exports them to `assets/custom/models/` and renders a preview into `previews/`. Everything here sits outside the served `assets/` folder.
 
-Since Nov 9 the game uses them in place of the Grab3D kit (`src/data/shop.json`, `backroom.json`, `furniture.json`); the Grab3D files stay in `assets/grab3d/` for the pieces not yet remade. They don't follow `docs/ASSET_STYLE.md` on purpose. Sean asked for a full cozy overhaul rather than a match to the current kit.
+Since Nov 9 the game uses them in place of the Grab3D kit (`src/data/shop.json`, `backroom.json`, `furniture.json`); the Grab3D files stay in `assets/grab3d/` for the pieces not yet remade. On Nov 10 the rooms took a warm dark-wood look (see the note at the top of `docs/SPEC.md`): `lib.py` got a warm palette and painted vertex colours, every model was exported again, the shell was rebuilt and `shop-warm.py` added new pieces. `docs/ASSET_STYLE.md` is revised to describe that look.
 
 ## Running a script
 
@@ -18,7 +18,8 @@ Run the scripts inside Blender (5.2): paste `exec(open(r"<repo>\blender\<script>
 | `backroom-office.py` | `writing-desk`, `desk-chair`, `laptop` |
 | `display-case.py` | `display-case` |
 | `props.py` | `potted-plant`, `wooden-crate`, `stock-bottle`, `shop-rug` |
-| `room-shell.py` | `floor-planks`, `wall-plain`, `wall-window`, `wall-doorway`, `door-arched` |
+| `room-shell.py` | the rooms' shell: `floor-parquet` (herringbone), `floor-planks`, `floor-kerb`, `floor-kerb-corner`, `wall-plain`, `wall-window`, `wall-doorway`, `wall-corner`, `door-arched` |
+| `shop-warm.py` | furniture and decoration for the warm look (Nov 10): `shelf-tall-a`, `shelf-tall-b`, `sideboard`, `display-table`, `rug-runner`, `rug-round`, `wall-sconce`, `shop-sign`, `door-curtain`, `plant-leafy`, `chest-armillary`, `ivy-window`. Set `ONLY` (a list of names) in the globals to build some of them |
 | `shopfront.py` | `wall-shopfront`, `wall-shelf` |
 | `decor.py` | `floor-lamp`, `wall-clock`, `round-table`, `armchair`, `bookshelf` |
 | `furniture.py` | the buyable furniture: `cushion-bench`, `bar-stool`, `rocking-chair`, `sofa`, `snake-plant`, `fern`, `table-lamp`, `candle-cluster`, `star-lantern`, `flower-vase`, `globe`, `standing-mirror`, `vanity-table` |
@@ -38,6 +39,6 @@ Run the scripts inside Blender (5.2): paste `exec(open(r"<repo>\blender\<script>
 - Metres, Z up in Blender (Y up in the glTF), origin at the bottom centre, base exactly at height 0. The exceptions are wall-hung pieces built with `Model(name, ground=False)`, which keep real mounting heights (`wall-shelf`).
 - Models are built with the front facing +Y in Blender. `export_glb` turns them 180° on export, so in the glTF the front faces +Z, the same as the Grab3D kit. The rotations in `shop.json` and `backroom.json` work for both.
 - Wall panels are 2 m wide, 3 m tall and 0.2 m thick, centred on their wall line with the room side at +Y. Floor tiles are 2 × 2 m and 0.1 m thick. Both match `shop.json`.
-- Each model is one mesh with a few flat-colour Principled materials, named by part (`counter_top`, `rack_shelf`…). There are no textures.
+- Each model is one mesh. Since Nov 10 its plain parts share two materials, `paint` (matte) and `paint-gloss`, and take their colour from a painted vertex-colour attribute (`Col`): the part's colour with a soft gradient and darker creases painted in. Parts that must stay their own material keep it: glass, anything that glows, metal, and the named parts below. There are no textures.
 - The perfume bottles and the stock bottle share the material names `glass`, `liquid`, `collar`/`cap` and `label`, so code can tint the liquid and cap, and put label art on `label` (its UVs fill 0–1).
-- Palette: the `PAL` table in `lib.py` (honey and light woods, cream, sage, and pink, mint, lilac, sky and butter accents).
+- Palette: the `PAL` table in `lib.py`. Since Nov 10 it is the warm look: walnut and mahogany woods, cream plaster, parquet, burgundy and wine, forest green, gold and brass. The pastel names of Nov 9 (mint, pink, lilac, sky, butter…) are still there, pointed at warm colours, so the earlier scripts build in the new look unchanged.
