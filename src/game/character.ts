@@ -1,7 +1,7 @@
 import characterJson from '../data/character.json';
 
-// Player and customer looks, assembled from the Grab3D Character Mixer parts
-// (assets/grab3d/characters/manifest.json). See src/data/README.md.
+// Player and customer looks, assembled from the chibi character kit made for this game
+// (assets/custom/chibi/manifest.json). See src/data/README.md.
 
 export interface CharacterOptions {
   kit: string;
@@ -9,20 +9,23 @@ export interface CharacterOptions {
   slots: { id: string; label: string; optional?: boolean }[];
   allowedParts: Record<string, string[]>;
   /** Colour pickers; `tab` is the slot whose creator page shows it. */
-  colors: { id: string; label: string; palette: string; tab: string }[];
+  colors: { id: string; label: string; palette: string; tab: string; customers?: boolean }[];
   /** Chance that a random customer wears each optional part. */
   customers: { optionalChance: number };
+  /** Part ids from the kit the game used before, each with the part that replaces it (null: nothing does). */
+  legacy?: { parts: Record<string, string | null> };
 }
 
 /** The parts of the kit manifest this game reads. */
 export interface KitStyle {
   id: string;
   skeleton: string;
-  animations: { file: string; clips: (string | { name: string })[] };
+  animations: { file: string; clips: (string | { name: string; seat?: number })[] };
   defaults: { fit: string; parts: Record<string, string>; colors: Record<string, string> };
   palettes: Record<string, string[]>;
-  fits: { id: string; morph: string | null }[];
-  parts: { id: string; slot: string; file: string; name: Record<string, string> }[];
+  fits: { id: string; morph: string | null; thumb?: string }[];
+  /** `thumb` is a small picture of the part for the character creator, beside the manifest. */
+  parts: { id: string; slot: string; file: string; name: Record<string, string>; thumb?: string }[];
 }
 
 export interface CharacterConfig {
@@ -63,10 +66,33 @@ export function randomCharacter(style: KitStyle, options: CharacterOptions, rand
   }
   const colors: Record<string, string> = {};
   for (const c of options.colors) {
+    if (c.customers === false) continue; // the part keeps the colour it was made in
     const palette = style.palettes[c.palette];
     if (palette?.length) colors[c.id] = pick(palette);
   }
   return { fit: pick(style.fits).id, parts, colors };
+}
+
+/**
+ * Carries a saved look over to the current kit: part ids the kit no longer has are swapped
+ * through `legacy.parts` in character.json (null means the slot is left empty), slots that
+ * must be filled fall back to the kit default, and an unknown body shape becomes the default.
+ * A look that already fits the kit comes back unchanged.
+ */
+export function migrateCharacter(config: CharacterConfig, style: KitStyle, options: CharacterOptions): CharacterConfig {
+  const slotOf = new Map(style.parts.map((p) => [p.id, p.slot]));
+  const legacy = options.legacy?.parts ?? {};
+  const parts: Record<string, string> = {};
+  for (const slot of options.slots) {
+    if (slot.id === 'body') continue;
+    const had = config.parts[slot.id];
+    let id: string | null | undefined = had;
+    if (had && slotOf.get(had) !== slot.id) id = had in legacy ? legacy[had] : undefined;
+    if (id && slotOf.get(id) === slot.id) parts[slot.id] = id;
+    else if (!slot.optional && style.defaults.parts[slot.id]) parts[slot.id] = style.defaults.parts[slot.id];
+  }
+  const fit = style.fits.some((f) => f.id === config.fit) ? config.fit : style.defaults.fit;
+  return { fit, parts, colors: { ...config.colors } };
 }
 
 export function validateCharacterOptions(options: CharacterOptions, style: KitStyle): string[] {
@@ -80,5 +106,9 @@ export function validateCharacterOptions(options: CharacterOptions, style: KitSt
     }
   }
   for (const c of options.colors) if (!style.palettes[c.palette]) errors.push(`colors.${c.id}: unknown palette "${c.palette}"`);
+  for (const [old, id] of Object.entries(options.legacy?.parts ?? {})) {
+    if (parts.has(old)) errors.push(`legacy.parts: "${old}" is still a part of the kit`);
+    if (id !== null && !parts.has(id)) errors.push(`legacy.parts.${old}: unknown part "${id}"`);
+  }
   return errors;
 }

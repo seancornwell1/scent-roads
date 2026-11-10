@@ -169,17 +169,22 @@ Each zone:
 
 ## `character.json`
 
-Options for the player's character and for customers, built from the Grab3D Character Mixer kit (`assets/grab3d/characters/manifest.json`, which lists every part, palette, body fit and animation).
+Options for the player and for customers, built from the chibi character kit made for this game (`assets/custom/chibi/manifest.json`, which lists every part, palette, body shape, animation clip and thumbnail; written by `blender/characters-kit.py`).
 
 | Field | Meaning |
 | ----- | ------- |
-| `kit`, `style` | Manifest path under `assets/` and which style in it to use (`cozy`) |
+| `kit`, `style` | Manifest path under `assets/` and which style in it to use (`chibi`) |
 | `slots` | The creator's pages, in order: `id` (a kit slot, or `body` for the body shape), `label`, `optional` (offers "None") |
 | `allowedParts` | Slot → part ids offered in the creator and used for customers. Leave out parts that don't suit a perfume shop. |
-| `colors` | Colour pickers: `id` (`skin`, `hair`, `eyes`, or a clothing slot whose main colour it sets), `label`, `palette` (a kit palette), `tab` (the creator page that shows it) |
-| `customers` | `count` standing in the shop; `optionalChance` that a customer wears an optional part |
+| `colors` | Colour pickers: `id` (`skin`, `hair`, `eyes`, or a clothing slot whose main colour it sets), `label`, `palette` (a kit palette), `tab` (the creator page that shows it), `customers` (`false`: random customers keep the colour the part was made in, as for glasses and held things) |
+| `customers` | `optionalChance` that a customer wears an optional part |
+| `legacy` | `parts`: part ids of the Grab3D kit the game used before → the chibi part that replaces each (`null`: nothing does, the slot is left empty). Used once per save, to carry an old look over |
 
-A saved look (`character` in the save) is `{ fit, parts: { slot: partId }, colors: { id: "#hex" } }`. `src/game/character.test.ts` checks every allowed part exists in the kit, in the right slot, and that its file is downloaded.
+A saved look (`character` in the save) is `{ fit, parts: { slot: partId }, colors: { id: "#hex" } }`; the fixed looks of townspeople (`story.json`) and regulars (`clients.json`) have the same shape. When the kit loads, `migrateCharacter` (`src/game/character.ts`) swaps any part id the kit no longer has through `legacy.parts`, falls back to the kit default for a slot that must be filled, and keeps the colours.
+
+In the creator each choice shows the thumbnail the kit lists for it (`thumb` on a part or body shape, a file beside the manifest).
+
+`src/game/character.test.ts` checks every allowed part exists in the kit, in the right slot, with its file and thumbnail on disk; that `legacy.parts` points at real parts; that an old look migrates to a valid one; and that the fixed looks use parts of the kit.
 
 ## `unlocks.json`
 

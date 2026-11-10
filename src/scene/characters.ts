@@ -15,8 +15,8 @@ import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js
 import { partsFor, type CharacterConfig, type KitStyle } from '../game/character';
 import { loadGltf, loadJson } from './assets';
 
-// Builds characters from the Grab3D Character Mixer kit: one shared skeleton, a skinned
-// mesh per part, colours applied to the kit's named material slots.
+// Builds characters from the chibi character kit (assets/custom/chibi): one shared skeleton,
+// a skinned mesh per part, colours applied to the named material slots of the kit.
 
 interface KitManifest {
   styles: KitStyle[];

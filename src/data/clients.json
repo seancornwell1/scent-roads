@@ -741,12 +741,12 @@
       "look": {
         "fit": "chubby",
         "parts": {
-          "head": "head_dreamy",
-          "hair": "hair_buns",
-          "face": "face_glasses",
+          "head": "head_calm",
+          "hair": "hair_bun",
+          "face": "face_round",
           "top": "top_sweater",
           "bottom": "bottom_skirt",
-          "shoes": "shoes_curly"
+          "shoes": "shoes_maryjanes"
         },
         "colors": {
           "skin": "#EDB894",
@@ -829,12 +829,13 @@
       "look": {
         "fit": "slim",
         "parts": {
-          "head": "head_scamp",
-          "hair": "hair_tousled",
+          "head": "head_soft",
+          "hair": "hair_short",
           "face": "face_beard",
-          "top": "top_tunic",
-          "bottom": "bottom_cargo",
-          "shoes": "shoes_boots"
+          "top": "top_blouse",
+          "bottom": "bottom_trousers",
+          "shoes": "shoes_boots",
+          "handL": "handL_book"
         },
         "colors": {
           "skin": "#A56B48",
@@ -924,13 +925,12 @@
       "look": {
         "fit": "classic",
         "parts": {
-          "head": "head_sunny",
-          "hair": "hair_braids",
-          "hat": "hat_explorer",
-          "top": "top_tshirt",
+          "head": "head_bright",
+          "hair": "hair_long",
+          "hat": "hat_flowers",
+          "top": "top_tee",
           "bottom": "bottom_shorts",
-          "shoes": "shoes_boots",
-          "handL": "handL_flower"
+          "shoes": "shoes_boots"
         },
         "colors": {
           "skin": "#F8CFB2",
@@ -1020,19 +1020,20 @@
       "look": {
         "fit": "slim",
         "parts": {
-          "head": "head_sunny",
+          "head": "head_bright",
           "hair": "hair_long",
-          "top": "top_robe",
+          "top": "top_coat",
           "bottom": "bottom_skirt",
-          "shoes": "shoes_curly",
-          "handL": "handL_flower"
+          "shoes": "shoes_maryjanes",
+          "handL": "handL_book"
         },
         "colors": {
           "skin": "#F3C9A8",
           "hair": "#3B2A24",
           "eyes": "#5B7A4A",
           "top": "#F2E6F0",
-          "bottom": "#B6A4E0"
+          "bottom": "#B6A4E0",
+          "handL": "#F2A0B4"
         }
       },
       "greeting": "Your shop smells of flowers from the door. I have brides who'd love it.",
@@ -1125,11 +1126,11 @@
       "look": {
         "fit": "chubby",
         "parts": {
-          "head": "head_scamp",
-          "hair": "hair_tousled",
+          "head": "head_soft",
+          "hair": "hair_short",
           "face": "face_beard",
-          "top": "top_tunic",
-          "bottom": "bottom_cargo",
+          "top": "top_apron",
+          "bottom": "bottom_trousers",
           "shoes": "shoes_boots"
         },
         "colors": {

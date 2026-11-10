@@ -14,6 +14,8 @@ export default defineConfig({
       injectRegister: 'auto',
       workbox: {
         globPatterns: ['**/*.{html,js,css,json,webmanifest,png,jpg,webp,svg,mp3,ogg,m4a,woff2,glb}'],
+        // The character kits the game used before the chibi kit: still in assets/, no longer loaded.
+        globIgnores: ['**/node_modules/**/*', 'grab3d/characters/**', 'custom/characters/**'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {

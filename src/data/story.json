@@ -42,12 +42,12 @@
       "look": {
         "fit": "slim",
         "parts": {
-          "head": "head_dreamy",
+          "head": "head_calm",
           "hair": "hair_bob",
-          "top": "top_sweater",
+          "top": "top_blouse",
           "bottom": "bottom_skirt",
-          "shoes": "shoes_curly",
-          "handL": "handL_flower"
+          "shoes": "shoes_maryjanes",
+          "handL": "handL_satchel"
         },
         "colors": {
           "skin": "#F3C9A8",
@@ -65,12 +65,11 @@
       "look": {
         "fit": "chubby",
         "parts": {
-          "head": "head_sunny",
-          "hair": "hair_curly",
-          "hat": "hat_chef",
-          "top": "top_chef",
-          "bottom": "bottom_pants",
-          "shoes": "shoes_sneakers"
+          "head": "head_bright",
+          "hair": "hair_spiky",
+          "top": "top_apron",
+          "bottom": "bottom_trousers",
+          "shoes": "shoes_loafers"
         },
         "colors": {
           "skin": "#C68A63",
@@ -88,11 +87,11 @@
       "look": {
         "fit": "classic",
         "parts": {
-          "head": "head_scamp",
-          "hair": "hair_tousled",
-          "face": "face_mustache",
-          "top": "top_tunic",
-          "bottom": "bottom_pants",
+          "head": "head_soft",
+          "hair": "hair_short",
+          "face": "face_moustache",
+          "top": "top_blazer",
+          "bottom": "bottom_trousers",
           "shoes": "shoes_boots",
           "handL": "handL_book"
         },
@@ -112,20 +111,22 @@
       "look": {
         "fit": "chubby",
         "parts": {
-          "head": "head_cheeky",
+          "head": "head_soft",
           "hair": "hair_spiky",
-          "face": "face_glasses",
-          "hat": "hat_beanie",
+          "hat": "hat_beret",
+          "face": "face_round",
           "top": "top_sweater",
-          "bottom": "bottom_cargo",
-          "shoes": "shoes_boots"
+          "bottom": "bottom_trousers",
+          "shoes": "shoes_boots",
+          "handL": "handL_satchel"
         },
         "colors": {
           "skin": "#A56B48",
           "hair": "#26222A",
           "eyes": "#3B2A24",
           "top": "#4E7FA8",
-          "bottom": "#5E6B4A"
+          "bottom": "#5E6B4A",
+          "hat": "#4A4858"
         }
       }
     }

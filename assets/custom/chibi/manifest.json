@@ -162,20 +162,35 @@
      "#6A3A40",
      "#4A4858",
      "#3A2E38"
+    ],
+    "leather": [
+     "#3A2E38",
+     "#4A4858",
+     "#6A3A40",
+     "#8A5636",
+     "#9A6238",
+     "#8B5E3F",
+     "#C9A66B",
+     "#B5443C",
+     "#4F6FA8",
+     "#F4EEE4"
     ]
    },
    "fits": [
     {
      "id": "classic",
-     "morph": null
+     "morph": null,
+     "thumb": "thumbs/fit_classic.webp"
     },
     {
      "id": "chubby",
-     "morph": "chubby"
+     "morph": "chubby",
+     "thumb": "thumbs/fit_chubby.webp"
     },
     {
      "id": "slim",
-     "morph": "slim"
+     "morph": "slim",
+     "thumb": "thumbs/fit_slim.webp"
     }
    ],
    "parts": [

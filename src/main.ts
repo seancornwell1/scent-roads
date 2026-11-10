@@ -2,7 +2,7 @@ import './style.css';
 import { recognizeAccords } from './game/accords';
 import { content, materialsById, validateContent } from './game/content';
 import { addParts, totalParts } from './game/formula';
-import { characterOptions, defaultCharacter, randomCharacter, type CharacterConfig } from './game/character';
+import { characterOptions, defaultCharacter, migrateCharacter, randomCharacter, type CharacterConfig } from './game/character';
 import { clients, findBrief } from './game/clients';
 import { completeReview, handOver, serveAtCounter, tick, type Visit } from './game/customers';
 import { afterCounter, afterReview, meet, pageById, pageFormula, requestById, storyTick } from './game/story';
@@ -368,6 +368,11 @@ function refreshFurniture(): void {
 CharacterKit.load(characterOptions.kit, characterOptions.style)
   .then((loaded) => {
     kit = loaded;
+    if (state.save.character) {
+      // A look saved with the earlier character kit: swap its parts for the ones this kit has.
+      const look = migrateCharacter(state.save.character, kit.style, characterOptions);
+      if (JSON.stringify(look) !== JSON.stringify(state.save.character)) state.save.character = look;
+    }
     refreshPlayer();
     storyTick(state.save.story!, state.save.customers!, nowGame(), Date.now());
     tick(state.save.customers!, Date.now(), usableMaterials(state.save), Math.random, arrivalConditions(state.save, nowGame()));
@@ -413,7 +418,7 @@ function render(): void {
   const stats = hudRoot.querySelector<HTMLElement>('.hud-hint') ?? hudRoot;
   scene.setTopInset(stats.getBoundingClientRect().bottom + 8);
   scene.enabled = screen === 'shop';
-  scene.focusOnPlayer(screen === 'creator');
+  if (screen !== 'creator') scene.focusOnPlayer(null);
   void scene.setRack(onHand());
 
   // Don't redraw a panel under someone typing (a note, a formula's name): it would lose
@@ -437,6 +442,7 @@ function render(): void {
     if (!kit) return;
     // No backdrop: the player stays visible above the panel while you change their look.
     panelRoot.innerHTML = `<section class="panel panel--creator">${creatorScreen(kit.style, currentLook(), state.ui.creatorTab)}</section>`;
+    scene.focusOnPlayer(panelRoot.querySelector<HTMLElement>('.panel')!.getBoundingClientRect().top);
   } else {
     // The intro can't be dismissed by tapping outside it: the story starts from its button.
     panelRoot.innerHTML = `<div class="panel-backdrop" ${screen === 'intro' ? '' : 'data-action="close-panel"'}></div>

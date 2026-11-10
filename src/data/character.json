@@ -1,6 +1,6 @@
 {
-  "kit": "grab3d/characters/manifest.json",
-  "style": "cozy",
+  "kit": "custom/chibi/manifest.json",
+  "style": "chibi",
   "slots": [
     {
       "id": "body",
@@ -43,65 +43,52 @@
     }
   ],
   "allowedParts": {
+    "body": [],
     "head": [
-      "head_sunny",
-      "head_dreamy",
-      "head_cheeky",
-      "head_scamp"
+      "head_soft",
+      "head_bright",
+      "head_calm"
     ],
     "hair": [
       "hair_bob",
-      "hair_braids",
-      "hair_buns",
-      "hair_curly",
+      "hair_bun",
       "hair_long",
-      "hair_ponytail",
-      "hair_spiky",
-      "hair_tousled",
-      "hair_fluffy"
+      "hair_short",
+      "hair_spiky"
     ],
     "hat": [
-      "hat_beanie",
-      "hat_chef",
-      "hat_explorer",
-      "hat_wizard",
       "hat_beret",
-      "hat_flowercrown"
+      "hat_flowers"
     ],
     "face": [
-      "face_glasses",
-      "face_beard",
-      "face_mustache",
-      "face_heartglasses"
+      "face_round",
+      "face_square",
+      "face_moustache",
+      "face_beard"
     ],
     "top": [
+      "top_blouse",
+      "top_tee",
       "top_sweater",
-      "top_tshirt",
-      "top_tunic",
-      "top_robe",
-      "top_chef",
+      "top_blazer",
+      "top_coat",
       "top_apron"
     ],
     "bottom": [
-      "bottom_pants",
-      "bottom_cargo",
-      "bottom_skirt",
+      "bottom_trousers",
       "bottom_shorts",
-      "bottom_puffy"
+      "bottom_skirt"
     ],
     "shoes": [
-      "shoes_sneakers",
+      "shoes_loafers",
       "shoes_boots",
-      "shoes_curly",
-      "shoes_clogs"
+      "shoes_maryjanes"
     ],
     "handL": [
-      "handL_potion",
-      "handL_flower",
+      "handL_bottle",
       "handL_book",
-      "handL_perfume"
-    ],
-    "body": []
+      "handL_satchel"
+    ]
   },
   "colors": [
     {
@@ -123,6 +110,19 @@
       "tab": "hair"
     },
     {
+      "id": "hat",
+      "label": "Hat colour",
+      "palette": "cloth",
+      "tab": "hat"
+    },
+    {
+      "id": "face",
+      "label": "Frame colour",
+      "palette": "leather",
+      "tab": "face",
+      "customers": false
+    },
+    {
       "id": "top",
       "label": "Top colour",
       "palette": "cloth",
@@ -133,9 +133,57 @@
       "label": "Bottom colour",
       "palette": "cloth",
       "tab": "bottom"
+    },
+    {
+      "id": "shoes",
+      "label": "Shoe colour",
+      "palette": "leather",
+      "tab": "shoes"
+    },
+    {
+      "id": "handL",
+      "label": "Colour",
+      "palette": "cloth",
+      "tab": "handL",
+      "customers": false
     }
   ],
   "customers": {
     "optionalChance": 0.35
+  },
+  "legacy": {
+    "parts": {
+      "head_sunny": "head_bright",
+      "head_dreamy": "head_calm",
+      "head_cheeky": "head_soft",
+      "head_scamp": "head_soft",
+      "hair_braids": "hair_long",
+      "hair_buns": "hair_bun",
+      "hair_ponytail": "hair_bun",
+      "hair_curly": "hair_spiky",
+      "hair_fluffy": "hair_spiky",
+      "hair_tousled": "hair_short",
+      "hat_beanie": "hat_beret",
+      "hat_chef": "hat_beret",
+      "hat_explorer": "hat_beret",
+      "hat_wizard": "hat_beret",
+      "hat_flowercrown": "hat_flowers",
+      "face_glasses": "face_round",
+      "face_heartglasses": "face_round",
+      "face_mustache": "face_moustache",
+      "top_tshirt": "top_tee",
+      "top_tunic": "top_blouse",
+      "top_robe": "top_coat",
+      "top_chef": "top_apron",
+      "bottom_pants": "bottom_trousers",
+      "bottom_cargo": "bottom_trousers",
+      "bottom_puffy": "bottom_shorts",
+      "shoes_sneakers": "shoes_loafers",
+      "shoes_curly": "shoes_loafers",
+      "shoes_clogs": "shoes_maryjanes",
+      "handL_potion": "handL_bottle",
+      "handL_perfume": "handL_bottle",
+      "handL_flower": null
+    }
   }
 }

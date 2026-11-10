@@ -8,6 +8,8 @@ Oct 26, 2026 · @Sean Cornwell
 
 > **Shop and customers — Oct 27, 2026.** The shop is long (now 10 × 18 m) with room for customers to hang around and for upgrades and furniture. There is no suggestion booth: customers stand around the shop (and sit, once seating upgrades exist) and can engage me in conversation. Sometimes a conversation gives a hint towards the final product they'll like. Art comes from Grab3D (CC0, one cozy pastel style, approved Oct 27, 2026); I'm happy to credit artists, so CC BY assets that fit the style are fine too.
 
+> **Characters — Nov 10, 2026.** The player, townspeople and customers are now built from a chibi character kit made in Blender for this game (`assets/custom/chibi/`, scripts in `blender/`): stylised low-poly, chibi proportions, one shared skeleton with swappable parts that take colours. It replaces the Grab3D Character Mixer parts, so where this spec says characters use "the approved pack" or that all models come from free libraries, characters are now the exception; furniture and props are unchanged. Looks saved with the old parts are carried over to the nearest new ones. Emotion in conversation will come from character portraits, still to be decided.
+
 ## Counter redesign — Nov 7, 2026: the radar puzzle
 
 This section replaces anything below that conflicts with it. Making perfumes for customers at the counter becomes a timed puzzle on a radar chart. The organ stays for writing formulas (house perfumes, the formula book, sheets, the lab and her signature perfume).

@@ -73,6 +73,7 @@ PALETTES = {
     "eyes": ["#3A2A20", "#6A4A3A", "#8A5A3C", "#5C7A4A", "#4A6A8A", "#6A5A8A"],
     "cloth": ["#F4EEE4", "#E3C27A", "#E08A6A", "#C9605A", "#B5443C", "#F2A0B4", "#C98AA6", "#8A6AA6", "#4F6FA8", "#7FA8C9",
               "#8FC0B0", "#4F8A5E", "#3F7A5C", "#7C9E64", "#C9A66B", "#8A5636", "#6A3A40", "#4A4858", "#3A2E38"],
+    "leather": ["#3A2E38", "#4A4858", "#6A3A40", "#8A5636", "#9A6238", "#8B5E3F", "#C9A66B", "#B5443C", "#4F6FA8", "#F4EEE4"],      # shoes and glasses frames
 }
 DEFAULTS = {"fit": "classic", "parts": {"body": "body", "head": "head_soft", "hair": "hair_bob", "top": "top_blouse", "bottom": "bottom_trousers", "shoes": "shoes_loafers"},
             "colors": {"skin": "#F8DAC6", "hair": "#6B4431", "eyes": "#6A4A3A"}}
@@ -114,7 +115,7 @@ def export_kit():
     ja = _export(os.path.join(KIT_DIR, "animations.glb"), [], rig, anims=True)
     style = {"id": "chibi", "name": {"en": "Chibi"}, "skeleton": "skeleton.glb",
              "animations": {"file": "animations.glb", "fps": FPS, "clips": [dict({"name": n, "frames": f, "duration": round(f / FPS, 4), "loop": l}, **CLIP_NOTES.get(n, {})) for n, f, l, _ in CLIPS]},
-             "defaults": DEFAULTS, "palettes": PALETTES, "fits": [{"id": i, "morph": m} for i, m, _ in FITS], "parts": parts, "presets": PRESETS,
+             "defaults": DEFAULTS, "palettes": PALETTES, "fits": [{"id": i, "morph": m, "thumb": "thumbs/fit_%s.webp" % i} for i, m, _ in FITS], "parts": parts, "presets": PRESETS,
              "budget": {"maxTrisPerPart": 4000, "maxTrisPerFigure": 20000}}
     man = {"version": 1, "generator": "blender/characters-kit.py", "license": "Project's own (made for Scentshop Tale)", "units": "meter", "upAxis": "+Y", "forward": "+Z",
            "slots": SLOTS, "colorSlots": list(TINTED), "bones": BONE_NAMES, "styles": [style]}
@@ -136,7 +137,8 @@ THUMB_VIEW = {   # slot: (camera direction, target, width of the view in metres)
 
 
 def thumbs(size=144):
-    """assets/custom/chibi/thumbs/<part id>.webp: each part worn by the default character, on a clear background."""
+    """assets/custom/chibi/thumbs/<part id>.webp: each part worn by the default character, on a clear background;
+    and fit_<fit id>.webp, the default character in each body shape."""
     os.makedirs(os.path.join(KIT_DIR, "thumbs"), exist_ok=True); n = 0
     for K in ALL:
         if K.slot not in THUMB_VIEW: continue
@@ -144,6 +146,9 @@ def thumbs(size=144):
         clear_previews(); assemble("thumb", list(parts.values()), DEFAULTS["colors"])
         d, target, scale = THUMB_VIEW[K.slot]
         shoot(os.path.join(KIT_DIR, "thumbs", K.id + ".webp"), d, target, scale, (size, size), clear=True); n += 1
+    for fit, morph, _ in FITS:
+        clear_previews(); assemble("thumb", list(DEFAULTS["parts"].values()), DEFAULTS["colors"], fit=morph)
+        shoot(os.path.join(KIT_DIR, "thumbs", "fit_%s.webp" % fit), (0.28, -1.0, 0.25), (0, 0, 0.54), 1.14, (size, size), clear=True); n += 1
     clear_previews()
     return n
 

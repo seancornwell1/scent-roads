@@ -40,6 +40,8 @@ const TAP_SLOP_PX = 10;
 const CAMERA_OFFSET = new Vector3(10, 10, 10);
 /** When the walking player leaves this share of the view around its middle, the camera follows. */
 const FOLLOW_MARGIN = 0.4;
+/** Metres of screen height the character creator leaves for the player and their label. */
+const CREATOR_FRAME = 1.3;
 /** Idle animations run at a gentle frame rate to save battery; movement runs at full rate. */
 const IDLE_FPS = 24;
 /** How long the screen takes to fade out (and back in) when moving between rooms. */
@@ -488,23 +490,44 @@ export class ShopScene {
     this.crowd.wave(id);
   }
 
-  /** Zooms in on the player (for the character creator) or back to the previous view. */
-  focusOnPlayer(on: boolean): void {
-    if (on && !this.savedView) {
-      this.savedView = { focus: this.focus.clone(), zoom: this.zoom, position: this.playerRoot.position.clone() };
-      // Dress on open floor (the spawn point), where no furniture hides the player from this angle.
-      this.path = [];
-      this.playerRoot.position.set(this.layout.spawn[0], 0, this.layout.spawn[1]);
-      this.playerRoot.rotation.y = Math.PI / 4; // face the camera
-      this.player?.play('idle');
-      this.focus.copy(this.playerRoot.position).add(new Vector3(0.9, 0, 0.9)); // player sits in the top half
-      this.zoom = this.layout.camera.maxZoom * 1.2;
-    } else if (!on && this.savedView) {
-      this.focus.copy(this.savedView.focus);
-      this.zoom = this.savedView.zoom;
-      this.playerRoot.position.copy(this.savedView.position);
-      this.savedView = null;
+  /**
+   * Zooms in on the player for the character creator, or (with null) back to the previous view.
+   * `coveredFrom` is the screen y where the creator panel starts: the player is framed in the
+   * strip between the HUD and that line.
+   */
+  focusOnPlayer(coveredFrom: number | null): void {
+    if (coveredFrom !== null) {
+      if (!this.savedView) {
+        this.savedView = { focus: this.focus.clone(), zoom: this.zoom, position: this.playerRoot.position.clone() };
+        // Dress on open floor (the spawn point), where no furniture hides the player from this angle.
+        this.path = [];
+        this.playerRoot.position.set(this.layout.spawn[0], 0, this.layout.spawn[1]);
+        this.playerRoot.rotation.y = Math.PI / 4; // face the camera
+        this.player?.play('idle');
+      }
+      this.framePlayer(coveredFrom);
+      return;
     }
+    if (!this.savedView) return;
+    this.focus.copy(this.savedView.focus);
+    this.zoom = this.savedView.zoom;
+    this.playerRoot.position.copy(this.savedView.position);
+    this.savedView = null;
+    this.placeCamera();
+  }
+
+  /** Shows the standing player as large as fits between the HUD and screen y `bottom`, feet near that line. */
+  private framePlayer(bottom: number): void {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const strip = Math.max(bottom - rect.top - this.topInset, 60);
+    const pxPerMetre = rect.height / (this.camera.top - this.camera.bottom); // at zoom 1
+    this.zoom = Math.min(this.layout.camera.maxZoom * 1.2, Math.max(strip / (CREATOR_FRAME * pxPerMetre), this.layout.camera.minZoom));
+    this.placeCamera();
+    const p = this.playerRoot.position.clone().project(this.camera);
+    const at = this.floorPointAt(rect.left + ((p.x + 1) / 2) * rect.width, rect.top + ((1 - p.y) / 2) * rect.height);
+    const feet = this.floorPointAt(rect.left + rect.width / 2, rect.top + this.topInset + strip * 0.86);
+    if (!at || !feet) return;
+    this.focus.add(at.sub(feet));
     this.placeCamera();
   }
 
@@ -565,8 +588,11 @@ export class ShopScene {
     // At zoom 1 the whole room is in view and the camera stays put; zoomed in, it can pan
     // only as far as keeps the room on screen.
     const reach = Math.max(0, 1 - 1 / this.zoom);
-    this.focus.x = Math.min(Math.max(this.focus.x, (-width / 2) * reach), (width / 2) * reach);
-    this.focus.z = Math.min(Math.max(this.focus.z, (-depth / 2) * reach), (depth / 2) * reach);
+    if (!this.savedView) {
+      // (The character creator frames the player itself, close up.)
+      this.focus.x = Math.min(Math.max(this.focus.x, (-width / 2) * reach), (width / 2) * reach);
+      this.focus.z = Math.min(Math.max(this.focus.z, (-depth / 2) * reach), (depth / 2) * reach);
+    }
     this.labelLayer.classList.toggle('scene-labels--far', this.zoom < 1.8);
     this.camera.zoom = this.zoom;
     this.camera.position.copy(this.focus).add(CAMERA_OFFSET);

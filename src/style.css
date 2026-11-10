@@ -144,6 +144,23 @@ html, body { height: 100%; overflow: hidden; }
   box-shadow: 0 0 0 1px var(--line);
 }
 .swatch-button.on { box-shadow: 0 0 0 3px var(--ink); }
+/* Creator choices: the thumbnail of the part above its name, six to a row. */
+.chips.look-chips { gap: 5px; }
+.panel--creator .look-chip {
+  flex: 0 0 calc((100% - 25px) / 6);
+  min-width: 0;
+  min-height: 0;
+  padding: 3px 2px 4px;
+  border-radius: 12px;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1px;
+  font-size: 0.62rem;
+  line-height: 1.1;
+}
+.look-thumb { display: block; width: 100%; max-width: 46px; aspect-ratio: 1; object-fit: contain; pointer-events: none; }
+.look-name { display: block; text-align: center; overflow-wrap: anywhere; }
+.panel--creator .look-chip.on { background: var(--card); color: var(--ink); border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 
 .panel-backdrop { position: fixed; inset: 0; background: rgb(40 25 30 / 0.25); }
 .panel {
