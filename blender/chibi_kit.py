@@ -17,7 +17,7 @@ AO_DIRS = [(math.cos(math.radians(e)) * math.cos(a), math.cos(math.radians(e)) *
 AO_NORM = sum(d[2] for d in AO_DIRS)
 
 
-def lin(h): return Vector(hexcol(h)[:3])
+def lin(h): return Vector(h) if isinstance(h, Vector) else Vector(hexcol(h)[:3])
 def mix(a, b, t): return a + (b - a) * t
 def clamp(x, a=0.0, b=1.0): return max(a, min(b, x))
 
@@ -66,12 +66,13 @@ class Part:
     """One painted piece. slot names the material; ao scales the occlusion it receives;
     occl says whether it shades others; orient (a point) is for open patches: faces turn away from it."""
 
-    def __init__(self, name, slot, ao=1.0, occl=True, orient=None, sharp=48):
+    def __init__(self, name, slot, ao=1.0, occl=True, orient=None, sharp=48, tint=None, bind=None):
         self.name, self.slot, self.ao, self.occl, self.orient, self.sharp = name, slot, ao, occl, orient, sharp
-        self.v, self.f, self.c, self.fc = [], [], [], {}
+        self.tint, self.bind = tint, bind      # kit parts: the default colour of a tinted material; the skin-weight function
+        self.v, self.f, self.c, self.fc, self.b = [], [], [], {}, []
 
     def vert(self, p, c):
-        self.v.append(Vector(p)); self.c.append(Vector(c)); return len(self.v) - 1
+        self.v.append(Vector(p)); self.c.append(Vector(c)); self.b.append(self.bind); return len(self.v) - 1
 
 
 def _col(col, *a):
@@ -327,30 +328,7 @@ class Char:
         objs = []
         for P in self.parts:
             if not P.v: continue
-            me = bpy.data.meshes.new(P.name); me.from_pydata([tuple(v) for v in P.v], [], P.f); me.update()
-            bm = bmesh.new(); bm.from_mesh(me); bm.normal_update()
-            if P.orient is None: bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
-            else:
-                for f in bm.faces:
-                    if f.normal.dot(f.calc_center_median() - P.orient) < 0: f.normal_flip()
-            bm.to_mesh(me); bm.free(); me.update()
-            shade = []
-            for v in me.vertices:
-                if P.ao <= 0: shade.append(WHITE); continue
-                n = v.normal.normalized() if v.normal.length > 0 else Vector((0, 0, 1))
-                o = v.co + n * 0.008; t = n.orthogonal().normalized(); b = n.cross(t); occ = 0.0
-                for dx, dy, dz in AO_DIRS:
-                    hit = bvh.ray_cast(o, t * dx + b * dy + n * dz, AO_DIST)
-                    if hit[0] is not None: occ += (1 - hit[3] / AO_DIST) * dz
-                shade.append(mix(WHITE, SHADOW, P.ao * clamp(occ / AO_NORM * 1.5)))
-            ca = me.color_attributes.new("Col", 'FLOAT_COLOR', 'CORNER')
-            for poly in me.polygons:
-                for li in poly.loop_indices:
-                    vi = me.loops[li].vertex_index; c = P.fc.get(poly.index, P.c[vi]); s = shade[vi]
-                    ca.data[li].color = (c.x * s.x, c.y * s.y, c.z * s.z, 1.0)
-            me.materials.append(paint_mat(P.slot))
-            me.shade_smooth(); me.set_sharp_from_angle(angle=math.radians(P.sharp))
-            ob = bpy.data.objects.new(P.name, me); coll.objects.link(ob); objs.append(ob)
+            ob = bpy.data.objects.new(P.name, part_mesh(P, bvh, paint_mat(P.slot))); coll.objects.link(ob); objs.append(ob)
         bpy.ops.object.select_all(action='DESELECT')
         for ob in objs: ob.select_set(True)
         bpy.context.view_layer.objects.active = objs[0]
@@ -359,6 +337,34 @@ class Char:
         ob.location.x = x
         self.obj = ob
         return ob
+
+
+def part_mesh(P, bvh, material):
+    """The mesh for one Part: consistent normals, its paint multiplied by tinted ambient occlusion against bvh."""
+    me = bpy.data.meshes.new(P.name); me.from_pydata([tuple(v) for v in P.v], [], P.f); me.update()
+    bm = bmesh.new(); bm.from_mesh(me); bm.normal_update()
+    if P.orient is None: bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    else:
+        for f in bm.faces:
+            if f.normal.dot(f.calc_center_median() - P.orient) < 0: f.normal_flip()
+    bm.to_mesh(me); bm.free(); me.update()
+    shade = []
+    for v in me.vertices:
+        if P.ao <= 0: shade.append(WHITE); continue
+        n = v.normal.normalized() if v.normal.length > 0 else Vector((0, 0, 1))
+        o = v.co + n * 0.008; t = n.orthogonal().normalized(); b = n.cross(t); occ = 0.0
+        for dx, dy, dz in AO_DIRS:
+            hit = bvh.ray_cast(o, t * dx + b * dy + n * dz, AO_DIST)
+            if hit[0] is not None: occ += (1 - hit[3] / AO_DIST) * dz
+        shade.append(mix(WHITE, SHADOW, P.ao * clamp(occ / AO_NORM * 1.5)))
+    ca = me.color_attributes.new("Col", 'FLOAT_COLOR', 'CORNER')
+    for poly in me.polygons:
+        for li in poly.loop_indices:
+            vi = me.loops[li].vertex_index; c = P.fc.get(poly.index, P.c[vi]); s = shade[vi]
+            ca.data[li].color = (min(c.x * s.x, 1.0), min(c.y * s.y, 1.0), min(c.z * s.z, 1.0), 1.0)
+    me.materials.append(material)
+    me.shade_smooth(); me.set_sharp_from_angle(angle=math.radians(P.sharp))
+    return me
 
 
 ROUGH = {"hair": 0.6, "eyes": 0.3, "metal": 0.35, "glass": 0.15, "accent": 0.6}
