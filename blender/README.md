@@ -25,6 +25,7 @@ Run the scripts inside Blender (5.2): paste `exec(open(r"<repo>\blender\<script>
 | `character-parts.py` | character kit parts `hat_beret`, `hat_flowercrown`, `handL_perfume` (to `assets/custom/characters/`, rigidly skinned to the kit skeleton) |
 | `ui-icons.py` | the counter's interface pictures in `assets/custom/ui/`: a bottle per radar spoke, an unknown bottle, stars, coin, sparkle |
 | `character-parts-2.py` | character kit parts `top_apron` (built on the kit's T-shirt, keeping its weights and fit shapes), `hair_fluffy` (+ `__short`), `face_heartglasses`, `shoes_clogs` |
+| `characters-chibi.py` (with `chibi_kit.py`) | character style test #3: three static, unrigged townspeople (`chibi-shopkeeper`, `chibi-customer`, `chibi-girl`) in a stylised low-poly chibi look, coloured with painted vertex colours and no textures. Renders `previews/characters-chibi*.png` only; nothing is exported to the game yet. `characters-test.py` and `characters-cozy.py` are the two earlier tests |
 | `room-preview.py` | renders `previews/room-preview.png`, a corner of the shop built from the models (run the model scripts first) |
 | `lineup.py` | renders a side-by-side contact sheet of named models |
 
