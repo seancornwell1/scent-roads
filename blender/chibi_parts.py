@@ -270,5 +270,109 @@ def shoes_maryjanes():
     return K
 
 
+
+# ---------------- hair: a close cap of hair plus leaf-shaped locks, all fixed to the head ----------------
+HEADB = rigid("head")
+CAPC = cap_paint(HP)
+
+
+def _hair(pid, label, line):
+    K = KitPart(pid, "hair", label, bind=HEADB)
+    H = K.part("hair", "hair", sharp=40)
+    K.hair_cap(H, line, CAPC)
+    return K, H
+
+
+def _swept(K, H, a0=26):
+    """A side-swept fringe from a parting at azimuth a0."""
+    for tip_az, tip_el, w in ((-62, 6, 0.05), (-44, 12, 0.055), (-24, 16, 0.055), (-4, 21, 0.05), (12, 30, 0.04)):
+        K.strand(H, [(a0 - 4, 66, 0.004), (mix(a0, tip_az, 0.35), 52, 0.014), (mix(a0, tip_az, 0.75), mix(52, tip_el, 0.55), 0.018), (tip_az, tip_el, 0.014)], w, 0.016, HP)
+    for tip_az, tip_el, w in ((48, 16, 0.05), (66, 4, 0.045)):
+        K.strand(H, [(a0 + 4, 66, 0.004), (mix(a0, tip_az, 0.4), 52, 0.014), (mix(a0, tip_az, 0.8), mix(52, tip_el, 0.55), 0.018), (tip_az, tip_el, 0.014)], w, 0.016, HP)
+
+
+def _blunt(K, H):
+    """A straight fringe."""
+    for a in (-46, -23, 0, 23, 46):
+        K.strand(H, [(a * 0.3, 83, 0.012), (a * 0.7, 54, 0.018), (a * 0.95, 34, 0.02), (a, 12, 0.016)], 0.052, 0.016, HP, tip=0.5, wmax=0.5)
+
+
+def hair_bun():
+    K, H = _hair("hair_bun", "Top bun", [(0, 46), (30, 43), (58, 30), (76, 8), (92, -6), (112, -26), (180, -34)])
+    _swept(K, H)
+    for sx in (-1, 1):
+        K.strand(H, [(sx * 58, 36, 0.008), (sx * 61, 10, 0.014), (sx * 58, -16, 0.014), (sx * 52, -40, 0.016)], 0.046, 0.016, HP, tip=0.12)
+    bun = HC + V(0, 0.05, 0.268)
+    def bunc(p, j, i):
+        c = mix(HP.lo, HP.base, sstep(bun.z - 0.085, bun.z - 0.01, p.z))
+        c = mix(c, HP.hi, 0.55 * sstep(bun.z + 0.01, bun.z + 0.075, p.z) * sstep(0.06, -0.06, p.y - bun.y))
+        return c * ((1.0 - 0.08 * (i % 2)) if i >= 0 else 1.0)
+    blob(H, bun, (0.105, 0.1, 0.086), bunc, n=10, m=6)
+    X = K.part("tie", "paint")
+    torus(X, HC + V(0, 0.047, 0.212), 0.072, 0.012, GOLD, M=RX90, n=12, m=5)
+    a, b = HC + V(-0.165, 0.075, 0.222), HC + V(0.15, 0.03, 0.33); d = (b - a).normalized()      # the pencil kept in the bun
+    tube(X, [a, b], 0.009, lin("#F2C14E"), n=6, cap1=False)
+    tube(X, [b, b + d * 0.022], [0.009, 0.002], lin("#E8C9A0"), n=6, cap0=False, cap1=b + d * 0.028)
+    blob(X, a - d * 0.004, (0.0105, 0.0105, 0.0105), lin("#F29AA8"), n=6, m=4)
+    return K
+
+
+def hair_spiky():
+    """A messy mop of spikes whirling out from the crown."""
+    K, H = _hair("hair_spiky", "Messy mop", [(0, 40), (40, 36), (62, 22), (80, 2), (95, -12), (115, -28), (180, -32)])
+    rng = random.Random(11); N = 13; sw = 11
+    for i in range(N):
+        az = -180 + 360 * (i + 0.5) / N + rng.uniform(-6, 6)
+        if abs(az) < 62:
+            K.strand(H, [(az - 2 * sw, 74, 0.004), (az - sw, 54, 0.016), (az, 34, 0.02), (az + sw * 0.6, rng.uniform(11, 19), 0.018)], 0.052, 0.016, HP)
+        elif abs(az) < 112:
+            K.strand(H, [(az - 2 * sw, 76, 0.004), (az - sw, 50, 0.016), (az, 22, 0.024), (az + sw * 0.6, rng.uniform(-10, -2), 0.03)], 0.066, 0.024, HP)
+        else:
+            K.strand(H, [(az - 2 * sw, 76, 0.004), (az - sw, 50, 0.016), (az, 20, 0.028), (az + sw, rng.uniform(-24, -6), 0.05 + rng.uniform(0, 0.025))], 0.062, 0.028, HP)
+    H2 = K.part("tufts", "hair", ao=0.35, sharp=40)
+    for i in range(5):
+        az = 360 * i / 5 + 20
+        K.strand(H2, [(az, 86, 0.0), (az + 16, 68, 0.026), (az + 36, 52, 0.045 + 0.035 * (i % 2))], 0.052, 0.022, HP, tip=0.05)
+    return K
+
+
+def hair_long():
+    """Long, with a blunt fringe, locks over the shoulders and a back that fans out."""
+    K, H = _hair("hair_long", "Long", [(0, 44), (45, 42), (70, 30), (85, 0), (100, -20), (180, -30)])
+    _blunt(K, H)
+    for sx in (-1, 1):
+        K.strand(H, [(sx * 60, 56, 0.006), (sx * 74, 24, 0.018), ((sx * 0.234, -0.06, HC.z - 0.07), (sx, -0.35, 0)), ((sx * 0.218, -0.085, 0.6), (sx, -0.6, 0)),
+                     ((sx * 0.2, -0.1, 0.47), (sx * 0.8, -0.8, 0))], 0.045, 0.018, HP, tip=0.25)
+    for i in range(-3, 4):
+        az = 180 + i * 26; h = sdir(az, 0)
+        K.strand(H, [(az, 85, 0.005 + 0.003 * (i % 3)), (az, 34, 0.018), (az, 0, 0.022), (h * 0.237 + V(0, 0, 0.66), h), (h * 0.252 + V(0, 0, 0.5), h), (h * 0.295 + V(0, 0, 0.35 + 0.04 * (i % 2)), h + V(0, 0, 0.3))],
+                 0.07, 0.022, HP, tip=0.18, wmax=0.6)
+    D = K.part("clip", "gloss")
+    p, d = K.head_pt(40, 27, 0.034)
+    blob(D, p, (0.03, 0.009, 0.012), lin("#F2C14E"), n=8, m=4, M=Matrix.Rotation(math.radians(40), 3, "Z") @ Matrix.Rotation(math.radians(-25), 3, "Y"))
+    return K
+
+
+def hair_bob():
+    """Chin length, curling in at the tips."""
+    K, H = _hair("hair_bob", "Bob", [(0, 44), (45, 42), (70, 30), (85, 0), (100, -24), (180, -34)])
+    _blunt(K, H)
+    for i in range(11):
+        az = 62 + i * 23.6
+        K.strand(H, [(az, 84, 0.005 + 0.003 * (i % 3)), (az, 42, 0.02), (az, 2, 0.028), (az, -30, 0.034), (az, -50 + 4 * (i % 2), 0.018)], 0.078, 0.024, HP, tip=0.5, wmax=0.6)
+    return K
+
+
+def hair_short():
+    """Short and neat with a side parting."""
+    K, H = _hair("hair_short", "Side parting", [(0, 44), (30, 42), (58, 28), (76, 6), (92, -8), (112, -24), (180, -30)])
+    _swept(K, H)
+    for i in range(11):
+        az = 72 + i * 21.6
+        K.strand(H, [(az, 80, 0.004), (az + 4, 46, 0.016), (az + 7, 12, 0.02), (az + 9, -16 - 7 * (i % 2), 0.016)], 0.062, 0.018, HP, tip=0.3)
+    return K
+
+
 PARTS = [top_blouse, top_tee, top_sweater, top_blazer, top_coat, bottom_trousers, bottom_shorts, bottom_skirt,
-         shoes_loafers, shoes_boots, shoes_maryjanes]
+         shoes_loafers, shoes_boots, shoes_maryjanes,
+         hair_bun, hair_spiky, hair_long, hair_bob, hair_short]
