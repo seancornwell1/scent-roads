@@ -7,6 +7,31 @@ import backRoomJson from '../data/backroom.json';
 
 export type Point = [number, number];
 
+/** A lamp's light: it glows from `y` metres above the floor at the model's spot (plus `offset`, in the room's x and z). */
+export interface Glow {
+  y: number;
+  color: string;
+  intensity: number;
+  /** How far the light reaches, in metres. */
+  distance: number;
+  offset?: Point;
+}
+
+/** How a room is lit. Colours are CSS hex strings; the scene only reads these numbers. */
+export interface Lighting {
+  /** Overall brightness of the picture (1 = as is). */
+  exposure: number;
+  /** Strength of the soft reflected light on shiny materials. */
+  environment: number;
+  /** Light from everywhere: `sky` from above, `ground` from below. */
+  ambient: { sky: string; ground: string; intensity: number };
+  /**
+   * The sun. `from` is where it stands, [x, y, z] in metres from the middle of the floor.
+   * `shadow`: `mapSize` in pixels (a power of two), `softness` of the edges, or null for no shadows.
+   */
+  sun: { color: string; intensity: number; from: [number, number, number]; shadow: { mapSize: number; softness: number } | null };
+}
+
 export interface Fixture {
   id: string;
   /** Text shown over it in the scene, or null for none. */
@@ -22,6 +47,8 @@ export interface Fixture {
   y?: number;
   blocks: boolean;
   interact: { action: string; standAt: Point } | null;
+  /** A lamp: the light it gives. */
+  glow?: Glow;
 }
 
 /** A model that is only for looks: no walking or tapping. */
@@ -31,6 +58,8 @@ export interface Decor {
   /** Height above the floor, e.g. to stand on a table. */
   y: number;
   rotation: number;
+  /** A lamp or sconce: the light it gives. */
+  glow?: Glow;
 }
 
 /** A floor area: where customers gather (invisible), or an empty spot for a future upgrade. */
@@ -45,6 +74,7 @@ export interface Zone {
 /** What every room has: its size, walls, floor, fixtures and decor. */
 export interface RoomLayout {
   room: { width: number; depth: number; wallHeight: number };
+  lighting: Lighting;
   /** Colour of the plane under the floor tiles. */
   floorColor: string;
   /** A square floor tile model repeated across the room; its top sits at y = 0. */

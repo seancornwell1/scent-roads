@@ -65,6 +65,7 @@ export class CharacterKit {
         const partBones = mesh.skeleton.bones.map((b) => bones.get(b.name) ?? b);
         mesh.bind(new Skeleton(partBones, mesh.skeleton.boneInverses), mesh.bindMatrix);
         mesh.material = recolor(mesh.material, slot, config);
+        mesh.castShadow = true; // people shade the floor; their painted faces take no shadow
         if (morph && mesh.morphTargetDictionary && mesh.morphTargetInfluences) {
           const index = mesh.morphTargetDictionary[morph];
           if (index !== undefined) mesh.morphTargetInfluences[index] = 1;

@@ -125,6 +125,7 @@ The two rooms, the shop and its back room, for the 3D scene (`src/scene/shopScen
 | Field | Meaning |
 | ----- | ------- |
 | `room` | `width` (x), `depth` (z), `wallHeight`, in metres |
+| `lighting` | How the room is lit, read by the scene (it draws nothing itself). `exposure`: overall brightness of the picture (1 = as is). `environment`: strength of the soft reflections on shiny materials. `ambient`: light from everywhere, `sky` colour from above, `ground` colour from below, and `intensity`. `sun`: `color`, `intensity`, `from` (`[x, y, z]` in metres from the middle of the floor: where the sun stands, so shadows fall away from it) and `shadow`, either `null` or `{ mapSize, softness }` (`mapSize` is the shadow picture in pixels, a power of two; bigger is sharper and slower) |
 | `floorColor` | Colour of the plane under the floor tiles (shows only past the tiles' edges) |
 | `floorTile` | Optional `{ model, size, height }`: a square floor model in metres, repeated across the room and sunk by `height` so its top is at floor level |
 | `camera` | `focus`: `[x, z]` the view starts on (the spawn point). `defaultZoom`, `minZoom`, `maxZoom`: zoom 1 fits the whole room across the screen; the shop opens close in (3) and follows you; players pinch between min and max and drag to pan. |
@@ -153,9 +154,12 @@ Each fixture:
 | `size` | World-space footprint `[width, height, depth]` in metres, for walking and tapping (swap width and depth when rotated 90°) |
 | `y` | Optional height it stands at (a placeholder box on a desk); 0 is the floor |
 | `blocks` | Whether the player has to walk around it |
+| `glow` | Optional light for a lamp, see below |
 | `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action`: `organ` opens the composing desk; `back-room` and `shop` go through the door to that room (you arrive at the other room's door back); `laptop` opens ordering, letters and the lab; `rack` opens your stock; `outside` is the street door (not open yet). Tapping a crate opens it. |
 
 Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees.
+
+A fixture or decor item that is a lamp can have a `glow`, a small light at its spot: `{ y, color, intensity, distance, offset }`, where `y` is the height of the light in metres, `distance` how far it reaches, and the optional `offset` `[x, z]` moves it off the centre of the model (a sconce hangs out from its wall). Glows cast no shadows. Keep them few (about six to a room): each one costs a little on every frame drawn.
 
 Each zone:
 

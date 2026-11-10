@@ -4,6 +4,28 @@
     "depth": 12,
     "wallHeight": 3
   },
+  "lighting": {
+    "exposure": 1.0,
+    "environment": 0.35,
+    "ambient": {
+      "sky": "#fff0dc",
+      "ground": "#d9a878",
+      "intensity": 1.1
+    },
+    "sun": {
+      "color": "#ffe2b8",
+      "intensity": 2.2,
+      "from": [
+        -9,
+        8,
+        5
+      ],
+      "shadow": {
+        "mapSize": 2048,
+        "softness": 4
+      }
+    }
+  },
   "floorColor": "#e8d2b4",
   "floorTile": {
     "model": "custom/models/floor-planks.glb",

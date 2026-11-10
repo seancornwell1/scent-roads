@@ -12,8 +12,10 @@ import {
   NeutralToneMapping,
   Object3D,
   OrthographicCamera,
+  PCFShadowMap,
   PlaneGeometry,
   PMREMGenerator,
+  PointLight,
   Raycaster,
   Scene,
   Vector2,
@@ -23,7 +25,7 @@ import {
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { CharacterConfig } from '../game/character';
 import { findPath } from '../game/pathfinding';
-import { WALL_PANEL_WIDTH, isWalkable, type BackRoomLayout, type Fixture, type Point, type RoomId, type RoomLayout, type ShopLayout } from '../game/shop';
+import { WALL_PANEL_WIDTH, isWalkable, type BackRoomLayout, type Fixture, type Glow, type Point, type RoomId, type RoomLayout, type ShopLayout } from '../game/shop';
 import { assetUrl, loadGltf } from './assets';
 import type { Character, CharacterKit } from './characters';
 import { Crowd, type CrowdEntry, type Label } from './crowd';
@@ -116,6 +118,9 @@ export class ShopScene {
     this.renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.toneMapping = NeutralToneMapping;
+    // Shadows are redrawn only with a frame, and frames are drawn only when something changes.
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = PCFShadowMap;
     container.appendChild(this.renderer.domElement);
     this.labelLayer = document.createElement('div');
     this.labelLayer.className = 'scene-labels';
@@ -141,26 +146,24 @@ export class ShopScene {
     this.stickBase.addEventListener('pointerup', () => this.releaseStick());
     this.stickBase.addEventListener('pointercancel', () => this.releaseStick());
 
-    // Soft studio-style lighting for the kit's PBR materials (lighting only, nothing drawn).
+    // A soft room reflection for shiny materials; each room brings its own lights (its `lighting` data).
     const pmrem = new PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    this.scene.environmentIntensity = 0.7;
-    this.scene.add(new HemisphereLight(0xfff4e6, 0xe8d2b4, 0.8));
-    const sun = new DirectionalLight(0xfff1dc, 1.6);
-    sun.position.set(6, 12, 8);
-    this.scene.add(sun);
 
     for (const id of ['shop', 'back'] as RoomId[]) {
       this.groups[id].visible = id === this.room;
       this.scene.add(this.groups[id]);
+      this.addLights(id);
       this.buildRoom(id);
     }
+    this.applyLighting();
     for (const zone of rooms.shop.zones) {
       if (zone.kind !== 'upgrade') continue; // customer areas are invisible: people just stand there
       const [x, z, w, d] = zone.rect;
       const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: UPGRADE_SPOT_COLOR }));
       patch.rotation.x = -Math.PI / 2;
       patch.position.set(x, 0.01, z);
+      patch.receiveShadow = true;
       this.groups.shop.add(patch);
       const label = this.addLabel(zone.label, patch, 0.05, 'scene-label--zone', 'shop');
       this.spotMarkers.set(zone.id, { patch, label });
@@ -205,6 +208,58 @@ export class ShopScene {
     return this.room;
   }
 
+  /**
+   * A room's lights, from its `lighting` data: light from all round, and a sun whose shadows
+   * cover the room. They sit in the room's group, so only the room on show is lit by them.
+   */
+  private addLights(id: RoomId): void {
+    const { lighting, room } = this.rooms[id];
+    const group = this.groups[id];
+    group.add(new HemisphereLight(new Color(lighting.ambient.sky), new Color(lighting.ambient.ground), lighting.ambient.intensity));
+    const sun = new DirectionalLight(new Color(lighting.sun.color), lighting.sun.intensity);
+    sun.position.set(...lighting.sun.from);
+    group.add(sun, sun.target);
+    if (!lighting.sun.shadow) return;
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(lighting.sun.shadow.mapSize, lighting.sun.shadow.mapSize);
+    sun.shadow.radius = lighting.sun.shadow.softness;
+    sun.shadow.bias = -0.0005;
+    sun.shadow.normalBias = 0.02;
+    // Fit the shadow's view to the room, walls included, as the sun sees it.
+    sun.updateMatrixWorld();
+    sun.target.updateMatrixWorld();
+    const eye = sun.shadow.camera;
+    eye.position.copy(sun.position);
+    eye.lookAt(sun.target.position);
+    eye.updateMatrixWorld();
+    const pad = 0.6;
+    const box = new Box3(
+      new Vector3(-room.width / 2 - pad, -0.2, -room.depth / 2 - pad),
+      new Vector3(room.width / 2 + pad, room.wallHeight + pad, room.depth / 2 + pad),
+    ).applyMatrix4(eye.matrixWorldInverse);
+    eye.left = box.min.x;
+    eye.right = box.max.x;
+    eye.bottom = box.min.y;
+    eye.top = box.max.y;
+    eye.near = Math.max(0.1, -box.max.z - 1);
+    eye.far = -box.min.z + 1;
+    eye.updateProjectionMatrix();
+  }
+
+  /** Brightness settings that belong to the picture as a whole, for the room on show. */
+  private applyLighting(): void {
+    const { exposure, environment } = this.layout.lighting;
+    this.renderer.toneMappingExposure = exposure;
+    this.scene.environmentIntensity = environment;
+  }
+
+  /** A lamp's glow, where its model stands. */
+  private addGlow(glow: Glow, [x, z]: Point, parent: Object3D): void {
+    const light = new PointLight(new Color(glow.color), glow.intensity, glow.distance);
+    light.position.set(x + (glow.offset?.[0] ?? 0), glow.y, z + (glow.offset?.[1] ?? 0));
+    parent.add(light);
+  }
+
   /** Builds a room's floor, walls, fixtures and decor into its group. */
   private buildRoom(id: RoomId): void {
     const layout = this.rooms[id];
@@ -212,6 +267,7 @@ export class ShopScene {
     const { width, depth } = layout.room;
     const floor = new Mesh(new PlaneGeometry(width, depth), new MeshLambertMaterial({ color: new Color(layout.floorColor) }));
     floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
     group.add(floor);
     if (layout.floorTile) {
       // The plain plane stays underneath the tiles, out of their way.
@@ -220,7 +276,10 @@ export class ShopScene {
     }
     this.addWalls(layout, group);
     for (const fixture of layout.fixtures) this.addFixture(fixture, id);
-    for (const d of layout.decor) void this.addModel(d.model, d.position, d.rotation, d.y, group);
+    for (const d of layout.decor) {
+      void this.addModel(d.model, d.position, d.rotation, d.y, group);
+      if (d.glow) this.addGlow(d.glow, d.position, group);
+    }
   }
 
   /**
@@ -238,6 +297,7 @@ export class ShopScene {
     await new Promise((r) => window.setTimeout(r, FADE_MS));
     this.room = to;
     for (const id of ['shop', 'back'] as RoomId[]) this.groups[id].visible = id === to;
+    this.applyLighting();
     const door = this.layout.fixtures.find((f) => f.interact?.action === from);
     const [x, z] = door?.interact?.standAt ?? this.layout.spawn;
     this.playerRoot.position.set(x, 0, z);
@@ -317,6 +377,14 @@ export class ShopScene {
   private async addModel(path: string, [x, z]: Point, rotation: number, y: number, parent: Object3D): Promise<Object3D> {
     const gltf = await loadGltf(path);
     const model = gltf.scene.clone(true);
+    // Everything takes shadow; see-through parts (glass) cast none.
+    model.traverse((o) => {
+      const mesh = o as Mesh;
+      if (!mesh.isMesh) return;
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      mesh.receiveShadow = true;
+      mesh.castShadow = !materials.some((m) => m.transparent);
+    });
     model.position.set(x, y, z);
     model.rotation.y = (rotation * Math.PI) / 180;
     parent.add(model);
@@ -356,6 +424,7 @@ export class ShopScene {
     group.add(hitBox);
     if (fixture.interact) this.hitBoxes.set(hitBox, fixture);
 
+    if (fixture.glow) this.addGlow(fixture.glow, fixture.position, group);
     if (fixture.model) {
       void this.addModel(fixture.model, fixture.position, fixture.rotation, y, group);
     } else {
