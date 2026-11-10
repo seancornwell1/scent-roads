@@ -1,0 +1,714 @@
+{
+ "version": 1,
+ "generator": "blender/characters-kit.py",
+ "license": "Project's own (made for Scentshop Tale)",
+ "units": "meter",
+ "upAxis": "+Y",
+ "forward": "+Z",
+ "slots": [
+  "body",
+  "head",
+  "hair",
+  "hat",
+  "face",
+  "top",
+  "bottom",
+  "shoes",
+  "handL"
+ ],
+ "colorSlots": [
+  "skin",
+  "hair",
+  "eyes",
+  "primary"
+ ],
+ "bones": [
+  "hips",
+  "spine",
+  "chest",
+  "neck",
+  "head",
+  "shoulder.L",
+  "upperArm.L",
+  "lowerArm.L",
+  "hand.L",
+  "upperLeg.L",
+  "lowerLeg.L",
+  "foot.L",
+  "shoulder.R",
+  "upperArm.R",
+  "lowerArm.R",
+  "hand.R",
+  "upperLeg.R",
+  "lowerLeg.R",
+  "foot.R"
+ ],
+ "styles": [
+  {
+   "id": "chibi",
+   "name": {
+    "en": "Chibi"
+   },
+   "skeleton": "skeleton.glb",
+   "animations": {
+    "file": "animations.glb",
+    "fps": 30,
+    "clips": [
+     {
+      "name": "idle",
+      "frames": 60,
+      "duration": 2.0,
+      "loop": true
+     },
+     {
+      "name": "walk",
+      "frames": 30,
+      "duration": 1.0,
+      "loop": true
+     },
+     {
+      "name": "run",
+      "frames": 20,
+      "duration": 0.6667,
+      "loop": true
+     },
+     {
+      "name": "wave",
+      "frames": 48,
+      "duration": 1.6,
+      "loop": false
+     },
+     {
+      "name": "jump",
+      "frames": 33,
+      "duration": 1.1,
+      "loop": false
+     }
+    ]
+   },
+   "defaults": {
+    "fit": "classic",
+    "parts": {
+     "body": "body",
+     "head": "head_soft",
+     "hair": "hair_bob",
+     "top": "top_blouse",
+     "bottom": "bottom_trousers",
+     "shoes": "shoes_loafers"
+    },
+    "colors": {
+     "skin": "#F8DAC6",
+     "hair": "#6B4431",
+     "eyes": "#6A4A3A"
+    }
+   },
+   "palettes": {
+    "skin": [
+     "#FBE3D2",
+     "#F8DAC6",
+     "#F0C6A8",
+     "#DFA883",
+     "#C98A62",
+     "#A96E4C",
+     "#8A5A44",
+     "#643F30"
+    ],
+    "hair": [
+     "#2E2230",
+     "#4A3228",
+     "#6B4431",
+     "#8A5A3C",
+     "#B5524E",
+     "#C9773F",
+     "#C9A45C",
+     "#E6CF8A",
+     "#D9D3CC",
+     "#8E8A98",
+     "#5A5A8C",
+     "#C98AA6"
+    ],
+    "eyes": [
+     "#3A2A20",
+     "#6A4A3A",
+     "#8A5A3C",
+     "#5C7A4A",
+     "#4A6A8A",
+     "#6A5A8A"
+    ],
+    "cloth": [
+     "#F4EEE4",
+     "#E3C27A",
+     "#E08A6A",
+     "#C9605A",
+     "#B5443C",
+     "#F2A0B4",
+     "#C98AA6",
+     "#8A6AA6",
+     "#4F6FA8",
+     "#7FA8C9",
+     "#8FC0B0",
+     "#4F8A5E",
+     "#3F7A5C",
+     "#7C9E64",
+     "#C9A66B",
+     "#8A5636",
+     "#6A3A40",
+     "#4A4858",
+     "#3A2E38"
+    ]
+   },
+   "fits": [
+    {
+     "id": "classic",
+     "morph": null
+    },
+    {
+     "id": "chubby",
+     "morph": "chubby"
+    },
+    {
+     "id": "slim",
+     "morph": "slim"
+    }
+   ],
+   "parts": [
+    {
+     "id": "body",
+     "slot": "body",
+     "name": {
+      "en": "Body"
+     },
+     "file": "parts/body.glb",
+     "tris": 1000,
+     "colorSlots": [
+      "skin"
+     ],
+     "defaultColors": {},
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "head_soft",
+     "slot": "head",
+     "name": {
+      "en": "Soft eyes"
+     },
+     "file": "parts/head_soft.glb",
+     "tris": 864,
+     "colorSlots": [
+      "skin",
+      "eyes",
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "head_bright",
+     "slot": "head",
+     "name": {
+      "en": "Bright eyes"
+     },
+     "file": "parts/head_bright.glb",
+     "tris": 894,
+     "colorSlots": [
+      "skin",
+      "eyes",
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "head_calm",
+     "slot": "head",
+     "name": {
+      "en": "Sleepy eyes"
+     },
+     "file": "parts/head_calm.glb",
+     "tris": 932,
+     "colorSlots": [
+      "skin",
+      "eyes",
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "hair_bun",
+     "slot": "hair",
+     "name": {
+      "en": "Top bun"
+     },
+     "file": "parts/hair_bun.glb",
+     "tris": 1576,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "hair_spiky",
+     "slot": "hair",
+     "name": {
+      "en": "Messy mop"
+     },
+     "file": "parts/hair_spiky.glb",
+     "tris": 2034,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "hair_long",
+     "slot": "hair",
+     "name": {
+      "en": "Long"
+     },
+     "file": "parts/hair_long.glb",
+     "tris": 2312,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {},
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "hair_bob",
+     "slot": "hair",
+     "name": {
+      "en": "Bob"
+     },
+     "file": "parts/hair_bob.glb",
+     "tris": 2314,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "hair_short",
+     "slot": "hair",
+     "name": {
+      "en": "Side parting"
+     },
+     "file": "parts/hair_short.glb",
+     "tris": 2184,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {}
+    },
+    {
+     "id": "hat_beret",
+     "slot": "hat",
+     "name": {
+      "en": "Beret"
+     },
+     "file": "parts/hat_beret.glb",
+     "tris": 212,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#B5443C"
+     }
+    },
+    {
+     "id": "hat_flowers",
+     "slot": "hat",
+     "name": {
+      "en": "Flower crown"
+     },
+     "file": "parts/hat_flowers.glb",
+     "tris": 696,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#F2A0B4"
+     }
+    },
+    {
+     "id": "face_round",
+     "slot": "face",
+     "name": {
+      "en": "Round glasses"
+     },
+     "file": "parts/face_round.glb",
+     "tris": 296,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#3A2E38"
+     }
+    },
+    {
+     "id": "face_square",
+     "slot": "face",
+     "name": {
+      "en": "Square glasses"
+     },
+     "file": "parts/face_square.glb",
+     "tris": 200,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#8A4B3A"
+     }
+    },
+    {
+     "id": "top_blouse",
+     "slot": "top",
+     "name": {
+      "en": "Blouse"
+     },
+     "file": "parts/top_blouse.glb",
+     "tris": 816,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#F4EEE4"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "top_tee",
+     "slot": "top",
+     "name": {
+      "en": "T-shirt"
+     },
+     "file": "parts/top_tee.glb",
+     "tris": 448,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#E08A6A"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "top_sweater",
+     "slot": "top",
+     "name": {
+      "en": "Sweater"
+     },
+     "file": "parts/top_sweater.glb",
+     "tris": 704,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#E3C27A"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "top_blazer",
+     "slot": "top",
+     "name": {
+      "en": "Blazer"
+     },
+     "file": "parts/top_blazer.glb",
+     "tris": 1292,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#3F7A5C"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "top_coat",
+     "slot": "top",
+     "name": {
+      "en": "Long coat"
+     },
+     "file": "parts/top_coat.glb",
+     "tris": 1196,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#7C9E64"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "bottom_trousers",
+     "slot": "bottom",
+     "name": {
+      "en": "Trousers"
+     },
+     "file": "parts/bottom_trousers.glb",
+     "tris": 344,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#4A4858"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "bottom_shorts",
+     "slot": "bottom",
+     "name": {
+      "en": "Shorts"
+     },
+     "file": "parts/bottom_shorts.glb",
+     "tris": 408,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#C9A66B"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "bottom_skirt",
+     "slot": "bottom",
+     "name": {
+      "en": "Pleated skirt"
+     },
+     "file": "parts/bottom_skirt.glb",
+     "tris": 552,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#4F8A5E"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "shoes_loafers",
+     "slot": "shoes",
+     "name": {
+      "en": "Loafers"
+     },
+     "file": "parts/shoes_loafers.glb",
+     "tris": 200,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#8A5636"
+     }
+    },
+    {
+     "id": "shoes_boots",
+     "slot": "shoes",
+     "name": {
+      "en": "Boots"
+     },
+     "file": "parts/shoes_boots.glb",
+     "tris": 328,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#8B5E3F"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "shoes_maryjanes",
+     "slot": "shoes",
+     "name": {
+      "en": "Mary Janes"
+     },
+     "file": "parts/shoes_maryjanes.glb",
+     "tris": 548,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#6A3A40"
+     }
+    },
+    {
+     "id": "handL_bottle",
+     "slot": "handL",
+     "name": {
+      "en": "Perfume bottle"
+     },
+     "file": "parts/handL_bottle.glb",
+     "tris": 124,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#E9A6B8"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    },
+    {
+     "id": "handL_book",
+     "slot": "handL",
+     "name": {
+      "en": "Book"
+     },
+     "file": "parts/handL_book.glb",
+     "tris": 80,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#4F6FA8"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ]
+    }
+   ],
+   "presets": [
+    {
+     "id": "shopkeeper",
+     "name": {
+      "en": "Shopkeeper"
+     },
+     "fit": "classic",
+     "parts": {
+      "body": "body",
+      "head": "head_soft",
+      "hair": "hair_bun",
+      "top": "top_blazer",
+      "bottom": "bottom_trousers",
+      "shoes": "shoes_loafers"
+     },
+     "colors": {
+      "skin": "#F8DAC6",
+      "hair": "#B5524E",
+      "eyes": "#6A4A3A",
+      "top": "#3F7A5C",
+      "bottom": "#4A4858",
+      "shoes": "#8A5636"
+     }
+    },
+    {
+     "id": "rambler",
+     "name": {
+      "en": "Rambler"
+     },
+     "fit": "chubby",
+     "parts": {
+      "body": "body",
+      "head": "head_calm",
+      "hair": "hair_spiky",
+      "top": "top_coat",
+      "bottom": "bottom_shorts",
+      "shoes": "shoes_boots",
+      "handL": "handL_book"
+     },
+     "colors": {
+      "skin": "#F0C6A8",
+      "hair": "#5A5A8C",
+      "eyes": "#5C7A4A",
+      "top": "#7C9E64",
+      "bottom": "#4A4858",
+      "shoes": "#8B5E3F",
+      "handL": "#4F6FA8"
+     }
+    },
+    {
+     "id": "schoolgirl",
+     "name": {
+      "en": "Schoolgirl"
+     },
+     "fit": "slim",
+     "parts": {
+      "body": "body",
+      "head": "head_bright",
+      "hair": "hair_long",
+      "hat": "hat_flowers",
+      "top": "top_blouse",
+      "bottom": "bottom_skirt",
+      "shoes": "shoes_maryjanes"
+     },
+     "colors": {
+      "skin": "#F8DAC6",
+      "hair": "#C9773F",
+      "eyes": "#8A5A3C",
+      "top": "#F4EEE4",
+      "bottom": "#4F8A5E",
+      "shoes": "#6A3A40",
+      "hat": "#F2A0B4"
+     }
+    },
+    {
+     "id": "painter",
+     "name": {
+      "en": "Painter"
+     },
+     "fit": "classic",
+     "parts": {
+      "body": "body",
+      "head": "head_soft",
+      "hair": "hair_bob",
+      "hat": "hat_beret",
+      "face": "face_round",
+      "top": "top_sweater",
+      "bottom": "bottom_shorts",
+      "shoes": "shoes_loafers"
+     },
+     "colors": {
+      "skin": "#C98A62",
+      "hair": "#2E2230",
+      "eyes": "#3A2A20",
+      "top": "#E3C27A",
+      "bottom": "#4F6FA8",
+      "shoes": "#8A5636",
+      "hat": "#B5443C",
+      "face": "#3A2E38"
+     }
+    }
+   ],
+   "budget": {
+    "maxTrisPerPart": 4000,
+    "maxTrisPerFigure": 20000
+   }
+  }
+ ]
+}

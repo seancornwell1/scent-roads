@@ -134,8 +134,8 @@ def top_sweater():
     """Chunky and cropped: a rolled neck, ribbed cuffs and hem."""
     K = KitPart("top_sweater", "top", "Sweater", bind=lower_w, tint="#E3C27A")
     T = K.part("knit", "primary"); sh = shade(0.4, 0.63, lo=0.7); rib = dim(sh, 0.8)
-    torso(T, ((0.43, 0.126, 0.1), (0.47, 0.118, 0.092), (0.53, 0.117, 0.09), (0.582, 0.11, 0.08), (0.618, 0.062, 0.054)), sh)
-    tube(T, [V(0, 0, 0.412), V(0, 0, 0.446)], 0.129, rib, n=12, flat=0.8)
+    torso(T, ((0.43, 0.127, 0.109), (0.47, 0.118, 0.092), (0.53, 0.117, 0.09), (0.582, 0.11, 0.08), (0.618, 0.062, 0.054)), sh)
+    tube(T, [V(0, 0, 0.416), V(0, 0, 0.448)], 0.131, rib, n=12, flat=0.88)
     T.bind = CHEST
     torus(T, V(0, 0, 0.63), 0.05, 0.02, rib, M=RX90, n=12, m=5)
     T.bind = lower_w
@@ -373,6 +373,99 @@ def hair_short():
     return K
 
 
+# ---------------- hats ----------------
+def _facing(d): return Vector(d).normalized().to_track_quat("Z", "Y").to_matrix()
+
+
+def hat_beret():
+    K = KitPart("hat_beret", "hat", "Beret", bind=rigid("head"), tint="#B5443C")
+    P = K.part("felt", "primary", sharp=50)
+    top = K.head_pt(0, 90)[0]
+    M = Matrix.Rotation(math.radians(-13), 3, "Y") @ Matrix.Rotation(math.radians(7), 3, "X")
+    c = top + V(0.026, 0.004, -0.002); col = shade(top.z - 0.09, top.z + 0.05, 0.58)
+    blob(P, c, (0.172, 0.166, 0.06), col, n=12, m=6, M=M)
+    blob(P, top + V(0.008, 0.0, -0.03), (0.128, 0.126, 0.04), lambda p, *a: col(p) * 0.86, n=12, m=4)          # the band, snug on the head
+    tube(P, [c + M @ V(0, 0, 0.054), c + M @ V(0.006, 0, 0.084)], [0.008, 0.0055], col, n=5)
+    return K
+
+
+def hat_flowers():
+    """A crown of flowers on a vine. The petals take the chosen colour; alternate flowers stay cream."""
+    K = KitPart("hat_flowers", "hat", "Flower crown", bind=rigid("head"), tint="#F2A0B4")
+    G = K.part("vine", "paint", ao=0.6); F = K.part("petals", "primary", ao=0.4, sharp=30); C = K.part("hearts", "paint", ao=0.3, sharp=30)
+    def at(az, lift): return K.head_pt(az, 41 + 6 * math.cos(math.radians(az)), lift)
+    green = lin("#6E9A4E"); leaf = lin("#8DB85C")
+    tube(G, [at(az, 0.04)[0] for az in range(0, 360, 30)], 0.008, green, n=5, loop=True)
+    for i in range(9):
+        az = -160 + i * 40; big = abs(az) < 90; r = 0.034 if big else 0.027
+        p, d = at(az, 0.05); Mf = _facing(d) @ Matrix.Rotation(math.radians(36 * i), 3, "Z")
+        if i % 2 == 0: blob(F, p, (r, r, r * 0.42), lambda q, *a: mix(Vector((0.8, 0.74, 0.8)), WHITE, sstep(0.0, r, (q - p).length)), n=5, m=3, M=Mf)
+        else: blob(C, p, (r * 0.9, r * 0.9, r * 0.4), lambda q, *a: mix(lin("#E9D9C2"), CREAM, sstep(0.0, r, (q - p).length)), n=5, m=3, M=Mf)
+        blob(C, p + d * (r * 0.3), (r * 0.36, r * 0.36, r * 0.3), lin("#F2C14E"), n=5, m=3, M=Mf)
+        q, e = at(az + 20, 0.046)
+        blob(G, q, (0.02, 0.011, 0.006), leaf, n=6, m=3, M=_facing(e) @ Matrix.Rotation(math.radians(50 * (1 if i % 2 else -1)), 3, "Z"))
+    return K
+
+
+# ---------------- glasses ----------------
+def _glasses(pid, label, tint, square):
+    K = KitPart(pid, "face", label, bind=rigid("head"), tint=tint)
+    P = K.part("frame", "primary", ao=0.25, sharp=60)
+    ez = HC.z - 0.043; ex = 0.092; R = 0.054; col = lambda p, *a: WHITE
+    ends = {}
+    for sx in (-1, 1):
+        c = K.face_pt(sx * ex, ez, 0) + V(0, -0.02, 0); M = Matrix.Rotation(math.radians(sx * 17), 3, "Z")
+        if square:
+            hw, hh, k = R * 1.02, R * 0.8, 0.012
+            pts = [c + M @ V(u, 0, v) for u, v in ((hw - k, hh), (hw, hh - k), (hw, -hh + k), (hw - k, -hh), (-hw + k, -hh), (-hw, -hh + k), (-hw, hh - k), (-hw + k, hh))]
+            tube(P, pts, 0.0062, col, n=4, loop=True, up=V(0, -1, 0))
+        else:
+            torus(P, c, R, 0.0058, col, M=M, n=14, m=4)
+        ends[sx] = (c + M @ V(-sx * R, 0, 0.012), c + M @ V(sx * R, 0, 0.014))
+        ear = K.head_pt(sx * 92, -3, 0.012)[0]
+        tube(P, [ends[sx][1], mix(ends[sx][1], ear, 0.5) + V(sx * 0.012, 0, 0.002), ear], 0.0048, col, n=4)
+    a, b = ends[-1][0], ends[1][0]
+    tube(P, [a, mix(a, b, 0.5) + V(0, -0.006, 0.006), b], 0.005, col, n=4)
+    return K
+
+
+def face_round(): return _glasses("face_round", "Round glasses", "#3A2E38", False)
+def face_square(): return _glasses("face_square", "Square glasses", "#8A4B3A", True)
+
+
+# ---------------- things to hold (left hand; the right one waves) ----------------
+def box(P, c, hx, hy, hz, col):
+    c = Vector(c); s = math.sqrt(2)
+    loft(P, [ring(c + V(0, 0, z), hx * s, hy * s, 4) for z in (-hz, hz)], col)
+
+
+HANDL = V(0.203, -0.011, 0.352)
+
+
+def handL_bottle():
+    """A perfume bottle held in front of the hand. The glass takes the chosen colour."""
+    K = KitPart("handL_bottle", "handL", "Perfume bottle", bind=rigid("hand.L"), tint="#E9A6B8")
+    G = K.part("glass", "primary", ao=0.5, sharp=40); X = K.part("cap", "gloss", ao=0.4)
+    c = HANDL + V(0.0, -0.046, -0.006)
+    blob(G, c, (0.033, 0.024, 0.036), lambda p, *a: mix(Vector((0.7, 0.66, 0.74)), WHITE, sstep(c.z - 0.035, c.z + 0.03, p.z)), n=8, m=5)
+    tube(X, [c + V(0, 0, 0.03), c + V(0, 0, 0.044)], 0.011, GOLD, n=6)
+    blob(X, c + V(0, 0, 0.056), (0.017, 0.017, 0.015), lambda p, *a: mix(GOLD * 0.8, GOLD * 1.1, sstep(c.z + 0.045, c.z + 0.07, p.z)), n=6, m=4)
+    return K
+
+
+def handL_book():
+    """A book carried at the side, spine up."""
+    K = KitPart("handL_book", "handL", "Book", bind=rigid("hand.L"), tint="#4F6FA8")
+    B = K.part("cover", "primary", ao=0.6, sharp=30); X = K.part("pages", "paint", ao=0.6, sharp=30)
+    c = HANDL + V(0.006, -0.05, -0.03); col = lambda p, *a: mix(Vector((0.72, 0.7, 0.78)), WHITE, sstep(c.z - 0.07, c.z + 0.06, p.z))
+    for sx in (-1, 1): box(B, c + V(sx * 0.015, 0, 0), 0.0035, 0.05, 0.066, col)
+    box(B, c + V(0, 0, 0.0625), 0.0185, 0.05, 0.0035, col)                 # the spine
+    box(X, c + V(0, 0, -0.003), 0.012, 0.046, 0.058, lambda p, *a: mix(lin("#D9CBB4"), CREAM, sstep(c.z - 0.06, c.z + 0.02, p.z)))
+    box(X, c + V(0, -0.0505, 0.02), 0.019, 0.001, 0.008, GOLD)              # a ribbon marker band
+    return K
+
+
 PARTS = [top_blouse, top_tee, top_sweater, top_blazer, top_coat, bottom_trousers, bottom_shorts, bottom_skirt,
          shoes_loafers, shoes_boots, shoes_maryjanes,
-         hair_bun, hair_spiky, hair_long, hair_bob, hair_short]
+         hair_bun, hair_spiky, hair_long, hair_bob, hair_short,
+         hat_beret, hat_flowers, face_round, face_square, handL_bottle, handL_book]
