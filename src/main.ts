@@ -13,12 +13,12 @@ import { DILUTION_BATCH_GRAMS, consume, contractStage, dilute, harvest, missingF
 import { addCustomLabel, addHousePerfume, fairPrice, house, rateHouse, restock, setTier, settleHouse, suggestName, takeDown, unlockBlockers } from './game/house';
 import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/events';
 import { parseSave, writeSave, type SavedFormula } from './game/save';
-import { buyItem, buyProcess, itemById, place, processStats, unplace } from './game/upgrades';
+import { buyItem, buyProcess, furniture, itemById, place, processStats, unplace } from './game/upgrades';
 import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOpen, routesTick } from './game/routes';
 import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal, usableMaterials } from './game/world';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
-import { backRoom, shop, validateBackRoom, validateShop } from './game/shop';
+import { backRoom, shop, standOn, validateBackRoom, validateShop } from './game/shop';
 import { radarOf, validateRadar, type Mix } from './game/radar';
 import { addDrop, awardExp, judgeRound, pingMs, tipFor, tipTier, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
 import { benchScreen, clock, noteDrop, revealScreen, roundScreen, targetValues } from './ui/round';
@@ -350,17 +350,19 @@ function runTick(): void {
 /** Puts placed furniture in the scene. */
 function refreshFurniture(): void {
   const spots = new Map(allSpots().map((spot) => [spot.id, spot]));
+  let lit = 0;
   const pieces = state.save.upgrades!.placed.flatMap((p) => {
     const item = itemById(p.item);
     const spot = spots.get(p.spot);
     if (!item || !spot) return [];
+    // A lamp's light, lifted to where the lamp stands; only the first few placed are lit.
+    const glowFrom = (y: number) => (item.glow && lit++ < furniture.glowLimit ? { ...item.glow, y: y + item.glow.y } : undefined);
     if (spot.kind === 'floor') {
       const zone = shop.zones.find((z) => z.id === p.spot)!;
-      const extent = (item.size[0] + item.size[1]) / Math.SQRT2; // turned 45° towards the room
-      return [{ spot: p.spot, model: item.model, position: [zone.rect[0], zone.rect[1]] as [number, number], y: 0, size: [extent, extent] as [number, number], floor: true }];
+      return [{ spot: p.spot, model: item.model, ...standOn(zone, item.size), y: 0, floor: true, glow: glowFrom(0) }];
     }
     const surface = shop.surfaces.find((x) => x.id === p.spot)!;
-    return [{ spot: p.spot, model: item.model, position: surface.position, y: surface.y, size: item.size, floor: false }];
+    return [{ spot: p.spot, model: item.model, position: surface.position, y: surface.y, rotation: surface.facing, size: item.size, floor: false, glow: glowFrom(surface.y) }];
   });
   void scene.setFurniture(pieces);
 }

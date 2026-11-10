@@ -55,8 +55,8 @@ out.append(M.finish())
 
 # ---------- sofa (1.6 x 0.9) ----------
 M = Model("sofa")
-fab = mat("sofa_fabric", "sky", 0.85)
-cush = mat("sofa_cushion", "#B9E1F6", 0.85)
+fab = mat("sofa_fabric", "forest", 0.85)
+cush = mat("sofa_cushion", "#4F8468", 0.85)
 for sx in (-1, 1):
     for sy in (-1, 1):
         M.sphere(mat("sofa_feet", "darkwood", 0.5), 0.045, (sx * 0.68, sy * 0.34, 0.045), seg=10, rings=6)
@@ -66,7 +66,7 @@ for x in (-0.33, 0.33):
 M.box(fab, (1.6, 0.24, 0.6), (0, -0.31, 0.3), bevel=0.1, segs=4)
 for sx in (-1, 1):
     M.box(fab, (0.18, 0.86, 0.32), (sx * 0.71, 0, 0.32), bevel=0.08, segs=4)
-for x, c in ((-0.5, "pink"), (0.52, "butter")):
+for x, c in ((-0.5, "burgundy"), (0.52, "gold")):
     M.sphere(mat(f"sofa_pillow_{c}", c, 0.85), 0.15, (x, -0.12, 0.62), scale=(1, 0.45, 0.85), seg=12, rings=8, rot=(math.radians(-15), 0, math.radians(8 if x < 0 else -8)))
 out.append(M.finish())
 

@@ -31,6 +31,7 @@
       }
     ]
   },
+  "glowLimit": 3,
   "kinds": {
     "seating": "Seating",
     "plant": "Plants",
@@ -78,7 +79,7 @@
       "reputation": 5,
       "size": [
         0.8,
-        0.8
+        0.72
       ]
     },
     {
@@ -92,7 +93,7 @@
       "reputation": 12,
       "size": [
         0.6,
-        0.73
+        0.56
       ]
     },
     {
@@ -147,8 +148,8 @@
       "appeal": 4,
       "reputation": 5,
       "size": [
-        1.1,
-        1.1
+        0.68,
+        0.68
       ]
     },
     {
@@ -161,9 +162,15 @@
       "appeal": 3,
       "reputation": 0,
       "size": [
-        0.5,
-        0.6
-      ]
+        0.56,
+        0.56
+      ],
+      "glow": {
+        "y": 1.35,
+        "color": "#ffb765",
+        "intensity": 4,
+        "distance": 4.5
+      }
     },
     {
       "id": "table-lamp",
@@ -177,7 +184,13 @@
       "size": [
         0.35,
         0.35
-      ]
+      ],
+      "glow": {
+        "y": 0.38,
+        "color": "#ffb765",
+        "intensity": 2.5,
+        "distance": 3
+      }
     },
     {
       "id": "candle-cluster",
@@ -191,7 +204,13 @@
       "size": [
         0.4,
         0.4
-      ]
+      ],
+      "glow": {
+        "y": 0.32,
+        "color": "#ffa64d",
+        "intensity": 2,
+        "distance": 2.5
+      }
     },
     {
       "id": "star-lantern",
@@ -205,7 +224,13 @@
       "size": [
         0.31,
         0.12
-      ]
+      ],
+      "glow": {
+        "y": 0.24,
+        "color": "#ffd28a",
+        "intensity": 2,
+        "distance": 2.5
+      }
     },
     {
       "id": "vase",

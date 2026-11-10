@@ -177,23 +177,6 @@
       "interact": null
     },
     {
-      "id": "shelf-back-far",
-      "label": null,
-      "model": "custom/models/shelf-tall-a.glb",
-      "position": [
-        3.05,
-        -5.74
-      ],
-      "rotation": 0,
-      "size": [
-        1.68,
-        2.32,
-        0.49
-      ],
-      "blocks": true,
-      "interact": null
-    },
-    {
       "id": "counter-left",
       "label": "Test bench",
       "model": "custom/models/shop-counter.glb",
@@ -312,8 +295,8 @@
       "label": null,
       "model": "custom/models/display-table.glb",
       "position": [
-        1.3,
-        1.8
+        1.9,
+        1.5
       ],
       "rotation": 0,
       "size": [
@@ -329,8 +312,8 @@
       "label": null,
       "model": "custom/models/round-table.glb",
       "position": [
-        3.6,
-        2.2
+        4.1,
+        3.0
       ],
       "rotation": 0,
       "size": [
@@ -373,8 +356,8 @@
     {
       "model": "custom/models/perfume-bottle-moon.glb",
       "position": [
-        3.6,
-        2.2
+        4.1,
+        3.0
       ],
       "y": 0.733,
       "rotation": 30
@@ -382,8 +365,8 @@
     {
       "model": "custom/models/flower-vase.glb",
       "position": [
-        3.35,
-        2.05
+        3.85,
+        2.85
       ],
       "y": 0.733,
       "rotation": 0
@@ -400,8 +383,17 @@
     {
       "model": "custom/models/rug-round.glb",
       "position": [
-        1.3,
-        1.8
+        1.9,
+        1.5
+      ],
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "model": "custom/models/shop-rug.glb",
+      "position": [
+        -1.2,
+        2.4
       ],
       "y": 0,
       "rotation": 0
@@ -521,11 +513,11 @@
     {
       "model": "custom/models/plant-leafy.glb",
       "position": [
-        4.45,
-        -5.4
+        -2.2,
+        5.5
       ],
       "y": 0,
-      "rotation": 0
+      "rotation": 30
     },
     {
       "model": "custom/models/plant-leafy.glb",
@@ -699,80 +691,92 @@
     },
     {
       "id": "spot-1",
-      "label": "Upgrade spot",
+      "label": "Display wall, left",
       "kind": "upgrade",
       "rect": [
-        3.6,
-        -4.4,
-        1.6,
-        1.6
-      ]
-    },
-    {
-      "id": "spot-2",
-      "label": "Upgrade spot",
-      "kind": "upgrade",
-      "rect": [
-        -1,
-        2.8,
-        1.8,
-        1.6
-      ]
-    },
-    {
-      "id": "spot-3",
-      "label": "Upgrade spot",
-      "kind": "upgrade",
-      "rect": [
-        3.6,
-        4.4,
-        1.8,
-        1.8
-      ]
-    },
-    {
-      "id": "spot-4",
-      "label": "Upgrade spot",
-      "kind": "upgrade",
-      "rect": [
-        1.2,
-        4.8,
-        1.8,
-        1.4
-      ]
+        2.85,
+        -5.5,
+        1.4,
+        0.94
+      ],
+      "facing": 0,
+      "flush": true
     },
     {
       "id": "spot-5",
-      "label": "Upgrade spot",
+      "label": "Display wall, right",
       "kind": "upgrade",
       "rect": [
-        3.9,
-        -1.6,
-        1.4,
-        1.6
-      ]
+        4.2,
+        -5.5,
+        1.3,
+        0.94
+      ],
+      "facing": 0,
+      "flush": true
     },
     {
       "id": "spot-6",
-      "label": "Upgrade spot",
+      "label": "By the counter",
       "kind": "upgrade",
       "rect": [
-        3.9,
-        1.4,
-        1.4,
-        1.6
-      ]
+        1.75,
+        -3.5,
+        1.5,
+        0.88
+      ],
+      "facing": 0,
+      "flush": true
+    },
+    {
+      "id": "spot-2",
+      "label": "Seats, window side",
+      "kind": "upgrade",
+      "rect": [
+        -2.75,
+        2.4,
+        0.9,
+        1.8
+      ],
+      "facing": 90,
+      "flush": true
     },
     {
       "id": "spot-7",
-      "label": "Upgrade spot",
+      "label": "Seats, back",
       "kind": "upgrade",
       "rect": [
-        -1.6,
-        5,
-        1.4,
-        1.4
-      ]
+        -1.2,
+        1.0,
+        1.7,
+        0.9
+      ],
+      "facing": 0,
+      "flush": true
+    },
+    {
+      "id": "spot-4",
+      "label": "Seats, corner",
+      "kind": "upgrade",
+      "rect": [
+        -2.75,
+        1.0,
+        0.8,
+        0.8
+      ],
+      "facing": 45
+    },
+    {
+      "id": "spot-3",
+      "label": "Reading nook",
+      "kind": "upgrade",
+      "rect": [
+        3.0,
+        3.8,
+        1.2,
+        1.2
+      ],
+      "facing": 45
     }
   ],
   "upgradeSpot": {
@@ -787,7 +791,8 @@
         -2.35,
         -3.55
       ],
-      "y": 0.98
+      "y": 0.98,
+      "facing": 45
     },
     {
       "id": "counter-right-end",
@@ -796,7 +801,8 @@
         0.35,
         -3.55
       ],
-      "y": 1.38
+      "y": 1.38,
+      "facing": 45
     }
   ]
 }

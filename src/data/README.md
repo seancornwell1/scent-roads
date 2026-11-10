@@ -139,7 +139,7 @@ The two rooms, the shop and its back room, for the 3D scene (`src/scene/shopScen
 | `zones` | Marked floor areas, below |
 | `upgradeSpot` | Shop only: how an empty upgrade spot is marked on the floor, a tint of `color` at `opacity` (0 to 1, see-through so the floor shows) |
 | `customers` | Shop only: `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
-| `surfaces` | Shop only: table and counter tops for small decor: `id`, `label`, `position`, `y` (height) |
+| `surfaces` | Shop only: table and counter tops for small decor: `id`, `label`, `position`, `y` (height) and `facing`, the way a piece placed there is turned (degrees, like a fixture's `rotation`) |
 | `crates` | Back room only: arrived crates, `model`, the `spots` they stand on by the outside door, and `stackHeights` (to stack one on top) |
 | `rack` | Back room only: the rack showing what's on hand, one bottle (`bottle` model) per material: on fixture `fixture`, at shelf heights `levels` (filled in order), `perLevel` to a shelf, `spacing` apart and `forward` of its centre |
 
@@ -160,7 +160,7 @@ Each fixture:
 
 Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees.
 
-A fixture or decor item that is a lamp can have a `glow`, a small light at its spot: `{ y, color, intensity, distance, offset }`, where `y` is the height of the light in metres, `distance` how far it reaches, and the optional `offset` `[x, z]` moves it off the centre of the model (a sconce hangs out from its wall). Glows cast no shadows. Keep them few (about six to a room): each one costs a little on every frame drawn.
+A fixture or decor item that is a lamp can have a `glow`, a small light at its spot: `{ y, color, intensity, distance, offset }`, where `y` is the height of the light in metres, `distance` how far it reaches, and the optional `offset` `[x, z]` moves it off the centre of the model (a sconce hangs out from its wall). Glows cast no shadows. Keep them few (about six to a room): each one costs a little on every frame drawn. Bought lamps bring a glow of their own (`furniture.json`), up to its `glowLimit` on top of the room's.
 
 Each zone:
 
@@ -169,6 +169,10 @@ Each zone:
 | `id`, `label` | |
 | `kind` | `customers`: an invisible area where customers stand around. `upgrade`: a floor spot where bought furniture can be placed. |
 | `rect` | `[centre x, centre z, width, depth]` |
+| `facing` | Upgrade spots (required): the way a piece placed here faces, in degrees like a fixture's `rotation`: 0 towards the front of the room, 90 towards its right-hand side, 45 towards the camera |
+| `flush` | Upgrade spots, optional: `true` stands the piece's back on the spot's back edge (against a wall, or in line with the furniture beside it) instead of in the middle. Needs a `facing` of 0, 90, 180 or 270 |
+
+The shop's upgrade spots are in groups: the display wall (right-hand end of the back wall), one by the counter, the seats round the rug by the windows, and the reading nook by the round table. A spot's `label` is the name the Shop panel shows for it. `standOn` in `src/game/shop.ts` works out where a piece stands on a spot from the piece's `size`; any floor piece can go on any floor spot, so a spot is a place and a facing, not a size limit. Keep the spot `id`s when moving spots: saves refer to them.
 
 `validateShop` and `validateBackRoom` (run in the tests and at start-up) check that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable; a test also checks every fixture in the back room can be reached from its door.
 
@@ -309,10 +313,11 @@ Furniture and decor for the Shop panel (`src/game/upgrades.ts`). Display pieces 
 | Field | Meaning |
 | ----- | ------- |
 | `appeal.levels` | Highest `min` reached wins: `name`, `payMultiplier` (customers' pay), `strictness` (added to every star threshold), `arrivalMultiplier` (time between customers; below 1 is faster; house perfumes sell 1 / this as fast) |
+| `glowLimit` | How many placed lamps are lit at once, the first placed first (each light costs a little on every frame) |
 | `kinds` | Catalogue sections: kind id → heading |
 | `items` | Below |
 
-Each item: `id`, `name`, `kind`, `model`, `placement` (`floor` spot or `surface` top), `price`, `appeal`, `reputation` (to buy), `size` `[width, depth]` (floor pieces become obstacles) and, for display pieces, `capacity` (places they add for house perfumes).
+Each item: `id`, `name`, `kind`, `model`, `placement` (`floor` spot or `surface` top), `price`, `appeal`, `reputation` (to buy), `size` `[width, depth]` of the model, front to the viewer (floor pieces become obstacles, and it sets where a piece stands on a `flush` spot, so keep it true to the model), for display pieces `capacity` (places they add for house perfumes), and for lamps and candles a `glow` like a fixture's, with `y` measured from where the piece stands.
 
 ## `events.json`
 

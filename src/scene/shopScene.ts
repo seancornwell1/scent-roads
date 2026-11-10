@@ -254,10 +254,22 @@ export class ShopScene {
   }
 
   /** A lamp's glow, where its model stands. */
-  private addGlow(glow: Glow, [x, z]: Point, parent: Object3D): void {
+  private addGlow(glow: Glow, [x, z]: Point, parent: Object3D): PointLight {
     const light = new PointLight(new Color(glow.color), glow.intensity, glow.distance);
     light.position.set(x + (glow.offset?.[0] ?? 0), glow.y, z + (glow.offset?.[1] ?? 0));
     parent.add(light);
+    return light;
+  }
+
+  /** Everything takes shadow; see-through parts (glass) cast none. */
+  private shade(model: Object3D): void {
+    model.traverse((o) => {
+      const mesh = o as Mesh;
+      if (!mesh.isMesh) return;
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      mesh.receiveShadow = true;
+      mesh.castShadow = !materials.some((m) => m.transparent);
+    });
   }
 
   /** Builds a room's floor, walls, fixtures and decor into its group. */
@@ -377,14 +389,7 @@ export class ShopScene {
   private async addModel(path: string, [x, z]: Point, rotation: number, y: number, parent: Object3D): Promise<Object3D> {
     const gltf = await loadGltf(path);
     const model = gltf.scene.clone(true);
-    // Everything takes shadow; see-through parts (glass) cast none.
-    model.traverse((o) => {
-      const mesh = o as Mesh;
-      if (!mesh.isMesh) return;
-      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      mesh.receiveShadow = true;
-      mesh.castShadow = !materials.some((m) => m.transparent);
-    });
+    this.shade(model);
     model.position.set(x, y, z);
     model.rotation.y = (rotation * Math.PI) / 180;
     parent.add(model);
@@ -464,10 +469,13 @@ export class ShopScene {
   }
 
   /**
-   * Shows bought furniture where it's been placed. Floor pieces hide their spot's marker and
-   * become obstacles to walk around; surface pieces sit on table and counter tops.
+   * Shows bought furniture where it's been placed, turned `rotation` degrees. Floor pieces hide
+   * their spot's marker and become obstacles to walk around; surface pieces sit on table and
+   * counter tops; a lamp brings its `glow`.
    */
-  async setFurniture(pieces: { spot: string; model: string; position: Point; y: number; size: [number, number]; floor: boolean }[]): Promise<void> {
+  async setFurniture(
+    pieces: { spot: string; model: string; position: Point; y: number; rotation: number; size: [number, number]; floor: boolean; glow?: Glow }[],
+  ): Promise<void> {
     const key = JSON.stringify(pieces);
     if (key === this.placedKey) return;
     this.placedKey = key;
@@ -483,10 +491,12 @@ export class ShopScene {
     if (key !== this.placedKey) return; // changed again while loading
     pieces.forEach((p, i) => {
       const model = models[i].scene.clone(true);
+      this.shade(model);
       model.position.set(p.position[0], p.y, p.position[1]);
-      model.rotation.y = Math.PI / 4; // angled towards the room
+      model.rotation.y = (p.rotation * Math.PI) / 180;
       this.groups.shop.add(model);
       this.placed.push(model);
+      if (p.glow) this.placed.push(this.addGlow(p.glow, p.position, this.groups.shop));
     });
     this.requestFrame();
   }

@@ -24,7 +24,7 @@ export interface Spot {
 }
 
 export function allSpots(): Spot[] {
-  const floor = shop.zones.filter((z) => z.kind === 'upgrade').map((z, i) => ({ id: z.id, label: `Floor spot ${i + 1}`, kind: 'floor' as const }));
+  const floor = shop.zones.filter((z) => z.kind === 'upgrade').map((z) => ({ id: z.id, label: z.label, kind: 'floor' as const }));
   const surfaces = shop.surfaces.map((s) => ({ id: s.id, label: s.label, kind: 'surface' as const }));
   return [...floor, ...surfaces];
 }

@@ -7,7 +7,10 @@ import backRoomJson from '../data/backroom.json';
 
 export type Point = [number, number];
 
-/** A lamp's light: it glows from `y` metres above the floor at the model's spot (plus `offset`, in the room's x and z). */
+/**
+ * A lamp's light: it glows from `y` metres above the floor at the model's spot (plus `offset`, in the room's x and z).
+ * On bought furniture (`furniture.json`), `y` is measured from where the piece stands.
+ */
 export interface Glow {
   y: number;
   color: string;
@@ -69,6 +72,36 @@ export interface Zone {
   kind: 'customers' | 'upgrade';
   /** Centre x, centre z, width, depth. */
   rect: [number, number, number, number];
+  /**
+   * Upgrade spots: the way a piece placed here faces, in degrees like a fixture's `rotation`
+   * (0 = towards the front of the room, 90 = towards its right-hand side, 45 = towards the camera).
+   */
+  facing?: number;
+  /**
+   * Upgrade spots: the piece's back stands on the spot's back edge (against a wall, or in line
+   * with its neighbours) rather than in the middle. Needs a `facing` square to the room.
+   */
+  flush?: boolean;
+}
+
+/**
+ * Where a piece of furniture with footprint [width, depth] stands on an upgrade spot: its
+ * centre, its turn in degrees, and the floor it covers as [x extent, z extent].
+ */
+export function standOn(zone: Zone, [w, d]: [number, number]): { position: Point; rotation: number; size: [number, number] } {
+  const rotation = zone.facing ?? 0;
+  const a = (rotation * Math.PI) / 180;
+  const sin = Math.sin(a);
+  const cos = Math.cos(a);
+  const [x, z, zoneW, zoneD] = zone.rect;
+  const round = (n: number) => Math.round(n * 1000) / 1000;
+  // How far back from the middle the piece goes, so its back is on the spot's back edge.
+  const back = zone.flush ? (Math.abs(zoneW * sin) + Math.abs(zoneD * cos) - d) / 2 : 0;
+  return {
+    position: [round(x - sin * back), round(z - cos * back)],
+    rotation,
+    size: [round(Math.abs(w * cos) + Math.abs(d * sin)), round(Math.abs(w * sin) + Math.abs(d * cos))],
+  };
 }
 
 /** What every room has: its size, walls, floor, fixtures and decor. */
@@ -99,7 +132,7 @@ export interface ShopLayout extends RoomLayout {
   /** Where customers come in, and the spots where they queue at the counter (front of the queue first). */
   customers: { entrance: Point; queue: Point[]; walkSpeed: number };
   /** Table and counter tops where small decor can be placed. */
-  surfaces: { id: string; label: string; position: Point; y: number }[];
+  surfaces: { id: string; label: string; position: Point; y: number; facing: number }[];
   /** How an empty upgrade spot is marked on the floor: a tint this see-through (0 to 1). */
   upgradeSpot: { color: string; opacity: number };
 }
@@ -164,6 +197,10 @@ export function validateRoom(layout: RoomLayout): string[] {
     if (!inside([x, z], w, d, 0.01)) errors.push(`zone "${zone.id}": outside the room`);
     if (zone.kind !== 'customers' && zone.kind !== 'upgrade') errors.push(`zone "${zone.id}": unknown kind "${zone.kind}"`);
     if (!isWalkable(layout, [x, z])) errors.push(`zone "${zone.id}": centre is blocked by a fixture`);
+    if (zone.kind === 'upgrade') {
+      if (typeof zone.facing !== 'number') errors.push(`zone "${zone.id}": an upgrade spot needs a facing`);
+      else if (zone.flush && zone.facing % 90 !== 0) errors.push(`zone "${zone.id}": a flush spot must face square to the room`);
+    }
   }
   const { walls, room } = layout;
   if (walls.back.length * WALL_PANEL_WIDTH !== room.width) errors.push('walls.back must cover the room width in 2 m panels');

@@ -1,6 +1,7 @@
 import furnitureJson from '../data/furniture.json';
 import { processes, type Process } from './sourcing';
 import type { Wallet } from './sourcing';
+import type { Glow } from './shop';
 
 // Shop upgrades: furniture you buy and place (which raises the shop's appeal),
 // and the processing methods you buy and upgrade with money and reputation. (Regions
@@ -19,6 +20,8 @@ export interface FurnitureItem {
   size: [number, number];
   /** Display cases: how many signature perfumes they hold. */
   capacity?: number;
+  /** Lamps and candles: the light they give once placed, `y` measured from where they stand. */
+  glow?: Glow;
 }
 
 export interface AppealLevel {
@@ -31,6 +34,8 @@ export interface AppealLevel {
 
 export interface FurnitureData {
   appeal: { levels: AppealLevel[] };
+  /** How many placed lamps are lit at once (the first placed first): each light costs a little on every frame. */
+  glowLimit: number;
   kinds: Record<string, string>;
   items: FurnitureItem[];
 }
