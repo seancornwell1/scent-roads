@@ -352,8 +352,24 @@ def clip_jump(u):
     return r, (0, 0, h)
 
 
+SEAT = 0.14      # in the sit clip the underside of the thighs is this far above the origin of the character
+
+
+def clip_sit(u):
+    """Seated and breathing: thighs level, shins hanging, hands on the lap. The hips are a thigh length lower
+    than standing, so the feet rest on the floor when the seat is SEAT high; on a taller seat the game lifts
+    the character by the difference and the feet dangle."""
+    s = 0.5 - 0.5 * math.cos(2 * math.pi * u); w = math.sin(2 * math.pi * u)
+    r = {"spine": nod(4 + 0.8 * s), "chest": nod(-3 - 1.6 * s) @ lean(0.6 * w), "neck": nod(-1), "head": nod(1 + 1.2 * s) @ lean(-1.2 * w) @ turn(1.5 * w)}
+    for sfx, sx in ((".L", 1), (".R", -1)):
+        r["upperLeg" + sfx] = turn(sx * 7) @ fwd(88); r["lowerLeg" + sfx] = fwd(-86 - 2 * w * sx); r["foot" + sfx] = fwd(-2)
+        r["upperArm" + sfx] = out(sx, -20 + 1.5 * s) @ fwd(8); r["lowerArm" + sfx] = fwd(40 + 2 * s) @ out(sx, -14); r["hand" + sfx] = fwd(25)
+    return r, (0, 0.0, -LEG - 0.003 * s)
+
+
 CLIPS = [("idle", 60, True, clip_idle), ("walk", 30, True, clip_walk), ("run", 20, True, clip_run),
-         ("wave", 48, False, clip_wave), ("jump", 33, False, clip_jump)]
+         ("wave", 48, False, clip_wave), ("jump", 33, False, clip_jump), ("sit", 60, True, clip_sit)]
+CLIP_NOTES = {"sit": {"seat": SEAT}}     # extra fields for a clip entry in the manifest
 
 
 def build_clips(rig):

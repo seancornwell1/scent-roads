@@ -1,4 +1,4 @@
-# The chibi kit's parts (Nov 9): body, heads, hair, hats, glasses, tops, bottoms, shoes, things to hold.
+# The chibi kit's parts (Nov 9): body, heads, hair, hats, glasses, whiskers, tops, bottoms, shoes, things to hold.
 # Every part is modelled on the rest pose of chibi_rig.py and layered so any top goes with any bottom:
 # body < trousers and shorts < close tops < skirt < jackets and coats. Tinted pieces are painted as shades
 # of white (the game multiplies in the chosen colour); fixed pieces carry their full colour.
@@ -465,7 +465,94 @@ def handL_book():
     return K
 
 
-PARTS = [top_blouse, top_tee, top_sweater, top_blazer, top_coat, bottom_trousers, bottom_shorts, bottom_skirt,
+# ---------------- whiskers (face slot; they take the hair colour) ----------------
+def _whisk(p, *a): return HP(p, 0.6, 1)
+
+
+def _tash(K, H, w=0.03, droop=16):
+    """Two tapered tufts under the nose."""
+    for sx in (-1, 1):
+        c = K.face_pt(sx * 0.021, HC.z - 0.103, 0) + V(0, -0.004, 0)
+        M = Matrix.Rotation(math.radians(sx * 14), 3, "Z") @ Matrix.Rotation(math.radians(sx * droop), 3, "Y")
+        blob(H, c, (w, 0.011, 0.0115), _whisk, n=8, m=4, M=M)
+
+
+def face_moustache():
+    K = KitPart("face_moustache", "face", "Moustache", bind=HEADB)
+    _tash(K, K.part("hair", "hair", sharp=50))
+    return K
+
+
+def face_beard():
+    """A short full beard round the jaw, with a moustache."""
+    K = KitPart("face_beard", "face", "Beard", bind=HEADB)
+    H = K.part("hair", "hair", sharp=50); rings = []
+    for i in range(13):
+        az = -84 + 14 * i; t = abs(az) / 84
+        top = mix(-41, -4, t ** 1.4); wd = mix(30, 15, t); lift = mix(0.026, 0.007, t)
+        rings.append([K.head_pt(az, top + 2, -0.006)[0], K.head_pt(az, top - wd * 0.25, lift)[0],
+                      K.head_pt(az, top - wd * 0.7, lift * 1.1)[0], K.head_pt(az, top - wd, -0.006)[0]])
+    loft(H, rings, lambda p, j, i: HP(p, 0.6, 1 if i in (1, 2) else 0))
+    _tash(K, H, w=0.027, droop=20)
+    return K
+
+
+# ---------------- apron (a top) ----------------
+def _panel(P, rows, half, col, n=10, th=0.008, a0=0.0):
+    """A curved panel on the ellipses in rows [(z, rx, ry)], reaching half degrees (a number or half(z)) either
+    side of the direction a0 (0 = front)."""
+    outer, inner = [], []
+    for z, rx, ry in rows:
+        h = math.radians(_col(half, z)); ro, ri = [], []
+        for i in range(n + 1):
+            ang = math.radians(a0) - h + 2 * h * i / n
+            ro.append(V(rx * math.sin(ang), -ry * math.cos(ang), z)); ri.append(V((rx - th) * math.sin(ang), -(ry - th) * math.cos(ang), z))
+        outer.append(ro); inner.append(ri)
+    sheet(P, outer, inner, lambda p, j, i, s: _col(col, p) * (0.7 if s else 1.0))
+
+
+APRON = [(0.268, 0.194, 0.178), (0.33, 0.171, 0.153), (0.40, 0.141, 0.121), (0.458, 0.119, 0.099)]     # clears the pleated skirt
+
+
+def top_apron():
+    """A short-sleeved shirt under a bib apron that ties in a bow at the back. The apron takes the chosen colour."""
+    K = KitPart("top_apron", "top", "Apron", bind=lower_w, tint="#8FB79A")
+    I = _inner(K, "#F4EEE4"); cream = cloth("#F4EEE4", 0.3, 0.62, lo=0.8, hi=1.0)
+    X = K.part("trim", "paint", bind=CHEST)
+    for sx in (-1, 1): karm(I, sx, cream, r=(0.047, 0.04, 0.036), puff=0.05, cuff=(X, CREAM * 0.88), short=True)
+    sh = shade(0.27, 0.6, lo=0.66); dark = dim(sh, 0.78)
+    A = K.part("apron", "primary", bind=skirt_w(0.62), sharp=40)
+    _panel(A, APRON, lambda z: mix(80, 102, sstep(0.27, 0.46, z)), sh)                                             # the skirt
+    _panel(A, [(0.455, 0.119, 0.099), (0.50, 0.118, 0.098), (0.535, 0.115, 0.092), (0.578, 0.111, 0.086)],
+           lambda z: mix(42, 31, sstep(0.455, 0.578, z)), sh, n=6)                                                 # the bib
+    tube(A, [V(0, 0, 0.444), V(0, 0, 0.47)], 0.1225, dark, n=14, flat=0.83)                                        # the waistband
+    bow(A, V(0, 0.106, 0.458), dark, s=1.3, tails=True)
+    _panel(A, [(z,) + tuple(r + 0.007 for r in rows_at(APRON, z)) for z in (0.325, 0.385)], 15, dark, n=3, th=0.006, a0=32)   # a pocket
+    neck = [(0.53, 0.102, 0.079), (0.582, 0.098, 0.071), (0.615, 0.052, 0.046), (0.64, 0.04, 0.04)]
+    pts, nors = [], []
+    for q in range(15):                                                                                             # the strap round the neck
+        s = q / 7 - 1; ang = math.radians(math.copysign(mix(180, 31, abs(s)), s) if s else 180); z = mix(0.63, 0.576, abs(s) ** 1.5)
+        pts.append(coat_pt(neck, z, ang, 0.013)); nors.append(V(math.sin(ang), -math.cos(ang), 0.7))
+    band(A, pts, nors, 0.0105, 0.006, dark)
+    return K
+
+
+def handL_satchel():
+    """A leather satchel carried by its handle. The leather takes the chosen colour."""
+    K = KitPart("handL_satchel", "handL", "Satchel", bind=rigid("hand.L"), tint="#9A6238")
+    B = K.part("leather", "primary", ao=0.6, sharp=40); X = K.part("buckle", "gloss", ao=0.4)
+    bx, by, bz = 0.232, -0.014, 0.176
+    zs = [bz, bz + 0.012, bz + 0.06, bz + 0.112, bz + 0.124]; fs = [0.8, 1.0, 1.05, 1.0, 0.84]
+    col = lambda p, *a: mix(Vector((0.66, 0.62, 0.7)), WHITE, sstep(bz, bz + 0.12, p.z))
+    loft(B, [ring(V(bx, by, z), 0.03 * f, 0.08 * f, 12, 3.6) for z, f in zip(zs, fs)], col,
+         fcol=lambda j, i: WHITE * 0.6 if (j >= 2 and i in (10, 11, 0)) else None)                                 # the flap, on the outer face
+    limb(B, [V(bx, by - 0.042, bz + 0.116), V(bx - 0.01, by - 0.034, bz + 0.162), V(bx - 0.02, by, bz + 0.18),
+             V(bx - 0.01, by + 0.034, bz + 0.162), V(bx, by + 0.042, bz + 0.116)], (0.0075, 0.0075, 0.0075), lambda p, *a: WHITE * 0.6, n=5)
+    blob(X, V(bx + 0.032, by, bz + 0.058), (0.007, 0.012, 0.012), GOLD, n=8, m=4)
+    return K
+
+
+PARTS = [top_blouse, top_tee, top_sweater, top_blazer, top_coat, top_apron, bottom_trousers, bottom_shorts, bottom_skirt,
          shoes_loafers, shoes_boots, shoes_maryjanes,
          hair_bun, hair_spiky, hair_long, hair_bob, hair_short,
-         hat_beret, hat_flowers, face_round, face_square, handL_bottle, handL_book]
+         hat_beret, hat_flowers, face_round, face_square, face_moustache, face_beard, handL_bottle, handL_book, handL_satchel]

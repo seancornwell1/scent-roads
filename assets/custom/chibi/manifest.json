@@ -83,6 +83,13 @@
       "frames": 33,
       "duration": 1.1,
       "loop": false
+     },
+     {
+      "name": "sit",
+      "frames": 60,
+      "duration": 2.0,
+      "loop": true,
+      "seat": 0.14
      }
     ]
    },
@@ -202,7 +209,8 @@
       "eyes",
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/head_soft.webp"
     },
     {
      "id": "head_bright",
@@ -217,7 +225,8 @@
       "eyes",
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/head_bright.webp"
     },
     {
      "id": "head_calm",
@@ -232,7 +241,8 @@
       "eyes",
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/head_calm.webp"
     },
     {
      "id": "hair_bun",
@@ -245,7 +255,8 @@
      "colorSlots": [
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/hair_bun.webp"
     },
     {
      "id": "hair_spiky",
@@ -258,7 +269,8 @@
      "colorSlots": [
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/hair_spiky.webp"
     },
     {
      "id": "hair_long",
@@ -275,7 +287,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/hair_long.webp"
     },
     {
      "id": "hair_bob",
@@ -288,7 +301,8 @@
      "colorSlots": [
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/hair_bob.webp"
     },
     {
      "id": "hair_short",
@@ -301,7 +315,8 @@
      "colorSlots": [
       "hair"
      ],
-     "defaultColors": {}
+     "defaultColors": {},
+     "thumb": "thumbs/hair_short.webp"
     },
     {
      "id": "hat_beret",
@@ -316,7 +331,8 @@
      ],
      "defaultColors": {
       "primary": "#B5443C"
-     }
+     },
+     "thumb": "thumbs/hat_beret.webp"
     },
     {
      "id": "hat_flowers",
@@ -331,7 +347,8 @@
      ],
      "defaultColors": {
       "primary": "#F2A0B4"
-     }
+     },
+     "thumb": "thumbs/hat_flowers.webp"
     },
     {
      "id": "face_round",
@@ -346,7 +363,8 @@
      ],
      "defaultColors": {
       "primary": "#3A2E38"
-     }
+     },
+     "thumb": "thumbs/face_round.webp"
     },
     {
      "id": "face_square",
@@ -361,7 +379,36 @@
      ],
      "defaultColors": {
       "primary": "#8A4B3A"
-     }
+     },
+     "thumb": "thumbs/face_square.webp"
+    },
+    {
+     "id": "face_moustache",
+     "slot": "face",
+     "name": {
+      "en": "Moustache"
+     },
+     "file": "parts/face_moustache.glb",
+     "tris": 96,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {},
+     "thumb": "thumbs/face_moustache.webp"
+    },
+    {
+     "id": "face_beard",
+     "slot": "face",
+     "name": {
+      "en": "Beard"
+     },
+     "file": "parts/face_beard.glb",
+     "tris": 200,
+     "colorSlots": [
+      "hair"
+     ],
+     "defaultColors": {},
+     "thumb": "thumbs/face_beard.webp"
     },
     {
      "id": "top_blouse",
@@ -380,7 +427,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/top_blouse.webp"
     },
     {
      "id": "top_tee",
@@ -399,7 +447,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/top_tee.webp"
     },
     {
      "id": "top_sweater",
@@ -418,7 +467,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/top_sweater.webp"
     },
     {
      "id": "top_blazer",
@@ -437,7 +487,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/top_blazer.webp"
     },
     {
      "id": "top_coat",
@@ -456,7 +507,28 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/top_coat.webp"
+    },
+    {
+     "id": "top_apron",
+     "slot": "top",
+     "name": {
+      "en": "Apron"
+     },
+     "file": "parts/top_apron.glb",
+     "tris": 1056,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#8FB79A"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ],
+     "thumb": "thumbs/top_apron.webp"
     },
     {
      "id": "bottom_trousers",
@@ -475,7 +547,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/bottom_trousers.webp"
     },
     {
      "id": "bottom_shorts",
@@ -494,7 +567,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/bottom_shorts.webp"
     },
     {
      "id": "bottom_skirt",
@@ -513,7 +587,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/bottom_skirt.webp"
     },
     {
      "id": "shoes_loafers",
@@ -528,7 +603,8 @@
      ],
      "defaultColors": {
       "primary": "#8A5636"
-     }
+     },
+     "thumb": "thumbs/shoes_loafers.webp"
     },
     {
      "id": "shoes_boots",
@@ -547,7 +623,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/shoes_boots.webp"
     },
     {
      "id": "shoes_maryjanes",
@@ -562,7 +639,8 @@
      ],
      "defaultColors": {
       "primary": "#6A3A40"
-     }
+     },
+     "thumb": "thumbs/shoes_maryjanes.webp"
     },
     {
      "id": "handL_bottle",
@@ -581,7 +659,8 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/handL_bottle.webp"
     },
     {
      "id": "handL_book",
@@ -600,7 +679,28 @@
      "fitMorphs": [
       "chubby",
       "slim"
-     ]
+     ],
+     "thumb": "thumbs/handL_book.webp"
+    },
+    {
+     "id": "handL_satchel",
+     "slot": "handL",
+     "name": {
+      "en": "Satchel"
+     },
+     "file": "parts/handL_satchel.glb",
+     "tris": 298,
+     "colorSlots": [
+      "primary"
+     ],
+     "defaultColors": {
+      "primary": "#9A6238"
+     },
+     "fitMorphs": [
+      "chubby",
+      "slim"
+     ],
+     "thumb": "thumbs/handL_satchel.webp"
     }
    ],
    "presets": [

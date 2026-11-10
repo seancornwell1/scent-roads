@@ -2,7 +2,7 @@
 # style of characters-chibi.py, exported to assets/custom/chibi/ with a manifest shaped like the Grab3D
 # Character Mixer's, so the game's loader (src/scene/characters.ts) can read it.
 # Globals: ONLY (part ids to rebuild; default all), EXPORT (write the .glb files and manifest),
-# SHOOT (render the preview sheets).
+# THUMBS (render the creator thumbnails), SHOOT (render the preview sheets).
 import bpy, bmesh, math, os, random, json, struct
 from mathutils import Vector, Matrix, Quaternion
 g = globals()
@@ -46,18 +46,23 @@ def clear_previews():
         if me.users == 0 and me.name.startswith("ck_"): bpy.data.meshes.remove(me)
 
 
-def shoot(path, d, target, scale, res):
+def shoot(path, d, target, scale, res, clear=False):
+    """Renders the preview collection. clear: no floor, a transparent background, saved as WebP."""
     sc = bpy.context.scene; vl = bpy.context.view_layer
     for lc in vl.layer_collection.children:
         if lc.name != "Collection": lc.exclude = lc.name != "chibi-preview"
-    fl = bpy.data.objects.get("render_floor"); fl.hide_render = False; fl.location.z = 0; fl.scale = (8, 8, 1)
+    fl = bpy.data.objects.get("render_floor"); fl.hide_render = clear; fl.location.z = 0; fl.scale = (8, 8, 1)
     cam = bpy.data.objects["Camera"]; cam.data.type = "ORTHO"
     li = bpy.data.objects["Light"]; li.data.energy = 3.0
     li.rotation_euler = (-Vector((0.45, -0.7, 1.1)).normalized()).to_track_quat("-Z", "Y").to_euler()
     d = Vector(d).normalized()
     cam.location = Vector(target) + d * 20; cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler(); cam.data.ortho_scale = scale
     sc.render.resolution_x, sc.render.resolution_y = res
+    im = sc.render.image_settings; old = (sc.render.film_transparent, im.file_format, im.color_mode); sc.render.film_transparent = clear
+    im.file_format = "WEBP" if clear else "PNG"; im.color_mode = "RGBA" if clear else "RGB"
+    if clear: im.quality = 86
     sc.render.filepath = os.path.join(REPO, "blender", "previews", path); bpy.ops.render.render(write_still=True)
+    sc.render.film_transparent, im.file_format, im.color_mode = old; fl.hide_render = False
     vl.layer_collection.children["chibi-kit"].exclude = False
 
 
@@ -89,7 +94,8 @@ SLOTS = ["body", "head", "hair", "hat", "face", "top", "bottom", "shoes", "handL
 
 
 def export_kit():
-    """Writes skeleton.glb, parts/<id>.glb, animations.glb and manifest.json to assets/custom/chibi/."""
+    """Writes skeleton.glb, parts/<id>.glb, animations.glb and manifest.json to assets/custom/chibi/.
+    The manifest names a thumbnail for every part the creator offers; thumbs() renders them."""
     rig.animation_data_clear(); set_pose(rig, {})
     _export(os.path.join(KIT_DIR, "skeleton.glb"), [], rig)
     parts = []
@@ -102,11 +108,12 @@ def export_kit():
              "defaultColors": {"primary": K.tint} if "primary" in roles else {}}
         keys = K.obj.data.shape_keys
         if keys: e["fitMorphs"] = [k.name for k in keys.key_blocks[1:]]
+        if K.slot in THUMB_VIEW: e["thumb"] = "thumbs/%s.webp" % K.id
         parts.append(e)
     build_clips(rig)
     ja = _export(os.path.join(KIT_DIR, "animations.glb"), [], rig, anims=True)
     style = {"id": "chibi", "name": {"en": "Chibi"}, "skeleton": "skeleton.glb",
-             "animations": {"file": "animations.glb", "fps": FPS, "clips": [{"name": n, "frames": f, "duration": round(f / FPS, 4), "loop": l} for n, f, l, _ in CLIPS]},
+             "animations": {"file": "animations.glb", "fps": FPS, "clips": [dict({"name": n, "frames": f, "duration": round(f / FPS, 4), "loop": l}, **CLIP_NOTES.get(n, {})) for n, f, l, _ in CLIPS]},
              "defaults": DEFAULTS, "palettes": PALETTES, "fits": [{"id": i, "morph": m} for i, m, _ in FITS], "parts": parts, "presets": PRESETS,
              "budget": {"maxTrisPerPart": 4000, "maxTrisPerFigure": 20000}}
     man = {"version": 1, "generator": "blender/characters-kit.py", "license": "Project's own (made for Scentshop Tale)", "units": "meter", "upAxis": "+Y", "forward": "+Z",
@@ -119,7 +126,26 @@ def kit_label(pid): return KITS[pid].label
 
 
 result = {"tris": {K.id: getattr(K, "tris", None) for K in ALL}}
-if g.get("EXPORT"): result["export"] = export_kit()
+
+
+# ---------------- thumbnails for the character creator ----------------
+THUMB_VIEW = {   # slot: (camera direction, target, width of the view in metres)
+    "head": ((0.2, -1.0, 0.12), (0, 0, 0.83), 0.56), "hair": ((0.3, -1.0, 0.15), (0, 0, 0.8), 0.86), "hat": ((0.3, -1.0, 0.2), (0, 0, 0.9), 0.78),
+    "face": ((0.2, -1.0, 0.12), (0, 0, 0.82), 0.5), "top": ((0.28, -1.0, 0.25), (0, 0, 0.45), 0.6), "bottom": ((0.28, -1.0, 0.25), (0, 0, 0.27), 0.5),
+    "shoes": ((0.45, -1.0, 0.4), (0, -0.02, 0.07), 0.34), "handL": ((0.7, -1.0, 0.25), (0.2, 0, 0.3), 0.4)}
+
+
+def thumbs(size=144):
+    """assets/custom/chibi/thumbs/<part id>.webp: each part worn by the default character, on a clear background."""
+    os.makedirs(os.path.join(KIT_DIR, "thumbs"), exist_ok=True); n = 0
+    for K in ALL:
+        if K.slot not in THUMB_VIEW: continue
+        parts = dict(DEFAULTS["parts"]); parts[K.slot] = K.id
+        clear_previews(); assemble("thumb", list(parts.values()), DEFAULTS["colors"])
+        d, target, scale = THUMB_VIEW[K.slot]
+        shoot(os.path.join(KIT_DIR, "thumbs", K.id + ".webp"), d, target, scale, (size, size), clear=True); n += 1
+    clear_previews()
+    return n
 
 
 # ---------------- preview sheets ----------------
@@ -133,19 +159,23 @@ def previews():
          {"skin": "#FBE3D2", "hair": "#E6CF8A", "eyes": "#4A6A8A", "top": "#8A6AA6", "bottom": "#4A4858", "shoes": "#3A2E38", "hat": "#4F6FA8"}, "classic"),
         ({"body": "body", "head": "head_soft", "hair": "hair_spiky", "top": "top_sweater", "bottom": "bottom_trousers", "shoes": "shoes_loafers", "handL": "handL_book"},
          {"skin": "#DFA883", "hair": "#D9D3CC", "eyes": "#6A5A8A", "top": "#7FA8C9", "bottom": "#C9A66B", "shoes": "#6A3A40", "handL": "#C9605A"}, "chubby"),
+        ({"body": "body", "head": "head_calm", "hair": "hair_short", "face": "face_moustache", "top": "top_apron", "bottom": "bottom_trousers", "shoes": "shoes_boots", "handL": "handL_satchel"},
+         {"skin": "#F0C6A8", "hair": "#4A3228", "eyes": "#5C7A4A", "top": "#8FB79A", "bottom": "#4A4858", "shoes": "#8A5636", "handL": "#9A6238"}, "classic"),
     ]
     clear_previews()
     for i, (parts, colors, fit) in enumerate(looks):
         assemble("look%d" % i, list(parts.values()), colors, x=(i - (len(looks) - 1) / 2) * 0.56, fit=fit)
-    shoot("chibi-kit.png", (0.28, -1.0, 0.3), (0, 0, 0.58), 4.3, (2400, 800))
+    shoot("chibi-kit.png", (0.28, -1.0, 0.3), (0, 0, 0.58), 4.9, (2740, 800))
     clear_previews()
     sheet = [("idle", 0.5, 0), ("walk", 0.0, -60), ("walk", 0.25, -60), ("walk", 0.5, -60), ("walk", 0.75, -60), ("run", 0.25, -60), ("run", 0.75, -60),
-             ("wave", 0.35, 0), ("wave", 0.5, 0), ("jump", 0.22, -35), ("jump", 0.5, -35), ("jump", 0.8, -35)]
+             ("wave", 0.35, 0), ("wave", 0.5, 0), ("jump", 0.22, -35), ("jump", 0.5, -35), ("jump", 0.8, -35), ("sit", 0.5, -60), ("sit", 0.5, 25)]
     for i, (clip, u, facing) in enumerate(sheet):
-        parts, colors, fit = looks[(0, 2, 3)[(i // 2) % 3]]
+        parts, colors, fit = looks[(0, 2, 3, 7)[(i // 2) % 4]]
         r, h = clip_pose(clip, u)
         assemble("pose%d" % i, list(parts.values()), colors, x=(i - (len(sheet) - 1) / 2) * 0.56, fit=fit, pose=r, hips=h, facing=facing)
-    shoot("chibi-kit-animations.png", (0.12, -1.0, 0.22), (0, 0, 0.6), 7.0, (3000, 700))
+    shoot("chibi-kit-animations.png", (0.12, -1.0, 0.22), (0, 0, 0.6), 8.1, (3480, 700))
 
 
+if g.get("EXPORT"): result["export"] = export_kit()
+if g.get("THUMBS"): result["thumbs"] = thumbs()
 if g.get("SHOOT"): previews()
