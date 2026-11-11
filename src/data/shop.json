@@ -381,6 +381,7 @@
       "rotation": 0
     },
     {
+      "id": "rug-round",
       "model": "custom/models/rug-round.glb",
       "position": [
         1.9,
@@ -390,6 +391,7 @@
       "rotation": 0
     },
     {
+      "id": "shop-rug",
       "model": "custom/models/shop-rug.glb",
       "position": [
         -1.2,
@@ -511,6 +513,7 @@
       "rotation": 90
     },
     {
+      "id": "plant-door",
       "model": "custom/models/plant-leafy.glb",
       "position": [
         -2.2,
@@ -804,5 +807,396 @@
       "y": 1.38,
       "facing": 45
     }
-  ]
+  ],
+  "cafe": {
+    "unlock": {
+      "rank": "junior"
+    },
+    "arrival": "Camille has set up a coffee bar by the front window and brought a few tables along. Customers may sit a while before they come to the counter.",
+    "lines": [
+      "Camille slides a cup across the bar. \"First one is on the house. So is the second, if you keep it quiet.\"",
+      "\"Your customers keep telling me the shop smells wonderful. I have decided they mean the coffee.\"",
+      "\"I polish the boiler every morning. Nobody asked me to. Look at it, though.\"",
+      "\"Sit a while. The bottles will still be there when you get back.\"",
+      "\"Somebody left a book on one of the tables. I am halfway through it.\""
+    ],
+    "removes": [
+      "sideboard-front"
+    ],
+    "fixtures": [
+      {
+        "id": "coffee-bar",
+        "label": null,
+        "model": "custom/models/coffee-bar.glb",
+        "position": [
+          -3.75,
+          2.9
+        ],
+        "rotation": 90,
+        "size": [
+          0.7,
+          1.32,
+          2.0
+        ],
+        "blocks": true,
+        "interact": {
+          "action": "coffee",
+          "standAt": [
+            -2.95,
+            2.9
+          ]
+        }
+      },
+      {
+        "id": "menu-board",
+        "label": null,
+        "model": "custom/models/menu-board.glb",
+        "position": [
+          -3.7,
+          4.35
+        ],
+        "rotation": 30,
+        "size": [
+          0.55,
+          0.86,
+          0.5
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "display-table",
+        "label": null,
+        "model": "custom/models/display-table.glb",
+        "position": [
+          2.4,
+          1.4
+        ],
+        "rotation": 0,
+        "size": [
+          1.22,
+          0.82,
+          1.22
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "cafe-table-a",
+        "label": null,
+        "model": "custom/models/cafe-table.glb",
+        "position": [
+          -0.6,
+          4.7
+        ],
+        "rotation": 0,
+        "size": [
+          0.64,
+          0.8,
+          0.64
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "cafe-chair-a-left",
+        "label": null,
+        "model": "custom/models/cafe-chair.glb",
+        "position": [
+          -1.2,
+          4.7
+        ],
+        "rotation": 90,
+        "size": [
+          0.36,
+          0.71,
+          0.36
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "cafe-chair-a-back",
+        "label": null,
+        "model": "custom/models/cafe-chair.glb",
+        "position": [
+          -0.6,
+          4.1
+        ],
+        "rotation": 0,
+        "size": [
+          0.36,
+          0.71,
+          0.36
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "cafe-table-b",
+        "label": null,
+        "model": "custom/models/cafe-table.glb",
+        "position": [
+          1.5,
+          4.7
+        ],
+        "rotation": 0,
+        "size": [
+          0.64,
+          0.8,
+          0.64
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "cafe-chair-b-left",
+        "label": null,
+        "model": "custom/models/cafe-chair.glb",
+        "position": [
+          0.9,
+          4.7
+        ],
+        "rotation": 90,
+        "size": [
+          0.36,
+          0.71,
+          0.36
+        ],
+        "blocks": true,
+        "interact": null
+      },
+      {
+        "id": "cafe-chair-b-back",
+        "label": null,
+        "model": "custom/models/cafe-chair.glb",
+        "position": [
+          1.5,
+          4.1
+        ],
+        "rotation": 0,
+        "size": [
+          0.36,
+          0.71,
+          0.36
+        ],
+        "blocks": true,
+        "interact": null
+      }
+    ],
+    "decor": [
+      {
+        "id": "shop-rug",
+        "model": "custom/models/shop-rug.glb",
+        "position": [
+          0.0,
+          2.4
+        ],
+        "y": 0,
+        "rotation": 0
+      },
+      {
+        "id": "rug-round",
+        "model": "custom/models/rug-round.glb",
+        "position": [
+          2.4,
+          1.4
+        ],
+        "y": 0,
+        "rotation": 0
+      },
+      {
+        "id": "plant-door",
+        "model": "custom/models/plant-leafy.glb",
+        "position": [
+          -1.6,
+          5.6
+        ],
+        "y": 0,
+        "rotation": 30
+      },
+      {
+        "model": "custom/models/coffee-sacks.glb",
+        "position": [
+          -4.6,
+          4.15
+        ],
+        "y": 0,
+        "rotation": 90
+      }
+    ],
+    "zones": [
+      {
+        "id": "window-shopping",
+        "label": "By the windows",
+        "kind": "customers",
+        "rect": [
+          -3.6,
+          -0.2,
+          0.8,
+          1.6
+        ]
+      },
+      {
+        "id": "near-entrance",
+        "label": "Just arrived",
+        "kind": "customers",
+        "rect": [
+          -2.7,
+          5.15,
+          0.7,
+          0.6
+        ]
+      },
+      {
+        "id": "at-the-bar",
+        "label": "At the coffee bar",
+        "kind": "customers",
+        "rect": [
+          -2.95,
+          2.9,
+          0.3,
+          1.4
+        ],
+        "facing": 270
+      },
+      {
+        "id": "spot-2",
+        "label": "Lounge, bar side",
+        "kind": "upgrade",
+        "rect": [
+          -1.55,
+          2.4,
+          0.9,
+          1.8
+        ],
+        "facing": 90,
+        "flush": true
+      },
+      {
+        "id": "spot-7",
+        "label": "Lounge, back",
+        "kind": "upgrade",
+        "rect": [
+          0.0,
+          1.0,
+          1.7,
+          0.9
+        ],
+        "facing": 0,
+        "flush": true
+      },
+      {
+        "id": "spot-4",
+        "label": "Lounge, corner",
+        "kind": "upgrade",
+        "rect": [
+          -1.55,
+          1.0,
+          0.8,
+          0.8
+        ],
+        "facing": 45
+      }
+    ],
+    "people": [
+      {
+        "id": "camille",
+        "name": "Camille",
+        "look": {
+          "fit": "classic",
+          "parts": {
+            "head": "head_soft",
+            "hair": "hair_short",
+            "hat": "hat_beret",
+            "top": "top_apron",
+            "bottom": "bottom_trousers",
+            "shoes": "shoes_boots"
+          },
+          "colors": {
+            "skin": "#C98A62",
+            "hair": "#2E2230",
+            "eyes": "#3A2A20",
+            "hat": "#8E3B46",
+            "top": "#3F6B4F",
+            "bottom": "#4A4858",
+            "shoes": "#6B4530"
+          }
+        },
+        "position": [
+          -4.55,
+          2.8
+        ],
+        "facing": 90,
+        "fixture": "coffee-bar"
+      }
+    ],
+    "seats": [
+      {
+        "id": "a-left",
+        "position": [
+          -1.2,
+          4.7
+        ],
+        "facing": 90,
+        "height": 0.32,
+        "from": [
+          -1.75,
+          4.7
+        ]
+      },
+      {
+        "id": "a-back",
+        "position": [
+          -0.6,
+          4.1
+        ],
+        "facing": 0,
+        "height": 0.32,
+        "from": [
+          -0.6,
+          3.5
+        ]
+      },
+      {
+        "id": "b-left",
+        "position": [
+          0.9,
+          4.7
+        ],
+        "facing": 90,
+        "height": 0.32,
+        "from": [
+          0.35,
+          4.7
+        ]
+      },
+      {
+        "id": "b-back",
+        "position": [
+          1.5,
+          4.1
+        ],
+        "facing": 0,
+        "height": 0.32,
+        "from": [
+          1.5,
+          3.5
+        ]
+      }
+    ],
+    "seatChance": 0.5,
+    "seatSeconds": [
+      15,
+      30
+    ],
+    "blocked": [
+      [
+        -4.54,
+        3.05,
+        0.92,
+        2.9
+      ]
+    ]
+  }
 }

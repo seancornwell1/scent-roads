@@ -55,6 +55,8 @@ export interface SaveData {
   sourcing?: SourcingState;
   /** Furniture, opened regions and processing levels (step 6; filled in on load). */
   upgrades?: UpgradeState;
+  /** The coffee corner: whether its arrival has been told, and the debug switch that brings it in early. */
+  cafe?: { welcomed?: boolean; preview?: boolean };
   /** The old display case (step 6): moved into house perfumes on load, then removed. */
   display?: { listings: { name: string; entries: Entry[]; bottles: number; price: number }[] };
   /** The counter: the round in progress and each material's EXP. */

@@ -15,10 +15,10 @@ import { priceMultiplier, shippingDelay, weekOf, yieldMultiplier } from './game/
 import { parseSave, writeSave, type SavedFormula } from './game/save';
 import { buyItem, buyProcess, furniture, itemById, place, processStats, unplace } from './game/upgrades';
 import { CHEMIST, answer, chapterInfo, crateLetter, markRead, routeById, routeOpen, routesTick } from './game/routes';
-import { arrivalConditions, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal, usableMaterials } from './game/world';
+import { arrivalConditions, cafeEarned, cafeOpen, clueContext, knownTargets, newsFor, ownedMaterials, shopAppeal, usableMaterials } from './game/world';
 import { setTimeSpeed } from './game/time';
 import { tierIndex, unlocks } from './game/unlocks';
-import { backRoom, shop, standOn, validateBackRoom, validateShop } from './game/shop';
+import { backRoom, setCafe, shop, shopData, standOn, validateBackRoom, validateCafe, validateShop } from './game/shop';
 import { radarOf, validateRadar, type Mix } from './game/radar';
 import { addDrop, awardExp, judgeRound, pingMs, tipFor, tipTier, walkInBrief, writtenBrief, type RoundBrief } from './game/round';
 import { benchScreen, clock, noteDrop, revealScreen, roundScreen, targetValues } from './ui/round';
@@ -41,7 +41,7 @@ import { feedbackLines } from './game/feedback';
 import { epilogueScreen, signatureScreen } from './ui/signature';
 import { cluesFound, jarReady, signature, startJar } from './game/signature';
 import { awards, entriesOpen, settleAwards, yearAt } from './game/awards';
-import { examBlockers, examStage, nextRank, rankById, startExam } from './game/ranks';
+import { examBlockers, examStage, nextRank, rankById, ranks, startExam } from './game/ranks';
 import { currentOrder } from './ui/organ';
 import { entriesOf, isBaseKey, written, type Dilution } from './game/blend';
 import { blockers, checkPerfume, sellable } from './game/checks';
@@ -62,7 +62,19 @@ const urlSpeed = Number(new URLSearchParams(location.search).get('speed'));
 if (urlSpeed > 0) setClockSpeed(state.save.clock!, urlSpeed, Date.now());
 setTimeSpeed(state.save.clock!.speed);
 
-const problems = [...validateContent(content), ...validateShop(shop), ...validateBackRoom(backRoom), ...validateRadar(content.materials, new Set(content.accords.map((a) => a.id)))];
+// Debug: the coffee corner before its time. ?cafe=1 brings it in and ?cafe=0 sends it away again
+// (so does the laptop's debug row). The scene is built from the shop as it stands after this.
+const urlCafe = new URLSearchParams(location.search).get('cafe');
+if (urlCafe === '1' || urlCafe === '0') state.save.cafe = { ...state.save.cafe, preview: urlCafe === '1' };
+setCafe(cafeOpen(state.save));
+
+const problems = [
+  ...validateContent(content),
+  ...validateShop(shopData),
+  ...validateCafe(shopData, ranks.map((r) => r.id)),
+  ...validateBackRoom(backRoom),
+  ...validateRadar(content.materials, new Set(content.accords.map((a) => a.id))),
+];
 if (problems.length > 0) console.error('Content problems:\n' + problems.join('\n'));
 
 // What tapping each interactive fixture does once the player reaches it (shop.json, backroom.json).
@@ -88,7 +100,14 @@ const FIXTURE_ACTIONS: Record<string, () => void> = {
     state.ui.toast = "The street outside isn't open yet. Deliveries come in through this door.";
     commit();
   },
+  coffee: () => {
+    const { lines } = shop.cafe;
+    state.ui.toast = lines[cafeLine++ % lines.length];
+    commit();
+  },
 };
+/** Which of the coffee vendor's lines comes next. */
+let cafeLine = 0;
 
 const sounds = new SoundBoard(state.save.sound ?? 0.8);
 sounds.loop('ambience', true);
@@ -334,6 +353,7 @@ function runTick(): void {
     notify('A crate has arrived', `From ${crates.map((k) => k.from).join(', ')}.`);
   }
   if (sold) showReport();
+  greetCafe();
   for (const k of save.sourcing!.contracts) {
     if (contractStage(k, now) === 'best' && !ripeNotified.has(k.id)) {
       ripeNotified.add(k.id);
@@ -367,6 +387,23 @@ function refreshFurniture(): void {
   void scene.setFurniture(pieces);
 }
 
+/** Brings the coffee corner in (or out) when your rank or the debug switch says so, with whoever runs it. */
+function refreshCafe(): void {
+  if (setCafe(cafeOpen(state.save))) {
+    scene.relayShop();
+    refreshFurniture();
+  }
+  if (kit) scene.setPeople(kit, shop.people ?? []).catch((e) => console.error(e));
+}
+
+/** The coffee corner's arrival is told over the shop when nothing else is being said, until you have answered it (see `dismiss-toast`). */
+function greetCafe(): void {
+  const { save, ui } = state;
+  if (!cafeEarned(save) || save.cafe?.welcomed || ui.screen !== 'shop' || ui.toast) return;
+  ui.toast = shop.cafe.arrival;
+  commit();
+}
+
 CharacterKit.load(characterOptions.kit, characterOptions.style)
   .then((loaded) => {
     kit = loaded;
@@ -383,6 +420,7 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     runHouse();
     void scene.setCrates(state.save.sourcing!.crates.length);
     refreshFurniture();
+    refreshCafe();
     syncCrowd();
     commit();
     window.setInterval(runTick, 5000);
@@ -391,6 +429,7 @@ CharacterKit.load(characterOptions.kit, characterOptions.style)
     if (!state.save.story!.introSeen) openPanel('intro');
     else if (!state.save.character) openPanel('creator');
     else showReport();
+    greetCafe();
   })
   .catch((e) => {
     console.error(e);
@@ -920,6 +959,7 @@ document.body.addEventListener('click', (event) => {
       save.exam = null;
       ui.screen = 'shop';
       ui.toast = `You are now a ${rankById(e.rank).name.toLowerCase()}. Your new abilities are at the organ.`;
+      refreshCafe(); // a new rank may bring the coffee corner; its arrival is told after this
       break;
     }
     case 'train-next':
@@ -1153,8 +1193,14 @@ document.body.addEventListener('click', (event) => {
       setTimeSpeed(value);
       break;
     }
+    case 'debug-cafe':
+      save.cafe = { ...save.cafe, preview: !save.cafe?.preview };
+      refreshCafe();
+      break;
     case 'dismiss-toast':
+      if (ui.toast === shop.cafe.arrival) save.cafe = { ...save.cafe, welcomed: true }; // told, and heard
       ui.toast = null;
+      greetCafe();
       break;
     case 'tab':
       ui.organTab = target.dataset.tab as typeof ui.organTab;

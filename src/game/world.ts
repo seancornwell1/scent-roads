@@ -2,6 +2,7 @@ import { entriesOf } from './blend';
 import { clients, type Brief, type Target } from './clients';
 import { content, materialsById } from './content';
 import { rankById, ranks } from './ranks';
+import { shopData } from './shop';
 import type { ClueContext } from './signature';
 import { story } from './story';
 import { blendProfile, briefWeight, regularWelcome, shopStyle } from './style';
@@ -70,6 +71,17 @@ export function rankAllows(save: SaveData, b: Brief): boolean {
   // A target written in 100 parts needs a rank that works in 100 parts.
   const total = Object.values(b.target.formula).reduce((x, y) => x + y, 0);
   return (!diluted || rank.dilutions) && (b.budget === undefined || rank.budgets) && total <= Math.max(...rank.orderParts);
+}
+
+/** Whether your rank has brought the coffee corner into the shop (`cafe.unlock` in shop.json). */
+export function cafeEarned(save: SaveData): boolean {
+  const needed = ranks.findIndex((r) => r.id === shopData.cafe.unlock.rank);
+  return needed >= 0 && ranks.indexOf(rankById(save.rank)) >= needed;
+}
+
+/** Whether the coffee corner is in the shop: earned, or switched on early to look at (debug). */
+export function cafeOpen(save: SaveData): boolean {
+  return !!save.cafe?.preview || cafeEarned(save);
 }
 
 /** How customers arrive right now: the shop's appeal and style, your rank, and any fair in the news. */

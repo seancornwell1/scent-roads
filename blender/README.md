@@ -20,6 +20,7 @@ Run the scripts inside Blender (5.2): paste `exec(open(r"<repo>\blender\<script>
 | `props.py` | `potted-plant`, `wooden-crate`, `stock-bottle`, `shop-rug` |
 | `room-shell.py` | the rooms' shell: `floor-parquet` (herringbone), `floor-planks`, `floor-kerb`, `floor-kerb-corner`, `wall-plain`, `wall-window`, `wall-doorway`, `wall-corner`, `door-arched` |
 | `shop-warm.py` | furniture and decoration for the warm look (Nov 10): `shelf-tall-a`, `shelf-tall-b`, `sideboard`, `display-table`, `rug-runner`, `rug-round`, `wall-sconce`, `shop-sign`, `door-curtain`, `plant-leafy`, `chest-armillary`, `ivy-window`. Set `ONLY` (a list of names) in the globals to build some of them |
+| `cafe.py` | the coffee corner that arrives later in the game (Nov 10): `coffee-bar`, `cafe-table`, `cafe-chair`, `menu-board`, `coffee-sacks`. `SEAT_H` in the script is the chair's seat height, the `height` of a seat in `shop.json`. Set `ONLY` to build some of them |
 | `shopfront.py` | `wall-shopfront`, `wall-shelf` |
 | `decor.py` | `floor-lamp`, `wall-clock`, `round-table`, `armchair`, `bookshelf` |
 | `furniture.py` | the buyable furniture: `cushion-bench`, `bar-stool`, `rocking-chair`, `sofa`, `snake-plant`, `fern`, `table-lamp`, `candle-cluster`, `star-lantern`, `flower-vase`, `globe`, `standing-mirror`, `vanity-table` |

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { findPath } from './pathfinding';
-import { backRoom, isWalkable, shop, standOn, validateBackRoom, validateShop, type Point, type Zone } from './shop';
+import { ranks } from './ranks';
+import { backRoom, isWalkable, setCafe, shop, shopData, standOn, validateBackRoom, validateCafe, validateShop, withCafe, type Point, type Zone } from './shop';
 
 const crossesCounter = (path: Point[], from: Point) => {
   const counter = shop.fixtures.find((f) => f.id === 'counter-left')!;
@@ -24,6 +25,66 @@ describe('room layouts', () => {
   it('the back room is valid, and every door and fixture in it can be reached from the shop door', () => {
     expect(validateBackRoom(backRoom)).toEqual([]);
     for (const f of backRoom.fixtures) if (f.interact) expect(findPath(backRoom, backRoom.spawn, f.interact.standAt)).not.toBeNull();
+  });
+});
+
+describe('the coffee corner', () => {
+  const open = withCafe(shopData);
+  const upgradeSpots = (zones: Zone[]) => zones.filter((z) => z.kind === 'upgrade').map((z) => z.id).sort();
+
+  it('fits the shop it arrives in', () => {
+    expect(validateCafe(shopData, ranks.map((r) => r.id))).toEqual([]);
+  });
+
+  it('keeps every upgrade spot, so furniture already placed stays placed', () => {
+    expect(upgradeSpots(open.zones)).toEqual(upgradeSpots(shopData.zones));
+  });
+
+  it('takes away what it says it does, and leaves the shop it came into as it was', () => {
+    for (const id of shopData.cafe.removes) expect(open.fixtures.some((f) => f.id === id)).toBe(false);
+    expect(shopData.fixtures.some((f) => f.id === 'coffee-bar')).toBe(false);
+    expect(shopData.people).toBeUndefined();
+  });
+
+  it('keeps everyone out from behind the bar, where the vendor stands', () => {
+    for (const person of open.people ?? []) expect(isWalkable(open, person.position)).toBe(false);
+    expect(findPath(open, open.spawn, open.people![0].position)).toBeNull();
+  });
+
+  it('with the largest piece on every spot, customers can still reach the queue, the bar and every seat', () => {
+    const largest: [number, number] = [1.6, 0.86];
+    const full = { ...open, obstacles: open.zones.filter((z) => z.kind === 'upgrade').map((z) => standOn(z, largest)) };
+    const { entrance, queue } = open.customers;
+    for (const p of queue) expect(findPath(full, entrance, p)).not.toBeNull();
+    for (const seat of open.seats ?? []) {
+      expect(findPath(full, entrance, seat.from)).not.toBeNull();
+      expect(findPath(full, seat.from, queue[0])).not.toBeNull();
+    }
+    for (const f of open.fixtures) if (f.interact) expect(findPath(full, open.spawn, f.interact.standAt)).not.toBeNull();
+    for (const z of open.zones) if (z.kind === 'customers') expect(findPath(full, entrance, [z.rect[0], z.rect[1]])).not.toBeNull();
+  });
+
+  it('every seat is on a chair of the same height, facing the way the chair does', () => {
+    for (const seat of open.seats ?? []) {
+      const chair = open.fixtures.find((f) => f.position[0] === seat.position[0] && f.position[1] === seat.position[1]);
+      expect(chair, seat.id).toBeDefined();
+      expect(chair!.rotation).toBe(seat.facing);
+    }
+  });
+
+  it('setCafe changes the shop in place and says whether it did, keeping placed furniture to walk around', () => {
+    shop.obstacles = [{ position: [3, 3], size: [1, 1] }];
+    expect(setCafe(true)).toBe(true);
+    expect(setCafe(true)).toBe(false);
+    expect(shop.fixtures.some((f) => f.id === 'coffee-bar')).toBe(true);
+    expect(shop.seats?.length).toBeGreaterThan(0);
+    expect(shop.obstacles).toHaveLength(1);
+    expect(setCafe(false)).toBe(true);
+    expect(shop.fixtures.some((f) => f.id === 'coffee-bar')).toBe(false);
+    expect(shop.seats).toBeUndefined();
+    expect(shop.blocked ?? []).toEqual(shopData.blocked ?? []);
+    shop.obstacles = undefined;
+    expect(validateShop(shop)).toEqual([]);
   });
 });
 

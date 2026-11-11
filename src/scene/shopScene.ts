@@ -25,7 +25,7 @@ import {
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { CharacterConfig } from '../game/character';
 import { findPath } from '../game/pathfinding';
-import { WALL_PANEL_WIDTH, isWalkable, type BackRoomLayout, type Fixture, type Glow, type Point, type RoomId, type RoomLayout, type ShopLayout } from '../game/shop';
+import { WALL_PANEL_WIDTH, isWalkable, type BackRoomLayout, type Fixture, type Glow, type Person, type Point, type RoomId, type RoomLayout, type ShopLayout } from '../game/shop';
 import { assetUrl, loadGltf } from './assets';
 import type { Character, CharacterKit } from './characters';
 import { Crowd, type CrowdEntry, type Label } from './crowd';
@@ -36,6 +36,9 @@ import { Crowd, type CrowdEntry, type Label } from './crowd';
 // model yet is a plain labelled box (see ASSETS_NEEDED.md).
 
 const PLACEHOLDER_COLOR = 0xd3c2b1;
+/** The box that takes taps for someone who works in the shop, and how far above its middle their name sits. */
+const PERSON_TAP_SIZE: [number, number, number] = [0.6, 1.3, 0.6];
+const PERSON_LABEL_HEIGHT = 0.6;
 const TAP_SLOP_PX = 10;
 /** Isometric viewing direction: the camera sits this far from its focus point. */
 const CAMERA_OFFSET = new Vector3(10, 10, 10);
@@ -77,6 +80,11 @@ export class ShopScene {
   private readonly crowd: Crowd;
   private crates: Object3D[] = [];
   private readonly spotMarkers = new Map<string, { patch: Object3D; label: Label }>();
+  /** What stands in each room (fixtures, decor, upgrade spots), apart from its floor and walls, with its labels. */
+  private readonly contents: Partial<Record<RoomId, { group: Group; labels: Label[] }>> = {};
+  /** Who works in the shop (the coffee vendor). */
+  private people: { character: Character; hitBox: Mesh; label: Label }[] = [];
+  private peopleKey = '[]';
   private placed: Object3D[] = [];
   private placedKey = '';
   /** Labels over things, each with the room it belongs to (null: whichever room you're in). */
@@ -156,18 +164,6 @@ export class ShopScene {
       this.buildRoom(id);
     }
     this.applyLighting();
-    for (const zone of rooms.shop.zones) {
-      if (zone.kind !== 'upgrade') continue; // customer areas are invisible: people just stand there
-      const [x, z, w, d] = zone.rect;
-      const { color, opacity } = rooms.shop.upgradeSpot;
-      const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: new Color(color), transparent: true, opacity, depthWrite: false }));
-      patch.rotation.x = -Math.PI / 2;
-      patch.position.set(x, 0.01, z);
-      patch.receiveShadow = true;
-      this.groups.shop.add(patch);
-      const label = this.addLabel(zone.label, patch, 0.05, 'scene-label--zone', 'shop');
-      this.spotMarkers.set(zone.id, { patch, label });
-    }
 
     this.crowd = new Crowd(
       {
@@ -272,7 +268,7 @@ export class ShopScene {
     });
   }
 
-  /** Builds a room's floor, walls, fixtures and decor into its group. */
+  /** Builds a room's floor and walls into its group, then what stands in it. */
   private buildRoom(id: RoomId): void {
     const layout = this.rooms[id];
     const group = this.groups[id];
@@ -287,11 +283,125 @@ export class ShopScene {
       this.addFloorTiles(layout, group);
     }
     this.addWalls(layout, group);
-    for (const fixture of layout.fixtures) this.addFixture(fixture, id);
+    this.furnish(id);
+  }
+
+  /** A room's fixtures, decor and (in the shop) upgrade spots, in a group of their own inside the room's. */
+  private furnish(id: RoomId): void {
+    const layout = this.rooms[id];
+    const group = new Group();
+    this.groups[id].add(group);
+    const firstLabel = this.labels.length;
+    for (const fixture of layout.fixtures) this.addFixture(fixture, id, group);
     for (const d of layout.decor) {
       void this.addModel(d.model, d.position, d.rotation, d.y, group);
       if (d.glow) this.addGlow(d.glow, d.position, group);
     }
+    if (id === 'shop') {
+      for (const zone of this.rooms.shop.zones) {
+        if (zone.kind !== 'upgrade') continue; // customer areas are invisible: people just stand there
+        const [x, z, w, d] = zone.rect;
+        const { color, opacity } = this.rooms.shop.upgradeSpot;
+        const patch = new Mesh(new PlaneGeometry(w, d), new MeshLambertMaterial({ color: new Color(color), transparent: true, opacity, depthWrite: false }));
+        patch.rotation.x = -Math.PI / 2;
+        patch.position.set(x, 0.01, z);
+        patch.receiveShadow = true;
+        patch.userData.own = true;
+        group.add(patch);
+        const label = this.addLabel(zone.label, patch, 0.05, 'scene-label--zone', 'shop');
+        this.spotMarkers.set(zone.id, { patch, label });
+      }
+    }
+    this.contents[id] = { group, labels: this.labels.slice(firstLabel).map(({ el }) => ({ el })) };
+  }
+
+  /**
+   * Lays the shop out again after its layout changed (the coffee corner arriving): fixtures,
+   * decor and upgrade spots are rebuilt from the data. Placed furniture follows with the next
+   * `setFurniture`.
+   */
+  relayShop(): void {
+    const old = this.contents.shop;
+    if (old) {
+      old.group.removeFromParent();
+      for (const label of old.labels) this.removeLabel(label);
+      for (const box of [...this.hitBoxes.keys()]) if (box.parent === old.group) this.hitBoxes.delete(box);
+      // Tap boxes and spot markers were made here; models share their meshes with the loader's copies.
+      old.group.traverse((o) => {
+        const mesh = o as Mesh;
+        if (!mesh.isMesh || !mesh.userData.own) return;
+        mesh.geometry.dispose();
+        (mesh.material as MeshBasicMaterial).dispose();
+      });
+    }
+    this.spotMarkers.clear();
+    this.furnish('shop');
+    this.placedKey = '';
+    this.unstick();
+    this.requestFrame();
+  }
+
+  /** If the shop changed under the player's feet, they step to the nearest open floor. */
+  private unstick(): void {
+    const layout = this.rooms.shop;
+    const p = this.playerRoot.position;
+    if (this.room !== 'shop' || isWalkable(layout, [p.x, p.z])) return;
+    if (this.path.length > 0) {
+      this.path = [];
+      this.pendingFixture = null;
+      this.player?.play('idle');
+      this.events.walking(false);
+    }
+    let best: Point = layout.spawn;
+    let nearest = Infinity;
+    const { width, depth } = layout.room;
+    for (let x = -width / 2; x <= width / 2; x += layout.gridStep) {
+      for (let z = -depth / 2; z <= depth / 2; z += layout.gridStep) {
+        const dist = Math.hypot(x - p.x, z - p.z);
+        if (dist < nearest && isWalkable(layout, [x, z])) {
+          nearest = dist;
+          best = [x, z];
+        }
+      }
+    }
+    p.set(best[0], 0, best[1]);
+    this.requestFrame();
+  }
+
+  /**
+   * Shows who works in the shop: each stands at their place, and tapping them (or their name)
+   * is tapping their fixture.
+   */
+  async setPeople(kit: CharacterKit, people: Person[]): Promise<void> {
+    const key = JSON.stringify(people);
+    if (key === this.peopleKey) return;
+    this.peopleKey = key;
+    const built = await Promise.all(people.map((p) => kit.build(p.look)));
+    if (key !== this.peopleKey) {
+      for (const character of built) character.dispose(); // changed again while loading
+      return;
+    }
+    for (const old of this.people) {
+      this.hitBoxes.delete(old.hitBox);
+      this.removeLabel(old.label);
+      old.hitBox.geometry.dispose();
+      old.character.dispose();
+    }
+    this.people = people.map((p, i) => {
+      const character = built[i];
+      const hitBox = new Mesh(new BoxGeometry(...PERSON_TAP_SIZE), new MeshBasicMaterial({ visible: false }));
+      hitBox.position.y = PERSON_TAP_SIZE[1] / 2;
+      hitBox.userData.room = 'shop';
+      character.root.add(hitBox);
+      character.root.position.set(p.position[0], 0, p.position[1]);
+      character.root.rotation.y = (p.facing * Math.PI) / 180;
+      this.groups.shop.add(character.root);
+      const fixture = this.rooms.shop.fixtures.find((f) => f.id === p.fixture);
+      if (fixture?.interact) this.hitBoxes.set(hitBox, fixture);
+      const label = this.addLabel(p.name, hitBox, PERSON_LABEL_HEIGHT, fixture?.interact ? 'scene-label--action' : '', 'shop');
+      return { character, hitBox, label };
+    });
+    this.requestFrame();
   }
 
   /**
@@ -418,14 +528,14 @@ export class ShopScene {
     });
   }
 
-  private addFixture(fixture: Fixture, room: RoomId): void {
-    const group = this.groups[room];
+  private addFixture(fixture: Fixture, room: RoomId, group: Group): void {
     const [w, h, d] = fixture.size;
     const y = fixture.y ?? 0;
     // An invisible box over the footprint makes taps easy and reliable.
     const hitBox = new Mesh(new BoxGeometry(w, h, d), new MeshBasicMaterial({ visible: false }));
     hitBox.position.set(fixture.position[0], y + h / 2, fixture.position[1]);
     hitBox.userData.room = room;
+    hitBox.userData.own = true;
     group.add(hitBox);
     if (fixture.interact) this.hitBoxes.set(hitBox, fixture);
 
@@ -487,6 +597,7 @@ export class ShopScene {
       marker.label.el.hidden = occupied.has(id);
     }
     this.rooms.shop.obstacles = pieces.filter((p) => p.floor).map((p) => ({ position: p.position, size: p.size }));
+    this.unstick();
     const models = await Promise.all(pieces.map((p) => loadGltf(p.model)));
     if (key !== this.placedKey) return; // changed again while loading
     pieces.forEach((p, i) => {
@@ -788,6 +899,7 @@ export class ShopScene {
     if (this.stick) this.steer(dt);
     else if (this.path.length > 0) this.step(dt);
     this.player?.mixer.update(dt);
+    for (const person of this.people) person.character.mixer.update(dt);
     const crowdMoving = this.crowd.update(dt);
     if (this.path.length > 0 || this.stick) this.follow(dt);
 
@@ -795,7 +907,7 @@ export class ShopScene {
     this.placeLabels();
 
     if (this.path.length > 0 || this.stick || (crowdMoving && this.interactive)) this.requestFrame();
-    else if ((this.interactive || this.savedView) && (this.player || this.crowd.size > 0)) {
+    else if ((this.interactive || this.savedView) && (this.player || this.crowd.size > 0 || this.people.length > 0)) {
       this.idleTimer = window.setTimeout(() => this.requestFrame(), 1000 / IDLE_FPS);
     } else this.lastFrame = 0;
   }

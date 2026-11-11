@@ -140,6 +140,8 @@ The two rooms, the shop and its back room, for the 3D scene (`src/scene/shopScen
 | `upgradeSpot` | Shop only: how an empty upgrade spot is marked on the floor, a tint of `color` at `opacity` (0 to 1, see-through so the floor shows) |
 | `customers` | Shop only: `entrance` where customers come in, `queue` spots at the counter (front first), their `walkSpeed` |
 | `surfaces` | Shop only: table and counter tops for small decor: `id`, `label`, `position`, `y` (height) and `facing`, the way a piece placed there is turned (degrees, like a fixture's `rotation`) |
+| `blocked` | Optional: floor nobody walks on (behind a bar, say), a list of rectangles `[centre x, centre z, width, depth]` |
+| `cafe` | Shop only: the coffee corner that arrives later in the game, below |
 | `crates` | Back room only: arrived crates, `model`, the `spots` they stand on by the outside door, and `stackHeights` (to stack one on top) |
 | `rack` | Back room only: the rack showing what's on hand, one bottle (`bottle` model) per material: on fixture `fixture`, at shelf heights `levels` (filled in order), `perLevel` to a shelf, `spacing` apart and `forward` of its centre |
 
@@ -156,9 +158,9 @@ Each fixture:
 | `y` | Optional height it stands at (a placeholder box on a desk); 0 is the floor |
 | `blocks` | Whether the player has to walk around it |
 | `glow` | Optional light for a lamp, see below |
-| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action`: `organ` opens the composing desk; `back-room` and `shop` go through the door to that room (you arrive at the other room's door back); `laptop` opens ordering, letters and the lab; `rack` opens your stock; `outside` is the street door (not open yet). Tapping a crate opens it. |
+| `interact` | `null`, or `{ "action", "standAt" }`: tapping it walks the player to `standAt`, then runs `action`: `organ` opens the composing desk; `back-room` and `shop` go through the door to that room (you arrive at the other room's door back); `laptop` opens ordering, letters and the lab; `rack` opens your stock; `outside` is the street door (not open yet); `coffee` has the coffee vendor say one of the `cafe`'s `lines`. Tapping a crate opens it. |
 
-Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees.
+Each decor item: `model`, `position` `[x, z]`, `y` (height, e.g. a table top) and `rotation` in degrees. An `id` is optional: only decor the coffee corner moves or takes away needs one.
 
 A fixture or decor item that is a lamp can have a `glow`, a small light at its spot: `{ y, color, intensity, distance, offset }`, where `y` is the height of the light in metres, `distance` how far it reaches, and the optional `offset` `[x, z]` moves it off the centre of the model (a sconce hangs out from its wall). Glows cast no shadows. Keep them few (about six to a room): each one costs a little on every frame drawn. Bought lamps bring a glow of their own (`furniture.json`), up to its `glowLimit` on top of the room's.
 
@@ -169,12 +171,31 @@ Each zone:
 | `id`, `label` | |
 | `kind` | `customers`: an invisible area where customers stand around. `upgrade`: a floor spot where bought furniture can be placed. |
 | `rect` | `[centre x, centre z, width, depth]` |
-| `facing` | Upgrade spots (required): the way a piece placed here faces, in degrees like a fixture's `rotation`: 0 towards the front of the room, 90 towards its right-hand side, 45 towards the camera |
+| `facing` | Upgrade spots (required): the way a piece placed here faces, in degrees like a fixture's `rotation`: 0 towards the front of the room, 90 towards its right-hand side, 45 towards the camera. Customers' areas (optional): the way customers turn once they stand there, e.g. towards a bar; left out, they stay turned the way they came |
 | `flush` | Upgrade spots, optional: `true` stands the piece's back on the spot's back edge (against a wall, or in line with the furniture beside it) instead of in the middle. Needs a `facing` of 0, 90, 180 or 270 |
 
 The shop's upgrade spots are in groups: the display wall (right-hand end of the back wall), one by the counter, the seats round the rug by the windows, and the reading nook by the round table. A spot's `label` is the name the Shop panel shows for it. `standOn` in `src/game/shop.ts` works out where a piece stands on a spot from the piece's `size`; any floor piece can go on any floor spot, so a spot is a place and a facing, not a size limit. Keep the spot `id`s when moving spots: saves refer to them.
 
-`validateShop` and `validateBackRoom` (run in the tests and at start-up) check that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable; a test also checks every fixture in the back room can be reached from its door.
+### The coffee corner (`cafe`)
+
+Later in the game a coffee vendor sets up at the front of the shop, at the far end from the perfume counter, and brings tables and chairs. `shop.json` is the shop before that; `cafe` says what changes when the vendor arrives. `withCafe` in `src/game/shop.ts` makes the shop with the corner in, and `setCafe` switches the running game's `shop` between the two (`cafeOpen` in `src/game/world.ts` decides which).
+
+| Field | Meaning |
+| ----- | ------- |
+| `unlock` | `{ "rank" }`: the rank (an id from `ranks.json`) at which the corner arrives |
+| `arrival` | What the game says, once, when it has arrived |
+| `lines` | What the vendor says when you stop at the bar, one each time, in order |
+| `removes` | Ids of fixtures, decor and zones that go when the corner arrives |
+| `fixtures`, `decor`, `zones` | Added to the shop's. One with the `id` of something already there stands in for it: that is how furniture, rugs and upgrade spots move out of the way. Moved upgrade spots must keep their ids, so what players have placed on them moves with them |
+| `people` | Who works there: `id`, `name` (shown over them), `look` (a character, as in `story.json`), `position`, `facing` in degrees, and `fixture`, the id of the fixture that tapping them taps |
+| `seats` | Where customers can sit: `id`, `position` (the chair's), `facing` (the chair's `rotation`), `height` of the seat above the floor in metres, and `from`, open floor within a step of the chair that they walk to before sitting down |
+| `seatChance` | The chance (0 to 1) that a customer coming in sits down before going to the counter |
+| `seatSeconds` | `[min, max]` seconds they stay sitting |
+| `blocked` | Floor nobody walks on (behind the bar, where the vendor stands), as in the room's `blocked` |
+
+For testing, `?cafe=1` on the address (or "coffee corner now" in the laptop's debug row) brings the corner in at any rank, and `?cafe=0` takes that back; the choice is kept in the save as `cafe.preview`. `cafe.welcomed` in the save records that the arrival message was read.
+
+`validateShop` and `validateBackRoom` (run in the tests and at start-up) check that everything is inside the room, the walls cover it, and every `standAt`, zone centre and the spawn are reachable; a test also checks every fixture in the back room can be reached from its door. `validateCafe` checks the coffee corner the same way with the corner in, and that its rank exists, what it removes is there and upgrade spots keep their ids; tests check customers can still reach the queue, the bar and every seat with the largest piece of furniture on every spot.
 
 ## `character.json`
 

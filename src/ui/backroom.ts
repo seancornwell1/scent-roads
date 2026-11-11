@@ -55,6 +55,7 @@ export function backroomScreen(): string {
     <main class="backroom">${body}</main>
     <p class="muted small debug">Debug · time speed:
       ${SPEEDS.map((v) => `<button class="tab-chip ${speed === v ? 'on' : ''}" data-action="debug-speed" data-value="${v}">×${v}</button>`).join(' ')}
+      · <button class="tab-chip ${save.cafe?.preview ? 'on' : ''}" data-action="debug-cafe">coffee corner now</button>
     </p>`;
 }
 
