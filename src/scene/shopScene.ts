@@ -44,6 +44,8 @@ const TAP_SLOP_PX = 10;
 const CAMERA_OFFSET = new Vector3(10, 10, 10);
 /** When the walking player leaves this share of the view around its middle, the camera follows. */
 const FOLLOW_MARGIN = 0.4;
+/** Zoomed in, the middle of the view stops this share of a screen short of the room's edge. */
+const PAN_KEEP = 0.4;
 /** Metres of screen height the character creator leaves for the player and their label. */
 const CREATOR_FRAME = 1.3;
 /** Idle animations run at a gentle frame rate to save battery; movement runs at full rate. */
@@ -773,15 +775,37 @@ export class ShopScene {
     this.placeCamera();
   }
 
+  /**
+   * How far along the floor, from the camera's focus, the point seen in the middle of the screen
+   * below the HUD lies at `zoom`. The view reaches up behind the HUD, so that point is not the
+   * focus, and the gap grows as the camera zooms in.
+   */
+  private lead(zoom: number): [number, number] {
+    const h = this.container.clientHeight;
+    if (h === 0) return [0, 0];
+    const { top, bottom } = this.camera;
+    const up = (top + bottom) / 2 - ((this.topInset / h) * (top - bottom)) / (2 * zoom); // metres up the screen from the focus
+    const flat = Math.hypot(CAMERA_OFFSET.x, CAMERA_OFFSET.z);
+    const along = (up * CAMERA_OFFSET.length()) / CAMERA_OFFSET.y / flat; // up the screen is away from the camera along the floor
+    return [-CAMERA_OFFSET.x * along, -CAMERA_OFFSET.z * along];
+  }
+
   private placeCamera(): void {
     const { width, depth } = this.layout.room;
-    // At zoom 1 the whole room is in view and the camera stays put; zoomed in, it can pan
-    // only as far as keeps the room on screen.
-    const reach = Math.max(0, 1 - 1 / this.zoom);
     if (!this.savedView) {
       // (The character creator frames the player itself, close up.)
-      this.focus.x = Math.min(Math.max(this.focus.x, (-width / 2) * reach), (width / 2) * reach);
-      this.focus.z = Math.min(Math.max(this.focus.z, (-depth / 2) * reach), (depth / 2) * reach);
+      // At zoom 1 the whole room is in view and the camera stays put. Zoomed in, the middle of
+      // the screen below the HUD can be brought over more and more of the floor, and close up
+      // nearly to its corners, so the camera can follow the player anywhere in the room.
+      const reach = Math.max(0, Math.min(1 - PAN_KEEP / this.zoom, (this.zoom - 1) * 1.5));
+      const lead = this.lead(this.zoom);
+      const rest = this.lead(1);
+      const hold = (focus: number, i: 0 | 1, half: number): number => {
+        const centre = rest[i] * (1 - reach);
+        return Math.min(Math.max(focus + lead[i], centre - half * reach), centre + half * reach) - lead[i];
+      };
+      this.focus.x = hold(this.focus.x, 0, width / 2);
+      this.focus.z = hold(this.focus.z, 1, depth / 2);
     }
     this.labelLayer.classList.toggle('scene-labels--far', this.zoom < 1.8);
     this.camera.zoom = this.zoom;
