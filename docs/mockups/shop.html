@@ -1,0 +1,172 @@
+<!doctype html>
+<!-- Mock-up only (Nov 12, 2026): the Shop panel and the HUD in the look of the rooms. A still picture
+     to judge the look; nothing here is in the game. Open with ?panel=0 for the HUD and the scene
+     labels alone. The background is a screenshot of the game (scene.png); the furniture pictures in
+     thumbs/ are written by blender/mockup-thumbs.py. The numbers (coins, reputation, what is placed)
+     are made up to show every state of a card; names, prices, appeal and reputation are the game's. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop panel mock-up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+  /* ---- the HUD ---- */
+  .hud-row { position: absolute; left: 8px; right: 8px; display: flex; align-items: center; gap: 6px; }
+  .plaque { height: 36px; padding: 0 14px; border-radius: 9px; background: linear-gradient(var(--walnut-lt), var(--walnut)); border: 1.5px solid var(--brass); box-shadow: 0 2px 0 var(--mahogany), 0 3px 6px rgba(40, 20, 10, 0.35); color: #fff1d6; font-family: var(--serif); font-weight: 600; font-size: 15.5px; display: inline-flex; align-items: center; gap: 6px; }
+  .plaque .count { min-width: 18px; height: 18px; font-size: 10.5px; font-family: var(--body); }
+  .tag { height: 26px; padding: 0 10px; border-radius: 4px; background: var(--parchment-lt); border: 1px solid #cdb188; box-shadow: 0 2px 5px rgba(40, 20, 10, 0.3); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
+  .tag b { color: var(--burgundy); }
+  .lbl { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-weight: 800; font-size: 11.5px; height: 22px; padding: 0 9px; border-radius: 6px; display: inline-flex; align-items: center; }
+  .lbl--action { background: var(--walnut); color: #fff1d6; border: 1.5px solid var(--brass); box-shadow: 0 2px 4px rgba(40, 20, 10, 0.4); }
+  .lbl--zone { background: rgba(252, 244, 227, 0.82); color: var(--muted); border: 1.5px dashed #b99a6c; font-weight: 700; }
+  .lbl--person { background: var(--parchment-lt); color: var(--ink); border: 1.5px solid var(--line); border-radius: 11px; box-shadow: 0 1px 3px rgba(40, 20, 10, 0.35); }
+  .lbl--you { background: var(--forest); color: #fff6e4; border: 1.5px solid #2c5040; border-radius: 11px; }
+
+  /* ---- the panel ---- */
+  .dim { position: absolute; inset: 0; background: rgba(40, 22, 14, 0.42); }
+  .panel { position: absolute; left: 0; right: 0; top: 88px; bottom: 0; background: var(--parchment); border-radius: 14px 14px 0 0; overflow: hidden; box-shadow: 0 -4px 14px rgba(40, 20, 10, 0.4); }
+  .panel .head { height: 46px; justify-content: space-between; }
+  .panel .head h1 { position: absolute; left: 0; right: 0; text-align: center; pointer-events: none; }
+  .body { padding: 8px 10px 0; }
+  .appeal { padding: 8px 12px 9px; display: grid; grid-template-columns: auto 1fr auto; column-gap: 10px; align-items: center; }
+  .appeal h2 { margin: 0; font: 600 18px/1.1 var(--serif); }
+  .appeal h2 small { font: 700 11.5px var(--body); color: var(--muted); margin-left: 4px; }
+  .track { height: 9px; border-radius: 5px; background: var(--paper-dk); border: 1px solid var(--line); overflow: hidden; }
+  .track i { display: block; height: 100%; background: var(--forest); }
+  .appeal .next { font-weight: 700; font-size: 11.5px; color: var(--muted); }
+  .appeal p { grid-column: 1 / -1; margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+  .appeal p b { color: var(--ink); }
+  .ptabs { display: flex; gap: 4px; margin: 10px 0 0; border-bottom: 2px solid var(--walnut); padding: 0 2px; }
+  .ptab { height: 30px; padding: 0 12px; border-radius: 8px 8px 0 0; background: var(--paper-dk); border: 1px solid var(--line); border-bottom: 0; font-weight: 700; font-size: 12.5px; color: var(--muted); display: inline-flex; align-items: center; }
+  .ptab--on { background: var(--walnut); color: #fff1d6; border-color: var(--walnut); font-family: var(--serif); font-weight: 600; font-size: 14px; }
+  .sec { display: flex; align-items: baseline; justify-content: space-between; margin: 10px 2px 5px; }
+  .sec h3 { margin: 0; font: 600 15.5px var(--serif); }
+  .sec span { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+  .slots { display: flex; gap: 6px; margin-right: -10px; overflow: hidden; }
+  .slot { flex: 0 0 88px; }
+  .slot .pic { height: 62px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .slot .pic img { height: 58px; }
+  .slot--empty .pic { background: none; border: 1.5px dashed #c4a67a; color: #b0906a; font-weight: 700; font-size: 11.5px; }
+  .slot b { display: block; margin-top: 3px; font-size: 10.5px; line-height: 1.1; font-weight: 800; }
+  .slot small { display: block; font-size: 10px; color: var(--muted); font-weight: 600; }
+  .store { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 4px 6px 4px 10px; }
+  .store .hand { font-size: 19px; line-height: 1; font-weight: 700; color: var(--muted); }
+  .store img { height: 34px; }
+  .store b { flex: 1; font-size: 12.5px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .item { position: relative; padding: 0 0 6px; overflow: hidden; text-align: center; }
+  .item .pic { height: 70px; background: var(--paper); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .item .pic img { height: 66px; }
+  .item b { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.15; }
+  .item .gain { font-size: 11px; font-weight: 700; color: var(--forest); }
+  .item .btn { margin-top: 4px; min-width: 96px; }
+  .item .btn img { width: 15px; height: 15px; }
+  .item .have { position: absolute; left: 5px; top: 5px; height: 18px; padding: 0 6px; border-radius: 9px; background: var(--forest); color: #fff6e4; font-weight: 800; font-size: 10px; display: inline-flex; align-items: center; }
+  .item--locked .pic img { opacity: 0.45; }
+  .item--locked b { color: var(--muted); }
+
+  .no-panel .dim, .no-panel .panel { display: none; }
+  .phone:not(.no-panel) .only-hud { display: none; }
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <img class="bg" src="scene.png" alt="">
+
+  <div class="hud-row" style="top:10px">
+    <button class="plaque">Shop</button>
+    <button class="plaque">News <span class="count">1</span></button>
+    <button class="plaque">Book</button>
+    <button class="plaque">More</button>
+  </div>
+  <div class="hud-row" style="top:54px">
+    <span class="badge">12 March <small>Spring, week 2</small></span>
+    <span class="badge"><img src="../../assets/custom/ui/coin.png" alt="coins">48</span>
+    <span class="badge"><img src="../../assets/custom/ui/star.png" alt="reputation">6</span>
+    <span class="badge">Humble <small>6 of 8</small></span>
+  </div>
+  <div class="hud-row only-hud" style="top:88px">
+    <span class="tag"><b>4 letters</b> in the back room</span>
+  </div>
+  <div class="only-hud" id="labels"></div>
+
+  <div class="dim"></div>
+  <section class="panel">
+    <header class="woodbar woodbar--top head">
+      <button class="link">Close</button>
+      <h1>Shop</h1>
+      <span class="badge"><img src="../../assets/custom/ui/coin.png" alt="coins">48</span>
+    </header>
+    <div class="body">
+      <div class="card appeal">
+        <h2>Humble <small>appeal 6</small></h2>
+        <div class="track"><i style="width:75%"></i></div>
+        <span class="next">Charming at 8</span>
+        <p>Customers pay <b>&times;1</b> now, <b>&times;1.25</b> at Charming. Everything you place adds to it.</p>
+      </div>
+
+      <nav class="ptabs">
+        <span class="ptab ptab--on">Furniture</span>
+        <span class="ptab">House perfumes</span>
+        <span class="ptab">Processing</span>
+      </nav>
+
+      <div class="sec"><h3>Your shop</h3><span>2 of 9 spots filled &middot; tap one to change it</span></div>
+      <div class="slots" id="slots"></div>
+
+      <div class="card store">
+        <span class="hand">In storage</span>
+        <img src="thumbs/candle-cluster.png" alt="">
+        <b>Candles</b>
+        <button class="btn btn--second btn--small">Place&hellip;</button>
+      </div>
+
+      <div id="catalogue"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // A copy of what the mock-up needs from src/data/furniture.json and shop.json (file pages cannot fetch them).
+  const KINDS = { seating: "Seating", plant: "Plants", lighting: "Lighting", decor: "Decor", display: "Display cases" };
+  const ITEMS = [
+    ["bench", "Cushioned bench", "seating", "cushion-bench", 30, 3, 0], ["bar-stool", "Bar stool", "seating", "bar-stool", 25, 2, 0],
+    ["armchair", "Red armchair", "seating", "armchair", 60, 5, 5], ["rocking-chair", "Rocking chair", "seating", "rocking-chair", 70, 5, 12],
+    ["sofa", "Sofa", "seating", "sofa", 120, 8, 22], ["snake-plant", "Snake plant", "plant", "snake-plant", 20, 2, 0],
+    ["fern", "Fern", "plant", "fern", 25, 3, 0], ["monstera", "Monstera", "plant", "potted-plant", 40, 4, 5],
+    ["floor-lamp", "Floor lamp", "lighting", "floor-lamp", 35, 3, 0], ["table-lamp", "Table lamp", "lighting", "table-lamp", 20, 2, 0],
+    ["candle-cluster", "Candles", "lighting", "candle-cluster", 15, 2, 0], ["star-lantern", "Star lantern", "lighting", "star-lantern", 18, 2, 5],
+  ];
+  const SPOTS = [["Display wall, left", "floor", "fern"], ["Display wall, right", "floor"], ["By the counter", "floor"], ["Seats, window side", "floor", "bench"], ["Seats, back", "floor"], ["Seats, corner", "floor"], ["Reading nook", "floor"], ["Counter", "table top"], ["Display case", "table top"]];
+  const COINS = 48, REPUTATION = 6, HAVE = { bench: "placed", fern: "placed", "candle-cluster": "1 in storage" };
+  const byId = Object.fromEntries(ITEMS.map((i) => [i[0], i]));
+  const coin = `<img src="../../assets/custom/ui/coin.png" alt="coins">`, star = `<img src="../../assets/custom/ui/star.png" alt="reputation">`;
+
+  document.getElementById("slots").innerHTML = SPOTS.map(([label, kind, item]) => item
+    ? `<div class="slot"><div class="pic"><img src="thumbs/${byId[item][3]}.png" alt=""></div><b>${label}</b><small>${byId[item][1]}</small></div>`
+    : `<div class="slot slot--empty"><div class="pic">empty</div><b>${label}</b><small>${kind}</small></div>`).join("");
+
+  let html = "";
+  for (const [kind, title] of Object.entries(KINDS)) {
+    const items = ITEMS.filter((i) => i[2] === kind);
+    if (!items.length) continue;
+    html += `<div class="sec"><h3>${title}</h3></div><div class="grid">` + items.map(([id, name, , model, price, appeal, rep]) => {
+      const locked = rep > REPUTATION, poor = price > COINS;
+      const button = locked ? `<button class="btn btn--small btn--off">${star} Reputation ${rep}</button>`
+        : `<button class="btn btn--small ${poor ? "btn--off" : "btn--primary"}">${coin} ${price}</button>`;
+      return `<div class="card item ${locked ? "item--locked" : ""}"><div class="pic"><img src="thumbs/${model}.png" alt=""></div>${HAVE[id] ? `<span class="have">${HAVE[id]}</span>` : ""}
+        <b>${name}</b><span class="gain">+${appeal} appeal</span><br>${button}</div>`;
+    }).join("") + `</div>`;
+  }
+  document.getElementById("catalogue").innerHTML = html;
+
+  // ?panel=0: the HUD alone, with the scene labels where the game put them (from scene.cjs).
+  if (new URLSearchParams(location.search).get("panel") === "0") document.getElementById("phone").classList.add("no-panel");
+  const LABELS = [["The organ", "action", 420, 309], ["Back room", "action", 67, 223], ["Test bench", "action", 301, 387], ["Seats, back", "zone", 56, 651], ["Reading nook", "zone", 137, 888], ["You", "you", 231, 486], ["Agathe", "person", 202, 418], ["Aiko", "person", 278, 462]];
+  document.getElementById("labels").innerHTML = LABELS.map(([t, c, x, y]) => `<span class="lbl lbl--${c}" style="left:${Math.max(x, 44)}px;top:${y}px">${t}</span>`).join("");
+</script>
+</body>
+</html>
