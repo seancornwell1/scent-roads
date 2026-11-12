@@ -135,8 +135,15 @@ M.sphere(drop, 0.0026, TIP + Vector((0.0, 0.0, -0.003)), scale=(1, 1, 1.2), seg=
 # ---------- smelling strips: a pot of fresh ones, two used ----------
 PX, PY = -0.2, -0.305
 M.lathe(cream, [(0, 0), (0.024, 0), (0.028, 0.004), (0.031, 0.07), (0.033, 0.074), (0.03, 0.075), (0.028, 0.07), (0.025, 0.008), (0, 0.008)], (PX, PY, 0.004), verts=28)
-for i, (dx, dy, rx, ry) in enumerate(((-0.01, 0.0, 4, -9), (0.006, -0.006, -6, 7), (0.0, 0.008, 9, 2), (-0.004, -0.01, -10, -4), (0.012, 0.004, 3, 12), (-0.014, 0.008, 8, -14))):
-    M.box(white, (0.008, 0.0012, 0.15), (PX + dx, PY + dy, 0.012), bevel=0, rot=(math.radians(rx), math.radians(ry), math.radians(20 * i)))
+# Each fresh strip stands on the pot's floor and leans out to rest inside the rim, so none passes through the wall:
+# (the way it leans in degrees round the pot, how far from the middle its foot is, and how far out it is at the rim).
+POT_FLOOR, POT_RIM, POT_INNER = 0.012, 0.079, 0.025
+for turn, foot, at_rim in ((10, -0.010, 0.020), (75, -0.004, 0.022), (140, -0.012, 0.016), (200, 0.006, 0.021), (265, -0.008, 0.022), (320, -0.002, 0.012)):
+    assert abs(foot) + 0.001 < POT_INNER and math.hypot(at_rim, 0.004) < POT_INNER, "a strip would pass through the pot"
+    lean = math.degrees(math.atan2(at_rim - foot, POT_RIM - POT_FLOOR))
+    strip = [M.box(white, (0.0012, 0.008, 0.15), (PX, PY, POT_FLOOR), bevel=0)]
+    move(strip, pivot=(PX, PY, POT_FLOOR), rot=(0, lean, 0), shift=(foot, 0, 0))
+    move(strip, pivot=(PX, PY, POT_FLOOR), rot=(0, 0, turn))
 for (x, y, rz, tip) in ((-0.16, -0.15, 66, LIQUID), (-0.135, -0.125, 44, SPOKE["fresh"])):
     s = [M.box(white, (0.008, 0.15, 0.0012), (x, y, 0.0045), bevel=0), M.box(M_("tip_" + tip[1:], tip, 0.6), (0.0082, 0.03, 0.0013), (x, y + 0.06, 0.0045), bevel=0)]
     move(s, pivot=(x, y, 0), rot=(0, 0, rz))
