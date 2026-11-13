@@ -1,66 +1,10 @@
-# Scentshop Tale — rules for Claude Code
+# Hush — notes for Claude Code
 
-## Rules
+A stealth game made from this repo's assets (Nov 13, 2026); the perfume-shop game that came before it is in the git history. See `README.md` for how it plays and where the code is.
 
-1. **Read `docs/SPEC.md` before any work.** It is the source of truth. If a request conflicts with it, say so before building.
-2. **Perfumery facts must be real.** Every material, region, season and technique lives in data files with a `verified` flag. Anything you aren't sure of is marked `"verified": false` and listed in `docs/FACT_CHECK.md` for Sean to confirm against the course. Never present an unverified fact as certain.
-3. **All content is data.** Materials, regions, processes, clients and accords live in data files under documented schemas, never hard-coded in TypeScript. Document each schema next to its data (a `README.md` or schema file in the same folder).
-4. **Never draw art or synthesize sound in code.** No sprites, icons, backgrounds or effects drawn with canvas, SVG, CSS shapes or generated images; no Web Audio oscillators or generated audio. Code only loads and displays asset files. Until real assets exist, use plain placeholder boxes with text labels and list each need in `ASSETS_NEEDED.md`. Follow the sourcing, approval and licensing rules in the **Assets** section of the spec; log every asset in `CREDITS.md`.
-5. **Game time runs on real time from timestamps.** Store when things started, compute state from `Date.now()`, so progress happens while the app is closed. Never rely on timers ticking in the background.
-6. **No ads, no purchases, no energy timers.** Waiting is only for things that really take time (harvests, curing, shipping).
-7. **Build only the step asked for.** Commit each step.
-
-## Asset rules
-
-The game is a 3D shop seen from a fixed isometric camera (see the direction change in `docs/SPEC.md`).
-
-- Never draw models, sprites, icons or effects in code, and never synthesize audio. Code only loads asset files.
-- Use free low-poly 3D libraries in one consistent style: Kenney.nl (CC0) and Quaternius (CC0) first, Poly Pizza for gaps. Download them into `assets/` yourself. Propose the packs with preview links and wait for Sean's OK before downloading.
-- Log every asset in `CREDITS.md` (source, author, license, URL). CC0 or CC BY only.
-- Custom models made in Blender follow `docs/ASSET_STYLE.md` (look, palette, sizes, export settings) and go in `assets/custom/`.
-- The rooms (Nov 10) are built from the game's own models in `assets/custom/models/`, in the warm dark-wood look the style guide describes; each is written by a script in `blender/` (see `blender/README.md`), coloured with painted vertex colours and no textures.
-- Approved so far: Grab3D (CC0) models and its Character Mixer "Cozy" parts. Downscale textures to 512 px with `npx gltf-transform resize in.glb out.glb --width 512 --height 512` before adding a model, and note it in `CREDITS.md`. Sean is happy to credit artists, so CC BY is fine when the style matches.
-
-## Project
-
-- Vite + TypeScript web app, portrait, aimed at iPhone Safari and Add to Home Screen.
-- Content is JSON in `src/data/` (schemas in `src/data/README.md`); game logic in `src/game/` (no DOM, unit-tested); the Three.js shop scene in `src/scene/`; HTML panels and HUD in `src/ui/`.
-- The camera's zoom 1 frames the whole room below the HUD (`setTopInset`); the game opens zoomed in (`defaultZoom` in `shop.json`) and follows the player; scene labels are kept on screen, out from under the HUD and never overlapping, and tapping one counts as tapping its person or fixture.
-- Two rooms, the shop (`src/data/shop.json`, 10 × 12 m) and the back room (`src/data/backroom.json`: desk, laptop, chair, the supplies rack and the outside door where crates arrive), share one scene (`ShopScene.travel` fades between them). The laptop opens the old back-room panel (`src/ui/backroom.ts`); the rack shows a bottle per material on hand.
-- Each room's light is data: `lighting` (exposure, ambient, a sun with soft shadows) and a `glow` on lamps and sconces (`src/data/README.md`); keep glows to about six a room. The shop's `upgradeSpot` sets the tint of empty upgrade spots.
-- Bought furniture stands where its upgrade spot says: each spot in `shop.json` has a `facing` and may be `flush` to the wall behind it (`standOn` in `src/game/shop.ts`); spots are grouped (display wall, by the counter, seats, reading nook) and keep their ids, which saves refer to. Bought lamps carry a `glow` in `furniture.json`; only the first `glowLimit` placed are lit.
-- The coffee corner (Nov 10): at rank `cafe.unlock.rank` a coffee vendor sets up at the front of the shop, opposite the perfume counter. `shop.json` is the shop before; its `cafe` block lists what goes, what is added or moved (same id = stand-in, so upgrade spots keep their ids), the vendor, the seats customers may take and the floor behind the bar nobody walks on (`src/data/README.md`). `shopData` in `src/game/shop.ts` is the file as written and `shop` the layout in use; `setCafe` switches it in place and `ShopScene.relayShop` rebuilds the shop's furniture. `?cafe=1` / `?cafe=0` or the laptop's debug chip previews it at any rank.
-- The player moves with an on-screen joystick (bottom right, `ShopScene.steer`), sliding along walls and furniture; tapping a person or fixture still walks there, and tapping the floor does nothing.
-- The 3D scene renders on demand: full frame rate only while something moves, about 24 fps for idle character animation, and nothing while an organ or book panel covers it. Keep it that way for battery.
-- Files in `assets/` are served from the site root (Vite `publicDir`); refer to them by their path under `assets/` (e.g. `grab3d/models/door.glb`) and load them through `src/scene/assets.ts`.
-- Panels that sit over the scene without a backdrop must not scroll: a scrolling panel over the WebGL canvas broke compositing in testing. The character creator pages through categories instead.
-- Characters (Nov 10): the player, townspeople and customers are built from the chibi kit made for this game (`assets/custom/chibi/`: manifest, skeleton, animation clips, parts and creator thumbnails, all written by `blender/characters-kit.py`; loaded by `src/scene/characters.ts`). `src/data/character.json` lists the parts and colours the creator offers and maps part ids of the earlier Grab3D kit to new ones (`legacy.parts`; `migrateCharacter` in `src/game/character.ts` runs on a saved look when the kit loads). The earlier kits in `assets/grab3d/characters/` and `assets/custom/characters/` are no longer loaded and are left out of the offline cache (`globIgnores` in `vite.config.ts`). The creator frames the player between the HUD and its panel (`ShopScene.focusOnPlayer`).
-- Offline via a service worker generated by `vite-plugin-pwa` (`vite.config.ts`). New file types that must work offline need to match `workbox.globPatterns`.
-- `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push: https://seancornwell1.github.io/scent-roads/
-- The Pages base path comes from `BASE_PATH` at build time; never hard-code `/scent-roads/` in source. Reference assets via `import.meta.env.BASE_URL`.
-- The counter (Counter redesign, Nov 7): customers are served in timed radar rounds. The radar engine is `src/game/radar.ts` (vectors in `materials.json` as `radar`, rules in `src/data/radar.json`); rounds, briefs from hidden solutions, the tip and test pings are in `src/game/round.ts` and `src/data/counter.json`; the screens and the radar chart (an SVG data chart) are in `src/ui/round.ts` and `src/ui/radar.ts`. The organ is for your own formulas. Materials earn EXP when served, which reveals their cards (no quizzes: nose training is no longer offered).
-- Story, briefs and scoring (Direction change #2): her book, townspeople and their requests are data in `src/data/story.json` (`src/game/story.ts`). Every brief's hidden target is a reference formula of 10 whole parts (later briefs, 100); from junior, customers' perfumes are made in 100 parts and judged against stricter star thresholds per rank (`ranks.json`). Scoring is closeness at each stage plus strength and longevity, shown as 1–3 stars (`src/game/scoring.ts`), and customers' feedback is directional words, never numbers (`src/game/feedback.ts`, phrases in `clients.json`).
-- Her suppliers' letters (`src/data/letters.json`, `lore`; chapters by season in `src/game/routes.ts`, saved as `routes`) are flavour text about materials and how they're made; the laptop's map is flavour too. No waiting for materials: harvest contracts are gone, and the lab tab is hidden for now (Nov 8). Buying a material once makes it yours for good, unlimited (`owned` in the sourcing save, Nov 9); tapping a supplier item opens a floating card with its description. The counter, walk-ins, regulars and story requests use only bought materials (`usableMaterials` in `src/game/world.ts`).
-- Materials (Phase C): each has a `ref` block of reference numbers (era, tenacity, dilution, IFRA limit, cost) with its own `verified`/`check`. Unlock tiers follow perfumery's history. Learning (uses, your notes, nose training) lives in `src/game/learning.ts` and `src/data/training.json`, saved as `learning`; training days are real calendar days.
-- Blends (Phase D): a formula keys materials by id (or a saved base by `base:<id>`), with each material's dilution (100, 10 or 1) beside it. `src/game/blend.ts` expands it into entries; scoring, stock, safety limits, cost and accords all work from those. `src/game/checks.ts` decides whether a perfume can be sold. Ranks and exams are in `src/data/ranks.json` and `src/game/ranks.ts`; the shop's style in `src/game/style.ts`.
-- The ending (Phase E): her signature perfume's clues, jar and epilogue in `src/data/signature.json` / `src/game/signature.ts`; the yearly awards in `src/data/awards.json` / `src/game/awards.ts`.
-- House perfumes: your own formulas sold from the shelves, rated on structure, balance, longevity, strength, richness, originality and stock quality, with suggested names, generic or uploaded labels, price tiers, daily sales from timestamps and an end-of-day report (`src/data/house.json`, `src/game/house.ts`, `src/ui/house.ts`; saved as `house`). They unlock with reputation and enough materials in stock to compose freely.
-- Late game (Phase F): the lab and reconstruction challenges in `src/data/lab.json` / `src/game/lab.ts`; formula sheets and import in `src/game/sheet.ts`; masters work in up to 1000 parts (`ranks.json`).
-- Game time: 1 real day = 1 game week (`src/data/time.json`). Use the game clock (`src/game/clock.ts`, `nowGame()` in `src/state.ts`) for anything measured in game hours. The debug speed (back room, or `?speed=N`) re-anchors it. Customers' visit timestamps are real milliseconds scaled by the same speed (`src/game/time.ts`).
-- Secrets (e.g. the Freesound API key) go in `.env`, which is git-ignored; `.env.example` lists the names.
-- Sound cues are data in `src/data/sounds.json`, played by `src/scene/audio.ts` (files only). `npm run sounds` fetches CC0 sounds from Freesound into `assets/sounds/` and credits them; it needs `FREESOUND_API_KEY` and network access to `freesound.org` and `cdn.freesound.org`.
-
-## Commands
-
-- `npm run dev` — dev server, reachable from a phone on the same network
-- `npm test` — unit tests (Vitest)
-- `npm run sounds` — fetch missing sound cues from Freesound
-- `npm run factcheck` — regenerate the materials tables in `docs/FACT_CHECK.md` after editing materials
-- `npm run typecheck` / `npm run build`
-
-## Files to keep current
-
-- `docs/FACT_CHECK.md` — every unverified fact, with where it is used
-- `docs/COURSE.md` — course order and current bench inventory; the unlock order for materials and accords
-- `ASSETS_NEEDED.md` — every placeholder waiting for a real asset
-- `CREDITS.md` — every asset in `assets/`: source, author, license, URL
+- Vite + TypeScript + Three.js; portrait phones first, keyboard too. Deployed to GitHub Pages on every push (`.github/workflows/deploy.yml`, which also runs `npm test`).
+- Never hard-code `/scent-roads/`: the base path comes from `BASE_PATH`; use `assetUrl` in `src/assets.ts`.
+- Files in `assets/` are served from the site root. Models face south (+Z) and stand on y = 0; `rot` in `src/level.ts` is quarter turns.
+- `src/level.ts` and `src/nav.ts` have no DOM and are unit-tested; keep it that way.
+- New assets: log them in `CREDITS.md` (CC0 or CC BY only) and take them off `ASSET_WISHLIST.md`. Custom models follow the conventions in `blender/README.md`.
+- `window.hush` is the running game, for poking at it from the console.

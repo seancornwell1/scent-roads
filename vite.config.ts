@@ -14,21 +14,20 @@ export default defineConfig({
       injectRegister: 'auto',
       workbox: {
         globPatterns: ['**/*.{html,js,css,json,webmanifest,png,jpg,webp,svg,mp3,ogg,m4a,woff2,glb}'],
-        // The character kits the game used before the chibi kit: still in assets/, no longer loaded.
-        globIgnores: ['**/node_modules/**/*', 'grab3d/characters/**', 'custom/characters/**'],
+        // Only what the game loads; the rest of assets/ is kept for later.
+        globIgnores: ['**/node_modules/**/*', 'grab3d/**', 'custom/characters/**', 'custom/chibi/thumbs/**'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {
-        name: 'Scentshop Tale',
-        short_name: 'Scentshop Tale',
-        description: 'A cozy perfume-house game.',
+        name: 'Hush',
+        short_name: 'Hush',
+        description: 'A tiny midnight heist.',
         start_url: base,
         scope: base,
         display: 'standalone',
-        orientation: 'portrait',
-        background_color: '#f6ece1',
-        theme_color: '#f6ece1',
-        // Rendered from the CC0 Grab3D potion bottle (see CREDITS.md).
+        
+        background_color: '#141126',
+        theme_color: '#141126',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },

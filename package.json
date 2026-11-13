@@ -3,16 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "A cozy perfume-house game for phones.",
+  "description": "A tiny midnight heist.",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest",
-    "sounds": "node scripts/fetch-sounds.mjs",
-    "factcheck": "node scripts/fact-check.mjs"
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.5.1",
